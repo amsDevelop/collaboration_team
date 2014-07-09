@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"     
+    android:id="@+id/paopao"    
+    >
+	<ImageView
+		android:layout_height="wrap_content"
+	   	android:layout_width="wrap_content"
+	   	android:src="@drawable/info1"
+	   	android:id="@+id/tvImageSMS"
+	   	android:layout_marginRight="3dip"
+	   	android:layout_centerVertical="true" 	   	
+	/>   	
+	<Button  
+	   	android:layout_height="wrap_content"
+	   	android:layout_width="wrap_content"
+	   	android:background="@drawable/info5"
+	   	android:textColor="#000000"	   		   		   	
+	   	android:layout_toRightOf="@+id/tvImageSMS"
+	   	android:layout_centerVertical="true" 
+	   	android:lines="2"
+	   	android:layout_marginRight="3dip"	   	
+	   	android:id="@+id/tvTitlePaopao"
+	/>
+	<ImageView
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content" 		
+		android:layout_toRightOf="@+id/tvTitlePaopao"
+		android:layout_centerVertical="true"   		
+		android:src="@drawable/info3"		
+		android:id="@+id/tvImageNavi"
+	/>
+</RelativeLayout>
