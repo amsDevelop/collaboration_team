@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"     
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="400dip"
+    android:layout_height="500dip"     
     android:id="@+id/paopao"    
+    android:orientation="vertical"
     >
-	<ImageView
-		android:layout_height="wrap_content"
-	   	android:layout_width="wrap_content"
-	   	android:src="@drawable/info1"
-	   	android:id="@+id/tvImageSMS"
-	   	android:layout_marginRight="3dip"
-	   	android:layout_centerVertical="true" 	   	
-	/>   	
 	<Button  
-	   	android:layout_height="wrap_content"
-	   	android:layout_width="wrap_content"
-	   	android:background="@drawable/info5"
+	   	android:layout_height="50dip"
+	   	android:layout_width="400dip"
 	   	android:textColor="#000000"	   		   		   	
-	   	android:layout_toRightOf="@+id/tvImageSMS"
-	   	android:layout_centerVertical="true" 
 	   	android:lines="2"
 	   	android:layout_marginRight="3dip"	   	
-	   	android:id="@+id/tvTitlePaopao"
+	   	android:id="@+id/property"
+	   	android:text="属性"
 	/>
-	<ImageView
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content" 		
-		android:layout_toRightOf="@+id/tvTitlePaopao"
-		android:layout_centerVertical="true"   		
-		android:src="@drawable/info3"		
-		android:id="@+id/tvImageNavi"
+	<Button  
+	   	android:layout_height="50dip"
+	   	android:layout_width="400dip"
+	   	android:textColor="#000000"	   		   		   	
+	   	android:lines="2"
+	   	android:layout_marginRight="3dip"	   	
+	   	android:id="@+id/statistics"
+	   	android:text="统计"
 	/>
-</RelativeLayout>
+	
+	<Button  
+	   	android:layout_height="50dip"
+	   	android:layout_width="400dip"
+	   	android:textColor="#000000"	   		   		   	
+	   	android:lines="2"
+	   	android:layout_marginRight="3dip"	   	
+	   	android:id="@+id/doc"
+	   	android:text="文档"
+	/>
+	
+	
+</LinearLayout>
