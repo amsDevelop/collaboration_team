@@ -18,4 +18,7 @@
 
     
     <string name="btn_tool_title">工具子菜单项</string>
+    <string name="btn_tool_title_count">统计子菜单项</string>
+    <string name="btn_tool_title_compare">对比子菜单项</string>
+    <string name="btn_tool_title_mine">我的子菜单项</string>
 </resources>

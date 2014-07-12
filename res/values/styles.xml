@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -17,17 +17,29 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     <style name="btn_toolbar_btn">
-         <item name="android:layout_width">wrap_content</item> 
+         <item name="android:layout_width">180dp</item> 
          <item name="android:layout_height">wrap_content</item> 
+         <item name="android:layout_marginTop">15dp</item> 
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
          <item name="android:layout_weight">1</item> 
-         <item name="android:textSize">10sp</item> 
+         <item name="android:textSize">25sp</item> 
     </style>
     <style name="btn_menubar_btn">
          <item name="android:layout_width">wrap_content</item> 
          <item name="android:layout_height">wrap_content</item> 
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
          <item name="android:layout_weight">1</item> 
-         <item name="android:textSize">10sp</item> 
+         <item name="android:textSize">40sp</item> 
+    </style>
+    <style name="menuview_btn">
+         <item name="android:layout_width">wrap_content</item> 
+         <item name="android:layout_height">wrap_content</item> 
+         <item name="android:background">@drawable/selector_btn_menu</item> 
+         <item name="android:textSize">40sp</item> 
+    </style>
+    <style name="menubar_menuview">
+         <item name="android:layout_width">wrap_content</item> 
+         <item name="android:layout_height">wrap_content</item> 
+         <item name="android:layout_weight">1</item> 
     </style>
 </resources>

@@ -69,6 +69,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	ArcGISFeatureLayer fLayer = null;
 	private GraphicsLayer gLayer = null;
 	private Button property, statistics, doc;
+	private Button mBtnLayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -220,13 +221,16 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
 
 		// mBtnMenuTool = (Button) findViewById(R.id.menu_tool);
-		mBtnMenuCount = (Button) findViewById(R.id.menu_count);
-		mBtnMenuCompare = (Button) findViewById(R.id.menu_compare);
-		mBtnMenuMine = (Button) findViewById(R.id.menu_mine);
+//		mBtnMenuCount = (Button) findViewById(R.id.menu_count);
+//		mBtnMenuCompare = (Button) findViewById(R.id.menu_compare);
+//		mBtnMenuMine = (Button) findViewById(R.id.menu_mine);
 
 		mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
 		mTVContent = (TextView) findViewById(R.id.tv_content);
 		mTVContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+		mBtnLayer = (Button)findViewById(R.id.btn_map_layout);
+		mBtnLayer.setOnClickListener(this);
+		
 	}
 
 	private void initData() {
@@ -270,6 +274,9 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 			Intent intent = new Intent(this, SelectActivity.class);
 			intent.putExtra("name", "文档");
 			startActivity(intent);
+		} else if (mBtnLayer.getId() == v.getId()){
+			//start layer dialog
+			
 		}
 		
 	}

@@ -8,17 +8,18 @@
         android:layout_height="fill_parent" >
 
         <!-- todo:放mapview -->
-        
-      <com.esri.android.map.MapView
-		android:id="@+id/map" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">	
-	</com.esri.android.map.MapView>
+
+        <com.esri.android.map.MapView
+            android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </com.esri.android.map.MapView>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:paddingLeft="20dp" >
+            android:paddingLeft="5dp" >
 
             <!-- 搜索框和图层按钮 -->
 
@@ -29,11 +30,12 @@
 
                 <EditText
                     android:id="@+id/edittext_search"
-                    android:layout_width="wrap_content"
+                    android:layout_width="500dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
                     android:background="@drawable/searchbtn"
                     android:hint="搜索地图"
-                    android:textSize="15sp" />
+                    android:textSize="30sp" />
 
                 <Button
                     android:id="@+id/btn_map_layout"
@@ -46,6 +48,7 @@
                 android:id="@+id/tool_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
                 android:orientation="vertical" >
 
                 <Button
@@ -61,65 +64,68 @@
                 <Button
                     android:id="@+id/tb_frame"
                     style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_frame"
-                    android:visibility="gone" />
+                    android:text="@string/btn_frame" />
 
                 <Button
                     android:id="@+id/tb_polygon"
                     style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_polygon"
-                    android:visibility="gone" />
+                    android:text="@string/btn_polygon" />
 
                 <Button
                     android:id="@+id/tb_line"
                     style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_line"
-                    android:visibility="gone" />
+                    android:text="@string/btn_line" />
 
                 <Button
                     android:id="@+id/tb_cur_screen"
                     style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_cur_screen"
-                    android:visibility="gone" />
+                    android:text="@string/btn_cur_screen" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/menu_bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal" >
 
-                <com.sinopec.view.MenuView
+                <com.sinopec.view.MenuViewTool
                     android:id="@+id/menuview_tool"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/menubar_menuview" />
+
+                <com.sinopec.view.MenuViewCount
+                    android:id="@+id/menuview_count"
+                    style="@style/menubar_menuview" />
+
+                <com.sinopec.view.MenuViewCompare
+                    android:id="@+id/menuview_compare"
+                    style="@style/menubar_menuview" />
+
+                <com.sinopec.view.MenuViewMine
+                    android:id="@+id/menuview_mine"
+                    style="@style/menubar_menuview" />
                 <!--
-                     <Button
+                          <Button
                     android:id="@+id/menu_tool"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_tool" />
-                -->
-                <!--
-                         <include
-                         android:id="@+id/layout_menu_tool"
-                        layout="@layout/view_menu_nobutton"
-                        />
-                -->
+                    android:text="@string/btn_tool" />                -->
 
-                <Button
+<!--                 <Button
                     android:id="@+id/menu_count"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_count" />
+                    android:text="@string/btn_count" /> -->
 
-                <Button
+   <!--              <Button
                     android:id="@+id/menu_compare"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_compare" />
+                    android:text="@string/btn_compare" /> -->
 
-                <Button
+<!--                 <Button
                     android:id="@+id/menu_mine"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_tool" />
+                    android:text="@string/btn_mine" /> -->
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
@@ -137,13 +143,12 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone" />
-    
-    <ImageView 
-		android:id="@+id/poiAnim"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true"
-		android:src="@drawable/ballon2" 
-		/>
+
+    <ImageView
+        android:id="@+id/poiAnim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ballon2" />
 
 </RelativeLayout>
