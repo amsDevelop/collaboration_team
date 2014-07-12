@@ -1,0 +1,136 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <!-- todo:放mapview -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:paddingLeft="20dp" >
+
+            <!-- 搜索框和图层按钮 -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <EditText
+                    android:id="@+id/edittext_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/searchbtn"
+                    android:hint="搜索地图"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/btn_map_layout"
+                    style="@style/btn_toolbar_btn"
+                    android:text="@string/btn_layout" />
+            </LinearLayout>
+            <!-- 左边工具栏 -->
+
+            <LinearLayout
+                android:id="@+id/tool_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/tb_single"
+                    style="@style/btn_toolbar_btn"
+                    android:text="@string/btn_single" />
+
+                <Button
+                    android:id="@+id/tb_multiple"
+                    style="@style/btn_toolbar_btn"
+                    android:text="@string/btn_mutiple" />
+
+                <Button
+                    android:id="@+id/tb_frame"
+                    style="@style/btn_toolbar_btn"
+                    android:text="@string/btn_frame"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/tb_polygon"
+                    style="@style/btn_toolbar_btn"
+                    android:text="@string/btn_polygon"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/tb_line"
+                    style="@style/btn_toolbar_btn"
+                    android:text="@string/btn_line"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/tb_cur_screen"
+                    style="@style/btn_toolbar_btn"
+                    android:text="@string/btn_cur_screen"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_bar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <com.sinopec.view.MenuView
+                    android:id="@+id/menuview_tool"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <!--
+                     <Button
+                    android:id="@+id/menu_tool"
+                    style="@style/btn_menubar_btn"
+                    android:text="@string/btn_tool" />
+                -->
+                <!--
+                         <include
+                         android:id="@+id/layout_menu_tool"
+                        layout="@layout/view_menu_nobutton"
+                        />
+                -->
+
+                <Button
+                    android:id="@+id/menu_count"
+                    style="@style/btn_menubar_btn"
+                    android:text="@string/btn_count" />
+
+                <Button
+                    android:id="@+id/menu_compare"
+                    style="@style/btn_menubar_btn"
+                    android:text="@string/btn_compare" />
+
+                <Button
+                    android:id="@+id/menu_mine"
+                    style="@style/btn_menubar_btn"
+                    android:text="@string/btn_tool" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:singleLine="false" />
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
