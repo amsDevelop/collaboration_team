@@ -19,7 +19,7 @@
     <style name="btn_toolbar_btn">
          <item name="android:layout_width">180dp</item> 
          <item name="android:layout_height">wrap_content</item> 
-         <item name="android:layout_marginTop">15dp</item> 
+         <item name="android:gravity">center</item> 
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
          <item name="android:layout_weight">1</item> 
          <item name="android:textSize">25sp</item> 
@@ -40,6 +40,16 @@
     <style name="menubar_menuview">
          <item name="android:layout_width">wrap_content</item> 
          <item name="android:layout_height">wrap_content</item> 
-         <item name="android:layout_weight">1</item> 
+    </style>
+    
+    <style name="text_size">
+         <item name="android:textSize">40sp</item> 
+    </style>
+        <style name="btn_menuview_btn">
+         <item name="android:layout_width">fill_parent</item> 
+         <item name="android:layout_height">wrap_content</item> 
+         <item name="android:gravity">center</item> 
+         <item name="android:background">@drawable/selector_btn_toolbar</item> 
+         <item name="android:textSize">25sp</item> 
     </style>
 </resources>

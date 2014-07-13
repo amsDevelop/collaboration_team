@@ -1,5 +1,6 @@
 package com.sinopec.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -70,6 +72,8 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	private GraphicsLayer gLayer = null;
 	private Button property, statistics, doc;
 	private Button mBtnLayer;
+	private Button mBtnSearch;
+	private EditText mEditText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -230,6 +234,18 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		mTVContent.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mBtnLayer = (Button)findViewById(R.id.btn_map_layout);
 		mBtnLayer.setOnClickListener(this);
+		mBtnSearch = (Button)findViewById(R.id.btn_search_confirm);
+		mBtnSearch.setOnClickListener(new OnClickListener() {
+			
+			@SuppressLint("NewApi")
+			@Override
+			public void onClick(View arg0) {
+				SearchFragment search =	new SearchFragment(mEditText.getText());
+				search.show(getFragmentManager(), "search");
+			}
+		});
+		
+		mEditText = (EditText) findViewById(R.id.edittext_search);
 		
 	}
 
@@ -254,6 +270,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		map.unpause();
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
 		if (property.getId() == v.getId()) {
@@ -276,7 +293,8 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 			startActivity(intent);
 		} else if (mBtnLayer.getId() == v.getId()){
 			//start layer dialog
-			
+			LayerDialog dialog = new LayerDialog();
+			dialog.show(getFragmentManager(), "dialog");
 		}
 		
 	}

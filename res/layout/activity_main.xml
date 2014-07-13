@@ -28,14 +28,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <EditText
-                    android:id="@+id/edittext_search"
-                    android:layout_width="500dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:background="@drawable/searchbtn"
-                    android:hint="搜索地图"
-                    android:textSize="30sp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical" >
+
+                    <EditText
+                        android:id="@+id/edittext_search"
+                        android:layout_width="500dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/searchbtn"
+                        android:hint="搜索地图"
+                        android:textSize="30sp" />
+
+                    <Button
+                        android:id="@+id/btn_search_confirm"
+                        style="@style/btn_toolbar_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="3dp"
+                        android:text="@string/btn_confirm" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btn_map_layout"
@@ -48,8 +62,9 @@
                 android:id="@+id/tool_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:background="@drawable/toolbar_bg"
+                android:paddingLeft="5dp" >
 
                 <Button
                     android:id="@+id/tb_single"
@@ -86,8 +101,7 @@
                 android:id="@+id/menu_bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="100dp"
+                android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal" >
 
@@ -110,22 +124,32 @@
                           <Button
                     android:id="@+id/menu_tool"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_tool" />                -->
+                    android:text="@string/btn_tool" />
+                -->
 
-<!--                 <Button
+
+                <!--
+                     <Button
                     android:id="@+id/menu_count"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_count" /> -->
+                    android:text="@string/btn_count" />
+                -->
 
-   <!--              <Button
+
+                <!--
+                     <Button
                     android:id="@+id/menu_compare"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_compare" /> -->
+                    android:text="@string/btn_compare" />
+                -->
 
-<!--                 <Button
+
+                <!--
+                     <Button
                     android:id="@+id/menu_mine"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_mine" /> -->
+                    android:text="@string/btn_mine" />
+                -->
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
