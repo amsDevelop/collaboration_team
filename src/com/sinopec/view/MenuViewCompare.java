@@ -91,4 +91,11 @@ public class MenuViewCompare extends LinearLayout{
 		return mView;
 	}
 
+	public void click() {
+		mBtn.performClick();
+	}
+	
+	public void setOnClickListener(OnClickListener listener){
+		
+	}
 }

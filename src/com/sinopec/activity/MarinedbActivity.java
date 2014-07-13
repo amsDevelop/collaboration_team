@@ -2,14 +2,18 @@ package com.sinopec.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
@@ -17,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -33,6 +38,10 @@ import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Point;
 import com.esri.core.map.Graphic;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.view.MenuViewCompare;
+import com.sinopec.view.MenuViewCount;
+import com.sinopec.view.MenuViewMine;
+import com.sinopec.view.MenuViewTool;
 
 public class MarinedbActivity extends Activity implements OnClickListener {
 	private String tag = "MainActivity";
@@ -74,6 +83,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	private Button mBtnLayer;
 	private Button mBtnSearch;
 	private EditText mEditText;
+	private PopupWindow popupWindow;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -221,6 +231,11 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		
 	}
 
+	
+	private MenuViewCompare mMenuViewCompare;
+	private MenuViewCount mMenuViewCount;
+	private MenuViewMine mMenuViewMine;
+	private MenuViewTool mMenuViewTool;
 	private void initView() {
 		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
 
@@ -246,6 +261,10 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		});
 		
 		mEditText = (EditText) findViewById(R.id.edittext_search);
+		mMenuViewCount = (MenuViewCount) findViewById(R.id.menuview_count);
+		mMenuViewCompare = (MenuViewCompare) findViewById(R.id.menuview_compare);
+		mMenuViewTool = (MenuViewTool) findViewById(R.id.menuview_tool);
+		mMenuViewMine = (MenuViewMine) findViewById(R.id.menuview_mine);
 		
 	}
 
@@ -298,5 +317,34 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		}
 		
 	}
+	
+	private View view;  
+	private void showWindow(View parent) {  
+		  
+        if (popupWindow == null) {  
+            LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
+  
+//            view = layoutInflater.inflate(R.layout.group_list, null);  
+//  
+//            lv_group = (ListView) view.findViewById(R.id.lvGroup);  
+            // 创建一个PopuWidow对象  
+            popupWindow = new PopupWindow(view, 300, 350);  
+        }  
+  
+        // 使其聚集  
+        popupWindow.setFocusable(true);  
+        // 设置允许在外点击消失  
+        popupWindow.setOutsideTouchable(true);  
+  
+        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景  
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());  
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);  
+        // 显示的位置为:屏幕的宽度的一半-PopupWindow的高度的一半  
+        int xPos = windowManager.getDefaultDisplay().getWidth() / 2  
+                - popupWindow.getWidth() / 2;  
+        Log.i("coder", "xPos:" + xPos);  
+  
+        popupWindow.showAsDropDown(parent, xPos, 0);  
+    }  
 
 }

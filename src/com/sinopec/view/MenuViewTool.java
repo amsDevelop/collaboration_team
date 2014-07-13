@@ -54,7 +54,8 @@ public class MenuViewTool extends LinearLayout{
 		mTVTitle.setText(mContext.getString(R.string.btn_tool_title));
 		
 		mListView = (ListView) mView.findViewById(R.id.menu_listview);
-		String[] items = new String[]{"测距", "测面积", "工具一", "工具二", "工具三"};
+		String[] items = new String[]{"测距", "测面积"};
+//		String[] items = new String[]{"测距", "测面积", "工具一", "工具二", "工具三"};
 		List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();  
 		for (int i = 0; i < items.length; i++) {
 			HashMap<String,String> map = new HashMap<String,String>(); 
