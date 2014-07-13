@@ -111,6 +111,11 @@ public class MenuViewCount extends LinearLayout{
 	
 	public void show(){
 		mLayout.setVisibility(View.VISIBLE);
+//		if(mLayout.getVisibility() == View.INVISIBLE){
+//			mLayout.setVisibility(View.VISIBLE);
+//		}else{
+//			mLayout.setVisibility(View.INVISIBLE);
+//		}
 	}
 
 }
