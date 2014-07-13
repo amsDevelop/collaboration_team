@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ExpandableListView;
@@ -35,14 +34,15 @@ public class SelectActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.select_layout);
 
 		expandableListView = (ExpandableListView) findViewById(R.id.expanList);
 		leftLayout = (LinearLayout) findViewById(R.id.leftLayout);
 		list = (ListView) findViewById(R.id.listView);
 		titleName = (TextView) findViewById(R.id.titleName);
+		
 		adapter = new MyListAdapter(this, rightList);
 		list.setAdapter(adapter);
 		
@@ -51,7 +51,7 @@ public class SelectActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				 Toast.makeText(SelectActivity.this, "I am " + position, Toast.LENGTH_SHORT).show();
+				 Toast.makeText(SelectActivity.this, "文件预览正在研发中，请稍后试用！", Toast.LENGTH_SHORT).show();
 			}
 			
 			
@@ -64,6 +64,11 @@ public class SelectActivity extends Activity {
 		    titleName.setText(dataName);
 		 }
 		   initData();
+		   expandableListView.expandGroup(0);
+		   for (int i = 0; i < 20; i++) {
+				
+			    rightList.add(childs.get(0).get(0) + "(" + i + ")");
+			}
 		   expandableListView.setOnChildClickListener(new OnChildClickListener() {
 			
 			@Override
