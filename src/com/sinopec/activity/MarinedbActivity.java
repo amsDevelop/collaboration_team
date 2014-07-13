@@ -148,7 +148,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		callout.setContent(popView);
 		callout.setStyle(R.layout.calloutwindow);
 		callout.setMaxWidth(SinoApplication.screenWidth-10);
-		callout.setMaxHeight(500);
+		callout.setMaxHeight(SinoApplication.screenHeight);
 		
 		map.setClickable(true);//设置地图可点击
 		

@@ -4,13 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     <TextView  
-       android:id="@+id/mytextview_childs"  
+       android:id="@+id/mytextview_childs"   
        android:layout_width="500dip"  
        android:layout_height="60dp"  
-       android:paddingLeft="10dp"
-       android:textColor="#000000"  
+       android:paddingLeft="10dp"  
+       android:textColor="@android:color/background_dark"
        android:gravity="center_vertical"  
        />  
-    
+     <ImageView
+          android:layout_width="fill_parent"
+          android:layout_height="2dip"
+          android:src="@android:color/darker_gray"
+          />
 
 </LinearLayout>

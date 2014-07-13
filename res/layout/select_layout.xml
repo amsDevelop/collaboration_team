@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
+
     <LinearLayout
         android:id="@+id/leftLayout"
         android:layout_width="fill_parent"
@@ -12,23 +13,34 @@
         android:background="#f7f5f5"
         android:orientation="vertical" >
 
+
         <TextView
             android:id="@+id/titleName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/background_dark"
             android:textSize="35sp" />
+
 
         <ExpandableListView
             android:id="@+id/expanList"
             android:layout_width="wrap_content"
             android:layout_height="800dip" />
     </LinearLayout>
+  
+    <ImageView
+        android:layout_width="2dip"
+        android:layout_height="match_parent"
+        android:src="@android:color/holo_orange_dark"
+        />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#f3f1f1"
+        android:cacheColorHint="#00000000"
         android:layout_weight="1" />
+
 
 </LinearLayout>
