@@ -52,8 +52,19 @@
          <item name="android:layout_height">wrap_content</item> 
     </style>
     
-    <style name="text_size">
-         <item name="android:textSize">40sp</item> 
+    <style name="text_mid_size">
+         <item name="android:textSize">25sp</item> 
+         <item name="android:textColor">@color/black</item> 
+    </style>
+    
+    
+     <style name="text_size">
+         <item name="android:textSize">20sp</item> 
+         <item name="android:textColor">@color/black</item> 
+    </style>
+    
+     <style name="text_low_size">
+         <item name="android:textSize">15sp</item> 
          <item name="android:textColor">@color/black</item> 
     </style>
         <style name="btn_menuview_btn">
@@ -64,16 +75,22 @@
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
          <item name="android:textSize">20sp</item> 
     </style>
-    <style name="layer_btn">
-         <item name="android:layout_width">wrap_content</item> 
-         <item name="android:layout_height">wrap_content</item> 
-         <item name="android:background">@drawable/selector_btn_toolbar</item> 
-         <item name="android:textSize">35sp</item> 
+     <style name="dialog_theme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/png_transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- <item name="android:windowAnimationStyle">@style/Theme.Settings.Dlg</item> -->
     </style>
-    <style name="layer_btn_ok_cancel">
+        
+    <style name="layer_btn">
+         <item name="android:layout_width">80dip</item> 
+         <item name="android:layout_height">80dip</item> 
+         <item name="android:background">@drawable/selector_btn_toolbar</item> 
+         <item name="android:textSize">20sp</item> 
+    </style>
+    <style name="layer_btn_ok_cancel" parent="text_size">
          <item name="android:layout_width">wrap_content</item> 
          <item name="android:layout_height">wrap_content</item> 
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
-         <item name="android:textSize">40sp</item> 
     </style>
 </resources>

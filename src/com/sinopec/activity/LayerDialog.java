@@ -49,22 +49,19 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		return view;
 	}
 
+	
 	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-		Dialog dialog = new Dialog(getActivity()) {
-			@Override
-			protected void onCreate(Bundle savedInstanceState) {
-				super.onCreate(savedInstanceState);
-				// getWindow().getWindowManager()
-				WindowManager manager = getWindow().getWindowManager();
-				
-			}
-		};
-
-		return dialog;
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme);
 	}
-
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		executeLayer3();
+	}
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -78,15 +75,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	public void onClick(View arg0) {
 		switch (arg0.getId()) {
 		case R.id.id_btn_layer_1:
-			mContaner.setVisibility(View.GONE);
-			showAlert();
+			executeLayer1();
 			break;
 		case R.id.id_btn_layer_2:
-			mContaner.setVisibility(View.GONE);
-			showAlert();
+			executeLayer2();
 			break;
 		case R.id.id_btn_layer_3:
-			mContaner.setVisibility(View.VISIBLE);
+			executeLayer3();
 			break;
 
 		case R.id.id_btn_operator_1:
@@ -105,6 +100,32 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	void showAlert() {
 		Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
 	}
+	
+	private void executeLayer2() {
+		executeLayer1();
+		mBtn1.setSelected(false);
+		mBtn2.setSelected(true);
+		mBtn3.setSelected(false);
+	}
+
+
+	private void executeLayer3() {
+		mContaner.setVisibility(View.VISIBLE);
+		mBtn1.setSelected(false);
+		mBtn2.setSelected(false);
+		mBtn3.setSelected(true);
+	}
+
+
+	private void executeLayer1() {
+		mContaner.setVisibility(View.GONE);
+		showAlert();
+		mBtn1.setSelected(true);
+		mBtn2.setSelected(false);
+		mBtn3.setSelected(false);
+	}
+	
+	
 
 	class MyAdapter extends BaseAdapter {
 		ArrayList<String> mList = new ArrayList<String>();

@@ -8,6 +8,7 @@
         android:id="@+id/id_txview_layer"
         android:layout_width="match_parent"
         android:gravity="center"
-        android:textSize="30sp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
         android:layout_height="wrap_content" />
 </RelativeLayout>

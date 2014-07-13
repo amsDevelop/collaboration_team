@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -17,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 @SuppressLint({ "NewApi", "ValidFragment" })
-public class SearchFragment extends DialogFragment {
+public class SearchFragment extends DialogFragment implements OnClickListener {
 
 	
 	int resID = R.layout.layout_serch;
@@ -25,12 +26,12 @@ public class SearchFragment extends DialogFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme);
 	}
 	
 	Editable keyWord;
 	
 	public SearchFragment(Editable keyWord) {
-		// TODO Auto-generated constructor stub
 		this.keyWord = keyWord;
 	}
 	
@@ -55,8 +56,13 @@ public class SearchFragment extends DialogFragment {
 		TextView tx = (TextView) view.findViewById(R.id.id_txview_searhKey);
 		if(keyWord != null && keyWord.toString() != null){
 			
-			tx.setText(keyWord.toString() + " 的搜索结果");
+			tx.setText("\"" +keyWord.toString() + "\"" + " 搜索结果");
 		}
+		
+		
+		
+		view.findViewById(R.id.id_btn_operator_1).setOnClickListener(this);
+		view.findViewById(R.id.id_btn_operator_2).setOnClickListener(this);
 		return view;
 		
 	}
@@ -101,15 +107,21 @@ public class SearchFragment extends DialogFragment {
 			TextView layerName = (TextView) arg1.findViewById(R.id.id_txview_layer);
 			
 			layerName.setText(mList.get(arg0));
-			
-//			btn.setOnClickListener(new OnClickListener() {
-//				@Override
-//				public void onClick(View arg0) {
-//					showAlert();
-//				}
-//			});
 			return arg1;
 		}
 		
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()){
+		case R.id.id_btn_operator_1:
+			dismiss();
+			showAlert();
+			break;
+		case R.id.id_btn_operator_2:
+			dismiss();
+			break;
+		}
 	}
 }
