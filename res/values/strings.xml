@@ -3,11 +3,11 @@
     <string name="hello">Hello World, MarinedbActivity!</string>
     <string name="app_name">海相系统</string>
     <string name="hello_world">Hello world!</string>
-    <string name="btn_single">单选</string>
-    <string name="btn_mutiple">多选</string>
-    <string name="btn_frame">框选</string>
-    <string name="btn_line">折线</string>
-    <string name="btn_polygon">多边形</string>
+    <string name="btn_single">单         选</string>
+    <string name="btn_mutiple">多         选</string>
+    <string name="btn_frame">框         选</string>
+    <string name="btn_line">折         线</string>
+    <string name="btn_polygon">多   边  形</string>
     <string name="btn_cur_screen">屏幕范围</string>
     
     <string name="btn_tool">工具</string>

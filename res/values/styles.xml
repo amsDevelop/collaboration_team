@@ -17,7 +17,7 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     <style name="btn_toolbar_btn">
-         <item name="android:layout_width">180dp</item> 
+         <item name="android:layout_width">120dp</item> 
          <item name="android:layout_height">wrap_content</item> 
          <item name="android:gravity">center</item> 
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
@@ -44,12 +44,25 @@
     
     <style name="text_size">
          <item name="android:textSize">40sp</item> 
+         <item name="android:textColor">@color/black</item> 
     </style>
         <style name="btn_menuview_btn">
          <item name="android:layout_width">fill_parent</item> 
          <item name="android:layout_height">wrap_content</item> 
          <item name="android:gravity">center</item> 
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
-         <item name="android:textSize">25sp</item> 
+         <item name="android:textSize">30sp</item> 
+    </style>
+    <style name="layer_btn">
+         <item name="android:layout_width">wrap_content</item> 
+         <item name="android:layout_height">wrap_content</item> 
+         <item name="android:background">@drawable/selector_btn_toolbar</item> 
+         <item name="android:textSize">35sp</item> 
+    </style>
+    <style name="layer_btn_ok_cancel">
+         <item name="android:layout_width">wrap_content</item> 
+         <item name="android:layout_height">wrap_content</item> 
+         <item name="android:background">@drawable/selector_btn_toolbar</item> 
+         <item name="android:textSize">40sp</item> 
     </style>
 </resources>

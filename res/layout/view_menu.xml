@@ -27,6 +27,8 @@
 
     <Button
         android:id="@+id/menu_view_btn"
-        style="@style/btn_menuview_btn" />
+        style="@style/btn_menuview_btn"
+        android:paddingTop="4dp"
+        android:drawableTop="@drawable/zl" />
 
 </LinearLayout>

@@ -15,93 +15,96 @@
             android:layout_height="fill_parent" >
         </com.esri.android.map.MapView>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:paddingLeft="5dp" >
+            android:layout_height="fill_parent" >
 
-            <!-- 搜索框和图层按钮 -->
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                <!-- 搜索框和图层按钮 -->
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical" >
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp" >
 
-                    <EditText
-                        android:id="@+id/edittext_search"
-                        android:layout_width="500dp"
+                    <LinearLayout
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/searchbtn"
-                        android:hint="搜索地图"
-                        android:textSize="30sp" />
+                        android:background="@drawable/toolbar_bg"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal" >
+
+                        <EditText
+                            android:id="@+id/edittext_search"
+                            android:layout_width="1200dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/searchbtn"
+                            android:hint="搜索地图"
+                            android:textSize="30sp" />
+
+                        <Button
+                            android:id="@+id/btn_search_confirm"
+                            style="@style/btn_toolbar_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="1dp"
+                            android:text="@string/btn_confirm" />
+                    </LinearLayout>
 
                     <Button
-                        android:id="@+id/btn_search_confirm"
+                        android:id="@+id/btn_map_layout"
                         style="@style/btn_toolbar_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="3dp"
-                        android:text="@string/btn_confirm" />
+                        android:layout_marginTop="5dp"
+                        android:text="@string/btn_layout" />
                 </LinearLayout>
+                <!-- 左边工具栏 -->
 
-                <Button
-                    android:id="@+id/btn_map_layout"
-                    style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_layout" />
-            </LinearLayout>
-            <!-- 左边工具栏 -->
+                <LinearLayout
+                    android:id="@+id/tool_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:orientation="vertical"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="5dp" >
 
-            <LinearLayout
-                android:id="@+id/tool_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/toolbar_bg"
-                android:paddingLeft="5dp" >
+                    <Button
+                        android:id="@+id/tb_single"
+                        style="@style/btn_toolbar_btn"
+                        android:text="@string/btn_single" />
 
-                <Button
-                    android:id="@+id/tb_single"
-                    style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_single" />
+                    <Button
+                        android:id="@+id/tb_multiple"
+                        style="@style/btn_toolbar_btn"
+                        android:text="@string/btn_mutiple" />
 
-                <Button
-                    android:id="@+id/tb_multiple"
-                    style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_mutiple" />
+                    <Button
+                        android:id="@+id/tb_frame"
+                        style="@style/btn_toolbar_btn"
+                        android:text="@string/btn_frame" />
 
-                <Button
-                    android:id="@+id/tb_frame"
-                    style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_frame" />
+                    <Button
+                        android:id="@+id/tb_polygon"
+                        style="@style/btn_toolbar_btn"
+                        android:text="@string/btn_polygon" />
 
-                <Button
-                    android:id="@+id/tb_polygon"
-                    style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_polygon" />
+                    <Button
+                        android:id="@+id/tb_line"
+                        style="@style/btn_toolbar_btn"
+                        android:text="@string/btn_line" />
 
-                <Button
-                    android:id="@+id/tb_line"
-                    style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_line" />
-
-                <Button
-                    android:id="@+id/tb_cur_screen"
-                    style="@style/btn_toolbar_btn"
-                    android:text="@string/btn_cur_screen" />
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/tb_cur_screen"
+                        style="@style/btn_toolbar_btn"
+                        android:text="@string/btn_cur_screen" />
+                </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/menu_bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
+                android:layout_alignParentBottom="true"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal" >
 
@@ -124,34 +127,30 @@
                           <Button
                     android:id="@+id/menu_tool"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_tool" />
-                -->
+                    android:text="@string/btn_tool" /> -->
 
 
                 <!--
                      <Button
                     android:id="@+id/menu_count"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_count" />
-                -->
+                    android:text="@string/btn_count" /> -->
 
 
                 <!--
                      <Button
                     android:id="@+id/menu_compare"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_compare" />
-                -->
+                    android:text="@string/btn_compare" />  -->
 
 
                 <!--
                      <Button
                     android:id="@+id/menu_mine"
                     style="@style/btn_menubar_btn"
-                    android:text="@string/btn_mine" />
-                -->
+                    android:text="@string/btn_mine" />  -->
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
     </FrameLayout>
 
     <TextView

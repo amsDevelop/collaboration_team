@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white" >
+
+    <TextView
+        android:layout_width="600dip"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        style="@style/text_size"
+        android:id="@+id/id_txview_searhKey"
+        android:text="关键字的搜索结果" />
+
+    <LinearLayout
+        android:id="@+id/id_llaout_search_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:gravity="center" >
+
+        <ListView
+            android:id="@+id/id_lstview_search_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000"
+            android:dividerHeight="2dip"
+            android:divider="@color/lightgray"
+             >
+        </ListView>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:layout_marginBottom="5dip"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" >
+
+        <Button
+            android:id="@+id/id_btn_operator_1"
+            style="@style/layer_btn_ok_cancel"
+            android:layout_alignParentLeft="true"
+            android:text="确定" />
+
+        <Button android:id="@+id/id_btn_operator_2"
+            style="@style/layer_btn_ok_cancel"
+            android:layout_alignParentRight="true"
+            android:text="取消" />
+    </RelativeLayout>
+
+</LinearLayout>
