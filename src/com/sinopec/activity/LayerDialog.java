@@ -51,11 +51,10 @@ public class LayerDialog extends DialogFragment implements OnClickListener{
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		
-		Dialog dialog = new Dialog(getActivity()){
+		Dialog dialog = new Dialog(getActivity(),getTheme()){
 			@Override
 			protected void onCreate(Bundle savedInstanceState) {
 				super.onCreate(savedInstanceState);
-//				getWindow().getWindowManager()
 			}
 		};
 		
@@ -67,15 +66,14 @@ public class LayerDialog extends DialogFragment implements OnClickListener{
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-//		setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo);
+		setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme);
 	}
 	
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
+		executeLayer3();
 	}
 	
 	
@@ -92,15 +90,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener{
 	public void onClick(View arg0) {
 		switch(arg0.getId()){
 		case R.id.id_btn_layer_1:
-			mContaner.setVisibility(View.GONE);
-			showAlert();
+			executeLayer1();
 			break;
 		case R.id.id_btn_layer_2:
-			mContaner.setVisibility(View.GONE);
-			showAlert();
+			executeLayer2();
 			break;
 		case R.id.id_btn_layer_3:
-			mContaner.setVisibility(View.VISIBLE);
+			executeLayer3();
 			break;
 			
 		case R.id.id_btn_operator_1:
@@ -114,6 +110,30 @@ public class LayerDialog extends DialogFragment implements OnClickListener{
 			
 		}
 		
+	}
+
+	private void executeLayer2() {
+		executeLayer1();
+		mBtn1.setSelected(false);
+		mBtn2.setSelected(true);
+		mBtn3.setSelected(false);
+	}
+
+
+	private void executeLayer3() {
+		mContaner.setVisibility(View.VISIBLE);
+		mBtn1.setSelected(false);
+		mBtn2.setSelected(false);
+		mBtn3.setSelected(true);
+	}
+
+
+	private void executeLayer1() {
+		mContaner.setVisibility(View.GONE);
+		showAlert();
+		mBtn1.setSelected(true);
+		mBtn2.setSelected(false);
+		mBtn3.setSelected(false);
 	}
 	
 	
