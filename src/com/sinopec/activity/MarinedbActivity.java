@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -118,7 +119,6 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		map.addLayer(fLayer);
 		//add by gaolixiao
 		addPopupWindow();
-
 	}
 
 	private void addPopupWindow() {
@@ -262,12 +262,58 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		
 		mEditText = (EditText) findViewById(R.id.edittext_search);
 		mMenuViewCount = (MenuViewCount) findViewById(R.id.menuview_count);
+		mMenuViewCount.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				mMenuViewCount.show();
+				mMenuViewCompare.hide();
+				mMenuViewTool.hide();
+				mMenuViewMine.hide();
+				showWindow(mMenuViewCount);
+				
+			}
+		});
+		
 		mMenuViewCompare = (MenuViewCompare) findViewById(R.id.menuview_compare);
+		mMenuViewCompare.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				mMenuViewCompare.show();
+				mMenuViewCount.hide();
+				mMenuViewTool.hide();
+				mMenuViewMine.hide();
+			}
+		});
+		
+		
 		mMenuViewTool = (MenuViewTool) findViewById(R.id.menuview_tool);
+		mMenuViewTool.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				mMenuViewTool.show();
+				mMenuViewCompare.hide();
+				mMenuViewCount.hide();
+				mMenuViewMine.hide();
+			}
+		});
+		
 		mMenuViewMine = (MenuViewMine) findViewById(R.id.menuview_mine);
+		mMenuViewMine.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				mMenuViewMine.show();
+				mMenuViewTool.hide();
+				mMenuViewCompare.hide();
+				mMenuViewCount.hide();
+			}
+		});
 		
 	}
-
+	
 	private void initData() {
 		mProgressBar.setVisibility(View.VISIBLE);
 	}
@@ -287,6 +333,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		map.unpause();
+		closeKeyboard();
 	}
 
 	@SuppressLint("NewApi")
@@ -320,11 +367,10 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	
 	private View view;  
 	private void showWindow(View parent) {  
-		  
         if (popupWindow == null) {  
             LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
   
-//            view = layoutInflater.inflate(R.layout.group_list, null);  
+            view = layoutInflater.inflate(R.layout.view_menu_popwindow, null);  
 //  
 //            lv_group = (ListView) view.findViewById(R.id.lvGroup);  
             // 创建一个PopuWidow对象  
@@ -346,5 +392,14 @@ public class MarinedbActivity extends Activity implements OnClickListener {
   
         popupWindow.showAsDropDown(parent, xPos, 0);  
     }  
+	
+	
+	 //关闭软键盘  
+	 private void closeKeyboard() {  
+	     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+	     imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);  
+	}  
 
 }
+
+

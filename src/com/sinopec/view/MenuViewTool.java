@@ -5,18 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.drawable.AnimationDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
@@ -27,8 +28,8 @@ public class MenuViewTool extends LinearLayout{
 	private View mView;
 	private Context mContext;
 	private Button mBtn;
-	private LinearLayout mLayout;
-	
+	private RelativeLayout mLayout;
+	private Bitmap bitmap;
 	public MenuViewTool(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.mContext = context;
@@ -41,13 +42,15 @@ public class MenuViewTool extends LinearLayout{
 	}
 	
 	private void initView() {
+		//50x50
+		bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.tc);
 		LayoutInflater mInflater = LayoutInflater.from(mContext);
 		mView = mInflater.inflate(R.layout.view_menu, null);
-		LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(SinoApplication.screenWidth / 4,LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(SinoApplication.screenWidth / 4,LayoutParams.WRAP_CONTENT);
 		
 		param.width = SinoApplication.screenWidth / 4;
 		mView.setLayoutParams(param);
-		mLayout = (LinearLayout) mView.findViewById(R.id.menu_content);
+		mLayout = (RelativeLayout) mView.findViewById(R.id.menu_content);
 		mBtn = (Button) mView.findViewById(R.id.menu_view_btn);
 		mBtn.setText(mContext.getString(R.string.btn_tool));
 		mTVTitle = (TextView) mView.findViewById(R.id.menu_title);
@@ -69,26 +72,49 @@ public class MenuViewTool extends LinearLayout{
         addView(mView);
 	}
 	
+	
+	
 	private void initEvent() {
-		mBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if(mLayout.getVisibility() == View.INVISIBLE){
-//					Animation animup = AnimationUtils.loadAnimation(mContext, R.anim.ani_menu_up);
-//					mLayout.startAnimation(animup);
-					mLayout.setVisibility(View.VISIBLE);
-				}else{
-//					Animation animdown =  AnimationUtils.loadAnimation(mContext, R.anim.ani_menu_down);
-//					mLayout.startAnimation(animdown);
-					mLayout.setVisibility(View.INVISIBLE);
-				}
-			}
-		});
 	}
 	
 	public View getView() {
 		return mView;
 	}
+	
+	public void setOnClickListener(OnClickListener listener){
+		mBtn.setOnClickListener(listener);
+	}
+	
+	public void dealClick(){
+		if(mLayout.getVisibility() == View.INVISIBLE){
+			mLayout.setVisibility(View.VISIBLE);
+		}else{
+			mLayout.setVisibility(View.INVISIBLE);
+		}
+	}
+	
+	public void hide(){
+		mLayout.setVisibility(View.INVISIBLE);
+	}
+	
+	public void show(){
+		mLayout.setVisibility(View.VISIBLE);
+	}
+
+	private Paint mPaint= new Paint();
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		  // 图片顶部居中显示
+        int x = (this.getMeasuredWidth() - bitmap.getWidth())/2;
+        int y = 0;
+        canvas.drawBitmap(bitmap, x, y, null);
+        // 坐标需要转换，因为默认情况下Button中的文字居中显示
+        // 这里需要让文字在底部显示
+        canvas.translate(0,(this.getMeasuredHeight()/2) - (int) mBtn.getTextSize());
+        super.onDraw(canvas);
+	}
+	
+	
 
 }

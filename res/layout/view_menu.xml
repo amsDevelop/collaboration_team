@@ -1,13 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/menu_content"
         android:layout_width="fill_parent"
         android:layout_height="300dp"
+        android:layout_above="@+id/menu_view_btn"
         android:orientation="vertical"
         android:visibility="invisible" >
 
@@ -15,20 +16,24 @@
             android:id="@+id/menu_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/menu_listview"
+            android:layout_alignParentBottom="true"
             android:visibility="gone" />
 
         <ListView
             android:id="@+id/menu_listview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:cacheColorHint="#00000000"
-            android:background="#f7f5f5"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#f7f5f5"
+            android:cacheColorHint="#00000000" />
+    </RelativeLayout>
 
     <Button
         android:id="@+id/menu_view_btn"
         style="@style/btn_menuview_btn"
-        android:paddingTop="4dp"
-        android:drawableLeft="@drawable/zl" />
+        android:layout_alignParentBottom="true"
+        android:drawableTop="@drawable/zl"
+        android:paddingTop="4dp" />
 
-</LinearLayout>
+</RelativeLayout>
