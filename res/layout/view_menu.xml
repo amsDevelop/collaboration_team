@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:iconbutton="http://schemas.android.com/apk/res/com.sinopec.activity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
@@ -29,11 +30,13 @@
             android:cacheColorHint="#00000000" />
     </RelativeLayout>
 
-    <Button
+    <com.sinopec.view.MenuButton
         android:id="@+id/menu_view_btn"
         style="@style/btn_menuview_btn"
         android:layout_alignParentBottom="true"
-        android:drawableTop="@drawable/zl"
+        iconbutton:icon="@drawable/zl"
+        iconbutton:text_size="16sp"
+        iconbutton:mtext="@string/btn_tool"
         android:paddingTop="4dp" />
 
 </RelativeLayout>

@@ -39,6 +39,7 @@ import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Point;
 import com.esri.core.map.Graphic;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuViewCompare;
 import com.sinopec.view.MenuViewCount;
 import com.sinopec.view.MenuViewMine;
@@ -232,10 +233,10 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	}
 
 	
-	private MenuViewCompare mMenuViewCompare;
-	private MenuViewCount mMenuViewCount;
-	private MenuViewMine mMenuViewMine;
-	private MenuViewTool mMenuViewTool;
+	private MenuButton mMenuViewCompare;
+	private MenuButton mMenuViewCount;
+	private MenuButton mMenuViewMine;
+	private MenuButton mMenuViewTool;
 	private void initView() {
 		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
 
@@ -261,54 +262,38 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		});
 		
 		mEditText = (EditText) findViewById(R.id.edittext_search);
-		mMenuViewCount = (MenuViewCount) findViewById(R.id.menuview_count);
+		mMenuViewCount = (MenuButton) findViewById(R.id.menuview_count);
 		mMenuViewCount.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				mMenuViewCount.show();
-				mMenuViewCompare.hide();
-				mMenuViewTool.hide();
-				mMenuViewMine.hide();
 				showWindow(mMenuViewCount);
 				
 			}
 		});
 		
-		mMenuViewCompare = (MenuViewCompare) findViewById(R.id.menuview_compare);
+		mMenuViewCompare = (MenuButton) findViewById(R.id.menuview_compare);
 		mMenuViewCompare.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				mMenuViewCompare.show();
-				mMenuViewCount.hide();
-				mMenuViewTool.hide();
-				mMenuViewMine.hide();
 			}
 		});
 		
 		
-		mMenuViewTool = (MenuViewTool) findViewById(R.id.menuview_tool);
+		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
 		mMenuViewTool.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				mMenuViewTool.show();
-				mMenuViewCompare.hide();
-				mMenuViewCount.hide();
-				mMenuViewMine.hide();
 			}
 		});
 		
-		mMenuViewMine = (MenuViewMine) findViewById(R.id.menuview_mine);
+		mMenuViewMine = (MenuButton) findViewById(R.id.menuview_mine);
 		mMenuViewMine.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				mMenuViewMine.show();
-				mMenuViewTool.hide();
-				mMenuViewCompare.hide();
-				mMenuViewCount.hide();
 			}
 		});
 		

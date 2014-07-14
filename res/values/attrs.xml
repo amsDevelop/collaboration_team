@@ -1,6 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?> 
-<resources> 
-    <declare-styleable name="MenuViewTool"> 
-        <attr name="titleName" format="string"/> 
-    </declare-styleable> 
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MenuViewTool">
+        <attr name="titleName" format="string" />
+    </declare-styleable>
+
+    <attr name="relation">
+        <enum name="icon_left" value="0" />
+        <enum name="icon_right" value="1" />
+        <enum name="icon_above" value="2" />
+        <enum name="icon_below" value="3" />
+        <enum name="icon_null" value="4" />
+    </attr>
+
+    <declare-styleable name="iconbutton">
+        <attr name="relation" />
+        <attr name="icon" format="reference" />
+        <attr name="mtext" format="string" />
+        <attr name="text_size" format="dimension" />
+    </declare-styleable>
+
 </resources>

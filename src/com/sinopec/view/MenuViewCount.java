@@ -51,7 +51,6 @@ public class MenuViewCount extends LinearLayout{
 		mView.setLayoutParams(param);
 		mLayout = (RelativeLayout) mView.findViewById(R.id.menu_content);
 		mBtn = (Button) mView.findViewById(R.id.menu_view_btn);
-		mBtn.setText(mContext.getString(R.string.btn_count));
 		mTVTitle = (TextView) mView.findViewById(R.id.menu_title);
 		mTVTitle.setText(mContext.getString(R.string.btn_tool_title));
 		
