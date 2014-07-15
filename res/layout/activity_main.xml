@@ -27,7 +27,7 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical" >
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -44,12 +44,14 @@
                         android:hint="搜索地图"
                         android:textSize="20sp" />
 
-                    <Button
+                    <com.sinopec.view.MenuButton
                         android:id="@+id/btn_search_confirm"
                         style="@style/btn_search_confirm"
                         android:layout_marginLeft="2dp"
                         android:background="@drawable/selector_btn_toolbar"
-                        android:text="@string/btn_confirm" />
+                        iconbutton:hasicon="false"
+                        iconbutton:mtext="@string/btn_confirm"
+                        iconbutton:text_size="16sp" />
                 </LinearLayout>
 
                 <RelativeLayout
@@ -81,7 +83,8 @@
                     android:id="@+id/tb_single"
                     style="@style/btn_toolbar_btn"
                     android:drawableTop="@drawable/toolbar_single"
-                    android:text="@string/btn_single" />
+                    android:text="@string/btn_single"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/tb_multiple"
@@ -117,6 +120,7 @@
             <!-- 放大，缩小 -->
 
             <RelativeLayout
+                android:id="@+id/map_scale_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tool_bar"
@@ -142,47 +146,64 @@
                 </LinearLayout>
             </RelativeLayout>
 
+            <!-- 底部按钮栏 -->
+
             <LinearLayout
                 android:id="@+id/menu_bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@drawable/toolbottom_bg" 
-                android:layout_marginTop="20dp"
+                android:background="@drawable/toolbottom_bg"
                 android:orientation="horizontal" >
 
                 <com.sinopec.view.MenuButton
                     android:id="@+id/menuview_tool"
                     style="@style/btn_menuview_btn"
                     iconbutton:icon="@drawable/zl"
-                    iconbutton:relation="icon_right"
                     iconbutton:mtext="@string/btn_tool"
+                    iconbutton:relation="icon_right"
                     iconbutton:text_size="16sp" />
 
                 <com.sinopec.view.MenuButton
                     android:id="@+id/menuview_count"
                     style="@style/btn_menuview_btn"
                     iconbutton:icon="@drawable/zl"
-                    iconbutton:relation="icon_right"
                     iconbutton:mtext="@string/btn_count"
+                    iconbutton:relation="icon_right"
                     iconbutton:text_size="16sp" />
 
                 <com.sinopec.view.MenuButton
                     android:id="@+id/menuview_compare"
                     style="@style/btn_menuview_btn"
                     iconbutton:icon="@drawable/zl"
-                    iconbutton:relation="icon_right"
                     iconbutton:mtext="@string/btn_compare"
+                    iconbutton:relation="icon_right"
                     iconbutton:text_size="16sp" />
 
                 <com.sinopec.view.MenuButton
                     android:id="@+id/menuview_mine"
                     style="@style/btn_menuview_btn"
                     iconbutton:icon="@drawable/zl"
-                    iconbutton:relation="icon_null"
                     iconbutton:mtext="@string/btn_mine"
+                    iconbutton:relation="icon_null"
                     iconbutton:text_size="16sp" />
             </LinearLayout>
+            
+            
+            <!-- 底部按钮栏子菜单栏 -->
+            <RelativeLayout
+                android:id="@+id/menu_children_grid"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/menu_bar"
+                android:background="@color/white" >
+                <GridView
+                    android:id="@+id/menu_gridview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:cacheColorHint="#00000000" 
+                    android:numColumns="auto_fit" />
+            </RelativeLayout>
         </RelativeLayout>
     </FrameLayout>
 

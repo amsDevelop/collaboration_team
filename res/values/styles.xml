@@ -74,6 +74,14 @@
          <item name="android:textColor">@color/black</item> 
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
     </style>
+    <!-- 子菜单 -->
+    <style name="btn_child_menu">
+         <item name="android:layout_width">wrap_content</item> 
+         <item name="android:layout_height">wrap_content</item> 
+         <item name="android:gravity">center</item> 
+         <item name="android:textColor">@color/black</item> 
+         <item name="android:background">@drawable/selector_btn_childmenu</item> 
+    </style>
      <style name="dialog_theme" parent="@android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/png_transparent</item>

@@ -18,6 +18,8 @@
         <attr name="icon" format="reference" />
         <attr name="mtext" format="string" />
         <attr name="text_size" format="dimension" />
+        <attr name="hasicon" format="boolean" />
+        <attr name="split_number" format="integer" />
     </declare-styleable>
 
 </resources>

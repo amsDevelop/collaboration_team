@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:iconbutton="http://schemas.android.com/apk/res/com.sinopec.activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.sinopec.view.MenuChildButton
+        android:id="@+id/btn_menuchild"
+        style="@style/btn_child_menu"
+        iconbutton:icon="@drawable/zl"
+        iconbutton:mtext="@string/btn_count"
+        iconbutton:relation="icon_above"
+        iconbutton:text_size="14sp" />
+
+</LinearLayout>

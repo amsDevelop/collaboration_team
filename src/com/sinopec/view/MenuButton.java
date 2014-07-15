@@ -22,10 +22,16 @@ public class MenuButton extends Button {
 	private final int ICON_ABOVE = 2;
 	private final int ICON_BELOW = 3;
 	private final int ICON_NULL = 4;
+	/**
+	 * 主体的图标
+	 */
+	private final int ICON_MAIN = 5;
+	
 	private int mRelation = ICON_LEFT;
 	private int mIconId;
 	private int mTextSize;
 	private String mText;
+	private boolean mHasIcon;
 	public MenuButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		TypedArray a = context.obtainStyledAttributes(attrs,
@@ -34,6 +40,7 @@ public class MenuButton extends Button {
 		mIconId = a.getResourceId(R.styleable.iconbutton_icon, R.drawable.icon);
 		mText = a.getString(R.styleable.iconbutton_mtext);
 		mTextSize = a.getDimensionPixelSize(R.styleable.iconbutton_text_size, 12);
+		mHasIcon = a.getBoolean(R.styleable.iconbutton_hasicon, true);
 		
 		bitmap = BitmapFactory.decodeResource(context.getResources(), mIconId);
 		
@@ -45,10 +52,23 @@ public class MenuButton extends Button {
 	protected void onDraw(Canvas canvas) {
 		// 图片顶部居中显示
 		int spaceIconAndText = 3;
-		int iconx = (getMeasuredWidth() - (bitmap.getWidth() + spaceIconAndText + mTextSize)) / 2;
-		int icony = (getMeasuredHeight() - bitmap.getHeight()) / 2;
-
-		canvas.drawBitmap(bitmap, iconx, icony, null);
+		int bitmapWidth = 0;
+		int bitmapHeight = 0;
+		if(mHasIcon){
+			bitmapWidth = bitmap.getWidth();
+			bitmapHeight = bitmap.getHeight();
+		}
+		
+		//文字宽度( 字号sp 要* dpi 才是真正像素值)
+		int textWidth = (int) (mPaint.measureText(mText) * SinoApplication.density);
+//		int textHeight =  (int) (mTextSize * SinoApplication.density);
+		int textHeight = mTextSize;
+		
+		int iconx = (getMeasuredWidth() - (bitmapWidth + spaceIconAndText + mTextSize)) / 2;
+		int icony = (getMeasuredHeight() - bitmapHeight) / 2;
+		if(mHasIcon){
+			canvas.drawBitmap(bitmap, iconx, icony, null);
+		}
 		// 坐标需要转换，因为默认情况下Button中的文字居中显示
 		// 这里需要让文字在底部显示
 //		canvas.translate(0, (this.getMeasuredHeight() / 2)
@@ -57,8 +77,16 @@ public class MenuButton extends Button {
 		mPaint.setTextSize(mTextSize);
 		
 		//文字
-		int textx = iconx + bitmap.getWidth() + spaceIconAndText;
-		int texty = (getMeasuredHeight() - mTextSize) / 2;;
+		int textx = 0;
+		int texty = 0;
+		if(mHasIcon){
+			textx = iconx + bitmapWidth + spaceIconAndText;
+			texty = (getMeasuredHeight() - textHeight) / 2;
+		}else{
+			textx = (getMeasuredWidth() - textWidth) / 2;
+			texty = (getMeasuredHeight() - textHeight) / 2;
+		}
+		
 		canvas.drawText(mText, textx, texty, mPaint);
 		int spaceVertical = 15;
 		switch (mRelation) {

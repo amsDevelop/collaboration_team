@@ -1,5 +1,8 @@
 package com.sinopec.activity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +24,7 @@ import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -38,6 +43,7 @@ import com.esri.android.map.event.OnSingleTapListener;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Point;
 import com.esri.core.map.Graphic;
+import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuViewCompare;
@@ -83,13 +89,19 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	private GraphicsLayer gLayer = null;
 	private Button property, statistics, doc;
 	private Button mBtnLayer;
-	private Button mBtnSearch;
+	private MenuButton mBtnSearch;
 	private EditText mEditText;
 	private PopupWindow popupWindow;
-
+	private Context mContext;
+	 /**
+	  * 子菜单
+	  */
+	 private GridView mGridView;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.mContext = this;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setTitle(R.string.app_name);
 		SinoApplication.screenWidth = this.getWindowManager()
@@ -120,6 +132,18 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		map.addLayer(fLayer);
 		//add by gaolixiao
 		addPopupWindow();
+		getAboutDisplay();
+	}
+	
+	public void getAboutDisplay() {
+		DisplayMetrics metric = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metric);
+		int width = metric.widthPixels; // 屏幕宽度（像素）
+		int height = metric.heightPixels; // 屏幕高度（像素）
+		SinoApplication.density = metric.density; // 屏幕密度（0.75 / 1.0 / 1.5）
+		int densityDpi = metric.densityDpi; // 屏幕密度DPI（120 / 160 / 240）
+		//此设备 width: 2560  hei: 1600  density: 2.0  densityDpi: 320
+		Log.d("sinopec", "width: "+width+"  hei: "+height+"  density: "+ SinoApplication.density+"  densityDpi: "+densityDpi);
 	}
 
 	private void addPopupWindow() {
@@ -244,13 +268,13 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 //		mBtnMenuCount = (Button) findViewById(R.id.menu_count);
 //		mBtnMenuCompare = (Button) findViewById(R.id.menu_compare);
 //		mBtnMenuMine = (Button) findViewById(R.id.menu_mine);
-
+		mGridView = (GridView) findViewById(R.id.menu_gridview);
 		mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
 		mTVContent = (TextView) findViewById(R.id.tv_content);
 		mTVContent.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mBtnLayer = (Button)findViewById(R.id.btn_map_layout);
 		mBtnLayer.setOnClickListener(this);
-		mBtnSearch = (Button)findViewById(R.id.btn_search_confirm);
+		mBtnSearch = (MenuButton)findViewById(R.id.btn_search_confirm);
 		mBtnSearch.setOnClickListener(new OnClickListener() {
 			
 			@SuppressLint("NewApi")
@@ -267,7 +291,24 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 			
 			@Override
 			public void onClick(View arg0) {
-				showWindow(mMenuViewCount);
+//				showWindow(mMenuViewCount);
+				String[] name4count = new String[]{"范围内油气田的个数、面积、储量(油、气、...)", "范围内油气田的个数密度、面积密度",
+						"范围内油气田的储量丰度(吨油当量/平方公里)", "石油、天然气及凝析油储量在各油气田的分布",
+						"不同沉积体系油气田个数", "不同沉积体系油气田面积"};
+				Integer[] icon4count = {R.drawable.icon_compare_0, R.drawable.icon_compare_1, R.drawable.icon_compare_2, 
+						R.drawable.icon_compare_3, R.drawable.icon_compare_4, 
+						R.drawable.icon_compare_5, R.drawable.icon_compare_6, };
+				int splitNumber = 2;
+				ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+				for (int i = 0; i < name4count.length; i++) {
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("name", name4count[i]);
+					map.put("icon", icon4count[i]);
+					map.put("tag", name4count[i]);
+					map.put("split", splitNumber);
+					list.add(map);
+				}
+				setGridView(list);
 				
 			}
 		});
@@ -277,6 +318,19 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 			
 			@Override
 			public void onClick(View arg0) {
+				String[] name4count = new String[]{"待定"};
+				Integer[] icon4count = {R.drawable.icon_compare_0 };
+				int splitNumber = 1;
+				ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+				for (int i = 0; i < name4count.length; i++) {
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("name", name4count[i]);
+					map.put("icon", icon4count[i]);
+					map.put("tag", name4count[i]);
+					map.put("split", splitNumber);
+					list.add(map);
+				}
+				setGridView(list);
 			}
 		});
 		
@@ -286,6 +340,19 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 			
 			@Override
 			public void onClick(View arg0) {
+				String[] name4count = new String[]{"测距", "测面积"};
+				Integer[] icon4count = {R.drawable.icon_compare_0, R.drawable.icon_compare_1 };
+				int splitNumber = 2;
+				ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+				for (int i = 0; i < name4count.length; i++) {
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("name", name4count[i]);
+					map.put("icon", icon4count[i]);
+					map.put("tag", name4count[i]);
+					map.put("split", splitNumber);
+					list.add(map);
+				}
+				setGridView(list);
 			}
 		});
 		
@@ -294,6 +361,20 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 			
 			@Override
 			public void onClick(View arg0) {
+				String[] name4count = new String[]{"登陆", "账户管理", "收藏", "下载", "退出"};
+				Integer[] icon4count = {R.drawable.icon_compare_0, R.drawable.icon_compare_1, R.drawable.icon_compare_2, 
+						R.drawable.icon_compare_3, R.drawable.icon_compare_4 };
+				int splitNumber = 2;
+				ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+				for (int i = 0; i < name4count.length; i++) {
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("name", name4count[i]);
+					map.put("icon", icon4count[i]);
+					map.put("tag", name4count[i]);
+					map.put("split", splitNumber);
+					list.add(map);
+				}
+				setGridView(list);
 			}
 		});
 		
@@ -384,6 +465,12 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
 	     imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);  
 	}  
+	 
+	 private void setGridView(ArrayList<HashMap<String, Object>> list) {
+		MenuGridAdapter adapter = new MenuGridAdapter(mContext, list);
+		mGridView.setAdapter(adapter);
+	}
+	
 
 }
 
