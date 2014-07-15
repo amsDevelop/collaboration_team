@@ -46,10 +46,7 @@ import com.esri.core.map.Graphic;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.view.MenuButton;
-import com.sinopec.view.MenuViewCompare;
-import com.sinopec.view.MenuViewCount;
-import com.sinopec.view.MenuViewMine;
-import com.sinopec.view.MenuViewTool;
+import com.sinopec.view.MenuButtonNoIcon;
 
 public class MarinedbActivity extends Activity implements OnClickListener {
 	private String tag = "MainActivity";
@@ -89,7 +86,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	private GraphicsLayer gLayer = null;
 	private Button property, statistics, doc;
 	private Button mBtnLayer;
-	private MenuButton mBtnSearch;
+	private MenuButtonNoIcon mBtnSearch;
 	private EditText mEditText;
 	private PopupWindow popupWindow;
 	private Context mContext;
@@ -274,7 +271,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 		mTVContent.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mBtnLayer = (Button)findViewById(R.id.btn_map_layout);
 		mBtnLayer.setOnClickListener(this);
-		mBtnSearch = (MenuButton)findViewById(R.id.btn_search_confirm);
+		mBtnSearch = (MenuButtonNoIcon)findViewById(R.id.btn_search_confirm);
 		mBtnSearch.setOnClickListener(new OnClickListener() {
 			
 			@SuppressLint("NewApi")

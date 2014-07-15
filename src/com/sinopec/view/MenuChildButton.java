@@ -70,60 +70,12 @@ public class MenuChildButton extends Button {
 	private Paint mPaint = new Paint();
 	@Override
 	protected void onDraw(Canvas canvas) {
-		// 图片顶部居中显示
-		int spaceIconAndText = 20;
-		int bitmapWidth = 0;
-		int bitmapHeight = 0;
-		//文字宽度( 字号sp 要* dpi 才是真正像素值)
-		int textWidth = (int) (mPaint.measureText(mText) * SinoApplication.density);
-//		int textHeight =  (int) (mTextSize * SinoApplication.density);
-		int textHeight = mTextSize;
-		if(mHasIcon){
-			bitmapWidth = bitmap.getWidth();
-			bitmapHeight = bitmap.getHeight();
-		}
-		Log.d("sinopec", "mW: "+getMeasuredWidth()+"   width:　"+textWidth+"   bitW:　"+bitmapWidth+"  文字: "+mText);
-		
-		int iconx = (getMeasuredWidth() - (bitmapWidth + spaceIconAndText + mTextSize)) / 2;
-		int icony = (getMeasuredHeight() - bitmapHeight - textHeight) / 2;
-		//文字
-		int textx = (getMeasuredWidth() - textWidth) / 2;
-		int texty = (getMeasuredHeight() - textHeight) / 2;
 		
 		if(mHasIcon){
-			textx = iconx + bitmapWidth + spaceIconAndText;
-			texty = (getMeasuredHeight() - textHeight) / 2;
+			drawIcon(canvas);
+		}else{
+			drawNoIcon(canvas);
 		}
-		
-		switch (mRelation) {
-        case ICON_NULL:
-            break;
-        case ICON_ABOVE:
-        	textx = (getMeasuredWidth() - textWidth) /2;
-        	texty = icony + bitmapHeight + spaceIconAndText;
-        	break;
-        case ICON_BELOW:
-            break;
-        case ICON_LEFT:
-            break;
-        case ICON_RIGHT:
-            break;
-
-		default:
-			break;
-		}
-		
-		if(mHasIcon){
-			canvas.drawBitmap(bitmap, iconx, icony, null);
-		}
-		// 坐标需要转换，因为默认情况下Button中的文字居中显示
-		// 这里需要让文字在底部显示
-		canvas.translate(0, (getMeasuredHeight() / 2) - (int) getTextSize());
-		mPaint.setColor(Color.BLACK);
-		mPaint.setTextSize(mTextSize);
-		
-		canvas.drawText(mText, textx, texty, mPaint);
-
 		//线两头的边距
 		int spaceVertical = 15;
 		int spaceHorizon = 15;
@@ -145,6 +97,70 @@ public class MenuChildButton extends Button {
 		canvas.drawRect(getMeasuredWidth() - spaceApartLandR - lineWidth, spaceVertical, getMeasuredWidth() - spaceApartLandR, getMeasuredHeight() - spaceVertical, mPaint);
 		
 		super.onDraw(canvas);
+	}
+	
+	private void drawIcon(Canvas canvas){
+		int spaceIconAndText = 25;
+		int	bitmapWidth = bitmap.getWidth();
+		int bitmapHeight = bitmap.getHeight();
+		//文字宽度( 字号sp 要* dpi 才是真正像素值)
+		int textWidth = (int) (mPaint.measureText(mText) * SinoApplication.density);
+//		int textHeight =  (int) (mTextSize * SinoApplication.density);
+		int textHeight = mTextSize;
+//		Log.d("sinopec", "mW: "+getMeasuredWidth()+"   width:　"+textWidth+"   bitW:　"+bitmapWidth+"  文字: "+mText);
+		
+		int iconx = (getMeasuredWidth() - (bitmapWidth + spaceIconAndText + mTextSize)) / 2;
+		int icony = (getMeasuredHeight() - bitmapHeight - textHeight) / 2;
+		
+		//文字
+		int textx = iconx + bitmapWidth + spaceIconAndText;
+		int texty = (getMeasuredHeight() - textHeight) / 2;
+		
+		switch (mRelation) {
+        case ICON_NULL:
+            break;
+        case ICON_ABOVE:
+        	textx = (getMeasuredWidth() - textWidth) /2;
+        	texty = icony + bitmapHeight + spaceIconAndText;
+        	break;
+        case ICON_BELOW:
+            break;
+        case ICON_LEFT:
+            break;
+        case ICON_RIGHT:
+            break;
+
+		default:
+			break;
+		}
+		
+		canvas.drawBitmap(bitmap, iconx, icony, null);
+		mPaint.setColor(Color.BLACK);
+		mPaint.setTextSize(mTextSize);
+		
+//		Log.d("sinopec", "mH: "+getMeasuredHeight()+"   tH:　"+textHeight+"   bitH:　"+bitmapHeight+" texty: "+texty);
+		canvas.drawText(mText, textx, texty, mPaint);
+	}
+	
+	private void drawNoIcon(Canvas canvas){
+		//文字宽度( 字号sp 要* dpi 才是真正像素值)
+		int textWidth = (int) (mPaint.measureText(mText) * SinoApplication.density);
+//		int textHeight =  (int) (mTextSize * SinoApplication.density);
+		int textHeight = mTextSize;
+//		Log.d("sinopec", "mW: "+getMeasuredWidth()+"   width:　"+textWidth+"   bitW:　"+bitmapWidth+"  文字: "+mText);
+		
+		//文字
+		int textx = (getMeasuredWidth() - textWidth) / 2;
+		int texty = (getMeasuredHeight() - textHeight) / 2;
+		// 坐标需要转换，因为默认情况下Button中的文字居中显示
+		// 这里需要让文字在底部显示
+//		canvas.translate(0, (getMeasuredHeight() / 2) - (int) getTextSize());
+		mPaint.setColor(Color.BLACK);
+		mPaint.setTextSize(mTextSize);
+		
+//		Log.d("sinopec", "mH: "+getMeasuredHeight()+"   tH:　"+textHeight+"   bitH:　"+bitmapHeight+" texty: "+texty);
+		canvas.drawText(mText, textx, texty, mPaint);
+		
 	}
 
 }

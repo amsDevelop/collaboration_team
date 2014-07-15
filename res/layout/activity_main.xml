@@ -32,8 +32,9 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/toolbar_bg"
+                    android:background="@drawable/toolbottom_bg"
                     android:gravity="center_vertical"
+                    android:layout_marginTop="5dp"
                     android:orientation="horizontal" >
 
                     <EditText
@@ -44,14 +45,14 @@
                         android:hint="搜索地图"
                         android:textSize="20sp" />
 
-                    <com.sinopec.view.MenuButton
+                    <com.sinopec.view.MenuButtonNoIcon
                         android:id="@+id/btn_search_confirm"
                         style="@style/btn_search_confirm"
+                        android:text="@string/btn_confirm"
                         android:layout_marginLeft="2dp"
+                        android:textSize="15sp"
                         android:background="@drawable/selector_btn_toolbar"
-                        iconbutton:hasicon="false"
-                        iconbutton:mtext="@string/btn_confirm"
-                        iconbutton:text_size="16sp" />
+                        android:gravity="center" />
                 </LinearLayout>
 
                 <RelativeLayout
@@ -62,9 +63,11 @@
                     <Button
                         android:id="@+id/btn_map_layout"
                         style="@style/btn_toolbar_btn"
-                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                    	android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
                         android:layout_marginRight="5dp"
-                        android:drawableTop="@drawable/toolbar_single"
+                        android:drawableTop="@drawable/tc"
                         android:text="@string/btn_layout" />
                 </RelativeLayout>
             </LinearLayout>
@@ -159,7 +162,7 @@
                 <com.sinopec.view.MenuButton
                     android:id="@+id/menuview_tool"
                     style="@style/btn_menuview_btn"
-                    iconbutton:icon="@drawable/zl"
+                    iconbutton:icon="@drawable/menu_tool"
                     iconbutton:mtext="@string/btn_tool"
                     iconbutton:relation="icon_right"
                     iconbutton:text_size="16sp" />
@@ -167,7 +170,7 @@
                 <com.sinopec.view.MenuButton
                     android:id="@+id/menuview_count"
                     style="@style/btn_menuview_btn"
-                    iconbutton:icon="@drawable/zl"
+                    iconbutton:icon="@drawable/menu_count"
                     iconbutton:mtext="@string/btn_count"
                     iconbutton:relation="icon_right"
                     iconbutton:text_size="16sp" />
@@ -175,7 +178,7 @@
                 <com.sinopec.view.MenuButton
                     android:id="@+id/menuview_compare"
                     style="@style/btn_menuview_btn"
-                    iconbutton:icon="@drawable/zl"
+                    iconbutton:icon="@drawable/menu_compare"
                     iconbutton:mtext="@string/btn_compare"
                     iconbutton:relation="icon_right"
                     iconbutton:text_size="16sp" />
@@ -183,7 +186,7 @@
                 <com.sinopec.view.MenuButton
                     android:id="@+id/menuview_mine"
                     style="@style/btn_menuview_btn"
-                    iconbutton:icon="@drawable/zl"
+                    iconbutton:icon="@drawable/menu_mine"
                     iconbutton:mtext="@string/btn_mine"
                     iconbutton:relation="icon_null"
                     iconbutton:text_size="16sp" />
