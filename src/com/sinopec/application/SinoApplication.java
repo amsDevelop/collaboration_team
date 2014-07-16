@@ -10,6 +10,10 @@ public class SinoApplication extends Application {
 	public static int screenHeight = 0;
 	public static float density = 0;
 	public static int densityDpi = 0;
+	/**
+	 * 主页面底部菜单分成屏幕宽度的几份
+	 */
+	public static int menuDivisionNumber = 6;
 
 	public static Context getContext() {
 		return mContext;

@@ -45,14 +45,13 @@
         <EditText
             android:id="@+id/edittext_search"
             style="@style/login_editext"
-            android:drawableLeft="@drawable/user_logo_edittext"
+             android:background="@drawable/login_edittext_user_bg"
             android:hint="用户名" />
 
         <EditText
             android:id="@+id/edittext_search"
             style="@style/login_editext"
-            android:layout_marginTop="@dimen/activity_login_widget_space"
-            android:drawableLeft="@drawable/user_logo_edittext"
+             android:background="@drawable/login_edittext_pwd_bg"
             android:hint="密码" />
 
         <!-- 登陆按钮 -->
@@ -61,7 +60,7 @@
             android:id="@+id/btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_login_widget_space"
+            android:layout_marginTop="25dp"
             android:background="@drawable/selector_login_btn"
             android:text="登录"
             android:textColor="@color/white"

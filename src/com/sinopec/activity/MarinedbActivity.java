@@ -350,10 +350,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			@Override
 			public void onClick(View arg0) {
 				// showWindow(mMenuViewCount);
-				String[] name4count = new String[] {
-						"范围内油气田的个数、面积、储量(油、气、...)", "范围内油气田的个数密度、面积密度",
-						"范围内油气田的储量丰度(吨油当量/平方公里)", "石油、天然气及凝析油储量在各油气田的分布",
-						"不同沉积体系油气田个数", "不同沉积体系油气田面积" };
+				String[] name4count = new String[]{"数.面积.储", "数密.面密","储量丰度", "储量分布","油气田数", "油气田面积"};
+//				String[] name4count = new String[] {
+//						"范围内油气田的个数、面积、储量(油、气、...)", "范围内油气田的个数密度、面积密度",
+//						"范围内油气田的储量丰度(吨油当量/平方公里)", "石油、天然气及凝析油储量在各油气田的分布",
+//						"不同沉积体系油气田个数", "不同沉积体系油气田面积" };
 				Integer[] icon4count = { R.drawable.icon_compare_0,
 						R.drawable.icon_compare_1, R.drawable.icon_compare_2,
 						R.drawable.icon_compare_3, R.drawable.icon_compare_4,
