@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <!-- 底部按钮栏子菜单栏 -->
+
+    <RelativeLayout
+        android:id="@+id/menu_children_grid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/login_title" >
+
+        <ImageButton
+            android:id="@+id/btn_login_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/selector_btn_back" />
+
+        <TextView
+            android:id="@+id/login_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="登陆"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <!-- 搜索框和图层按钮 -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="8dp" >
+
+        <EditText
+            android:id="@+id/edittext_search"
+            style="@style/login_editext"
+            android:drawableLeft="@drawable/user_logo_edittext"
+            android:hint="用户名" />
+
+        <EditText
+            android:id="@+id/edittext_search"
+            style="@style/login_editext"
+            android:layout_marginTop="@dimen/activity_login_widget_space"
+            android:drawableLeft="@drawable/user_logo_edittext"
+            android:hint="密码" />
+
+        <!-- 登陆按钮 -->
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_login_widget_space"
+            android:background="@drawable/selector_login_btn"
+            android:text="登录"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <!-- 放大，缩小 -->
+
+        <RelativeLayout
+            android:id="@+id/map_scale_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

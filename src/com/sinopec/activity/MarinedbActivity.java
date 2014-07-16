@@ -22,6 +22,8 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -29,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.esri.android.map.Callout;
@@ -48,7 +51,7 @@ import com.sinopec.application.SinoApplication;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
 
-public class MarinedbActivity extends Activity implements OnClickListener {
+public class MarinedbActivity extends Activity implements OnClickListener,OnItemClickListener {
 	private String tag = "MainActivity";
 	private TextView mTVContent;
 	private ProgressBar mProgressBar;
@@ -94,6 +97,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	  * 子菜单
 	  */
 	 private GridView mGridView;
+	 private RelativeLayout mGridViewLayout;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -265,6 +269,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 //		mBtnMenuCount = (Button) findViewById(R.id.menu_count);
 //		mBtnMenuCompare = (Button) findViewById(R.id.menu_compare);
 //		mBtnMenuMine = (Button) findViewById(R.id.menu_mine);
+		mGridViewLayout = (RelativeLayout) findViewById(R.id.menu_children_grid);
 		mGridView = (GridView) findViewById(R.id.menu_gridview);
 		mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
 		mTVContent = (TextView) findViewById(R.id.tv_content);
@@ -277,8 +282,10 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 			@SuppressLint("NewApi")
 			@Override
 			public void onClick(View arg0) {
-				SearchFragment search =	new SearchFragment(mEditText.getText());
-				search.show(getFragmentManager(), "search");
+//				SearchFragment search =	new SearchFragment(mEditText.getText());
+//				search.show(getFragmentManager(), "search");
+				Intent intent = new Intent(mContext, LoginActivity.class);
+				startActivity(intent);
 			}
 		});
 		
@@ -305,8 +312,8 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 					map.put("split", splitNumber);
 					list.add(map);
 				}
-				setGridView(list);
-				
+				setGridView(list, arg0);
+		
 			}
 		});
 		
@@ -327,7 +334,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 					map.put("split", splitNumber);
 					list.add(map);
 				}
-				setGridView(list);
+				setGridView(list, arg0);
 			}
 		});
 		
@@ -349,7 +356,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 					map.put("split", splitNumber);
 					list.add(map);
 				}
-				setGridView(list);
+				setGridView(list, arg0);
 			}
 		});
 		
@@ -371,11 +378,22 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 					map.put("split", splitNumber);
 					list.add(map);
 				}
-				setGridView(list);
+				setGridView(list, arg0);
 			}
 		});
 		
+		mGridView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				HashMap<String, Object> map = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+				String tag = (String) map.get("tag");
+				Log.d("sinopec", "-------点击p: "+position+"  tag: "+tag);
+			}
+		});
 	}
+	
 	
 	private void initData() {
 		mProgressBar.setVisibility(View.VISIBLE);
@@ -429,6 +447,7 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	}
 	
 	private View view;  
+	private View mLastClickedView;  
 	private void showWindow(View parent) {  
         if (popupWindow == null) {  
             LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
@@ -463,9 +482,26 @@ public class MarinedbActivity extends Activity implements OnClickListener {
 	     imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);  
 	}  
 	 
-	 private void setGridView(ArrayList<HashMap<String, Object>> list) {
+	private void setGridView(ArrayList<HashMap<String, Object>> list, View view) {
 		MenuGridAdapter adapter = new MenuGridAdapter(mContext, list);
 		mGridView.setAdapter(adapter);
+//		showAndHideGridView();
+		if(mLastClickedView == view){
+			mGridViewLayout.setVisibility(View.INVISIBLE);
+			mLastClickedView = null;
+		}else{
+			mGridViewLayout.setVisibility(View.VISIBLE);
+			mLastClickedView =  view;
+		}
+//		else
+//			mLastClickedView = null;
+	}
+	 
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+//		HashMap<String, Object> map = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+//		String tag = (String) map.get("tag");
+//		Log.d("sinopec", "-------点击p: "+position+"  tag: "+tag);
 	}
 	
 
