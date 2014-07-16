@@ -27,8 +27,8 @@ public class MenuGridAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public Object getItem(int position) {
-		return position;
+	public HashMap<String, Object> getItem(int position) {
+		return mList.get(position);
 	}
 
 	@Override

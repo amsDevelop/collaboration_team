@@ -11,6 +11,8 @@
         iconbutton:icon="@drawable/zl"
         iconbutton:mtext="@string/btn_count"
         iconbutton:relation="icon_above"
+        android:focusable="false"
+        android:clickable="false"
         iconbutton:text_size="14sp" />
 
 </LinearLayout>
