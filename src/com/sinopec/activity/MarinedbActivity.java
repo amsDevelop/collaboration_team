@@ -322,10 +322,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,OnItem
 			@SuppressLint("NewApi")
 			@Override
 			public void onClick(View arg0) {
-//				SearchFragment search =	new SearchFragment(mEditText.getText());
-//				search.show(getFragmentManager(), "search");
-				Intent intent = new Intent(mContext, LoginActivity.class);
-				startActivity(intent);
+				SearchFragment search =	new SearchFragment(mEditText.getText());
+				search.show(getFragmentManager(), "search");
 			}
 		});
 		
@@ -409,13 +407,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,OnItem
 				String[] name4count = new String[]{"登陆", "账户管理", "收藏", "下载", "退出"};
 				Integer[] icon4count = {R.drawable.icon_compare_0, R.drawable.icon_compare_1, R.drawable.icon_compare_2, 
 						R.drawable.icon_compare_3, R.drawable.icon_compare_4 };
+				String[] tag = new String[]{"mineLogin", "mineManager", "mineCollect", "mineDownload","mineLogout"};
 				int splitNumber = 2;
 				list.clear();
 				for (int i = 0; i < name4count.length; i++) {
 					HashMap<String, Object> map = new HashMap<String, Object>();
 					map.put("name", name4count[i]);
 					map.put("icon", icon4count[i]);
-					map.put("tag", name4count[i]);
+					map.put("tag", tag[i]);
 					map.put("split", splitNumber);
 					list.add(map);
 				}
@@ -556,6 +555,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,OnItem
 			//TODO:测距离
 		}else if("toolArea".equals(tag)){
 			//TODO:测面积
+		}else if("mineLogin".equals(tag)){
+			Intent intent = new Intent(mContext, LoginActivity.class);
+			startActivity(intent);
+		}else if("mineLogout".equals(tag)){
 			
 		}
 	}
