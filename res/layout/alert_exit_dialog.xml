@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/toolbottom_bg"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/exit_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_or_no"
+        android:textColor="@color/black"
+        android:textSize="30sp" />
+    <!-- 确认按钮 -->
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="15dp" >
+
+        <Button
+            android:id="@+id/btn_ok"
+            style="@style/exit_alert_btn"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/selector_exit_btn"
+            android:text="@string/confirm" />
+
+        <!-- 取消按钮 -->
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="@style/exit_alert_btn"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_exit_btn"
+            android:text="@string/cancel" />
+    </RelativeLayout>
+
+</LinearLayout>

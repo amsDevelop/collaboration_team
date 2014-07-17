@@ -22,4 +22,9 @@
     <string name="btn_tool_title_count">统计子菜单项</string>
     <string name="btn_tool_title_compare">对比子菜单项</string>
     <string name="btn_tool_title_mine">我的子菜单项</string>
+
+    
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="cancel_or_no">是否退出？</string>
 </resources>

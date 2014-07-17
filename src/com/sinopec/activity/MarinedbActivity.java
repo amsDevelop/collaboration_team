@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -29,6 +30,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -106,6 +108,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private PopupWindow popupWindow;
 	private Context mContext;
 	private Button btnFrame, btnPolygon, btnLine;
+	private Button btnCurScreen;
+	private Button btnMultiple;
 	/**
 	 * 子菜单
 	 */
@@ -171,12 +175,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 
 	private void initLayout() {
+		btnMultiple = (Button) findViewById(R.id.tb_multiple);
 		btnFrame = (Button) findViewById(R.id.tb_frame);
 		btnPolygon = (Button) findViewById(R.id.tb_polygon);
 		btnLine = (Button) findViewById(R.id.tb_line);
+		btnCurScreen = (Button) findViewById(R.id.tb_cur_screen);
+		btnMultiple.setOnClickListener(this);
 		btnFrame.setOnClickListener(this);
 		btnPolygon.setOnClickListener(this);
 		btnLine.setOnClickListener(this);
+		btnCurScreen.setOnClickListener(this);
 	}
 
 	public void getAboutDisplay() {
@@ -350,11 +358,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			@Override
 			public void onClick(View arg0) {
 				// showWindow(mMenuViewCount);
-				String[] name4count = new String[]{"数.面积.储", "数密.面密","储量丰度", "储量分布","油气田数", "油气田面积"};
-//				String[] name4count = new String[] {
-//						"范围内油气田的个数、面积、储量(油、气、...)", "范围内油气田的个数密度、面积密度",
-//						"范围内油气田的储量丰度(吨油当量/平方公里)", "石油、天然气及凝析油储量在各油气田的分布",
-//						"不同沉积体系油气田个数", "不同沉积体系油气田面积" };
+				String[] name4count = new String[] { "数.面积.储", "数密.面密", "储量丰度",
+						"储量分布", "油气田数", "油气田面积" };
+				// String[] name4count = new String[] {
+				// "范围内油气田的个数、面积、储量(油、气、...)", "范围内油气田的个数密度、面积密度",
+				// "范围内油气田的储量丰度(吨油当量/平方公里)", "石油、天然气及凝析油储量在各油气田的分布",
+				// "不同沉积体系油气田个数", "不同沉积体系油气田面积" };
 				Integer[] icon4count = { R.drawable.icon_compare_0,
 						R.drawable.icon_compare_1, R.drawable.icon_compare_2,
 						R.drawable.icon_compare_3, R.drawable.icon_compare_4,
@@ -495,16 +504,71 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mapTouchListener.setType("Point");
 			drawLayer.removeAll();
 
+			setButtonsStatus(v.getId());
 		} else if (btnLine.getId() == v.getId()) {
 
 			mapTouchListener.setType("Polyline");
 			drawLayer.removeAll();
+			setButtonsStatus(v.getId());
 		} else if (btnPolygon.getId() == v.getId()) {
-
 			mapTouchListener.setType("Polygon");
 			drawLayer.removeAll();
+			setButtonsStatus(v.getId());
+		} else if (btnCurScreen.getId() == v.getId()) {
+			setButtonsStatus(v.getId());
+		} else if (btnMultiple.getId() == v.getId()) {
+			setButtonsStatus(v.getId());
 		}
 
+	}
+
+	private void setButtonsStatus(int vId) {
+		if (btnFrame.getId() == vId) {
+			btnFrame.setBackgroundResource(R.drawable.main_button_background_down);
+			btnMultiple
+					.setBackgroundResource(R.drawable.main_button_background_up);
+			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
+			btnPolygon
+					.setBackgroundResource(R.drawable.main_button_background_up);
+			btnCurScreen
+					.setBackgroundResource(R.drawable.main_button_background_up);
+		} else if (btnLine.getId() == vId) {
+			btnLine.setBackgroundResource(R.drawable.main_button_background_down);
+			btnPolygon
+					.setBackgroundResource(R.drawable.main_button_background_up);
+			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
+			btnCurScreen
+					.setBackgroundResource(R.drawable.main_button_background_up);
+			btnMultiple
+					.setBackgroundResource(R.drawable.main_button_background_up);
+		} else if (btnPolygon.getId() == vId) {
+			btnPolygon
+					.setBackgroundResource(R.drawable.main_button_background_down);
+			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
+			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
+			btnCurScreen
+					.setBackgroundResource(R.drawable.main_button_background_up);
+			btnMultiple
+					.setBackgroundResource(R.drawable.main_button_background_up);
+		} else if (btnCurScreen.getId() == vId) {
+			btnCurScreen
+					.setBackgroundResource(R.drawable.main_button_background_down);
+			btnPolygon
+					.setBackgroundResource(R.drawable.main_button_background_up);
+			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
+			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
+			btnMultiple
+					.setBackgroundResource(R.drawable.main_button_background_up);
+		} else if (btnMultiple.getId() == vId) {
+			btnMultiple
+					.setBackgroundResource(R.drawable.main_button_background_down);
+			btnCurScreen
+					.setBackgroundResource(R.drawable.main_button_background_up);
+			btnPolygon
+					.setBackgroundResource(R.drawable.main_button_background_up);
+			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
+			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
+		}
 	}
 
 	private View view;
@@ -582,7 +646,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			Intent intent = new Intent(mContext, LoginActivity.class);
 			startActivity(intent);
 		} else if ("mineLogout".equals(tag)) {
-
+			exitDialog();
 		}
 	}
 
@@ -688,7 +752,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		@Override
 		public boolean onDoubleTap(MotionEvent point) {
-		   
 
 			return false;
 		}
@@ -745,7 +808,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						(float) startPoint.getY());
 				drawLayer.removeAll();
 				drawLayer.addGraphic(new Graphic(poly, fillSymbol));
-//				points.add(startPoint);
+				// points.add(startPoint);
 				startPoint = null;
 				// 计算面积
 				String sArea = getAreaString(poly.calculateArea2D());
@@ -765,6 +828,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 
 	}
+
 	private void calculateAreaAndLength() {
 		drawLayer.removeAll();
 		if (type.equalsIgnoreCase("Polyline")) {
@@ -828,15 +892,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		points.clear();
 		tempPolygon = null;
 	}
-   
+
 	private void clearGraphic() {
-		
+
 		ptStart = null;
 		ptPrevious = null;
 		points.clear();
 		tempPolygon = null;
-		
+
 	}
+
 	private String getAreaString(double dValue) {
 		long area = Math.abs(Math.round(dValue));
 		String sArea = "";
@@ -848,6 +913,31 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			sArea = Double.toString(area) + " 平方米";
 
 		return sArea;
+	}
+
+	private void exitDialog() {
+		final AlertDialog dlg = new AlertDialog.Builder(this).create();
+		dlg.setTitle("是否退出?");
+		dlg.show();
+		Window window = dlg.getWindow();
+		// *** 主要就是在这里实现这种效果的.
+		// 设置窗口的内容页面,shrew_exit_dialog.xml文件中定义view内容
+		window.setContentView(R.layout.alert_exit_dialog);
+		// 为确认按钮添加事件,执行退出应用操作
+		Button ok = (Button) window.findViewById(R.id.btn_ok);
+		ok.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				finish(); // 退出应用...
+			}
+		});
+
+		// 关闭alert对话框架
+		Button cancel = (Button) window.findViewById(R.id.btn_cancel);
+		cancel.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				dlg.cancel();
+			}
+		});
 	}
 
 }
