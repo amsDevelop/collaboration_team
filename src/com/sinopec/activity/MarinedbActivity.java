@@ -110,6 +110,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Button btnFrame, btnPolygon, btnLine;
 	private Button btnCurScreen;
 	private Button btnMultiple;
+	private Button mBtnCancelChoose;
+	private ImageButton mBtnScaleSmall;
+	private ImageButton mBtnScaleBig;
 	/**
 	 * 子菜单
 	 */
@@ -334,6 +337,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mGridViewLayout = (RelativeLayout) findViewById(R.id.menu_children_grid);
 		mGridView = (GridView) findViewById(R.id.menu_gridview);
 		mGridView.setOnItemClickListener(this);
+//		mGridView.setStretchMode(GridView.NO_STRETCH);
+		
 		initGridViewData();
 		mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
 		mTVContent = (TextView) findViewById(R.id.tv_content);
@@ -352,6 +357,37 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		});
 
 		mEditText = (EditText) findViewById(R.id.edittext_search);
+		mEditText.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(mContext, SearchActivity.class);
+				startActivity(intent);				
+			}
+		});
+		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
+		mMenuViewTool.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				String[] name4count = new String[] { "测距", "测面积"};
+				Integer[] icon4count = { R.drawable.icon_compare_0,
+						R.drawable.icon_compare_1};
+				String[] tag = new String[] { "toolDistance", "toolArea", "toolSelect" };
+				int splitNumber = 2;
+				list.clear();
+				for (int i = 0; i < name4count.length; i++) {
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("name", name4count[i]);
+					map.put("icon", icon4count[i]);
+					map.put("tag", tag[i]);
+					map.put("split", splitNumber);
+					list.add(map);
+				}
+				setGridView(list, arg0);
+			}
+		});
+		
 		mMenuViewCount = (MenuButton) findViewById(R.id.menuview_count);
 		mMenuViewCount.setOnClickListener(new OnClickListener() {
 
@@ -404,29 +440,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			}
 		});
 
-		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
-		mMenuViewTool.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				String[] name4count = new String[] { "测距", "测面积" };
-				Integer[] icon4count = { R.drawable.icon_compare_0,
-						R.drawable.icon_compare_1 };
-				String[] tag = new String[] { "toolDistance", "toolArea" };
-				int splitNumber = 2;
-				list.clear();
-				for (int i = 0; i < name4count.length; i++) {
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("name", name4count[i]);
-					map.put("icon", icon4count[i]);
-					map.put("tag", tag[i]);
-					map.put("split", splitNumber);
-					list.add(map);
-				}
-				setGridView(list, arg0);
-			}
-		});
-
 		mMenuViewMine = (MenuButton) findViewById(R.id.menuview_mine);
 		mMenuViewMine.setOnClickListener(new OnClickListener() {
 
@@ -452,6 +465,20 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				setGridView(list, arg0);
 			}
 		});
+		mBtnCancelChoose = (Button) findViewById(R.id.tb_cancel_chooise);
+		mBtnCancelChoose.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				//TODO:  bug 不能取消多边形上一次选择的推荐 
+				drawLayer.removeAll();
+			}
+		});
+
+		mBtnScaleSmall = (ImageButton) findViewById(R.id.btn_scale_small);
+		mBtnScaleSmall.setOnClickListener(this);
+		mBtnScaleBig = (ImageButton) findViewById(R.id.btn_scale_big);
+		mBtnScaleBig.setOnClickListener(this);
 	}
 
 	private void initData() {
@@ -475,6 +502,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		map.unpause();
 		closeKeyboard();
 	}
+	
 
 	@SuppressLint("NewApi")
 	@Override
@@ -518,6 +546,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			setButtonsStatus(v.getId());
 		} else if (btnMultiple.getId() == v.getId()) {
 			setButtonsStatus(v.getId());
+		} else if (btnCurScreen.getId() == v.getId()) {
+			setButtonsStatus(v.getId());
+		} else if (btnMultiple.getId() == v.getId()) {
+			setButtonsStatus(v.getId());
+		} else if (mBtnScaleBig.getId() == v.getId()) {
+			//TODO:放大
+		} else if (mBtnScaleSmall.getId() == v.getId()) {
+			//TODO:缩小
 		}
 
 	}
@@ -569,7 +605,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
 			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
 		}
+		
+		showCancelButton();
 	}
+	
 
 	private View view;
 	private View mLastClickedView;
@@ -678,6 +717,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		@Override
 		public boolean onSingleTap(MotionEvent point) {
+			Log.d("map", "--------onSingleTap ");
+			showCancelButton();
 			Point ptCurrent = map.toMapPoint(new Point(point.getX(), point
 					.getY()));
 			if (ptStart == null)
@@ -752,11 +793,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		@Override
 		public boolean onDoubleTap(MotionEvent point) {
-
+			Log.d("map", "--------onDoubleTap ");
 			return false;
 		}
 
 		public boolean onDragPointerMove(MotionEvent from, MotionEvent to) {
+//			Log.d("map", "--------onDragPointerMove ");
+			hideCancelButton();
 			if (type.length() > 1 && (type.equalsIgnoreCase("point"))) {
 
 				Point mapPt = map.toMapPoint(to.getX(), to.getY());
@@ -796,6 +839,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		@Override
 		public boolean onDragPointerUp(MotionEvent from, MotionEvent to) {
+			Log.d("map", "--------onDragPointerUp ");
+			showCancelButton();
 			// if (type.length() > 1
 			// && (type.equalsIgnoreCase("POLYLINE") || type
 			// .equalsIgnoreCase("POLYGON"))) {
@@ -938,6 +983,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				dlg.cancel();
 			}
 		});
+	}
+	
+	private void hideCancelButton() {
+		if(mBtnCancelChoose.getVisibility() == View.VISIBLE){
+			mBtnCancelChoose.setVisibility(View.GONE);
+		}
+	}
+	private void showCancelButton() {
+		if(mBtnCancelChoose.getVisibility() == View.GONE){
+			mBtnCancelChoose.setVisibility(View.VISIBLE);
+		}
 	}
 
 }

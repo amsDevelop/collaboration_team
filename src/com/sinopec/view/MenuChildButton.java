@@ -49,7 +49,6 @@ public class MenuChildButton extends Button {
 		mSplitNum = a.getInt(R.styleable.iconbutton_split_number, 1);
 		
 //		bitmap = BitmapFactory.decodeResource(context.getResources(), mIconId);
-		
 //		setWidth(SinoApplication.screenWidth / mSplitNum);
 	}
 	
@@ -65,6 +64,7 @@ public class MenuChildButton extends Button {
 	public void setSplitNumber(int nubmer) {
 		mSplitNum = nubmer;
 		setWidth(SinoApplication.screenWidth / mSplitNum);
+//		setHeight(SinoApplication.screenWidth / mSplitNum);
 	}
 
 	private Paint mPaint = new Paint();
@@ -77,8 +77,8 @@ public class MenuChildButton extends Button {
 			drawNoIcon(canvas);
 		}
 		//线两头的边距
-		int spaceVertical = 15;
-		int spaceHorizon = 15;
+		int spaceVertical = 0;
+		int spaceHorizon = 0;
 		
 		int lineWidth = 1;
 		//左右
@@ -89,8 +89,8 @@ public class MenuChildButton extends Button {
 		canvas.drawRect(spaceApartLandR + spaceHorizon, spaceApartTandB, getMeasuredWidth() - spaceApartLandR - spaceHorizon - lineWidth, 
 				spaceApartTandB + lineWidth, mPaint);
 		//bottom
-		canvas.drawRect(spaceApartLandR + spaceHorizon, getMeasuredHeight() - spaceApartTandB - lineWidth, getMeasuredWidth() - spaceApartLandR - spaceHorizon - lineWidth, 
-				getMeasuredHeight() - spaceApartTandB, mPaint);
+//		canvas.drawRect(spaceApartLandR + spaceHorizon, getMeasuredHeight() - spaceApartTandB - lineWidth, getMeasuredWidth() - spaceApartLandR - spaceHorizon - lineWidth, 
+//				getMeasuredHeight() - spaceApartTandB, mPaint);
 		//left
 		canvas.drawRect(spaceApartLandR, spaceVertical, spaceApartLandR + lineWidth, getMeasuredHeight() - spaceVertical, mPaint);
 		//right
@@ -100,16 +100,20 @@ public class MenuChildButton extends Button {
 	}
 	
 	private void drawIcon(Canvas canvas){
+		mPaint.setColor(Color.BLACK);
+		mPaint.setTextSize(mTextSize);
 		int spaceIconAndText = 25;
 		int	bitmapWidth = bitmap.getWidth();
 		int bitmapHeight = bitmap.getHeight();
 		//文字宽度( 字号sp 要* dpi 才是真正像素值)
-		int textWidth = (int) (mPaint.measureText(mText) * SinoApplication.density);
+//		int textWidth = (int) (getTextWidth() * SinoApplication.density);
+		int textWidth = (int)getTextWidth();
+		Log.d("sinopec", "textWidth is " + textWidth +"  " + mText +"  " + getTextWidth() +"  " + SinoApplication.density);
 //		int textHeight =  (int) (mTextSize * SinoApplication.density);
 		int textHeight = mTextSize;
 //		Log.d("sinopec", "mW: "+getMeasuredWidth()+"   width:　"+textWidth+"   bitW:　"+bitmapWidth+"  文字: "+mText);
 		
-		int iconx = (getMeasuredWidth() - (bitmapWidth + spaceIconAndText + mTextSize)) / 2;
+		int iconx = (getMeasuredWidth() - bitmapWidth) / 2;
 		int icony = (getMeasuredHeight() - bitmapHeight - textHeight) / 2;
 		
 		//文字
@@ -127,7 +131,7 @@ public class MenuChildButton extends Button {
             break;
         case ICON_LEFT:
             break;
-        case ICON_RIGHT:
+        case ICON_RIGHT: 
             break;
 
 		default:
@@ -135,16 +139,19 @@ public class MenuChildButton extends Button {
 		}
 		
 		canvas.drawBitmap(bitmap, iconx, icony, null);
-		mPaint.setColor(Color.BLACK);
-		mPaint.setTextSize(mTextSize);
-		
 //		Log.d("sinopec", "mH: "+getMeasuredHeight()+"   tH:　"+textHeight+"   bitH:　"+bitmapHeight+" texty: "+texty);
 		canvas.drawText(mText, textx, texty, mPaint);
+		Log.d("sinopec","mText is "+ mText+"  textx "+textx+"   texty "+texty +" iconx "+ iconx+
+				"  mRelation  " + mRelation+" bitmapWidth "+ bitmapWidth +" getMeasuredWidth()  textWidth " + getMeasuredWidth() +"  " + textWidth);
+	}
+
+	private float getTextWidth() {
+		return mPaint.measureText(mText);
 	}
 	
 	private void drawNoIcon(Canvas canvas){
 		//文字宽度( 字号sp 要* dpi 才是真正像素值)
-		int textWidth = (int) (mPaint.measureText(mText) * SinoApplication.density);
+		int textWidth = (int) (getTextWidth() * SinoApplication.density);
 //		int textHeight =  (int) (mTextSize * SinoApplication.density);
 		int textHeight = mTextSize;
 //		Log.d("sinopec", "mW: "+getMeasuredWidth()+"   width:　"+textWidth+"   bitW:　"+bitmapWidth+"  文字: "+mText);

@@ -9,6 +9,7 @@
     <string name="btn_line">折         线</string>
     <string name="btn_polygon">多   边  形</string>
     <string name="btn_cur_screen">屏幕范围</string>
+    <string name="btn_cancel_chooise">取消选择</string>
     
     <string name="btn_tool">工具</string>
     <string name="btn_count">统计</string>

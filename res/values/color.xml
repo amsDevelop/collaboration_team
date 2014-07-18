@@ -255,6 +255,14 @@
     <!-- 蓟色 -->
 
     <color name="lightgray">#D3D3D3</color>
+    
+    <!-- 摁下的蓝色 -->
+
+    <color name="blue_press">#0ea6fe</color>
+    
+    <!-- 摁下的蓝色 -->
+
+    <color name="blue_light_press">#ecf6ff</color>
 
     <!-- 亮灰色 -->
 
