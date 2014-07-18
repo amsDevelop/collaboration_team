@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -341,8 +342,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mGridViewLayout = (RelativeLayout) findViewById(R.id.menu_children_grid);
 		mGridView = (GridView) findViewById(R.id.menu_gridview);
 		mGridView.setOnItemClickListener(this);
-//		mGridView.setStretchMode(GridView.NO_STRETCH);
-		
+		// mGridView.setStretchMode(GridView.NO_STRETCH);
+
 		initGridViewData();
 		mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
 		mTVContent = (TextView) findViewById(R.id.tv_content);
@@ -362,11 +363,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		mEditText = (EditText) findViewById(R.id.edittext_search);
 		mEditText.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(mContext, SearchActivity.class);
-				startActivity(intent);				
+				startActivity(intent);
 			}
 		});
 		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
@@ -374,10 +375,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				String[] name4count = new String[] { "测距", "测面积"};
+				String[] name4count = new String[] { "测距", "测面积" };
 				Integer[] icon4count = { R.drawable.icon_compare_0,
-						R.drawable.icon_compare_1};
-				String[] tag = new String[] { "toolDistance", "toolArea", "toolSelect" };
+						R.drawable.icon_compare_1 };
+				String[] tag = new String[] { "toolDistance", "toolArea",
+						"toolSelect" };
 				int splitNumber = 2;
 				list.clear();
 				for (int i = 0; i < name4count.length; i++) {
@@ -391,7 +393,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				setGridView(list, arg0);
 			}
 		});
-		
+
 		mMenuViewCount = (MenuButton) findViewById(R.id.menuview_count);
 		mMenuViewCount.setOnClickListener(new OnClickListener() {
 
@@ -470,10 +472,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		});
 		mBtnCancelChoose = (Button) findViewById(R.id.tb_cancel_chooise);
 		mBtnCancelChoose.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
-				//TODO:  bug 不能取消多边形上一次选择的推荐 
+				// TODO: bug 不能取消多边形上一次选择的推荐
 				drawLayer.removeAll();
 			}
 		});
@@ -504,10 +506,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		super.onResume();
 		map.unpause();
 		closeKeyboard();
-		btnPolygon.getLocationOnScreen(mLocation4Polygon); 
-		btnLine.getLocationOnScreen(mLocation4Line); 
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				btnPolygon.getLocationOnScreen(mLocation4Polygon);
+				btnLine.getLocationOnScreen(mLocation4Line);
+				mMenuBtnWidth = btnPolygon.getWidth();
+				Log.d("pop", "延迟：  px: "+mLocation4Polygon[0]+"  py: "+mLocation4Polygon[1]+"  mMenuBtnWidth: "+mMenuBtnWidth+"  ly: "+mLocation4Line[1]);
+			}
+		}, 500);
 	}
-	
 
 	@SuppressLint("NewApi")
 	@Override
@@ -564,9 +573,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if (btnMultiple.getId() == v.getId()) {
 			setButtonsStatus(v.getId());
 		} else if (mBtnScaleBig.getId() == v.getId()) {
-			//TODO:放大
+			// TODO:放大
 		} else if (mBtnScaleSmall.getId() == v.getId()) {
-			//TODO:缩小
+			// TODO:缩小
 		}
 
 	}
@@ -618,48 +627,50 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
 			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
 		}
-		
+
 		showCancelButton();
 	}
-	
 
 	private View view;
 	private View mLastClickedView;
 	private ArrayList<String> mList = new ArrayList<String>();
 	private ListView mMenuListView;
+
 	private void initPopWindowData(ArrayList<String> list) {
 		mMenuAdapter = new MenuAdapter(mContext, list);
 		mMenuListView.setAdapter(mMenuAdapter);
 	}
-	
-	private MenuAdapter mMenuAdapter;
-	private int[] mLocation4Line = new int[2];  
-	private int[] mLocation4Polygon = new int[2];  
-	private void showWindow(View view, ArrayList<String> list, int[] location) {
-//		if (popupWindow == null) {
-			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-			view = layoutInflater.inflate(R.layout.view_menu_popwindow, null);
-			// 创建一个PopuWidow对象
-			popupWindow = new PopupWindow(view, 200, 200);
-//		}
+	private MenuAdapter mMenuAdapter;
+	private int[] mLocation4Line = new int[2];
+	private int[] mLocation4Polygon = new int[2];
+	private int mMenuBtnWidth = 0;
+
+	private void showWindow(View view, ArrayList<String> list, int[] location) {
+		// if (popupWindow == null) {
+		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		view = layoutInflater.inflate(R.layout.view_menu_popwindow, null);
+		// 创建一个PopuWidow对象
+		popupWindow = new PopupWindow(view, 200, 200);
+		// }
 
 		mMenuListView = (ListView) view.findViewById(R.id.menu_listview);
 		initPopWindowData(list);
-		//已经定义好布局，怕破坏掉样式，只需要设置一个空的Drawable即可
-		popupWindow.setBackgroundDrawable(new PaintDrawable()); 
-		
+		// 已经定义好布局，怕破坏掉样式，只需要设置一个空的Drawable即可
+		 popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_bg));
+
 		// 使其聚集
 		popupWindow.setFocusable(true);
 		// 设置允许在外点击消失
 		popupWindow.setOutsideTouchable(true);
-		
-//		view.getLocationOnScreen(location); 
-		int popx = view.getRight() + view.getWidth();
-		int popy = view.getTop();
-		Log.i("pop", "view.getRight(): "+view.getRight()+" x: "+location[0]+"  y: "+location[1]+"   vw:" + view.getWidth()+"   popy: "+popy);
-//		popupWindow.showAsDropDown(view, popx, 0);
-		popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 200, SinoApplication.screenHeight / 2); 
+
+		int popx = location[0] + mMenuBtnWidth;
+		int popy = location[1];
+		// popupWindow.showAsDropDown(view, popx, 0);
+		popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, popx, popy);
+//		popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 200,
+//				SinoApplication.screenHeight / 2);
 	}
 
 	// 关闭软键盘
@@ -820,9 +831,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 
 		public boolean onDragPointerMove(MotionEvent from, MotionEvent to) {
-//			Log.d("map", "--------onDragPointerMove ");
+			// Log.d("map", "--------onDragPointerMove ");
 			hideCancelButton();
-			if(mGridViewLayout.getVisibility() == View.VISIBLE){
+			if (mGridViewLayout.getVisibility() == View.VISIBLE) {
 				mGridViewLayout.setVisibility(View.INVISIBLE);
 			}
 			if (type.length() > 1 && (type.equalsIgnoreCase("point"))) {
@@ -1009,22 +1020,34 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			}
 		});
 	}
-	
+
 	private void hideCancelButton() {
-		if(mBtnCancelChoose.getVisibility() == View.VISIBLE){
+		if (mBtnCancelChoose.getVisibility() == View.VISIBLE) {
 			mBtnCancelChoose.setVisibility(View.GONE);
 		}
 	}
+
 	private void showCancelButton() {
-		if(mBtnCancelChoose.getVisibility() == View.GONE){
+		if (mBtnCancelChoose.getVisibility() == View.GONE) {
 			mBtnCancelChoose.setVisibility(View.VISIBLE);
 		}
 	}
-	
-	@Override
-    public void onBackPressed() {
-//        super.onBackPressed();  
-        exitDialog();
-    }
 
+	@Override
+	public void onBackPressed() {
+		// super.onBackPressed();
+		exitDialog();
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (popupWindow != null && popupWindow.isShowing()) {
+			popupWindow.dismiss();
+			popupWindow = null;
+
+		}
+
+		return super.onTouchEvent(event);
+
+	}
 }
