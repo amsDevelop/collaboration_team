@@ -11,10 +11,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,6 +35,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -59,6 +62,7 @@ import com.esri.core.map.Graphic;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
+import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.view.MenuButton;
@@ -393,7 +397,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				// showWindow(mMenuViewCount);
 				String[] name4count = new String[] { "数.面积.储", "数密.面密", "储量丰度",
 						"储量分布", "油气田数", "油气田面积" };
 				// String[] name4count = new String[] {
@@ -501,6 +504,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		super.onResume();
 		map.unpause();
 		closeKeyboard();
+		btnPolygon.getLocationOnScreen(mLocation4Polygon); 
+		btnLine.getLocationOnScreen(mLocation4Line); 
 	}
 	
 
@@ -534,11 +539,19 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			setButtonsStatus(v.getId());
 		} else if (btnLine.getId() == v.getId()) {
-
+			ArrayList<String> list = new ArrayList<String>();
+			list.add("以km显示");
+			list.add("以m显示");
+			showWindow(btnPolygon, list, mLocation4Line);
 			mapTouchListener.setType("Polyline");
 			drawLayer.removeAll();
 			setButtonsStatus(v.getId());
 		} else if (btnPolygon.getId() == v.getId()) {
+			ArrayList<String> list = new ArrayList<String>();
+			list.add("任意点绘制");
+			list.add("点绘制");
+			list.add("圆形");
+			showWindow(btnPolygon, list, mLocation4Polygon);
 			mapTouchListener.setType("Polygon");
 			drawLayer.removeAll();
 			setButtonsStatus(v.getId());
@@ -612,32 +625,41 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	private View view;
 	private View mLastClickedView;
-
-	private void showWindow(View parent) {
-		if (popupWindow == null) {
+	private ArrayList<String> mList = new ArrayList<String>();
+	private ListView mMenuListView;
+	private void initPopWindowData(ArrayList<String> list) {
+		mMenuAdapter = new MenuAdapter(mContext, list);
+		mMenuListView.setAdapter(mMenuAdapter);
+	}
+	
+	private MenuAdapter mMenuAdapter;
+	private int[] mLocation4Line = new int[2];  
+	private int[] mLocation4Polygon = new int[2];  
+	private void showWindow(View view, ArrayList<String> list, int[] location) {
+//		if (popupWindow == null) {
 			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 			view = layoutInflater.inflate(R.layout.view_menu_popwindow, null);
-			//
-			// lv_group = (ListView) view.findViewById(R.id.lvGroup);
 			// 创建一个PopuWidow对象
-			popupWindow = new PopupWindow(view, 300, 350);
-		}
+			popupWindow = new PopupWindow(view, 200, 200);
+//		}
 
+		mMenuListView = (ListView) view.findViewById(R.id.menu_listview);
+		initPopWindowData(list);
+		//已经定义好布局，怕破坏掉样式，只需要设置一个空的Drawable即可
+		popupWindow.setBackgroundDrawable(new PaintDrawable()); 
+		
 		// 使其聚集
 		popupWindow.setFocusable(true);
 		// 设置允许在外点击消失
 		popupWindow.setOutsideTouchable(true);
-
-		// 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
-		popupWindow.setBackgroundDrawable(new BitmapDrawable());
-		WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-		// 显示的位置为:屏幕的宽度的一半-PopupWindow的高度的一半
-		int xPos = windowManager.getDefaultDisplay().getWidth() / 2
-				- popupWindow.getWidth() / 2;
-		Log.i("coder", "xPos:" + xPos);
-
-		popupWindow.showAsDropDown(parent, xPos, 0);
+		
+//		view.getLocationOnScreen(location); 
+		int popx = view.getRight() + view.getWidth();
+		int popy = view.getTop();
+		Log.i("pop", "view.getRight(): "+view.getRight()+" x: "+location[0]+"  y: "+location[1]+"   vw:" + view.getWidth()+"   popy: "+popy);
+//		popupWindow.showAsDropDown(view, popx, 0);
+		popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 200, SinoApplication.screenHeight / 2); 
 	}
 
 	// 关闭软键盘
@@ -800,6 +822,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		public boolean onDragPointerMove(MotionEvent from, MotionEvent to) {
 //			Log.d("map", "--------onDragPointerMove ");
 			hideCancelButton();
+			if(mGridViewLayout.getVisibility() == View.VISIBLE){
+				mGridViewLayout.setVisibility(View.INVISIBLE);
+			}
 			if (type.length() > 1 && (type.equalsIgnoreCase("point"))) {
 
 				Point mapPt = map.toMapPoint(to.getX(), to.getY());
@@ -995,5 +1020,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mBtnCancelChoose.setVisibility(View.VISIBLE);
 		}
 	}
+	
+	@Override
+    public void onBackPressed() {
+//        super.onBackPressed();  
+        exitDialog();
+    }
 
 }
