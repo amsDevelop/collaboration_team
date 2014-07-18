@@ -28,4 +28,7 @@
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
     <string name="cancel_or_no">是否退出？</string>
+    <string name="login">登录</string>
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
 </resources>

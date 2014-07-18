@@ -32,9 +32,10 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/toolbottom_bg"
                     android:gravity="center_vertical"
-                    android:layout_marginTop="5dp"
+                    android:paddingLeft="8dp"
                     android:orientation="horizontal" >
 
                     <EditText
@@ -48,11 +49,11 @@
                     <com.sinopec.view.MenuButtonNoIcon
                         android:id="@+id/btn_search_confirm"
                         style="@style/btn_search_confirm"
-                        android:text="@string/btn_confirm"
                         android:layout_marginLeft="2dp"
-                        android:textSize="15sp"
                         android:background="@drawable/selector_btn_toolbar"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:text="@string/btn_confirm"
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <RelativeLayout
@@ -64,11 +65,31 @@
                         android:id="@+id/btn_map_layout"
                         style="@style/btn_toolbar_btn"
                         android:layout_width="wrap_content"
-                    	android:layout_height="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_marginRight="5dp"
                         android:drawableTop="@drawable/tc"
                         android:text="@string/btn_layout" />
+
+                    <LinearLayout
+                        android:id="@+id/map_scale_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:orientation="horizontal" >
+
+                        <ImageButton
+                            android:id="@+id/btn_scale_small"
+                            android:layout_width="66dp"
+                            android:layout_height="43dp"
+                            android:background="@drawable/btn_in" />
+
+                        <ImageButton
+                            android:id="@+id/btn_scale_big"
+                            android:layout_width="66dp"
+                            android:layout_height="43dp"
+                            android:background="@drawable/btn_zoom" />
+                    </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
             <!-- 左边工具栏 -->
@@ -120,17 +141,20 @@
             </LinearLayout>
 
             <!-- 取消选择按钮 -->
-                <Button
-                    android:id="@+id/tb_cancel_chooise"
-                    style="@style/btn_toolbar_btn"
-                                android:layout_width="80dp"
+
+            <Button
+                android:id="@+id/tb_cancel_chooise"
+                style="@style/btn_toolbar_btn"
+                android:layout_width="80dp"
                 android:layout_height="80dp"
-                 android:layout_alignParentRight="true"
-                 android:layout_centerVertical="true"
-                 android:textSize="20sp"
-                    android:text="@string/btn_cancel_chooise" />
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/btn_cancel_chooise"
+                android:textSize="20sp" />
             <!-- 放大，缩小 -->
 
+
+            <!--
             <RelativeLayout
                 android:id="@+id/map_scale_layout"
                 android:layout_width="fill_parent"
@@ -157,6 +181,8 @@
                         android:background="@drawable/btn_zoom" />
                 </LinearLayout>
             </RelativeLayout>
+            -->
+
 
             <!-- 底部按钮栏 -->
 
@@ -165,9 +191,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@drawable/toolbottom_bg"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="10dp"
+                android:background="@drawable/toolbottom_bg"
                 android:orientation="horizontal" >
 
                 <com.sinopec.view.MenuButton
@@ -202,22 +228,25 @@
                     iconbutton:relation="icon_null"
                     iconbutton:text_size="16sp" />
             </LinearLayout>
-            
-            
+
             <!-- 底部按钮栏子菜单栏 -->
+
             <RelativeLayout
                 android:id="@+id/menu_children_grid"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/menu_bar"
+                
                 android:gravity="center_horizontal" >
+
                 <GridView
                     android:id="@+id/menu_gridview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:cacheColorHint="#00000000" 
+                    android:background="@drawable/children_menu_bg"
+                    android:cacheColorHint="#00000000"
                     android:numColumns="auto_fit" />
-            </RelativeLayout> 
+            </RelativeLayout>
         </RelativeLayout>
     </FrameLayout>
 

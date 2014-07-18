@@ -12,6 +12,14 @@
         <enum name="icon_below" value="3" />
         <enum name="icon_null" value="4" />
     </attr>
+    <attr name="position">
+        <enum name="frame_left" value="5" />
+        <enum name="frame_right" value="6" />
+        <enum name="frame_top" value="7" />
+        <enum name="frame_bottom" value="8" />
+        <enum name="frame_null" value="9" />
+        <enum name="frame_all" value="10" />
+    </attr>
 
     <declare-styleable name="iconbutton">
         <attr name="relation" />
@@ -20,6 +28,10 @@
         <attr name="text_size" format="dimension" />
         <attr name="hasicon" format="boolean" />
         <attr name="split_number" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="iconframe">
+        <attr name="position" />
+        <attr name="frameposition" format="reference" />
     </declare-styleable>
 
 </resources>

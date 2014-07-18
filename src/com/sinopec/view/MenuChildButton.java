@@ -23,12 +23,21 @@ public class MenuChildButton extends Button {
 	private final int ICON_ABOVE = 2;
 	private final int ICON_BELOW = 3;
 	private final int ICON_NULL = 4;
+	
+	
+	private final int FRAME_LEFT = 5;
+	private final int FRAME_RIGHT = 6;
+	private final int FRAME_TOP = 7;
+	private final int FRAME_BOTTOM = 8;
+	private final int FRAME_NULL = 9;
+	private final int FRAME_ALL = 10;
 	/**
 	 * 主体的图标
 	 */
 	private final int ICON_MAIN = 5;
 	
 	private int mRelation = ICON_LEFT;
+	private int mFramePosition = FRAME_LEFT;
 	private int mIconId;
 	private int mTextSize;
 	private String mText;
@@ -41,6 +50,9 @@ public class MenuChildButton extends Button {
 		this.mContext = context;
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.iconbutton);
+		TypedArray b = context.obtainStyledAttributes(attrs,
+				R.styleable.iconframe);
+		mFramePosition = b.getInt(R.styleable.iconframe_frameposition, FRAME_LEFT);
 		mRelation = a.getInt(R.styleable.iconbutton_relation, ICON_LEFT);
 		mIconId = a.getResourceId(R.styleable.iconbutton_icon, R.drawable.icon);
 		mText = a.getString(R.styleable.iconbutton_mtext);
@@ -82,21 +94,37 @@ public class MenuChildButton extends Button {
 		
 		int lineWidth = 1;
 		//左右
-		int spaceApartLandR = 5;
+		int spaceApartLandR = 0;
 		//上下
 		int spaceApartTandB = 1;
-		//top
-		canvas.drawRect(spaceApartLandR + spaceHorizon, spaceApartTandB, getMeasuredWidth() - spaceApartLandR - spaceHorizon - lineWidth, 
-				spaceApartTandB + lineWidth, mPaint);
-		//bottom
-//		canvas.drawRect(spaceApartLandR + spaceHorizon, getMeasuredHeight() - spaceApartTandB - lineWidth, getMeasuredWidth() - spaceApartLandR - spaceHorizon - lineWidth, 
-//				getMeasuredHeight() - spaceApartTandB, mPaint);
-		//left
-		canvas.drawRect(spaceApartLandR, spaceVertical, spaceApartLandR + lineWidth, getMeasuredHeight() - spaceVertical, mPaint);
-		//right
-		canvas.drawRect(getMeasuredWidth() - spaceApartLandR - lineWidth, spaceVertical, getMeasuredWidth() - spaceApartLandR, getMeasuredHeight() - spaceVertical, mPaint);
+		
+		if(mFramePosition == FRAME_TOP){
+			//top
+			canvas.drawRect(spaceApartLandR + spaceHorizon, spaceApartTandB, getMeasuredWidth() - spaceApartLandR - spaceHorizon - lineWidth, 
+					spaceApartTandB + lineWidth, mPaint);
+		}
+		
+//		if(mFramePosition == FRAME_BOTTOM){
+			//bottom
+			canvas.drawRect(spaceApartLandR + spaceHorizon, getMeasuredHeight() - spaceApartTandB - lineWidth, getMeasuredWidth() - spaceApartLandR - spaceHorizon - lineWidth, 
+					getMeasuredHeight() - spaceApartTandB, mPaint);
+//		}
+		
+		if(mFramePosition == FRAME_LEFT){
+			//left
+			canvas.drawRect(spaceApartLandR, spaceVertical, spaceApartLandR + lineWidth, getMeasuredHeight() - spaceVertical, mPaint);
+		}
+		
+//		if(mFramePosition == FRAME_RIGHT){
+			//right
+			canvas.drawRect(getMeasuredWidth() - spaceApartLandR - lineWidth, spaceVertical, getMeasuredWidth() - spaceApartLandR, getMeasuredHeight() - spaceVertical, mPaint);
+//		}
 		
 		super.onDraw(canvas);
+	}
+	
+	public void drawFrame() {
+		
 	}
 	
 	private void drawIcon(Canvas canvas){

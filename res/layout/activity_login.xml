@@ -46,23 +46,23 @@
             android:id="@+id/edittext_search"
             style="@style/login_editext"
              android:background="@drawable/login_edittext_user_bg"
-            android:hint="用户名" />
+            android:hint="@string/username" />
 
         <EditText
             android:id="@+id/edittext_search"
             style="@style/login_editext"
              android:background="@drawable/login_edittext_pwd_bg"
-            android:hint="密码" />
+            android:hint="@string/password" />
 
         <!-- 登陆按钮 -->
 
         <Button
             android:id="@+id/btn_login"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:background="@drawable/selector_login_btn"
-            android:text="登录"
+            android:text="@string/login"
             android:textColor="@color/white"
             android:textSize="15sp" />
 
