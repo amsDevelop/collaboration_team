@@ -11,6 +11,6 @@
         android:singleLine="true"
         android:paddingLeft="4dp"
         android:textColor="@color/white"
-        android:textSize="17sp" />
+        android:textSize="30sp" />
     
 </LinearLayout>

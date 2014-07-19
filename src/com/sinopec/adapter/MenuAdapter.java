@@ -13,10 +13,11 @@ import android.widget.TextView;
 import com.sinopec.activity.R;
 
 public class MenuAdapter extends BaseAdapter {
-		private ArrayList<String> mList;
 		private Context mContext;
-		public MenuAdapter(Context context, ArrayList<String> list) {
-			this.mContext = context;
+		private ArrayList<HashMap<String, Object>> mList;
+
+		public MenuAdapter(Context context, ArrayList<HashMap<String, Object>> list) {
+			mContext = context;
 			this.mList = list;
 		}
 		
@@ -26,8 +27,8 @@ public class MenuAdapter extends BaseAdapter {
 		}
 
 		@Override
-		public String getItem(int index) {
-			return mList.get(index);
+		public HashMap<String, Object> getItem(int position) {
+			return mList.get(position);
 		}
 
 		@Override
@@ -48,7 +49,8 @@ public class MenuAdapter extends BaseAdapter {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			
-			String name = mList.get(position);
+			HashMap<String, Object> map = mList.get(position);
+			String name = (String)map.get("name");
 			holder.mName.setText(name);
 			return convertView;
 		}

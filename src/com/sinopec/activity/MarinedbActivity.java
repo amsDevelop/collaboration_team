@@ -375,6 +375,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
+				mMenuViewTool.setEnabled(true);
 				String[] name4count = new String[] { "测距", "测面积" };
 				Integer[] icon4count = { R.drawable.icon_compare_0,
 						R.drawable.icon_compare_1 };
@@ -548,18 +549,27 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			setButtonsStatus(v.getId());
 		} else if (btnLine.getId() == v.getId()) {
-			ArrayList<String> list = new ArrayList<String>();
-			list.add("以km显示");
-			list.add("以m显示");
+			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+			String[] name = {"KM", "M"};
+			for (int i = 0; i < name.length; i++) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("name", name[i]);
+				map.put("tag", name[i]);
+				list.add(map);
+			}
 			showWindow(btnPolygon, list, mLocation4Line);
 			mapTouchListener.setType("Polyline");
 			drawLayer.removeAll();
 			setButtonsStatus(v.getId());
 		} else if (btnPolygon.getId() == v.getId()) {
-			ArrayList<String> list = new ArrayList<String>();
-			list.add("任意点绘制");
-			list.add("点绘制");
-			list.add("圆形");
+			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+			String[] name = {"任意点绘制", "点绘制", "圆形"};
+			for (int i = 0; i < name.length; i++) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("name", name[i]);
+				map.put("tag", name[i]);
+				list.add(map);
+			}
 			showWindow(btnPolygon, list, mLocation4Polygon);
 			mapTouchListener.setType("Polygon");
 			drawLayer.removeAll();
@@ -633,12 +643,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	private View view;
 	private View mLastClickedView;
-	private ArrayList<String> mList = new ArrayList<String>();
+	private ArrayList<HashMap<String, Object>> mList4Menu = new ArrayList<HashMap<String,Object>>();
 	private ListView mMenuListView;
 
-	private void initPopWindowData(ArrayList<String> list) {
+	private void initPopWindowData(ArrayList<HashMap<String, Object>> list) {
 		mMenuAdapter = new MenuAdapter(mContext, list);
 		mMenuListView.setAdapter(mMenuAdapter);
+		mMenuListView.setOnItemClickListener(this);
 	}
 
 	private MenuAdapter mMenuAdapter;
@@ -646,13 +657,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private int[] mLocation4Polygon = new int[2];
 	private int mMenuBtnWidth = 0;
 
-	private void showWindow(View view, ArrayList<String> list, int[] location) {
+	private void showWindow(View view, ArrayList<HashMap<String, Object>> list, int[] location) {
 		// if (popupWindow == null) {
 		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		view = layoutInflater.inflate(R.layout.view_menu_popwindow, null);
 		// 创建一个PopuWidow对象
-		popupWindow = new PopupWindow(view, 200, 200);
+		popupWindow = new PopupWindow(view, 400, 500);
 		// }
 
 		mMenuListView = (ListView) view.findViewById(R.id.menu_listview);
@@ -717,6 +728,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if ("mineLogin".equals(tag)) {
 			Intent intent = new Intent(mContext, LoginActivity.class);
 			startActivity(intent);
+		} else if ("mineLogout".equals(tag)) {
+			exitDialog();
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();
 		}
