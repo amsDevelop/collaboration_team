@@ -1,6 +1,7 @@
 package com.sinopec.activity;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 
 import android.app.Activity;

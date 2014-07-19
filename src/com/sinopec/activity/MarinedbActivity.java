@@ -377,11 +377,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			public void onClick(View arg0) {
 				mMenuViewTool.setEnabled(true);
 				String[] name4count = new String[] { "测距", "测面积" };
-				Integer[] icon4count = { R.drawable.icon_compare_0,
-						R.drawable.icon_compare_1 };
+				Integer[] icon4count = { R.drawable.icon_count_distance,
+						R.drawable.icon_count_area };
 				String[] tag = new String[] { "toolDistance", "toolArea",
 						"toolSelect" };
-				int splitNumber = 2;
+				int splitNumber = mChildMenuSplitNumber;
 				list.clear();
 				for (int i = 0; i < name4count.length; i++) {
 					HashMap<String, Object> map = new HashMap<String, Object>();
@@ -406,11 +406,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				// "范围内油气田的个数、面积、储量(油、气、...)", "范围内油气田的个数密度、面积密度",
 				// "范围内油气田的储量丰度(吨油当量/平方公里)", "石油、天然气及凝析油储量在各油气田的分布",
 				// "不同沉积体系油气田个数", "不同沉积体系油气田面积" };
-				Integer[] icon4count = { R.drawable.icon_compare_0,
-						R.drawable.icon_compare_1, R.drawable.icon_compare_2,
-						R.drawable.icon_compare_3, R.drawable.icon_compare_4,
-						R.drawable.icon_compare_5, R.drawable.icon_compare_6, };
-				int splitNumber = 2;
+				Integer[] icon4count = { R.drawable.icon_rang_oilgas,
+						R.drawable.icon_rang_oilgas, R.drawable.icon_range_volume,
+						R.drawable.icon_distribute, R.drawable.icon_diffrent_object_nubmer, R.drawable.icon_diffrent_object_nubmer, };
+				int splitNumber = mChildMenuSplitNumber;
 				list.clear();
 				for (int i = 0; i < name4count.length; i++) {
 					HashMap<String, Object> map = new HashMap<String, Object>();
@@ -432,7 +431,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			public void onClick(View arg0) {
 				String[] name4count = new String[] { "待定" };
 				Integer[] icon4count = { R.drawable.icon_compare_0 };
-				int splitNumber = 1;
+				int splitNumber = mChildMenuSplitNumber;
 				list.clear();
 				for (int i = 0; i < name4count.length; i++) {
 					HashMap<String, Object> map = new HashMap<String, Object>();
@@ -453,12 +452,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			public void onClick(View arg0) {
 				String[] name4count = new String[] { "登陆", "账户管理", "收藏", "下载",
 						"退出" };
-				Integer[] icon4count = { R.drawable.icon_compare_0,
-						R.drawable.icon_compare_1, R.drawable.icon_compare_2,
-						R.drawable.icon_compare_3, R.drawable.icon_compare_4 };
+				Integer[] icon4count = { R.drawable.icon_login,
+						R.drawable.icon_accout_mrg, R.drawable.icon_store,
+						R.drawable.icon_download, R.drawable.icon_logout };
 				String[] tag = new String[] { "mineLogin", "mineManager",
 						"mineCollect", "mineDownload", "mineLogout" };
-				int splitNumber = 2;
+				int splitNumber = mChildMenuSplitNumber;
 				list.clear();
 				for (int i = 0; i < name4count.length; i++) {
 					HashMap<String, Object> map = new HashMap<String, Object>();
@@ -487,6 +486,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBtnScaleBig.setOnClickListener(this);
 	}
 
+	private int mChildMenuSplitNumber = 12;
 	private void initData() {
 		mProgressBar.setVisibility(View.VISIBLE);
 	}
@@ -640,6 +640,32 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		showCancelButton();
 	}
+	
+	//设置底部按钮的点击效果
+	private void setMenuButtonsStatus(int vId) {
+		if (mMenuViewTool.getId() == vId) {
+			mMenuViewTool.setSelected(true);
+			mMenuViewCount.setSelected(false);
+			mMenuViewCompare.setSelected(false);
+			mMenuViewMine.setSelected(false);
+		} else if (mMenuViewCount.getId() == vId) {
+			mMenuViewCount.setSelected(true);
+			mMenuViewTool.setSelected(false);
+			mMenuViewCompare.setSelected(false);
+			mMenuViewMine.setSelected(false);
+		} else if (mMenuViewCompare.getId() == vId) {
+			mMenuViewCompare.setSelected(true);
+			mMenuViewTool.setSelected(false);
+			mMenuViewCount.setSelected(false);
+			mMenuViewMine.setSelected(false);
+		} else if (mMenuViewMine.getId() == vId) {
+			mMenuViewMine.setSelected(true);
+			mMenuViewTool.setSelected(false);
+			mMenuViewCount.setSelected(false);
+			mMenuViewCompare.setSelected(false);
+			
+		}
+	}
 
 	private View view;
 	private View mLastClickedView;
@@ -663,7 +689,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		view = layoutInflater.inflate(R.layout.view_menu_popwindow, null);
 		// 创建一个PopuWidow对象
-		popupWindow = new PopupWindow(view, 400, 500);
+		popupWindow = new PopupWindow(view, 400, 300);
 		// }
 
 		mMenuListView = (ListView) view.findViewById(R.id.menu_listview);
@@ -699,8 +725,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 
 	private void setGridView(ArrayList<HashMap<String, Object>> list, View view) {
-		// MenuGridAdapter adapter = new MenuGridAdapter(mContext, list);
-		// mGridView.setAdapter(adapter);
+		setMenuButtonsStatus(view.getId());
 		mAdapter.notifyDataSetChanged();
 		// showAndHideGridView();
 		if (mLastClickedView == view) {

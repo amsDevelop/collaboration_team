@@ -70,7 +70,7 @@ public class MenuButton extends Button {
         	canvas.drawRect(1, spaceVertical, 2, getMeasuredHeight() - spaceVertical, mPaint);
             break;
         case ICON_RIGHT:
-        	canvas.drawRect(getMeasuredWidth() - 5, spaceVertical, getMeasuredWidth() - 4, getMeasuredHeight() - spaceVertical, mPaint);
+        	canvas.drawRect(getMeasuredWidth() - 1, spaceVertical, getMeasuredWidth(), getMeasuredHeight() - spaceVertical, mPaint);
             break;
 
 		default:

@@ -76,7 +76,7 @@ public class MenuChildButton extends Button {
 	public void setSplitNumber(int nubmer) {
 		mSplitNum = nubmer;
 		setWidth(SinoApplication.screenWidth / mSplitNum);
-//		setHeight(SinoApplication.screenWidth / mSplitNum);
+		setHeight(SinoApplication.screenWidth / mSplitNum);
 	}
 
 	private Paint mPaint = new Paint();
