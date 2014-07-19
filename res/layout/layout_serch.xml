@@ -3,6 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:background="@color/white" >
 
     <TextView
@@ -11,13 +13,14 @@
         android:gravity="center"
         style="@style/text_size"
         android:id="@+id/id_txview_searhKey"
-        android:text="关键字的搜索结果" />
+        android:text="关键字的搜索结果" 
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/id_llaout_search_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
+        android:layout_marginTop="10dp"
         android:gravity="center" >
 
         <ListView
@@ -25,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cacheColorHint="#00000000"
-            android:dividerHeight="2dip"
+            android:dividerHeight="1dip"
             android:divider="@color/lightgray"
              >
         </ListView>
@@ -37,18 +40,19 @@
         android:layout_marginTop="20dip"
         android:layout_marginBottom="5dip"
         android:paddingLeft="15dp"
-        android:paddingRight="15dp" >
+        android:paddingRight="15dp" 
+        android:visibility="gone">
 
         <Button
             android:id="@+id/id_btn_operator_1"
             style="@style/layer_btn_ok_cancel"
             android:layout_alignParentLeft="true"
-            android:text="确定" />
+            android:text="@string/confirm" />
 
         <Button android:id="@+id/id_btn_operator_2"
             style="@style/layer_btn_ok_cancel"
             android:layout_alignParentRight="true"
-            android:text="取消" />
+            android:text="@string/cancel" />
     </RelativeLayout>
 
 </LinearLayout>

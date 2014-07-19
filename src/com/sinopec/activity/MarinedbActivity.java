@@ -251,9 +251,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		MarinedbActivity.this.map
 				.setOnLongPressListener(new OnLongPressListener() {
-					public void onLongPress(float x, float y) {
+					public boolean onLongPress(float x, float y) {
 						if (!map.isLoaded()) {
-							return;
+							return false;
 						}
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
 						x1 = pt.getX();
@@ -322,6 +322,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						return true;
 					}// onLongPress
 				});
 
@@ -375,7 +376,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				mMenuViewTool.setEnabled(true);
 				String[] name4count = new String[] { "测距", "测面积" };
 				Integer[] icon4count = { R.drawable.icon_count_distance,
 						R.drawable.icon_count_area };
@@ -391,6 +391,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					map.put("split", splitNumber);
 					list.add(map);
 				}
+				mGridView.setNumColumns(2);
 				setGridView(list, arg0);
 			}
 		});
@@ -419,6 +420,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					map.put("split", splitNumber);
 					list.add(map);
 				}
+				mGridView.setNumColumns(6);
 				setGridView(list, arg0);
 
 			}
@@ -441,6 +443,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					map.put("split", splitNumber);
 					list.add(map);
 				}
+				mGridView.setNumColumns(1);
 				setGridView(list, arg0);
 			}
 		});
@@ -467,6 +470,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					map.put("split", splitNumber);
 					list.add(map);
 				}
+				mGridView.setNumColumns(5);
 				setGridView(list, arg0);
 			}
 		});
@@ -487,9 +491,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 
 	private int mChildMenuSplitNumber = 12;
-	private void initData() {
-		mProgressBar.setVisibility(View.VISIBLE);
-	}
 
 	@Override
 	protected void onDestroy() {
@@ -564,10 +565,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if (btnPolygon.getId() == v.getId()) {
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 			String[] name = {"任意点绘制", "点绘制", "圆形"};
+			String[] tag = {"anyPoint", "points", "cycle"};
 			for (int i = 0; i < name.length; i++) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("name", name[i]);
-				map.put("tag", name[i]);
+				map.put("tag", tag[i]);
 				list.add(map);
 			}
 			showWindow(btnPolygon, list, mLocation4Polygon);
@@ -583,9 +585,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if (btnMultiple.getId() == v.getId()) {
 			setButtonsStatus(v.getId());
 		} else if (mBtnScaleBig.getId() == v.getId()) {
-			// TODO:放大
+			map.zoomin();
 		} else if (mBtnScaleSmall.getId() == v.getId()) {
-			// TODO:缩小
+			map.zoomout();
 		}
 
 	}
@@ -757,7 +759,27 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			exitDialog();
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();
+		} else if ("KM".equals(tag)) {
+			//折线长度以km显示
+			hidePopupWindow();
+		} else if ("M".equals(tag)) {
+			//折线长度以m显示
+			hidePopupWindow();
+		} else if ("anyPoint".equals(tag)) {
+			//多边形任意点绘制
+			hidePopupWindow();
+		} else if ("points".equals(tag)) {
+			//多边形点绘制
+			hidePopupWindow();
+		} else if ("cycle".equals(tag)) {
+			//多边形  圆形
+			hidePopupWindow();
 		}
+	}
+	
+	private void hidePopupWindow() {
+		if(popupWindow != null)
+			popupWindow.dismiss();
 	}
 
 	private Point ptStart = null;// 起点
@@ -776,7 +798,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			points = new ArrayList<Point>();
 		}
-
+		
 		// 根据用户选择设置当前绘制的几何图形类型
 		public void setType(String geometryType) {
 			type = geometryType;
@@ -1075,17 +1097,5 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	public void onBackPressed() {
 		// super.onBackPressed();
 		exitDialog();
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		if (popupWindow != null && popupWindow.isShowing()) {
-			popupWindow.dismiss();
-			popupWindow = null;
-
-		}
-
-		return super.onTouchEvent(event);
-
 	}
 }
