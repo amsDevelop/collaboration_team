@@ -31,4 +31,6 @@
     <string name="login">登录</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
+    <string name="set_cur_screen">设置为当前图层</string>
+    <string name="geocode_url">"http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Petroleum/KSPetro/MapServer/1"</string>
 </resources>

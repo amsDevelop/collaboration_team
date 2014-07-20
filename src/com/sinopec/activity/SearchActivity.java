@@ -1,12 +1,17 @@
 package com.sinopec.activity;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,9 +21,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.esri.android.map.Callout;
+import com.esri.core.geometry.Geometry;
+import com.esri.core.geometry.Point;
+import com.esri.core.map.Graphic;
+import com.esri.core.symbol.SimpleMarkerSymbol;
+import com.esri.core.symbol.TextSymbol;
 import com.sinopec.view.MenuButtonNoIcon;
-import com.sinopec.view.MenuChildButton;
 
 public class SearchActivity extends Activity implements OnClickListener {
 	private ListView mListView;
@@ -126,4 +137,20 @@ public class SearchActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
+	
+	private void search(String key) {
+	}
+	
+	
+    /*
+     * Dismiss dialog when geocode task completes
+     */
+    public class MyRunnable implements Runnable {
+        public void run() {
+//            dialog.dismiss();
+        }
+    }
+    
+    private Handler handler = new Handler();
+
 }

@@ -131,10 +131,9 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		ArrayList<String> mList = new ArrayList<String>();
 
 		public MyAdapter() {
-			mList.add("图层1");
-			mList.add("图层2");
-			mList.add("图层3");
-			mList.add("图层4");
+			mList.add("油气");
+			mList.add("盆地");
+			mList.add("石油");
 		}
 
 		@Override
@@ -156,14 +155,14 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		public View getView(int arg0, View arg1, ViewGroup arg2) {
 			if (arg1 == null) {
 				arg1 = LayoutInflater.from(getActivity()).inflate(
-						R.layout.adapter_layer_list, null);
+						R.layout.layer_list_item, null);
 			}
 
 			TextView txView = (TextView) arg1
-					.findViewById(R.id.id_txview_layer);
+					.findViewById(R.id.layer_name);
 			txView.setText(mList.get(arg0));
 
-			arg1.findViewById(R.id.id_btn_layer_operator).setOnClickListener(
+			arg1.findViewById(R.id.layer_can_operator).setOnClickListener(
 					new OnClickListener() {
 						@Override
 						public void onClick(View arg0) {
