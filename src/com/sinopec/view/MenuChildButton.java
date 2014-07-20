@@ -96,13 +96,13 @@ public class MenuChildButton extends Button {
 		//左右
 		int spaceApartLandR = 0;
 		//上下
-		int spaceApartTandB = 1;
+		int spaceApartTandB = 0;
 		
-		if(mFramePosition == FRAME_TOP){
+//		if(mFramePosition == FRAME_TOP){
 			//top
 			canvas.drawRect(spaceApartLandR + spaceHorizon, spaceApartTandB, getMeasuredWidth() - spaceApartLandR - spaceHorizon - lineWidth, 
 					spaceApartTandB + lineWidth, mPaint);
-		}
+//		}
 		
 //		if(mFramePosition == FRAME_BOTTOM){
 			//bottom

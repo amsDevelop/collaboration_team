@@ -39,12 +39,13 @@
                     android:padding="8dp"
                     android:orientation="horizontal" >
 
-                    <EditText
+                    <Button
                         android:id="@+id/edittext_search"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/searchbtn"
-                        android:hint="搜索地图"
+                        android:text="搜索地图"
+                        android:paddingLeft="30dp"
                         android:textSize="16sp" />
 
                     <com.sinopec.view.MenuButtonNoIcon
@@ -247,7 +248,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/children_menu_bg"
                     android:cacheColorHint="#00000000"
                     android:numColumns="auto_fit" />
             </RelativeLayout>

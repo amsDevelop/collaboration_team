@@ -16,9 +16,11 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -39,6 +41,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.esri.android.map.Callout;
@@ -67,6 +70,7 @@ import com.sinopec.application.SinoApplication;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
+import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
@@ -107,7 +111,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Button property, statistics, doc;
 	private Button mBtnLayer;
 	private MenuButtonNoIcon mBtnSearch;
-	private EditText mEditText;
+	private Button mEditText;
 	private PopupWindow popupWindow;
 	private Context mContext;
 	private Button btnFrame, btnPolygon, btnLine;
@@ -362,12 +366,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			@SuppressLint("NewApi")
 			@Override
 			public void onClick(View arg0) {
-				SearchFragment search = new SearchFragment(mEditText.getText());
-				search.show(getFragmentManager(), "search");
+//				SearchFragment search = new SearchFragment(mEditText.getText());
+//				search.show(getFragmentManager(), "search");
 			}
 		});
 
-		mEditText = (EditText) findViewById(R.id.edittext_search);
+		mEditText = (Button) findViewById(R.id.edittext_search);
 		mEditText.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -381,22 +385,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				String[] name4count = new String[] { "测距", "测面积" };
-				Integer[] icon4count = { R.drawable.icon_count_distance,
-						R.drawable.icon_count_area };
-				String[] tag = new String[] { "toolDistance", "toolArea",
-						"toolSelect" };
-				int splitNumber = mChildMenuSplitNumber;
-				list.clear();
-				for (int i = 0; i < name4count.length; i++) {
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("name", name4count[i]);
-					map.put("icon", icon4count[i]);
-					map.put("tag", tag[i]);
-					map.put("split", splitNumber);
-					list.add(map);
-				}
-				mGridView.setNumColumns(2);
+				Boolean[] clickTag = new Boolean[] { true, true, true };
+				if(mTag4OperateInLine){
+					clickTag = new Boolean[] { true, false, false };
+				} 
+				ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
+				mGridView.setNumColumns(3);
 				setGridView(list, arg0);
 			}
 		});
@@ -406,25 +400,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				String[] name4count = new String[] { "数.面积.储", "数密.面密", "储量丰度",
-						"储量分布", "油气田数", "油气田面积" };
-				// String[] name4count = new String[] {
-				// "范围内油气田的个数、面积、储量(油、气、...)", "范围内油气田的个数密度、面积密度",
-				// "范围内油气田的储量丰度(吨油当量/平方公里)", "石油、天然气及凝析油储量在各油气田的分布",
-				// "不同沉积体系油气田个数", "不同沉积体系油气田面积" };
-				Integer[] icon4count = { R.drawable.icon_rang_oilgas,
-						R.drawable.icon_rang_oilgas, R.drawable.icon_range_volume,
-						R.drawable.icon_distribute, R.drawable.icon_diffrent_object_nubmer, R.drawable.icon_diffrent_object_nubmer, };
-				int splitNumber = mChildMenuSplitNumber;
-				list.clear();
-				for (int i = 0; i < name4count.length; i++) {
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("name", name4count[i]);
-					map.put("icon", icon4count[i]);
-					map.put("tag", name4count[i]);
-					map.put("split", splitNumber);
-					list.add(map);
-				}
+				Boolean[] clickTag = new Boolean[] { true, true, true,true, true, true  };
+				ChildrenMenuDataUtil.setCountChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(6);
 				setGridView(list, arg0);
 
@@ -436,18 +413,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				String[] name4count = new String[] { "待定" };
-				Integer[] icon4count = { R.drawable.icon_compare_0 };
-				int splitNumber = mChildMenuSplitNumber;
-				list.clear();
-				for (int i = 0; i < name4count.length; i++) {
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("name", name4count[i]);
-					map.put("icon", icon4count[i]);
-					map.put("tag", name4count[i]);
-					map.put("split", splitNumber);
-					list.add(map);
-				}
+				Boolean[] clickTag = new Boolean[] { true };
+				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(1);
 				setGridView(list, arg0);
 			}
@@ -458,23 +425,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				String[] name4count = new String[] { "登陆", "账户管理", "收藏", "下载",
-						"退出" };
-				Integer[] icon4count = { R.drawable.icon_login,
-						R.drawable.icon_accout_mrg, R.drawable.icon_store,
-						R.drawable.icon_download, R.drawable.icon_logout };
-				String[] tag = new String[] { "mineLogin", "mineManager",
-						"mineCollect", "mineDownload", "mineLogout" };
-				int splitNumber = mChildMenuSplitNumber;
-				list.clear();
-				for (int i = 0; i < name4count.length; i++) {
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("name", name4count[i]);
-					map.put("icon", icon4count[i]);
-					map.put("tag", tag[i]);
-					map.put("split", splitNumber);
-					list.add(map);
-				}
+				Boolean[] clickTag = new Boolean[] { true, true, true,true, true };
+				ChildrenMenuDataUtil.setMineChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(5);
 				setGridView(list, arg0);
 			}
@@ -594,8 +546,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	}
 
+	/**
+	 * 是否选择了折线
+	 */
+	private boolean mTag4OperateInLine = false;
 	private void setButtonsStatus(int vId) {
 		if (btnFrame.getId() == vId) {
+			mTag4OperateInLine = false;
 			btnFrame.setBackgroundResource(R.drawable.main_button_background_down);
 			btnMultiple
 					.setBackgroundResource(R.drawable.main_button_background_up);
@@ -605,6 +562,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnCurScreen
 					.setBackgroundResource(R.drawable.main_button_background_up);
 		} else if (btnLine.getId() == vId) {
+			mTag4OperateInLine = true;
 			btnLine.setBackgroundResource(R.drawable.main_button_background_down);
 			btnPolygon
 					.setBackgroundResource(R.drawable.main_button_background_up);
@@ -614,6 +572,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnMultiple
 					.setBackgroundResource(R.drawable.main_button_background_up);
 		} else if (btnPolygon.getId() == vId) {
+			mTag4OperateInLine = false;
 			btnPolygon
 					.setBackgroundResource(R.drawable.main_button_background_down);
 			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
@@ -623,6 +582,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnMultiple
 					.setBackgroundResource(R.drawable.main_button_background_up);
 		} else if (btnCurScreen.getId() == vId) {
+			mTag4OperateInLine = false;
 			btnCurScreen
 					.setBackgroundResource(R.drawable.main_button_background_down);
 			btnPolygon
@@ -632,6 +592,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnMultiple
 					.setBackgroundResource(R.drawable.main_button_background_up);
 		} else if (btnMultiple.getId() == vId) {
+			mTag4OperateInLine = false;
 			btnMultiple
 					.setBackgroundResource(R.drawable.main_button_background_down);
 			btnCurScreen
@@ -648,22 +609,38 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	//设置底部按钮的点击效果
 	private void setMenuButtonsStatus(int vId) {
 		if (mMenuViewTool.getId() == vId) {
-			mMenuViewTool.setSelected(true);
+			if(mMenuViewTool.isSelected()){
+				mMenuViewTool.setSelected(false);
+			}else{
+				mMenuViewTool.setSelected(true);
+			}
 			mMenuViewCount.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewCount.getId() == vId) {
-			mMenuViewCount.setSelected(true);
+			if(mMenuViewCount.isSelected()){
+				mMenuViewCount.setSelected(false);
+			}else{
+				mMenuViewCount.setSelected(true);
+			}
 			mMenuViewTool.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewCompare.getId() == vId) {
-			mMenuViewCompare.setSelected(true);
+			if(mMenuViewCompare.isSelected()){
+				mMenuViewCompare.setSelected(false);
+			}else{
+				mMenuViewCompare.setSelected(true);
+			}
 			mMenuViewTool.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewMine.getId() == vId) {
-			mMenuViewMine.setSelected(true);
+			if(mMenuViewMine.isSelected()){
+				mMenuViewMine.setSelected(false);
+			}else{
+				mMenuViewMine.setSelected(true);
+			}
 			mMenuViewTool.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewCompare.setSelected(false);
@@ -731,7 +708,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private void setGridView(ArrayList<HashMap<String, Object>> list, View view) {
 		setMenuButtonsStatus(view.getId());
 		mAdapter.notifyDataSetChanged();
-		// showAndHideGridView();
 		if (mLastClickedView == view) {
 			mGridViewLayout.setVisibility(View.INVISIBLE);
 			mLastClickedView = null;
