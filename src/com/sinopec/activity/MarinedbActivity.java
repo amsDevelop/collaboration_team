@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -68,6 +69,7 @@ import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
 import com.sinopec.util.ChildrenMenuDataUtil;
+import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
 
@@ -133,6 +135,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	public static final String imageUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer";
     public static final String genUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer";
     public static final String oilUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer";
+    private ViewGroup mBaseLayout;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -343,6 +347,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MenuButton mMenuViewTool;
 
 	private void initView() {
+		mBaseLayout = (ViewGroup) findViewById(R.id.main_base_layout);
 		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
 
 		// mBtnMenuTool = (Button) findViewById(R.id.menu_tool);
@@ -385,22 +390,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				String[] name4count = new String[] { "测距", "测面积" };
-				Integer[] icon4count = { R.drawable.icon_count_distance,
-						R.drawable.icon_count_area };
-				String[] tag = new String[] { "toolDistance", "toolArea",
-						"toolSelect" };
-				int splitNumber = mChildMenuSplitNumber;
-				list.clear();
-				for (int i = 0; i < name4count.length; i++) {
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("name", name4count[i]);
-					map.put("icon", icon4count[i]);
-					map.put("tag", tag[i]);
-					map.put("split", splitNumber);
-					list.add(map);
-				}
-				mGridView.setNumColumns(2);
+				Boolean[] clickTag = new Boolean[] { true, true, true };
+				if(mTag4OperateInLine){
+					clickTag = new Boolean[] { true, false, false };
+				} 
+				ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
+				mGridView.setNumColumns(3);
 				setGridView(list, arg0);
 			}
 		});
@@ -410,31 +405,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				String[] name4count = new String[] { "数.面积.储", "数密.面密", "储量丰度",
-						"储量分布", "油气田数", "油气田面积" };
-				// String[] name4count = new String[] {
-				// "范围内油气田的个数、面积、储量(油、气、...)", "范围内油气田的个数密度、面积密度",
-				// "范围内油气田的储量丰度(吨油当量/平方公里)", "石油、天然气及凝析油储量在各油气田的分布",
-				// "不同沉积体系油气田个数", "不同沉积体系油气田面积" };
-				Integer[] icon4count = { R.drawable.icon_rang_oilgas,
-						R.drawable.icon_rang_oilgas,
-						R.drawable.icon_range_volume,
-						R.drawable.icon_distribute,
-						R.drawable.icon_diffrent_object_nubmer,
-						R.drawable.icon_diffrent_object_nubmer, };
-				int splitNumber = mChildMenuSplitNumber;
-				list.clear();
-				for (int i = 0; i < name4count.length; i++) {
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("name", name4count[i]);
-					map.put("icon", icon4count[i]);
-					map.put("tag", name4count[i]);
-					map.put("split", splitNumber);
-					list.add(map);
-				}
+				Boolean[] clickTag = new Boolean[] { true, true, true,true, true, true  };
+				ChildrenMenuDataUtil.setCountChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(6);
 				setGridView(list, arg0);
-
 			}
 		});
 
@@ -443,7 +417,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				Log.d("map", "----对比----");
 				Boolean[] clickTag = new Boolean[] { true };
 				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(1);
@@ -456,7 +429,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				Log.d("map", "----我的----");
 				Boolean[] clickTag = new Boolean[] { true, true, true,true, true };
 				ChildrenMenuDataUtil.setMineChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(5);
@@ -468,7 +440,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-//				mTag4OperateInLine = false;
+				mTag4OperateInLine = false;
 				btnMultiple.setSelected(false);
 				btnFrame.setSelected(false);
 				btnLine.setSelected(false);
@@ -643,15 +615,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			setButtonsStatus(v.getId());
 		} else if (btnLine.getId() == v.getId()) {
-			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-			String[] name = { "KM", "M" };
-			for (int i = 0; i < name.length; i++) {
-				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("name", name[i]);
-				map.put("tag", name[i]);
-				list.add(map);
-			}
-			showWindow(btnPolygon, list, mLocation4Line);
 			// mapTouchListener.setType("Polyline");
 			drawTool.activate(DrawTool.POLYLINE);
 			drawLayer.removeAll();
@@ -687,82 +650,113 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	}
 
+
+	/**
+	 * 是否选择了折线
+	 */
+	private boolean mTag4OperateInLine = false;
 	private void setButtonsStatus(int vId) {
 		if (btnFrame.getId() == vId) {
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_down);
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_up);
+			mTag4OperateInLine = false;
+			if(btnFrame.isSelected()){
+				btnFrame.setSelected(false);
+			}else{
+				btnFrame.setSelected(true);
+			}
+			btnMultiple.setSelected(false);
+			btnLine.setSelected(false);
+			btnPolygon.setSelected(false);
+			btnCurScreen.setSelected(false);
 		} else if (btnLine.getId() == vId) {
-			btnLine.setBackgroundResource(R.drawable.main_button_background_down);
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_up);
+			mTag4OperateInLine = true;
+			if(btnLine.isSelected()){
+				btnLine.setSelected(false);
+			}else{
+				btnLine.setSelected(true);
+			}
+			btnMultiple.setSelected(false);
+			btnFrame.setSelected(false);
+			btnPolygon.setSelected(false);
+			btnCurScreen.setSelected(false);
 		} else if (btnPolygon.getId() == vId) {
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_down);
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
-			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_up);
+			mTag4OperateInLine = false;
+			if(btnPolygon.isSelected()){
+				btnPolygon.setSelected(false);
+			}else{
+				btnPolygon.setSelected(true);
+			}
+			btnMultiple.setSelected(false);
+			btnFrame.setSelected(false);
+			btnLine.setSelected(false);
+			btnCurScreen.setSelected(false);
 		} else if (btnCurScreen.getId() == vId) {
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_down);
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
-			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_up);
+			mTag4OperateInLine = false;
+			if(btnCurScreen.isSelected()){
+				btnCurScreen.setSelected(false);
+			}else{
+				btnCurScreen.setSelected(true);
+			}
+			btnMultiple.setSelected(false);
+			btnFrame.setSelected(false);
+			btnPolygon.setSelected(false);
+			btnLine.setSelected(false);
 		} else if (btnMultiple.getId() == vId) {
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_down);
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
-			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
+			mTag4OperateInLine = false;
+			if(btnMultiple.isSelected()){
+				btnMultiple.setSelected(false);
+			}else{
+				btnMultiple.setSelected(true);
+			}
+			btnFrame.setSelected(false);
+			btnPolygon.setSelected(false);
+			btnLine.setSelected(false);
+			btnCurScreen.setSelected(false);
 		}
 
 		showCancelButton();
 	}
 
-	// 设置底部按钮的点击效果
+	//设置底部按钮的点击效果
 	private void setMenuButtonsStatus(int vId) {
-		if (mMenuViewTool.getId() == vId) {
-			mMenuViewTool.setSelected(true);
-			mMenuViewCount.setSelected(false);
-			mMenuViewCompare.setSelected(false);
-			mMenuViewMine.setSelected(false);
-		} else if (mMenuViewCount.getId() == vId) {
-			mMenuViewCount.setSelected(true);
-			mMenuViewTool.setSelected(false);
-			mMenuViewCompare.setSelected(false);
-			mMenuViewMine.setSelected(false);
-		} else if (mMenuViewCompare.getId() == vId) {
-			mMenuViewCompare.setSelected(true);
-			mMenuViewTool.setSelected(false);
-			mMenuViewCount.setSelected(false);
-			mMenuViewMine.setSelected(false);
-		} else if (mMenuViewMine.getId() == vId) {
-			mMenuViewMine.setSelected(true);
-			mMenuViewTool.setSelected(false);
-			mMenuViewCount.setSelected(false);
-			mMenuViewCompare.setSelected(false);
-
+			if (mMenuViewTool.getId() == vId) {
+				if(mMenuViewTool.isSelected()){
+					mMenuViewTool.setSelected(false);
+				}else{
+					mMenuViewTool.setSelected(true);
+				}
+				mMenuViewCount.setSelected(false);
+				mMenuViewCompare.setSelected(false);
+				mMenuViewMine.setSelected(false);
+			} else if (mMenuViewCount.getId() == vId) {
+				if(mMenuViewCount.isSelected()){
+					mMenuViewCount.setSelected(false);
+				}else{
+					mMenuViewCount.setSelected(true);
+				}
+				mMenuViewTool.setSelected(false);
+				mMenuViewCompare.setSelected(false);
+				mMenuViewMine.setSelected(false);
+			} else if (mMenuViewCompare.getId() == vId) {
+				if(mMenuViewCompare.isSelected()){
+					mMenuViewCompare.setSelected(false);
+				}else{
+					mMenuViewCompare.setSelected(true);
+				}
+				mMenuViewTool.setSelected(false);
+				mMenuViewCount.setSelected(false);
+				mMenuViewMine.setSelected(false);
+			} else if (mMenuViewMine.getId() == vId) {
+				if(mMenuViewMine.isSelected()){
+					mMenuViewMine.setSelected(false);
+				}else{
+					mMenuViewMine.setSelected(true);
+				}
+				mMenuViewTool.setSelected(false);
+				mMenuViewCount.setSelected(false);
+				mMenuViewCompare.setSelected(false);
+				
+			}
 		}
-	}
 
 	private View view;
 	private View mLastClickedView;
@@ -851,6 +845,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		
 		Log.d("sinopec", "-------点击p: " + position + "  tag: " + tag);
 		if ("toolDistance".equals(tag)) {
+			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+			String[] name = {"KM", "M"};
+			for (int i = 0; i < name.length; i++) {
+				HashMap<String, Object> distancMap = new HashMap<String, Object>();
+				distancMap.put("name", name[i]);
+				distancMap.put("tag", name[i]);
+				list.add(distancMap);
+			}
+			//btnPolygon
+			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
 			drawTool.calculateAreaAndLength();
 		} else if ("toolArea".equals(tag)) {
 			drawTool.calculateAreaAndLength();
