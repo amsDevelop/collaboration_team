@@ -29,9 +29,6 @@ import com.esri.core.geometry.Point;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.symbol.TextSymbol;
-import com.esri.core.tasks.geocode.Locator;
-import com.esri.core.tasks.geocode.LocatorFindParameters;
-import com.esri.core.tasks.geocode.LocatorGeocodeResult;
 import com.sinopec.view.MenuButtonNoIcon;
 
 public class SearchActivity extends Activity implements OnClickListener {
@@ -149,6 +146,7 @@ public class SearchActivity extends Activity implements OnClickListener {
      */
     public class MyRunnable implements Runnable {
         public void run() {
+//            dialog.dismiss();
         }
     }
     
