@@ -1,21 +1,24 @@
 package com.sinopec.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.esri.android.map.MapView;
+import com.esri.android.map.ags.ArcGISLayerInfo;
+import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 
 @SuppressLint("NewApi")
 public class LayerDialog extends DialogFragment implements OnClickListener {
@@ -26,6 +29,10 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	Button mBtn3 = null;
 	private ViewGroup mContaner;
 	private ListView mListView;
+	private MapView mapView;
+	private ArcGISTiledMapServiceLayer mapServiceLayer;
+	
+	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,11 +52,28 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mContaner.setVisibility(View.GONE);
 		mListView = (ListView) view.findViewById(R.id.id_lstview_layer_1);
 		mListView.setAdapter(new MyAdapter());
+		initData();
 
 		return view;
 	}
+	
+	private void initData() {
+		// TODO Auto-generated method stub
+		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
+		for (int i = 0; i < arc.length; i++) {
+			layerInfos.add(arc[i]);
+		}
+	}
+
+	public void setMapView (MapView mapView) {
+		this.mapView = mapView;
+	}
 
 	
+	public void setMapServiceLayer(ArcGISTiledMapServiceLayer mapServiceLayer) {
+		this.mapServiceLayer = mapServiceLayer;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,14 +122,19 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	}
 
 	void showAlert() {
-		Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
+//		Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
 	}
 	
 	private void executeLayer2() {
-		executeLayer1();
+//		executeLayer1();
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(true);
 		mBtn3.setSelected(false);
+		dismiss();
+		mapView.removeAll();
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(MarinedbActivity.genUrl);
+		mapView.addLayer(arcGISTiledMapServiceLayer);
+		
 	}
 
 
@@ -114,11 +143,18 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(false);
 		mBtn3.setSelected(true);
+		mapView.removeAll();
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(MarinedbActivity.oilUrl);
+		mapView.addLayer(arcGISTiledMapServiceLayer);
 	}
 
 
 	private void executeLayer1() {
+		dismiss();
 		mContaner.setVisibility(View.GONE);
+		mapView.removeAll();
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(MarinedbActivity.imageUrl);
+		mapView.addLayer(arcGISTiledMapServiceLayer);
 		showAlert();
 		mBtn1.setSelected(true);
 		mBtn2.setSelected(false);
@@ -128,17 +164,17 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	
 
 	class MyAdapter extends BaseAdapter {
-		ArrayList<String> mList = new ArrayList<String>();
-
-		public MyAdapter() {
-			mList.add("油气");
-			mList.add("盆地");
-			mList.add("石油");
-		}
+//		ArrayList<String> mList = new ArrayList<String>();
+		
+//		public MyAdapter() {
+//			mList.add("油气");
+//			mList.add("盆地");
+//			mList.add("石油");
+//		}
 
 		@Override
 		public int getCount() {
-			return mList.size();
+			return layerInfos.size();
 		}
 
 		@Override
@@ -160,7 +196,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 			TextView txView = (TextView) arg1
 					.findViewById(R.id.layer_name);
-			txView.setText(mList.get(arg0));
+			
+			txView.setText(layerInfos.get(arg0).getName());
 
 			arg1.findViewById(R.id.layer_can_operator).setOnClickListener(
 					new OnClickListener() {

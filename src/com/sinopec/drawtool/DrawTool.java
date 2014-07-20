@@ -320,7 +320,6 @@ public class DrawTool extends Subject {
 				case DrawTool.ENVELOPE:
 //					DrawEvent e = new DrawEvent();
 					DrawTool.this.notifyClear();
-					Log.v("mandy", "startposition: " + startPoint);
 					envelope.setXMin(startPoint.getX() > point.getX() ? point
 							.getX() : startPoint.getX());
 					envelope.setYMin(startPoint.getY() > point.getY() ? point
