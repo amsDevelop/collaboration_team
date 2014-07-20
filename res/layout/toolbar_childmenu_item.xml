@@ -8,8 +8,8 @@
         android:id="@+id/menu_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:singleLine="true"
-        android:paddingLeft="4dp"
         android:textColor="@color/white"
         android:textSize="30sp" />
     

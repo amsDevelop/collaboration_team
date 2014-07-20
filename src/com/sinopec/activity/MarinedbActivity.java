@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -66,6 +67,7 @@ import com.sinopec.application.SinoApplication;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
+import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
 
@@ -126,7 +128,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MapTouchListener mapTouchListener;
 	private Envelope envelope;
 	private DrawTool drawTool;
-
+	private ViewGroup mBaseLayout;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -252,9 +255,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		MarinedbActivity.this.map
 				.setOnLongPressListener(new OnLongPressListener() {
-					public void onLongPress(float x, float y) {
+					public boolean onLongPress(float x, float y) {
 						if (!map.isLoaded()) {
-							return;
+							return false;
 						}
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
 						x1 = pt.getX();
@@ -323,7 +326,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-//						return true;
+						return true;
 					}// onLongPress
 				});
 
@@ -335,6 +338,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MenuButton mMenuViewTool;
 
 	private void initView() {
+		mBaseLayout = (ViewGroup) findViewById(R.id.main_base_layout);
 		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
 
 		// mBtnMenuTool = (Button) findViewById(R.id.menu_tool);
@@ -555,15 +559,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			setButtonsStatus(v.getId());
 		} else if (btnLine.getId() == v.getId()) {
-			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-			String[] name = {"KM", "M"};
-			for (int i = 0; i < name.length; i++) {
-				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("name", name[i]);
-				map.put("tag", name[i]);
-				list.add(map);
-			}
-			showWindow(btnPolygon, list, mLocation4Line);
 //			mapTouchListener.setType("Polyline");
 			drawTool.activate(DrawTool.POLYLINE);
 			drawLayer.removeAll();
@@ -749,13 +744,25 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+	public void onItemClick(AdapterView<?> view, View arg1, int position,
 			long arg3) {
-		HashMap<String, Object> map = (HashMap<String, Object>) arg0
+		HashMap<String, Object> map = (HashMap<String, Object>) view
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
 		Log.d("sinopec", "-------点击p: " + position + "  tag: " + tag);
 		if ("toolDistance".equals(tag)) {
+			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+			String[] name = {"KM", "M"};
+			for (int i = 0; i < name.length; i++) {
+				HashMap<String, Object> distancMap = new HashMap<String, Object>();
+				distancMap.put("name", name[i]);
+				distancMap.put("tag", name[i]);
+				list.add(distancMap);
+			}
+			//btnPolygon
+			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
+			
+			
 			drawTool.calculateAreaAndLength();
 		} else if ("toolArea".equals(tag)) {
 			drawTool.calculateAreaAndLength();
