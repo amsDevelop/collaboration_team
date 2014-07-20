@@ -144,106 +144,11 @@ public class SearchActivity extends Activity implements OnClickListener {
 	private void search(String key) {
 	}
 	
-	
-    Locator locator;
-    LocatorGeocodeResult geocodeResult;
-    Callout locationCallout;
-    GeocoderTask mWorker;
-    private ProgressDialog dialog;
-
-    Point mLocation = null;
-	 /*
-     * AsyncTask to geocode an address to a point location Draw resulting point
-     * location on the map with matching address
-     */
-    private class GeocoderTask extends
-            AsyncTask<LocatorFindParameters, Void, List<LocatorGeocodeResult>> {
-
-        WeakReference<SearchActivity> mActivity;
-
-        GeocoderTask(SearchActivity activity) {
-            mActivity = new WeakReference<SearchActivity>(activity);
-        }
-
-        // The result of geocode task is passed as a parameter to map the
-        // results
-        protected void onPostExecute(List<LocatorGeocodeResult> result) {
-            if (result == null || result.size() == 0) {
-                // update UI with notice that no results were found
-                Toast toast = Toast.makeText(SearchActivity.this,
-                        "No result found.", Toast.LENGTH_LONG);
-                toast.show();
-            } else {
-                // update global result
-                geocodeResult = result.get(0);
-                // show progress dialog while geocoding address
-                dialog = ProgressDialog.show(mContext, "Geocoder",
-                        "Searching for address ...");
-                // get return geometry from geocode result
-                Geometry resultLocGeom = geocodeResult.getLocation();
-                // create marker symbol to represent location
-                SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(
-                        Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
-                // create graphic object for resulting location
-                Graphic resultLocation = new Graphic(resultLocGeom,
-                        resultSymbol);
-                //TODO:add graphic to location layer
-//                locationLayer.addGraphic(resultLocation);
-
-                // // create callout for return address
-                // locationCallout = mMapView.getCallout();
-                // String place = geocodeResult.getAddress();
-                // locationCallout.setContent(loadView(place));
-                // locationCallout.show();
-
-                // create text symbol for return address
-                TextSymbol resultAddress = new TextSymbol(12,
-                        geocodeResult.getAddress(), Color.BLACK);
-                // create offset for text
-                resultAddress.setOffsetX(10);
-                resultAddress.setOffsetY(50);
-                // create a graphic object for address text
-                Graphic resultText = new Graphic(resultLocGeom, resultAddress);
-                // TODO: add address text graphic to location graphics layer
-//                locationLayer.addGraphic(resultText);
-                // TODO:zoom to geocode result
-
-//                mMapView.zoomToResolution(geocodeResult.getLocation(), 2);
-                // create a runnable to be added to message queue
-                handler.post(new MyRunnable());
-            }
-        }
-
-        // invoke background thread to perform geocode task
-        @Override
-        protected List<LocatorGeocodeResult> doInBackground(
-                LocatorFindParameters... params) {
-
-            // create results object and set to null
-            List<LocatorGeocodeResult> results = null;
-            // set the geocode service
-            locator = Locator.createOnlineLocator(getResources()
-                    .getString(R.string.geocode_url));
-            try {
-
-                // pass address to find method to return point representing
-                // address
-                results = locator.find(params[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            // return the resulting point(s)
-            return results;
-        }
-
-    }
-    
     /*
      * Dismiss dialog when geocode task completes
      */
     public class MyRunnable implements Runnable {
         public void run() {
-            dialog.dismiss();
         }
     }
     
