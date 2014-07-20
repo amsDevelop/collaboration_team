@@ -13,6 +13,7 @@
         <com.esri.android.map.MapView
             android:id="@+id/map"
             android:layout_width="fill_parent"
+            mapoptions.ZoomLevel="130"
             android:layout_height="fill_parent" >
         </com.esri.android.map.MapView>
 

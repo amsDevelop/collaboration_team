@@ -1,24 +1,29 @@
 package com.sinopec.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.sinopec.application.SinoApplication;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.esri.android.map.GraphicsLayer;
+import com.esri.android.map.MapView;
+import com.esri.android.map.ags.ArcGISLayerInfo;
+import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 
 @SuppressLint("NewApi")
 public class LayerDialog extends DialogFragment implements OnClickListener {
@@ -30,6 +35,11 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private ViewGroup mContaner;
 	private ListView mListView;
 	private TextView mCover;
+	private MapView mapView;
+	private ArcGISTiledMapServiceLayer mapServiceLayer;
+	private GraphicsLayer drawLayer;
+
+	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,17 +61,37 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mCover.setVisibility(View.VISIBLE);
 		mListView = (ListView) view.findViewById(R.id.id_lstview_layer_1);
 		mListView.setAdapter(new MyAdapter());
+		initData();
 
 		return view;
 	}
 
-	
+	private void initData() {
+		// TODO Auto-generated method stub
+		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
+		for (int i = 0; i < arc.length; i++) {
+			layerInfos.add(arc[i]);
+		}
+	}
+
+	public void setMapView(MapView mapView) {
+		this.mapView = mapView;
+	}
+
+	public void setMapServiceLayer(ArcGISTiledMapServiceLayer mapServiceLayer) {
+		this.mapServiceLayer = mapServiceLayer;
+	}
+
+	public void setDrawLayer(GraphicsLayer drawLayer) {
+		this.drawLayer = drawLayer;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -73,7 +103,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			executeLayer3();
 		}
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -113,16 +143,30 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	}
 
 	void showAlert() {
-		Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
+		// Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
 	}
-	
+
 	private void executeLayer2() {
-		executeLayer1();
+		// executeLayer1();
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(true);
 		mBtn3.setSelected(false);
+		dismiss();
+		mapView.removeAll();
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
+				MarinedbActivity.genUrl);
+		mapView.addLayer(arcGISTiledMapServiceLayer);
+		addDrawLayer();
 	}
 
+	private void addDrawLayer() {
+		if (mapView.getLayerByID(drawLayer.getID()) != null) {
+			mapView.removeLayer(drawLayer);
+			mapView.addLayer(drawLayer);
+		} else {
+			mapView.addLayer(drawLayer);
+		}
+	}
 
 	private void executeLayer3() {
 //		mContaner.setVisibility(View.VISIBLE);
@@ -130,32 +174,42 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(false);
 		mBtn3.setSelected(true);
+		mapView.removeAll();
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
+				MarinedbActivity.oilUrl);
+		mapView.addLayer(arcGISTiledMapServiceLayer);
+		addDrawLayer();
 	}
-
 
 	private void executeLayer1() {
 //		mContaner.setVisibility(View.GONE);
 		mCover.setVisibility(View.VISIBLE);
+
+		dismiss();
+		mContaner.setVisibility(View.GONE);
+		mapView.removeAll();
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
+				MarinedbActivity.imageUrl);
+		mapView.addLayer(arcGISTiledMapServiceLayer);
+		addDrawLayer();
 		showAlert();
 		mBtn1.setSelected(true);
 		mBtn2.setSelected(false);
 		mBtn3.setSelected(false);
 	}
-	
-	
 
 	class MyAdapter extends BaseAdapter {
-		ArrayList<String> mList = new ArrayList<String>();
+		// ArrayList<String> mList = new ArrayList<String>();
 
-		public MyAdapter() {
-			mList.add("油气");
-			mList.add("盆地");
-			mList.add("石油");
-		}
+		// public MyAdapter() {
+		// mList.add("油气");
+		// mList.add("盆地");
+		// mList.add("石油");
+		// }
 
 		@Override
 		public int getCount() {
-			return mList.size();
+			return layerInfos.size();
 		}
 
 		@Override
@@ -175,9 +229,9 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 						R.layout.layer_list_item, null);
 			}
 
-			TextView txView = (TextView) arg1
-					.findViewById(R.id.layer_name);
-			txView.setText(mList.get(arg0));
+			TextView txView = (TextView) arg1.findViewById(R.id.layer_name);
+
+			txView.setText(layerInfos.get(arg0).getName());
 
 			arg1.findViewById(R.id.layer_can_operator).setOnClickListener(
 					new OnClickListener() {
