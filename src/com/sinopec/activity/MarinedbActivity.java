@@ -109,6 +109,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	ArcGISFeatureLayer fLayer = null;
 	private GraphicsLayer gLayer = null;
 	private Button property, statistics, doc;
+	private Button mLongTouchTitle;
 	private Button mBtnLayer;
 	private MenuButtonNoIcon mBtnSearch;
 	private Button mEditText;
@@ -226,6 +227,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		property = (Button) popView.findViewById(R.id.property);
 		statistics = (Button) popView.findViewById(R.id.statistics);
 		doc = (Button) popView.findViewById(R.id.doc);
+		mLongTouchTitle = (Button) popView.findViewById(R.id.paopao_name);
 		property.setOnClickListener(this);
 		statistics.setOnClickListener(this);
 		doc.setOnClickListener(this);
@@ -413,6 +415,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
+				Log.d("map", "----对比----");
 				Boolean[] clickTag = new Boolean[] { true };
 				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(1);
@@ -425,6 +428,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
+				Log.d("map", "----我的----");
 				Boolean[] clickTag = new Boolean[] { true, true, true,true, true };
 				ChildrenMenuDataUtil.setMineChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(5);
@@ -436,7 +440,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO: bug 不能取消多边形上一次选择的推荐
+				mTag4OperateInLine = false;
+				btnMultiple.setSelected(false);
+				btnFrame.setSelected(false);
+				btnLine.setSelected(false);
+				btnPolygon.setSelected(false);
+				btnCurScreen.setSelected(false);
+				
+				
 				drawLayer.removeAll();
 				drawTool.deactivate();
 			}
@@ -730,6 +741,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		HashMap<String, Object> map = (HashMap<String, Object>) view
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
+		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map.get("clicktag");
+		if(showMap != null && !showMap.get(tag)){
+			return;
+		}
+		
 		Log.d("sinopec", "-------点击p: " + position + "  tag: " + tag);
 		if ("toolDistance".equals(tag)) {
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();

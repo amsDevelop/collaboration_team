@@ -136,7 +136,7 @@ public class MenuChildButton extends Button {
 		//文字宽度( 字号sp 要* dpi 才是真正像素值)
 //		int textWidth = (int) (getTextWidth() * SinoApplication.density);
 		int textWidth = (int)getTextWidth();
-		Log.d("sinopec", "textWidth is " + textWidth +"  " + mText +"  " + getTextWidth() +"  " + SinoApplication.density);
+//		Log.d("sinopec", "textWidth is " + textWidth +"  " + mText +"  " + getTextWidth() +"  " + SinoApplication.density);
 //		int textHeight =  (int) (mTextSize * SinoApplication.density);
 		int textHeight = mTextSize;
 //		Log.d("sinopec", "mW: "+getMeasuredWidth()+"   width:　"+textWidth+"   bitW:　"+bitmapWidth+"  文字: "+mText);
@@ -169,8 +169,8 @@ public class MenuChildButton extends Button {
 		canvas.drawBitmap(bitmap, iconx, icony, null);
 //		Log.d("sinopec", "mH: "+getMeasuredHeight()+"   tH:　"+textHeight+"   bitH:　"+bitmapHeight+" texty: "+texty);
 		canvas.drawText(mText, textx, texty, mPaint);
-		Log.d("sinopec","mText is "+ mText+"  textx "+textx+"   texty "+texty +" iconx "+ iconx+
-				"  mRelation  " + mRelation+" bitmapWidth "+ bitmapWidth +" getMeasuredWidth()  textWidth " + getMeasuredWidth() +"  " + textWidth);
+//		Log.d("sinopec","mText is "+ mText+"  textx "+textx+"   texty "+texty +" iconx "+ iconx+
+//				"  mRelation  " + mRelation+" bitmapWidth "+ bitmapWidth +" getMeasuredWidth()  textWidth " + getMeasuredWidth() +"  " + textWidth);
 	}
 
 	private float getTextWidth() {

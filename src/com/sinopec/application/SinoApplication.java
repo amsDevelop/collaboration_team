@@ -10,6 +10,13 @@ public class SinoApplication extends Application {
 	public static int screenHeight = 0;
 	public static float density = 0;
 	public static int densityDpi = 0;
+	public static String LNsatellite = "Satellite";
+	public static String LNgeographic = "geographic";
+	public static String LNoilGas = "OilGas";
+	/**
+	 * 图层设置中选择图层的名称
+	 */
+	public static String layerName = LNoilGas;
 	/**
 	 * 主页面底部菜单分成屏幕宽度的几份
 	 */

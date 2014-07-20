@@ -17,6 +17,8 @@
     <string name="btn_mine">我的</string>
     <string name="btn_layout">图层</string>
     <string name="btn_confirm">确认</string>
+    <string name="btn_document">文档</string>
+    <string name="btn_attribute">属性</string>
 
     
     <string name="btn_tool_title">工具子菜单项</string>
@@ -33,4 +35,10 @@
     <string name="password">密码</string>
     <string name="set_cur_screen">设置为当前图层</string>
     <string name="geocode_url">"http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Petroleum/KSPetro/MapServer/1"</string>
+    <string name="search">搜索</string>
+
+    
+    <string name="layer_name">图层名称</string>
+    <string name="layer_show">是否显示</string>
+    <string name="layer_current">设为当前图层</string>
 </resources>

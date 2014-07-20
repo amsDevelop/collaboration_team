@@ -2,6 +2,8 @@ package com.sinopec.activity;
 
 import java.util.ArrayList;
 
+import com.sinopec.application.SinoApplication;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	Button mBtn3 = null;
 	private ViewGroup mContaner;
 	private ListView mListView;
+	private TextView mCover;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +39,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn1 = (Button) view.findViewById(R.id.id_btn_layer_1);
 		mBtn2 = (Button) view.findViewById(R.id.id_btn_layer_2);
 		mBtn3 = (Button) view.findViewById(R.id.id_btn_layer_3);
+		mCover = (TextView) view.findViewById(R.id.layer_lstview_cover);
 
 		view.findViewById(R.id.id_btn_operator_1).setOnClickListener(this);
 		view.findViewById(R.id.id_btn_operator_2).setOnClickListener(this);
@@ -42,7 +47,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 		mContaner = (ViewGroup) view
 				.findViewById(R.id.id_llaout_layer_container);
-		mContaner.setVisibility(View.GONE);
+//		mContaner.setVisibility(View.GONE);
+		mCover.setVisibility(View.VISIBLE);
 		mListView = (ListView) view.findViewById(R.id.id_lstview_layer_1);
 		mListView.setAdapter(new MyAdapter());
 
@@ -59,7 +65,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		executeLayer3();
+		if(SinoApplication.LNsatellite.equals(SinoApplication.layerName)){
+			executeLayer1();
+		}else if(SinoApplication.LNgeographic.equals(SinoApplication.layerName)){
+			executeLayer2();
+		}else{
+			executeLayer3();
+		}
 	}
 	
 	@Override
@@ -76,12 +88,15 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		switch (arg0.getId()) {
 		case R.id.id_btn_layer_1:
 			executeLayer1();
+			SinoApplication.layerName = SinoApplication.LNsatellite;
 			break;
 		case R.id.id_btn_layer_2:
 			executeLayer2();
+			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
 		case R.id.id_btn_layer_3:
 			executeLayer3();
+			SinoApplication.layerName = SinoApplication.LNoilGas;
 			break;
 
 		case R.id.id_btn_operator_1:
@@ -110,7 +125,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 
 	private void executeLayer3() {
-		mContaner.setVisibility(View.VISIBLE);
+//		mContaner.setVisibility(View.VISIBLE);
+		mCover.setVisibility(View.GONE);
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(false);
 		mBtn3.setSelected(true);
@@ -118,7 +134,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 
 	private void executeLayer1() {
-		mContaner.setVisibility(View.GONE);
+//		mContaner.setVisibility(View.GONE);
+		mCover.setVisibility(View.VISIBLE);
 		showAlert();
 		mBtn1.setSelected(true);
 		mBtn2.setSelected(false);

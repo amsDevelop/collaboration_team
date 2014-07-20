@@ -44,8 +44,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/searchbtn"
-                        android:text="搜索地图"
-                        android:paddingLeft="30dp"
+                        android:text="@string/search"
+                        android:gravity="left|center_vertical"
                         android:textSize="16sp" />
 
                     <com.sinopec.view.MenuButtonNoIcon
@@ -154,7 +154,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="@string/btn_cancel_chooise"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
             <!-- 放大，缩小 -->
 
 

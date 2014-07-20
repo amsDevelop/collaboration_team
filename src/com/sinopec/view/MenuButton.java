@@ -117,7 +117,7 @@ public class MenuButton extends Button {
 			texty = (getMeasuredHeight() - textHeight) / 2;
 		}
 		
-		Log.d("sinopec", "mH: "+getMeasuredHeight()+"   tH:　"+textHeight+"   bitH:　"+bitmapHeight+" texty: "+texty);
+//		Log.d("sinopec", "mH: "+getMeasuredHeight()+"   tH:　"+textHeight+"   bitH:　"+bitmapHeight+" texty: "+texty);
 		canvas.drawText(mText, textx, texty, mPaint);
 		
 	}

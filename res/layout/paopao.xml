@@ -1,45 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/paopao"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"     
-    android:id="@+id/paopao"    
-    android:orientation="vertical"
-    >
- <Button
-	    android:id="@+id/property"
-	    android:layout_width="70dip"
-	    android:layout_height="70dip"
-	    android:layout_centerHorizontal="true"
-	    android:background="@drawable/circle"
-	    android:gravity="center_horizontal"
-	    android:paddingTop="30dip"
-	    android:text="属性"
-	    android:textSize="15sp" />
+    android:layout_height="wrap_content"
+    android:background="@drawable/paopao_bg"
+    android:orientation="vertical" >
 
-	<Button
-	    android:id="@+id/statistics"
-	    android:layout_width="70dip"
-	    android:layout_height="70dip"
-	    android:background="@drawable/circle"
-	    android:gravity="center_horizontal"
-	    android:layout_below="@id/property"
-	    android:paddingTop="30dip"
-	    android:layout_marginTop="10dip"
-	    android:text="统计"
-	    android:textSize="15sp" />
-  <Button
-	    android:id="@+id/doc"
-	    android:layout_width="70dip"
-	    android:layout_height="70dip"
-	    android:background="@drawable/circle"
-	    android:gravity="center_horizontal"
-	    android:paddingTop="30dip"
-	    android:layout_marginTop="10dip"
-	    android:layout_marginLeft="10dip"
-	    android:layout_below="@id/property"
-	    android:text="文档"
-	    android:layout_toRightOf="@id/statistics"
-	    android:textSize="15sp" />
-	
-	
-</RelativeLayout>
+    <Button
+        android:id="@+id/property"
+        style="@style/style_pop_button"
+        android:layout_x="12dp"
+        android:layout_y="41dp"
+        android:background="@drawable/selector_paopao_property_bg"
+        android:text="@string/btn_attribute" />
+
+    <Button
+        android:id="@+id/paopao_name"
+        style="@style/style_pop_button"
+        android:layout_x="52dp"
+        android:layout_y="14dp"
+        android:background="@drawable/selector_paopao_title_bg"
+        android:text="塔里木彭迪" />
+
+    <Button
+        android:id="@+id/doc"
+        style="@style/style_pop_button"
+        android:layout_x="46dp"
+        android:layout_y="170dp"
+        android:background="@drawable/selector_paopao_document_bg"
+        android:text="@string/btn_document" />
+
+    <Button
+        android:id="@+id/statistics"
+        style="@style/style_pop_button"
+        android:layout_x="173dp"
+        android:layout_y="46dp"
+        android:background="@drawable/selector_paopao_count_bg"
+        android:text="@string/btn_count" />
+
+</AbsoluteLayout>
