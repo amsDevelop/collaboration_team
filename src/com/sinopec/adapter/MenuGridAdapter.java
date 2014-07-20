@@ -35,6 +35,11 @@ public class MenuGridAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
+	
+	public void setVisibleButtonTag(ArrayList<HashMap<String, Object>> list) {
+		this.mList = list;
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -49,9 +54,16 @@ public class MenuGridAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		HashMap<String, Object> map = mList.get(position);
+		String tag = (String)map.get("tag");
 		holder.mMenuChildButton.setTitle((String)map.get("name"));
 		holder.mMenuChildButton.setIcon((Integer)map.get("icon"));
 		holder.mMenuChildButton.setSplitNumber((Integer)map.get("split"));
+		
+		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map.get("clicktag");
+		if(showMap.get(tag))
+			holder.mMenuChildButton.setEnabled(true);
+		else
+			holder.mMenuChildButton.setEnabled(false);
 		
 		return convertView;
 	}

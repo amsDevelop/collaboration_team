@@ -6,6 +6,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISLayerInfo;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
@@ -31,7 +33,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private ListView mListView;
 	private MapView mapView;
 	private ArcGISTiledMapServiceLayer mapServiceLayer;
-	
+	private GraphicsLayer drawLayer;
+
 	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
 
 	@Override
@@ -56,7 +59,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 		return view;
 	}
-	
+
 	private void initData() {
 		// TODO Auto-generated method stub
 		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
@@ -65,13 +68,16 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		}
 	}
 
-	public void setMapView (MapView mapView) {
+	public void setMapView(MapView mapView) {
 		this.mapView = mapView;
 	}
 
-	
 	public void setMapServiceLayer(ArcGISTiledMapServiceLayer mapServiceLayer) {
 		this.mapServiceLayer = mapServiceLayer;
+	}
+
+	public void setDrawLayer(GraphicsLayer drawLayer) {
+		this.drawLayer = drawLayer;
 	}
 
 	@Override
@@ -79,13 +85,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		executeLayer3();
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -122,21 +128,30 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	}
 
 	void showAlert() {
-//		Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
+		// Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
 	}
-	
+
 	private void executeLayer2() {
-//		executeLayer1();
+		// executeLayer1();
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(true);
 		mBtn3.setSelected(false);
 		dismiss();
 		mapView.removeAll();
-		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(MarinedbActivity.genUrl);
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
+				MarinedbActivity.genUrl);
 		mapView.addLayer(arcGISTiledMapServiceLayer);
-		
+		addDrawLayer();
 	}
 
+	private void addDrawLayer() {
+		if (mapView.getLayerByID(drawLayer.getID()) != null) {
+			mapView.removeLayer(drawLayer);
+			mapView.addLayer(drawLayer);
+		} else {
+			mapView.addLayer(drawLayer);
+		}
+	}
 
 	private void executeLayer3() {
 		mContaner.setVisibility(View.VISIBLE);
@@ -144,33 +159,34 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn2.setSelected(false);
 		mBtn3.setSelected(true);
 		mapView.removeAll();
-		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(MarinedbActivity.oilUrl);
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
+				MarinedbActivity.oilUrl);
 		mapView.addLayer(arcGISTiledMapServiceLayer);
+		addDrawLayer();
 	}
-
 
 	private void executeLayer1() {
 		dismiss();
 		mContaner.setVisibility(View.GONE);
 		mapView.removeAll();
-		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(MarinedbActivity.imageUrl);
+		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
+				MarinedbActivity.imageUrl);
 		mapView.addLayer(arcGISTiledMapServiceLayer);
+		addDrawLayer();
 		showAlert();
 		mBtn1.setSelected(true);
 		mBtn2.setSelected(false);
 		mBtn3.setSelected(false);
 	}
-	
-	
 
 	class MyAdapter extends BaseAdapter {
-//		ArrayList<String> mList = new ArrayList<String>();
-		
-//		public MyAdapter() {
-//			mList.add("油气");
-//			mList.add("盆地");
-//			mList.add("石油");
-//		}
+		// ArrayList<String> mList = new ArrayList<String>();
+
+		// public MyAdapter() {
+		// mList.add("油气");
+		// mList.add("盆地");
+		// mList.add("石油");
+		// }
 
 		@Override
 		public int getCount() {
@@ -194,9 +210,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 						R.layout.layer_list_item, null);
 			}
 
-			TextView txView = (TextView) arg1
-					.findViewById(R.id.layer_name);
-			
+			TextView txView = (TextView) arg1.findViewById(R.id.layer_name);
+
 			txView.setText(layerInfos.get(arg0).getName());
 
 			arg1.findViewById(R.id.layer_can_operator).setOnClickListener(

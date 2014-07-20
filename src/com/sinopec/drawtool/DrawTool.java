@@ -229,7 +229,6 @@ public class DrawTool extends Subject {
 					sendDrawEndEvent();
 					break;
 				case DrawTool.ENVELOPE:
-					Log.v("mandy", "envelop..............");
 					startPoint = point;
 					envelope.setCoords(point.getX(), point.getY(),
 							point.getX(), point.getY());
@@ -254,7 +253,6 @@ public class DrawTool extends Subject {
 					&& (drawType == ENVELOPE || drawType == FREEHAND_POLYGON
 							|| drawType == FREEHAND_POLYLINE || drawType == CIRCLE || drawType == ANY_POLYGON)) {
 				Point point = mapView.toMapPoint(to.getX(), to.getY());
-				Log.v("mandy", "onDragPointerMove move....");
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
 					envelope.setXMin(startPoint.getX() > point.getX() ? point
@@ -290,7 +288,7 @@ public class DrawTool extends Subject {
 						startPoint = mapView.toMapPoint(from.getX(), from.getY());
 						poly.startPath((float) startPoint.getX(),
 								(float) startPoint.getY());
-
+						
 						/*
 						 * Create a Graphic and add polyline geometry
 						 */
@@ -390,7 +388,6 @@ public class DrawTool extends Subject {
 						// 绘制当前线段
 						Polyline polyline = new Polyline();
 						polyline.addSegment(line, true);
-
 						Graphic g = new Graphic(polyline, lineSymbol);
 						drawLayer.addGraphic(g);
 
@@ -406,7 +403,6 @@ public class DrawTool extends Subject {
 						if (tempPolygon == null)
 							tempPolygon = new Polygon();
 						tempPolygon.addSegment(line, false);
-
 						drawLayer.removeAll();
 						Graphic g = new Graphic(tempPolygon, fillSymbol);
 						drawLayer.addGraphic(g);

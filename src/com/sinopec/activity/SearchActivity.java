@@ -141,7 +141,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 	private void search(String key) {
 	}
 	
-	
     /*
      * Dismiss dialog when geocode task completes
      */

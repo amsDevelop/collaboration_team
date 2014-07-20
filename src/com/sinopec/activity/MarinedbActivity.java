@@ -112,7 +112,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Button property, statistics, doc;
 	private Button mBtnLayer;
 	private MenuButtonNoIcon mBtnSearch;
-	private EditText mEditText;
+	private Button mEditText;
 	private PopupWindow popupWindow;
 	private Context mContext;
 	private Button btnFrame, btnPolygon, btnLine;
@@ -171,6 +171,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				o);
 		map.addLayer(fLayer);
 		drawLayer = new GraphicsLayer();
+		map.addLayer(drawLayer);
 		initSymbols();// 初始化符号
 		envelope = new Envelope();
 		// add by gaolixiao
@@ -368,12 +369,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			@SuppressLint("NewApi")
 			@Override
 			public void onClick(View arg0) {
-				SearchFragment search = new SearchFragment(mEditText.getText());
-				search.show(getFragmentManager(), "search");
+//				SearchFragment search = new SearchFragment(mEditText.);
+//				search.show(getFragmentManager(), "search");
 			}
 		});
 
-		mEditText = (EditText) findViewById(R.id.edittext_search);
+		mEditText = (Button) findViewById(R.id.edittext_search);
 		mEditText.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -650,6 +651,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			LayerDialog dialog = new LayerDialog();
 			dialog.setMapView(map);
 			dialog.setMapServiceLayer(tms);
+			dialog.setDrawLayer(drawLayer);
 			dialog.show(getFragmentManager(), "dialog");
 
 		} else if (btnFrame.getId() == v.getId()) {
@@ -1261,12 +1263,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void handleDrawEvent(DrawEvent event) {
-		if (map.getLayerByID(drawLayer.getID()) != null) {
-			map.removeLayer(drawLayer);
-			map.addLayer(drawLayer);
-		} else {
-			map.addLayer(drawLayer);
-		}
 		
 		this.drawLayer.addGraphic(event.getDrawGraphic());
 		
