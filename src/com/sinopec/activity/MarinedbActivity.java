@@ -553,54 +553,59 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private void setButtonsStatus(int vId) {
 		if (btnFrame.getId() == vId) {
 			mTag4OperateInLine = false;
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_down);
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_up);
+			if(btnFrame.isSelected()){
+				btnFrame.setSelected(false);
+			}else{
+				btnFrame.setSelected(true);
+			}
+			btnMultiple.setSelected(false);
+			btnLine.setSelected(false);
+			btnPolygon.setSelected(false);
+			btnCurScreen.setSelected(false);
 		} else if (btnLine.getId() == vId) {
 			mTag4OperateInLine = true;
-			btnLine.setBackgroundResource(R.drawable.main_button_background_down);
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_up);
+			if(btnLine.isSelected()){
+				btnLine.setSelected(false);
+			}else{
+				btnLine.setSelected(true);
+			}
+			btnMultiple.setSelected(false);
+			btnFrame.setSelected(false);
+			btnPolygon.setSelected(false);
+			btnCurScreen.setSelected(false);
 		} else if (btnPolygon.getId() == vId) {
 			mTag4OperateInLine = false;
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_down);
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
-			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_up);
+			if(btnPolygon.isSelected()){
+				btnPolygon.setSelected(false);
+			}else{
+				btnPolygon.setSelected(true);
+			}
+			btnMultiple.setSelected(false);
+			btnFrame.setSelected(false);
+			btnLine.setSelected(false);
+			btnCurScreen.setSelected(false);
 		} else if (btnCurScreen.getId() == vId) {
 			mTag4OperateInLine = false;
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_down);
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
-			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_up);
+			if(btnCurScreen.isSelected()){
+				btnCurScreen.setSelected(false);
+			}else{
+				btnCurScreen.setSelected(true);
+			}
+			btnMultiple.setSelected(false);
+			btnFrame.setSelected(false);
+			btnPolygon.setSelected(false);
+			btnLine.setSelected(false);
 		} else if (btnMultiple.getId() == vId) {
 			mTag4OperateInLine = false;
-			btnMultiple
-					.setBackgroundResource(R.drawable.main_button_background_down);
-			btnCurScreen
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnPolygon
-					.setBackgroundResource(R.drawable.main_button_background_up);
-			btnFrame.setBackgroundResource(R.drawable.main_button_background_up);
-			btnLine.setBackgroundResource(R.drawable.main_button_background_up);
+			if(btnMultiple.isSelected()){
+				btnMultiple.setSelected(false);
+			}else{
+				btnMultiple.setSelected(true);
+			}
+			btnFrame.setSelected(false);
+			btnPolygon.setSelected(false);
+			btnLine.setSelected(false);
+			btnCurScreen.setSelected(false);
 		}
 
 		showCancelButton();
@@ -892,7 +897,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 
 		public boolean onDragPointerMove(MotionEvent from, MotionEvent to) {
-			// Log.d("map", "--------onDragPointerMove ");
+			 Log.d("map", "--------onDragPointerMove ");
 			hideCancelButton();
 			if (mGridViewLayout.getVisibility() == View.VISIBLE) {
 				mGridViewLayout.setVisibility(View.INVISIBLE);
