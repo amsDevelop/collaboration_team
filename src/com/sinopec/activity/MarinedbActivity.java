@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -264,9 +265,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		MarinedbActivity.this.map
 				.setOnLongPressListener(new OnLongPressListener() {
-					public boolean onLongPress(float x, float y) {
+					public void onLongPress(float x, float y) {
 						if (!map.isLoaded()) {
-							return false;
+							return;
 						}
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
 						x1 = pt.getX();
@@ -335,9 +336,19 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						 return true;
+//						return true;
 					}// onLongPress
 				});
+		
+		MarinedbActivity.this.map.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				if(mGridViewLayout.getVisibility() == View.VISIBLE)
+					mGridViewLayout.setVisibility(View.GONE);
+				return false;
+			}
+		});
 
 	}
 

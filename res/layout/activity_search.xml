@@ -36,6 +36,7 @@
                 android:layout_width="1100dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/searchbtn"
+                android:textColor="@color/black"
                 android:singleLine="true"
                 android:hint="搜索"
                 android:textSize="16sp" />

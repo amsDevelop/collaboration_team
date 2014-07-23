@@ -3,27 +3,24 @@ package com.sinopec.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sinopec.application.SinoApplication;
-
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISLayerInfo;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
+import com.sinopec.application.SinoApplication;
 
 @SuppressLint("NewApi")
 public class LayerDialog extends DialogFragment implements OnClickListener {
@@ -223,25 +220,31 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		}
 
 		@Override
-		public View getView(int arg0, View arg1, ViewGroup arg2) {
-			if (arg1 == null) {
-				arg1 = LayoutInflater.from(getActivity()).inflate(
-						R.layout.layer_list_item, null);
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder holder = new ViewHolder();
+			if (convertView == null) {
+				convertView = LayoutInflater.from(getActivity()).inflate(R.layout.layer_list_item, null);
+
+				holder.mName = (TextView) convertView.findViewById(R.id.menu_item_name);
+
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
 			}
 
-			TextView txView = (TextView) arg1.findViewById(R.id.layer_name);
+			TextView txView = (TextView) convertView.findViewById(R.id.layer_name);
+			holder.mCBcur = (CheckBox) convertView.findViewById(R.id.layer_can_operator);
 
-			txView.setText(layerInfos.get(arg0).getName());
+			txView.setText(layerInfos.get(position).getName());
 
-			arg1.findViewById(R.id.layer_can_operator).setOnClickListener(
-					new OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							showAlert();
-						}
-					});
-			return arg1;
+			return convertView;
 		}
+		
+		private class ViewHolder {
+			public TextView mName;
+			public CheckBox mCBcur;
+		}
+		
 
 	}
 
