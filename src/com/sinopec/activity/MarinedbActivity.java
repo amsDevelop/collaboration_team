@@ -2,7 +2,11 @@ package com.sinopec.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import android.R.layout;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,6 +34,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -54,6 +59,7 @@ import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 import com.esri.android.map.event.OnLongPressListener;
 import com.esri.android.map.event.OnSingleTapListener;
 import com.esri.core.geometry.Envelope;
+import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Line;
 import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
@@ -63,12 +69,19 @@ import com.esri.core.map.Graphic;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
+import com.esri.core.symbol.TextSymbol;
+import com.esri.core.tasks.ags.find.FindResult;
+import com.esri.core.tasks.ags.geocode.LocatorFindParameters;
+import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
+import com.sinopec.adapter.SearchAdapter;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
+import com.sinopec.task.GeocoderTask;
+import com.sinopec.task.SearchFindTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
@@ -76,7 +89,7 @@ import com.sinopec.view.MenuButtonNoIcon;
 
 public class MarinedbActivity extends Activity implements OnClickListener,
 		OnItemClickListener, DrawEventListener {
-	private String tag = "MainActivity";
+	private String tag = "map";
 	private TextView mTVContent;
 	private ProgressBar mProgressBar;
 
@@ -111,7 +124,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Button mLongTouchTitle;
 	private Button mBtnLayer;
 	private MenuButtonNoIcon mBtnSearch;
-	private Button mEditText;
+	private EditText mEditText;
 	private PopupWindow popupWindow;
 	private Context mContext;
 	private Button btnFrame, btnPolygon, btnLine;
@@ -184,6 +197,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		drawTool.setDrawLayer(drawLayer);
 		// mapTouchListener = new MapTouchListener(this, map);
 		// map.setOnTouchListener(mapTouchListener);
+		initData();
+		searchEvent();
 	}
 
 	private void initSymbols() {
@@ -356,8 +371,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MenuButton mMenuViewCount;
 	private MenuButton mMenuViewMine;
 	private MenuButton mMenuViewTool;
-
+	private ListView mListView;
+	private ViewGroup mSearchViewGroup;
+	
 	private void initView() {
+		mSearchViewGroup = (ViewGroup) findViewById(R.id.search_listview_layout);
+		mListView = (ListView) findViewById(R.id.search_listview);
 		mBaseLayout = (ViewGroup) findViewById(R.id.main_base_layout);
 		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
 
@@ -377,25 +396,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBtnLayer = (Button) findViewById(R.id.btn_map_layout);
 		mBtnLayer.setOnClickListener(this);
 		mBtnSearch = (MenuButtonNoIcon) findViewById(R.id.btn_search_confirm);
-		mBtnSearch.setOnClickListener(new OnClickListener() {
+		mBtnSearch.setOnClickListener(this);
 
-			@SuppressLint("NewApi")
-			@Override
-			public void onClick(View arg0) {
-//				SearchFragment search = new SearchFragment(mEditText.);
-//				search.show(getFragmentManager(), "search");
-			}
-		});
-
-		mEditText = (Button) findViewById(R.id.edittext_search);
-		mEditText.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(mContext, SearchActivity.class);
-				startActivity(intent);
-			}
-		});
+		mEditText = (EditText) findViewById(R.id.edittext_search);
+//		mEditText.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View arg0) {
+//				Intent intent = new Intent(mContext, SearchActivity.class);
+//				startActivity(intent);
+//			}
+//		});
 		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
 		mMenuViewTool.setOnClickListener(new OnClickListener() {
 
@@ -468,6 +479,36 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBtnScaleSmall.setOnClickListener(this);
 		mBtnScaleBig = (ImageButton) findViewById(R.id.btn_scale_big);
 		mBtnScaleBig.setOnClickListener(this);
+	}
+	
+	private void searchEvent() {
+		mListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+				FindResult result = (FindResult) tmpMap.get("FindResult");
+				Geometry geometry = result.getGeometry();
+//				Log.d(tag, "---TYPE:　"+ geometry.getType());
+				SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
+//				Point point = (Point) geometry;
+//				map.zoomTo(result.getl, 2);
+//				Graphic pGraphic = new Graphic(geometry, resultSymbol);
+//				drawLayer.addGraphic(pGraphic);
+				map.zoomToResolution((Point) geometry, 2);
+			}
+		});
+	}
+	
+	private ArrayList<HashMap<String, Object>> mList = new ArrayList<HashMap<String, Object>>();
+	private SearchAdapter mSearchAdapter;
+	/**
+	 * 初始化搜索结果列表数据
+	 */
+	private void initData() {
+		mSearchAdapter = new SearchAdapter(mContext, mList);
+		mListView.setAdapter(mSearchAdapter);
 	}
 
 	private int mChildMenuSplitNumber = 12;
@@ -657,11 +698,38 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			map.zoomin();
 		} else if (mBtnScaleSmall.getId() == v.getId()) {
 			map.zoomout();
+		} else if (mBtnSearch.getId() == v.getId()) {
+//			map.zoomTo(centerPt, factor);
+//			SearchFragment search = new SearchFragment(mEditText.);
+//			search.show(getFragmentManager(), "search");
+//			search();
+			SearchFindTask task = new SearchFindTask(mContext, mListView, mList, mSearchViewGroup, mSearchAdapter,"");
+		    task.execute(mEditText.getText().toString());
 		}
 
 	}
 
-
+	private GeocoderTask mGeocoderTask;
+	private void search(){
+		String address = mEditText.getText().toString();
+        try {
+            // create Locator parameters from single line address string
+            LocatorFindParameters findParams = new LocatorFindParameters(address);
+            //TODO:国家是否设置 set the search country to USA
+            Log.d("map", "----------国家: "+findParams.getSourceCountry());
+            findParams.setSourceCountry("world");
+            // limit the results to 2
+            findParams.setMaxLocations(2);
+            // set address spatial reference to match map
+            findParams.setOutSR(map.getSpatialReference());
+            // execute async task to geocode address
+            mGeocoderTask = new GeocoderTask(mContext, this, mListView, mSearchViewGroup, mSearchAdapter);
+            mGeocoderTask.execute(findParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+	}
 	/**
 	 * 是否选择了折线
 	 */
@@ -1278,6 +1346,28 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void clear() {
 		drawLayer.removeAll();
-
+	}
+	
+	private void jumpToMap(LocatorGeocodeResult result) {
+		if(result != null){
+	        Geometry resultLocGeom = result.getLocation();
+	        // create marker symbol to represent location
+	        SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
+	        // create graphic object for resulting location
+	        Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+	        // add graphic to location layer
+	        drawLayer.addGraphic(resultLocation);
+	        // create text symbol for return address
+	        TextSymbol resultAddress = new TextSymbol(12, result.getAddress(), Color.BLACK);
+	        // create offset for text
+	        resultAddress.setOffsetX(10);
+	        resultAddress.setOffsetY(50);
+	        // create a graphic object for address text
+	        Graphic resultText = new Graphic(resultLocGeom, resultAddress);
+	        // add address text graphic to location graphics layer
+	        drawLayer.addGraphic(resultText);
+	        // zoom to geocode result
+	        map.zoomToResolution(result.getLocation(), 2);
+		}
 	}
 }

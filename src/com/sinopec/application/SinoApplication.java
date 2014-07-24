@@ -1,5 +1,7 @@
 package com.sinopec.application;
 
+import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
+
 import android.app.Application;
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -21,6 +23,8 @@ public class SinoApplication extends Application {
 	 * 主页面底部菜单分成屏幕宽度的几份
 	 */
 	public static int menuDivisionNumber = 6;
+	public static LocatorGeocodeResult searchResult;
+	
 
 	public static Context getContext() {
 		return mContext;
