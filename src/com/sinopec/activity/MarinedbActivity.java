@@ -490,13 +490,19 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
 				FindResult result = (FindResult) tmpMap.get("FindResult");
 				Geometry geometry = result.getGeometry();
-//				Log.d(tag, "---TYPE:　"+ geometry.getType());
-				SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
-//				Point point = (Point) geometry;
+				Envelope envelope = new Envelope();
+				geometry.queryEnvelope(envelope);
+				Point point = new Point(envelope.getCenterX(), envelope.getCenterY());
+				Log.d(tag, "-0000--x:　"+ envelope.getCenterX()+"  Y: "+envelope.getCenterY());
+//				Log.d(tag, "---x:　"+ point.getX()+"  Y: "+point.getY());
+//				SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
 //				map.zoomTo(result.getl, 2);
 //				Graphic pGraphic = new Graphic(geometry, resultSymbol);
 //				drawLayer.addGraphic(pGraphic);
-				map.zoomToResolution((Point) geometry, 2);
+				map.zoomToResolution(point, 100);
+//				mSearchViewGroup.setVisibility(View.GONE);
+//				mList.clear();
+//				mSearchAdapter.notifyDataSetChanged();
 			}
 		});
 	}

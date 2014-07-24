@@ -58,7 +58,7 @@
                             android:gravity="left|center_vertical"
                              android:textColor="@color/black"
                             android:hint="塔里木"
-                            android:text="准葛尔"
+                            android:text="塔里木"
                             android:textSize="16sp" />
 
                         <com.sinopec.view.MenuButtonNoIcon
