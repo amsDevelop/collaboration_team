@@ -6,6 +6,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,7 +25,7 @@ import com.sinopec.application.SinoApplication;
 
 @SuppressLint("NewApi")
 public class LayerDialog extends DialogFragment implements OnClickListener {
-
+	private String tag = "map";
 	int resID = R.layout.layout_layer;
 	Button mBtn1 = null;
 	Button mBtn2 = null;
@@ -66,8 +67,11 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private void initData() {
 		// TODO Auto-generated method stub
 		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
-		for (int i = 0; i < arc.length; i++) {
-			layerInfos.add(arc[i]);
+		if(arc != null){
+			Log.d(tag, "-----onCreateView: "+arc.length);
+			for (int i = 0; i < arc.length; i++) {
+				layerInfos.add(arc[i]);
+			}
 		}
 	}
 
@@ -92,12 +96,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d(tag, "-----onResume: "+SinoApplication.layerName);
 		if(SinoApplication.LNsatellite.equals(SinoApplication.layerName)){
-			executeLayer1();
+			executeLayerSatellite();
 		}else if(SinoApplication.LNgeographic.equals(SinoApplication.layerName)){
-			executeLayer2();
+			executeLayerGeographic();
 		}else{
-			executeLayer3();
+			executeOilGas();
 		}
 	}
 
@@ -114,15 +119,15 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	public void onClick(View arg0) {
 		switch (arg0.getId()) {
 		case R.id.id_btn_layer_1:
-			executeLayer1();
+			executeLayerSatellite();
 			SinoApplication.layerName = SinoApplication.LNsatellite;
 			break;
 		case R.id.id_btn_layer_2:
-			executeLayer2();
+			executeLayerGeographic();
 			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
 		case R.id.id_btn_layer_3:
-			executeLayer3();
+			executeOilGas();
 			SinoApplication.layerName = SinoApplication.LNoilGas;
 			break;
 
@@ -143,12 +148,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		// Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
 	}
 
-	private void executeLayer2() {
+	private void executeLayerGeographic() {
 		// executeLayer1();
+		mCover.setVisibility(View.VISIBLE);
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(true);
 		mBtn3.setSelected(false);
-		dismiss();
+//		dismiss();
 		mapView.removeAll();
 		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
 				MarinedbActivity.genUrl);
@@ -165,7 +171,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		}
 	}
 
-	private void executeLayer3() {
+	private void executeOilGas() {
 //		mContaner.setVisibility(View.VISIBLE);
 		mCover.setVisibility(View.GONE);
 		mBtn1.setSelected(false);
@@ -178,12 +184,11 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		addDrawLayer();
 	}
 
-	private void executeLayer1() {
+	private void executeLayerSatellite() {
 //		mContaner.setVisibility(View.GONE);
 		mCover.setVisibility(View.VISIBLE);
 
-		dismiss();
-		mContaner.setVisibility(View.GONE);
+//		dismiss();
 		mapView.removeAll();
 		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
 				MarinedbActivity.imageUrl);

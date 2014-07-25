@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.gesture.GesturePoint;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -73,6 +74,7 @@ import com.esri.core.symbol.TextSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorFindParameters;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
+import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
@@ -82,6 +84,7 @@ import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
 import com.sinopec.task.GeocoderTask;
 import com.sinopec.task.SearchFindTask;
+import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
@@ -234,6 +237,26 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		Log.d("sinopec", "width: " + width + "  hei: " + height + "  density: "
 				+ SinoApplication.density + "  densityDpi: " + densityDpi);
 	}
+	
+	private IdentifyParameters mIdentifyParameters = new IdentifyParameters();
+	private void initSearchParams(Point pt) {
+		  //设置Identify查询参数
+	  mIdentifyParameters.setTolerance(20);
+	  mIdentifyParameters.setDPI(98);
+	  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
+	  mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
+
+	  mIdentifyParameters.setGeometry(pt);
+	  mIdentifyParameters.setSpatialReference(map.getSpatialReference());         
+	  mIdentifyParameters.setMapHeight(map.getHeight());
+	  mIdentifyParameters.setMapWidth(map.getWidth());
+	  
+	     // add the area of extent to identify parameters
+      Envelope env = new Envelope(pt);
+      map.setExtent(new Envelope(pt), 0);
+	  map.getExtent().queryEnvelope(env);
+	  mIdentifyParameters.setMapExtent(env);
+	}
 
 	private void addPopupWindow() {
 
@@ -289,7 +312,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						y1 = pt.getY();
 						name2 = "未知地名";
 						address2 = "未知地址";
-
+						//TODO:找到对象的属性等数据 url
+						
+						initSearchParams(pt);
+						SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, "", mLongTouchTitle);
+					    task.execute(mIdentifyParameters); 
+					     
 						try {
 							curX = x1;
 							curY = y1;
@@ -492,17 +520,21 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				Geometry geometry = result.getGeometry();
 				Envelope envelope = new Envelope();
 				geometry.queryEnvelope(envelope);
-				Point point = new Point(envelope.getCenterX(), envelope.getCenterY());
+				Point point = envelope.getCenter();
+//				Point point = new Point(envelope.getCenterX(), envelope.getCenterY());
 				Log.d(tag, "-0000--x:　"+ envelope.getCenterX()+"  Y: "+envelope.getCenterY());
 //				Log.d(tag, "---x:　"+ point.getX()+"  Y: "+point.getY());
 //				SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
 //				map.zoomTo(result.getl, 2);
 //				Graphic pGraphic = new Graphic(geometry, resultSymbol);
 //				drawLayer.addGraphic(pGraphic);
-				map.zoomToResolution(point, 100);
-//				mSearchViewGroup.setVisibility(View.GONE);
-//				mList.clear();
-//				mSearchAdapter.notifyDataSetChanged();
+//				map.zoomToResolution(point, 100);
+				//scale的值越大，看到的地图区域就越大
+				map.zoomToScale(point, 5000000);
+				//TODO:弹出pappap
+				mSearchViewGroup.setVisibility(View.GONE);
+				mList.clear();
+				mSearchAdapter.notifyDataSetChanged();
 			}
 		});
 	}
@@ -637,6 +669,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	}
 
+	LayerDialog mLayerDialog;
 	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
@@ -659,11 +692,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			startActivity(intent);
 		} else if (mBtnLayer.getId() == v.getId()) {
 			// start layer dialog
-			LayerDialog dialog = new LayerDialog();
-			dialog.setMapView(map);
-			dialog.setMapServiceLayer(tms);
-			dialog.setDrawLayer(drawLayer);
-			dialog.show(getFragmentManager(), "dialog");
+			if(mLayerDialog == null){
+				mLayerDialog = new LayerDialog();
+			}
+			mLayerDialog.setMapView(map);
+			mLayerDialog.setMapServiceLayer(tms);
+			mLayerDialog.setDrawLayer(drawLayer);
+			mLayerDialog.show(getFragmentManager(), "dialog");
 
 		} else if (btnFrame.getId() == v.getId()) {
 
@@ -1333,7 +1368,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void onBackPressed() {
 		// super.onBackPressed();
-		exitDialog();
+		if(mSearchViewGroup.getVisibility() == View.VISIBLE){
+			mSearchViewGroup.setVisibility(View.GONE);
+		}else{
+			exitDialog();
+		}
 	}
 
 	@Override
