@@ -2,6 +2,9 @@ package com.sinopec.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
 import com.sinopec.view.MyExpandableListAdapter;
 import com.sinopec.view.MyListAdapter;
@@ -70,9 +74,8 @@ public class SelectActivity extends Activity {
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
 				rightList.removeAll(rightList);
-				// TODO Auto-generated method stub
-				Log.v("mandy", "groupPosition: " + groupPosition
-						+ " childPosition: " + childPosition);
+//				Log.v("mandy", "groupPosition: " + groupPosition
+//						+ " childPosition: " + childPosition);
 				if (((String) titleName.getText()).contains("/")) {
 					titleName.setText(((String) titleName.getText())
 							.subSequence(0,
@@ -81,13 +84,26 @@ public class SelectActivity extends Activity {
 
 				String tileName = titleName.getText() + "/"
 						+ childs.get(groupPosition).get(childPosition);
-				titleName.setText(tileName);
-
-				for (int i = 0; i < 20; i++) {
-
-					rightList.add(childs.get(groupPosition).get(childPosition)
-							+ "(" + i + ")");
+//				titleName.setText(tileName);
+				String groupName = childs.get(groupPosition).get(childPosition);
+				Log.v("map", "groupPosition: " + groupName);
+				if(groupName.contains("基础属性")){
+					Set<Entry<String, Object>> ents = SinoApplication.findResult.getAttributes().entrySet();
+					StringBuilder sb = null;
+					for (Entry<String, Object> ent : ents) {
+						sb = new StringBuilder();
+						sb.append(ent.getKey());
+						sb.append(":  ");
+						sb.append(ent.getValue());
+						rightList.add(sb.toString());
+					}
+				}else{
+					for (int i = 0; i < 20; i++) {
+						rightList.add(childs.get(groupPosition).get(childPosition)
+								+ "(" + i + ")");
+					}
 				}
+
 
 				adapter.notifyDataSetChanged();
 

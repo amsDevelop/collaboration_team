@@ -1,5 +1,6 @@
 package com.sinopec.application;
 
+import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 
 import android.app.Application;
@@ -24,6 +25,7 @@ public class SinoApplication extends Application {
 	 */
 	public static int menuDivisionNumber = 6;
 	public static LocatorGeocodeResult searchResult;
+	public static FindResult findResult;
 	
 
 	public static Context getContext() {

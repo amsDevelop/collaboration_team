@@ -27,12 +27,10 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 	}
 
 	public Object getChild(int arg0, int arg1) {
-		// TODO Auto-generated method stub
 		return childs.get(arg0).get(arg1);
 	}
 
 	public long getChildId(int groupPosition, int childPosition) {
-		// TODO Auto-generated method stub
 		return childPosition;
 	}
 

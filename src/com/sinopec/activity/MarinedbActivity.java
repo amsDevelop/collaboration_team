@@ -1404,21 +1404,25 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	private SearchFragment searchFragment;
 	private FragmentManager fragmentManager;
+	private HashMap<String, Object> mHashMap4Property = new HashMap<String, Object>();
+	
 	@Override
 	public void setData(Object data) {
 		FindResult result = (FindResult)data; 
+		SinoApplication.findResult = result;
 		Geometry geometry = result.getGeometry();
 		Envelope envelope = new Envelope();
 		geometry.queryEnvelope(envelope);
 		Point point = envelope.getCenter();
 		map.zoomToScale(point, 5000000);
 		mTopicType = result.getLayerName();
-		
+		mHashMap4Property = (HashMap<String, Object>) result.getAttributes();
 		if (callout.isShowing()) {
 			callout.hide();
 		}
 		callout.show(point);
 		mLongTouchTitle.setText(result.getValue());
+//		statistics.setText(result.getValue());
 
 		hideInput();
 		Log.d(tag, "---------main-------------setData: "+mTopicType);
