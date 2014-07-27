@@ -19,21 +19,32 @@ import com.esri.core.tasks.ags.find.FindTask;
 import com.esri.core.tasks.ags.geocode.Locator;
 import com.sinopec.activity.R;
 import com.sinopec.adapter.SearchAdapter;
+import com.sinopec.common.InterfaceDataCallBack;
 
 public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	private FindTask mFindTask;
 	private Context mContext;
 	private ProgressDialog mProgressDialog;
 	private Locator locator;
-	private Activity mActivity;
+	private InterfaceDataCallBack mActivity;
 	private ListView mListView;
 	private ArrayList<HashMap<String, Object>> mList = new ArrayList<HashMap<String, Object>>();
 	private SearchAdapter mAdapter;
 	private ViewGroup mSearchViewGroup;
 	private String mServicesUrl;
+	public SearchFindTask(InterfaceDataCallBack callBack, Context context, ListView listView,ArrayList<HashMap<String, Object>> list, ViewGroup viewGroup, SearchAdapter adapter, String servicesUrl){
+		this.mContext = context;
+		this.mActivity = callBack;
+		this.mAdapter = adapter;
+		this.mList = list;
+		this.mSearchViewGroup = viewGroup;
+		mProgressDialog = new ProgressDialog(mContext);
+		mProgressDialog.setTitle(context.getString(R.string.search_loading));
+		this.mServicesUrl = servicesUrl;
+	}
+	
 	public SearchFindTask(Context context, ListView listView,ArrayList<HashMap<String, Object>> list, ViewGroup viewGroup, SearchAdapter adapter, String servicesUrl){
 		this.mContext = context;
-//		this.mActivity = activity;
 		this.mAdapter = adapter;
 		this.mList = list;
 		this.mSearchViewGroup = viewGroup;

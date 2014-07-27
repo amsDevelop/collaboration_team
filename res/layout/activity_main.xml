@@ -1,46 +1,39 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:iconbutton="http://schemas.android.com/apk/res/com.sinopec.activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-        <!-- todo:放mapview -->
-
-        <com.esri.android.map.MapView
-            android:id="@+id/map"
+        <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            mapoptions.ZoomLevel="130" >
-        </com.esri.android.map.MapView>
+            android:layout_height="fill_parent" >
 
-        <RelativeLayout
-            android:id="@+id/main_base_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp" >
+            <!-- todo:放mapview -->
 
-            <!-- 搜索框和图层按钮 -->
-
-            <LinearLayout
+            <com.esri.android.map.MapView
+                android:id="@+id/map"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:layout_height="fill_parent"
+                mapoptions.ZoomLevel="130" >
+            </com.esri.android.map.MapView>
+
+            <RelativeLayout
+                android:id="@+id/main_base_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" >
+
+                <!-- 搜索框和图层按钮 -->
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/toolbottom_bg"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:padding="8dp" >
-
-                    <!-- 搜索框+搜索结果listview -->
+                    android:orientation="vertical" >
 
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -48,234 +41,255 @@
                         android:layout_marginTop="5dp"
                         android:background="@drawable/toolbottom_bg"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal" >
+                        android:orientation="vertical"
+                        android:padding="8dp" >
 
-                        <EditText
-                            android:id="@+id/edittext_search"
-                            android:layout_width="1200dp"
+                        <!-- 搜索框+搜索结果listview -->
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/searchbtn"
-                            android:gravity="left|center_vertical"
-                             android:textColor="@color/black"
-                            android:hint="塔里木"
-                            android:text="塔里木"
-                            android:textSize="16sp" />
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/toolbottom_bg"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal" >
 
-                        <com.sinopec.view.MenuButtonNoIcon
-                            android:id="@+id/btn_search_confirm"
-                            style="@style/btn_search_confirm"
-                            android:layout_marginLeft="2dp"
-                            android:background="@drawable/selector_btn_toolbar"
-                            android:gravity="center"
-                            android:text="@string/btn_confirm"
-                            android:textSize="15sp"/>
+                            <Button
+                                android:id="@+id/edittext_search"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/searchbtn"
+                                android:gravity="left|center_vertical"
+                                android:text="搜索"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                            <com.sinopec.view.MenuButtonNoIcon
+                                android:id="@+id/btn_search_confirm"
+                                style="@style/btn_search_confirm"
+                                android:layout_marginLeft="2dp"
+                                android:background="@drawable/selector_btn_toolbar"
+                                android:gravity="center"
+                                android:text="@string/btn_confirm"
+                                android:textSize="15sp"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/search_listview_layout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/search_listview_bg"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:visibility="gone" >
+
+                            <ListView
+                                android:id="@+id/search_listview"
+                                android:layout_width="match_parent"
+                                android:layout_height="300dp"
+                                android:cacheColorHint="#00000000"
+                                android:divider="@color/lightgray"
+                                android:dividerHeight="1dp" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/search_listview_layout"
+                    <RelativeLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:background="@drawable/search_listview_bg"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:visibility="gone" >
+                        android:layout_marginTop="5dp" >
 
-                        <ListView
-                            android:id="@+id/search_listview"
-                            android:layout_width="match_parent"
-                            android:layout_height="300dp"
-                            android:cacheColorHint="#00000000"
-                            android:divider="@color/lightgray"
-                            android:dividerHeight="1dp" />
-                    </LinearLayout>
+                        <Button
+                            android:id="@+id/btn_map_layout"
+                            style="@style/btn_toolbar_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginRight="5dp"
+                            android:drawableTop="@drawable/tc"
+                            android:text="@string/btn_layout" />
+
+                        <LinearLayout
+                            android:id="@+id/map_scale_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:orientation="horizontal" >
+
+                            <ImageButton
+                                android:id="@+id/btn_scale_small"
+                                android:layout_width="66dp"
+                                android:layout_height="43dp"
+                                android:background="@drawable/btn_in" />
+
+                            <ImageButton
+                                android:id="@+id/btn_scale_big"
+                                android:layout_width="66dp"
+                                android:layout_height="43dp"
+                                android:background="@drawable/btn_zoom" />
+                        </LinearLayout>
+                    </RelativeLayout>
                 </LinearLayout>
+                <!-- 左边工具栏 -->
 
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp" >
-
-                    <Button
-                        android:id="@+id/btn_map_layout"
-                        style="@style/btn_toolbar_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginRight="5dp"
-                        android:drawableTop="@drawable/tc"
-                        android:text="@string/btn_layout" />
-
-                    <LinearLayout
-                        android:id="@+id/map_scale_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:orientation="horizontal" >
-
-                        <ImageButton
-                            android:id="@+id/btn_scale_small"
-                            android:layout_width="66dp"
-                            android:layout_height="43dp"
-                            android:background="@drawable/btn_in" />
-
-                        <ImageButton
-                            android:id="@+id/btn_scale_big"
-                            android:layout_width="66dp"
-                            android:layout_height="43dp"
-                            android:background="@drawable/btn_zoom" />
-                    </LinearLayout>
-                </RelativeLayout>
-            </LinearLayout>
-            <!-- 左边工具栏 -->
-
-            <LinearLayout
-                android:id="@+id/tool_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:orientation="vertical" >
-
-                <Button
-                    android:id="@+id/tb_single"
-                    style="@style/btn_toolbar_btn"
-                    android:drawableTop="@drawable/toolbar_single"
-                    android:text="@string/btn_single"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/tb_multiple"
-                    style="@style/btn_toolbar_btn"
-                    android:drawableTop="@drawable/toolbar_mutiple"
-                    android:text="@string/btn_mutiple" />
-
-                <Button
-                    android:id="@+id/tb_frame"
-                    style="@style/btn_toolbar_btn"
-                    android:drawableTop="@drawable/toolbar_frame"
-                    android:text="@string/btn_frame" />
-
-                <Button
-                    android:id="@+id/tb_polygon"
-                    style="@style/btn_toolbar_btn"
-                    android:drawableTop="@drawable/toolbar_polygon"
-                    android:text="@string/btn_polygon" />
-
-                <Button
-                    android:id="@+id/tb_line"
-                    style="@style/btn_toolbar_btn"
-                    android:drawableTop="@drawable/toolbar_line"
-                    android:text="@string/btn_line" />
-
-                <Button
-                    android:id="@+id/tb_cur_screen"
-                    style="@style/btn_toolbar_btn"
-                    android:drawableTop="@drawable/toolbar_screen"
-                    android:text="@string/btn_cur_screen" />
-            </LinearLayout>
-
-            <!-- 取消选择按钮 -->
-
-            <Button
-                android:id="@+id/tb_cancel_chooise"
-                style="@style/btn_toolbar_btn"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:text="@string/btn_cancel_chooise"
-                android:textSize="16sp" />
-            <!-- 放大，缩小 -->
-
-            <!-- 底部按钮栏 -->
-
-            <LinearLayout
-                android:id="@+id/menu_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/toolbottom_bg"
-                android:orientation="horizontal" >
-
-                <com.sinopec.view.MenuButton
-                    android:id="@+id/menuview_tool"
-                    style="@style/btn_menuview_btn"
-                    iconbutton:icon="@drawable/menu_tool"
-                    iconbutton:mtext="@string/btn_tool"
-                    iconbutton:relation="icon_right"
-                    iconbutton:text_size="16sp" />
-
-                <com.sinopec.view.MenuButton
-                    android:id="@+id/menuview_count"
-                    style="@style/btn_menuview_btn"
-                    iconbutton:icon="@drawable/menu_count"
-                    iconbutton:mtext="@string/btn_count"
-                    iconbutton:relation="icon_right"
-                    iconbutton:text_size="16sp" />
-
-                <com.sinopec.view.MenuButton
-                    android:id="@+id/menuview_compare"
-                    style="@style/btn_menuview_btn"
-                    iconbutton:icon="@drawable/menu_compare"
-                    iconbutton:mtext="@string/btn_compare"
-                    iconbutton:relation="icon_right"
-                    iconbutton:text_size="16sp" />
-
-                <com.sinopec.view.MenuButton
-                    android:id="@+id/menuview_mine"
-                    style="@style/btn_menuview_btn"
-                    iconbutton:icon="@drawable/menu_mine"
-                    iconbutton:mtext="@string/btn_mine"
-                    iconbutton:relation="icon_null"
-                    iconbutton:text_size="16sp" />
-            </LinearLayout>
-
-            <!-- 底部按钮栏子菜单栏 -->
-
-            <RelativeLayout
-                android:id="@+id/menu_children_grid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/menu_bar"
-                android:layout_centerHorizontal="true"
-                android:gravity="center_horizontal" >
-
-                <GridView
-                    android:id="@+id/menu_gridview"
+                <LinearLayout
+                    android:id="@+id/tool_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:cacheColorHint="#00000000"
-                    android:numColumns="auto_fit" />
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical" >
+
+                    <Button
+                        android:id="@+id/tb_single"
+                        style="@style/btn_toolbar_btn"
+                        android:drawableTop="@drawable/toolbar_single"
+                        android:text="@string/btn_single"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/tb_multiple"
+                        style="@style/btn_toolbar_btn"
+                        android:drawableTop="@drawable/toolbar_mutiple"
+                        android:text="@string/btn_mutiple" />
+
+                    <Button
+                        android:id="@+id/tb_frame"
+                        style="@style/btn_toolbar_btn"
+                        android:drawableTop="@drawable/toolbar_frame"
+                        android:text="@string/btn_frame" />
+
+                    <Button
+                        android:id="@+id/tb_polygon"
+                        style="@style/btn_toolbar_btn"
+                        android:drawableTop="@drawable/toolbar_polygon"
+                        android:text="@string/btn_polygon" />
+
+                    <Button
+                        android:id="@+id/tb_line"
+                        style="@style/btn_toolbar_btn"
+                        android:drawableTop="@drawable/toolbar_line"
+                        android:text="@string/btn_line" />
+
+                    <Button
+                        android:id="@+id/tb_cur_screen"
+                        style="@style/btn_toolbar_btn"
+                        android:drawableTop="@drawable/toolbar_screen"
+                        android:text="@string/btn_cur_screen" />
+                </LinearLayout>
+
+                <!-- 取消选择按钮 -->
+
+                <Button
+                    android:id="@+id/tb_cancel_chooise"
+                    style="@style/btn_toolbar_btn"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/btn_cancel_chooise"
+                    android:textSize="16sp" />
+                <!-- 放大，缩小 -->
+
+
+                <!-- 底部按钮栏 -->
+
+                <LinearLayout
+                    android:id="@+id/menu_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/toolbottom_bg"
+                    android:orientation="horizontal" >
+
+                    <com.sinopec.view.MenuButton
+                        android:id="@+id/menuview_tool"
+                        style="@style/btn_menuview_btn"
+                        iconbutton:icon="@drawable/menu_tool"
+                        iconbutton:mtext="@string/btn_tool"
+                        iconbutton:relation="icon_right"
+                        iconbutton:text_size="16sp" />
+
+                    <com.sinopec.view.MenuButton
+                        android:id="@+id/menuview_count"
+                        style="@style/btn_menuview_btn"
+                        iconbutton:icon="@drawable/menu_count"
+                        iconbutton:mtext="@string/btn_count"
+                        iconbutton:relation="icon_right"
+                        iconbutton:text_size="16sp" />
+
+                    <com.sinopec.view.MenuButton
+                        android:id="@+id/menuview_compare"
+                        style="@style/btn_menuview_btn"
+                        iconbutton:icon="@drawable/menu_compare"
+                        iconbutton:mtext="@string/btn_compare"
+                        iconbutton:relation="icon_right"
+                        iconbutton:text_size="16sp" />
+
+                    <com.sinopec.view.MenuButton
+                        android:id="@+id/menuview_mine"
+                        style="@style/btn_menuview_btn"
+                        iconbutton:icon="@drawable/menu_mine"
+                        iconbutton:mtext="@string/btn_mine"
+                        iconbutton:relation="icon_null"
+                        iconbutton:text_size="16sp" />
+                </LinearLayout>
+
+                <!-- 底部按钮栏子菜单栏 -->
+
+                <RelativeLayout
+                    android:id="@+id/menu_children_grid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/menu_bar"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_horizontal" >
+
+                    <GridView
+                        android:id="@+id/menu_gridview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:cacheColorHint="#00000000"
+                        android:numColumns="auto_fit" />
+                </RelativeLayout>
             </RelativeLayout>
-        </RelativeLayout>
-    </FrameLayout>
+        </FrameLayout>
 
-    <TextView
-        android:id="@+id/tv_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        android:singleLine="false" />
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:singleLine="false" />
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/poiAnim"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/ballon2" />
+        <ImageView
+            android:id="@+id/poiAnim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ballon2" />
+    </RelativeLayout>
 
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/fragmentlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone" >
+    </RelativeLayout>
+
+</FrameLayout>

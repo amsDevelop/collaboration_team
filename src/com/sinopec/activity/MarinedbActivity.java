@@ -10,6 +10,7 @@ import android.R.layout;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.gesture.GesturePoint;
@@ -79,6 +80,8 @@ import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.common.CommonData;
+import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
@@ -91,7 +94,7 @@ import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
 
 public class MarinedbActivity extends Activity implements OnClickListener,
-		OnItemClickListener, DrawEventListener {
+		OnItemClickListener, DrawEventListener, InterfaceDataCallBack {
 	private String tag = "map";
 	private TextView mTVContent;
 	private ProgressBar mProgressBar;
@@ -127,7 +130,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Button mLongTouchTitle;
 	private Button mBtnLayer;
 	private MenuButtonNoIcon mBtnSearch;
-	private EditText mEditText;
+	private Button mEditText;
 	private PopupWindow popupWindow;
 	private Context mContext;
 	private Button btnFrame, btnPolygon, btnLine;
@@ -150,10 +153,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private DrawTool drawTool;
 	private ArcGISTiledMapServiceLayer tms;
 	public static final String imageUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer";
-	public static final String genUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer";
-	public static final String oilUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer";
-	private ViewGroup mBaseLayout;
-
+    public static final String genUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer";
+    public static final String oilUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer";
+    private ViewGroup mBaseLayout;
+    private ViewGroup mFragmentLayout;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -167,8 +171,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		setContentView(R.layout.activity_main);
 		initView();
 		map = (MapView) findViewById(R.id.map);
-		// map.setExtent(new Envelope(-10868502.895856911, 4470034.144641369,
-		// -10837928.084542884, 4492965.25312689), 0);
+//		map.setExtent(new Envelope(-10868502.895856911, 4470034.144641369,
+//				-10837928.084542884, 4492965.25312689), 0);
 		tms = new ArcGISTiledMapServiceLayer(
 				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
 
@@ -201,7 +205,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// mapTouchListener = new MapTouchListener(this, map);
 		// map.setOnTouchListener(mapTouchListener);
 		initData();
-		searchEvent();
+		searchFragment = new SearchFragment(this);
+		fragmentManager = getFragmentManager();
 	}
 
 	private void initSymbols() {
@@ -237,26 +242,25 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		Log.d("sinopec", "width: " + width + "  hei: " + height + "  density: "
 				+ SinoApplication.density + "  densityDpi: " + densityDpi);
 	}
-
+	
 	private IdentifyParameters mIdentifyParameters = new IdentifyParameters();
-
 	private void initSearchParams(Point pt) {
-		// 设置Identify查询参数
-		mIdentifyParameters.setTolerance(20);
-		mIdentifyParameters.setDPI(98);
-		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
-		mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER);
+		  //设置Identify查询参数
+	  mIdentifyParameters.setTolerance(20);
+	  mIdentifyParameters.setDPI(98);
+	  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
+	  mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
 
-		mIdentifyParameters.setGeometry(pt);
-		mIdentifyParameters.setSpatialReference(map.getSpatialReference());
-		mIdentifyParameters.setMapHeight(map.getHeight());
-		mIdentifyParameters.setMapWidth(map.getWidth());
-
-		// add the area of extent to identify parameters
-		Envelope env = new Envelope(pt);
-		map.setExtent(new Envelope(pt), 0);
-		map.getExtent().queryEnvelope(env);
-		mIdentifyParameters.setMapExtent(env);
+	  mIdentifyParameters.setGeometry(pt);
+	  mIdentifyParameters.setSpatialReference(map.getSpatialReference());         
+	  mIdentifyParameters.setMapHeight(map.getHeight());
+	  mIdentifyParameters.setMapWidth(map.getWidth());
+	  
+	     // add the area of extent to identify parameters
+      Envelope env = new Envelope(pt);
+      map.setExtent(new Envelope(pt), 0);
+	  map.getExtent().queryEnvelope(env);
+	  mIdentifyParameters.setMapExtent(env);
 	}
 
 	private void addPopupWindow() {
@@ -313,13 +317,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						y1 = pt.getY();
 						name2 = "未知地名";
 						address2 = "未知地址";
-						// TODO:找到对象的属性等数据 url
-
+						//TODO:找到对象的属性等数据 url
+						
 						initSearchParams(pt);
-						SearchIdentifyTask task = new SearchIdentifyTask(
-								mContext, pt, "", mLongTouchTitle);
-						task.execute(mIdentifyParameters);
-
+						SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, "", mLongTouchTitle);
+					    task.execute(mIdentifyParameters); 
+					     
 						try {
 							curX = x1;
 							curY = y1;
@@ -381,15 +384,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						// return true;
+//						return true;
 					}// onLongPress
 				});
-
+		
 		MarinedbActivity.this.map.setOnTouchListener(new OnTouchListener() {
-
+			
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
-				if (mGridViewLayout.getVisibility() == View.VISIBLE)
+				if(mGridViewLayout.getVisibility() == View.VISIBLE)
 					mGridViewLayout.setVisibility(View.GONE);
 				return false;
 			}
@@ -403,11 +406,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MenuButton mMenuViewTool;
 	private ListView mListView;
 	private ViewGroup mSearchViewGroup;
-
+	
 	private void initView() {
 		mSearchViewGroup = (ViewGroup) findViewById(R.id.search_listview_layout);
 		mListView = (ListView) findViewById(R.id.search_listview);
 		mBaseLayout = (ViewGroup) findViewById(R.id.main_base_layout);
+		mFragmentLayout = (ViewGroup) findViewById(R.id.fragmentlayout);
 		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
 
 		// mBtnMenuTool = (Button) findViewById(R.id.menu_tool);
@@ -428,26 +432,18 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBtnSearch = (MenuButtonNoIcon) findViewById(R.id.btn_search_confirm);
 		mBtnSearch.setOnClickListener(this);
 
-		mEditText = (EditText) findViewById(R.id.edittext_search);
-		// mEditText.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View arg0) {
-		// Intent intent = new Intent(mContext, SearchActivity.class);
-		// startActivity(intent);
-		// }
-		// });
+		mEditText = (Button) findViewById(R.id.edittext_search);
+		mEditText.setOnClickListener(this);
 		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
 		mMenuViewTool.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 				Boolean[] clickTag = new Boolean[] { true, true, true };
-				if (mTag4OperateInLine) {
+				if(mTag4OperateInLine){
 					clickTag = new Boolean[] { true, false, false };
-				}
-				ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag,
-						mChildMenuSplitNumber);
+				} 
+				ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(3);
 				setGridView(list, arg0);
 			}
@@ -458,10 +454,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				Boolean[] clickTag = new Boolean[] { true, true, true, true,
-						true, true };
-				ChildrenMenuDataUtil.setCountChildrenMenuData(list, clickTag,
-						mChildMenuSplitNumber);
+				Boolean[] clickTag = new Boolean[] { true, true, true,true, true, true  };
+				ChildrenMenuDataUtil.setCountChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(6);
 				setGridView(list, arg0);
 			}
@@ -473,8 +467,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			@Override
 			public void onClick(View arg0) {
 				Boolean[] clickTag = new Boolean[] { true };
-				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag,
-						mChildMenuSplitNumber);
+				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(1);
 				setGridView(list, arg0);
 			}
@@ -485,10 +478,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				Boolean[] clickTag = new Boolean[] { true, true, true, true,
-						true };
-				ChildrenMenuDataUtil.setMineChildrenMenuData(list, clickTag,
-						mChildMenuSplitNumber);
+				Boolean[] clickTag = new Boolean[] { true, true, true,true, true };
+				ChildrenMenuDataUtil.setMineChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(5);
 				setGridView(list, arg0);
 			}
@@ -504,7 +495,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				btnLine.setSelected(false);
 				btnPolygon.setSelected(false);
 				btnCurScreen.setSelected(false);
-
+				
+				
 				drawLayer.removeAll();
 				drawTool.deactivate();
 			}
@@ -515,52 +507,18 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBtnScaleBig = (ImageButton) findViewById(R.id.btn_scale_big);
 		mBtnScaleBig.setOnClickListener(this);
 	}
-
-	private void searchEvent() {
-		mListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-				HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0
-						.getAdapter().getItem(position);
-				FindResult result = (FindResult) tmpMap.get("FindResult");
-				Geometry geometry = result.getGeometry();
-				Envelope envelope = new Envelope();
-				geometry.queryEnvelope(envelope);
-				Point point = envelope.getCenter();
-				// Point point = new Point(envelope.getCenterX(),
-				// envelope.getCenterY());
-				Log.d(tag, "-0000--x:　" + envelope.getCenterX() + "  Y: "
-						+ envelope.getCenterY());
-				// Log.d(tag, "---x:　"+ point.getX()+"  Y: "+point.getY());
-				// SimpleMarkerSymbol resultSymbol = new
-				// SimpleMarkerSymbol(Color.BLUE, 20,
-				// SimpleMarkerSymbol.STYLE.CIRCLE);
-				// map.zoomTo(result.getl, 2);
-				// Graphic pGraphic = new Graphic(geometry, resultSymbol);
-				// drawLayer.addGraphic(pGraphic);
-				// map.zoomToResolution(point, 100);
-				// scale的值越大，看到的地图区域就越大
-				map.zoomToScale(point, 5000000);
-				// TODO:弹出pappap
-				Log.v("mandy", "result  " + result.getValue());
-				if (callout.isShowing()) {
-					callout.hide();
-				}
-				callout.show(point);
-				mLongTouchTitle.setText(result.getValue());
-
-				mSearchViewGroup.setVisibility(View.GONE);
-				mList.clear();
-				mSearchAdapter.notifyDataSetChanged();
-			}
-		});
+	
+	public void hideInput(){
+		if(getCurrentFocus()!=null)
+		{
+			((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)) .hideSoftInputFromWindow(getCurrentFocus()
+					.getWindowToken(),
+					InputMethodManager.HIDE_NOT_ALWAYS); 
+		}
 	}
-
+	
 	private ArrayList<HashMap<String, Object>> mList = new ArrayList<HashMap<String, Object>>();
 	private SearchAdapter mSearchAdapter;
-
 	/**
 	 * 初始化搜索结果列表数据
 	 */
@@ -586,70 +544,66 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		public void handleMessage(android.os.Message msg) {
 			if (msg.what == 1) {
-				Log.v("mandy", "loaded: " + map.isLoaded());
+                Log.v("mandy", "loaded: " + map.isLoaded());
 				ArcGISLayerInfo[] arc = tms.getAllLayers();
-
+				
 				for (int i = 0; i < arc.length; i++) {
-
+					
 					arc[i].setVisible(false);
-
+					
+					
 				}
-
+				
 				for (ArcGISLayerInfo arcGISLayerInfo : arc) {
-
-					// Log.v("mandy", "layer name: " + arcGISLayerInfo.getName()
-					// + arcGISLayerInfo.isVisible()
-					// + "  child layer: "
-					// + arcGISLayerInfo.getLayers().length);
-					//
-					//
-					// //// Log.v("mandy", "legend size: " +
-					// arcGISLayerInfo.getLegend().size());
-					// // for (Legend legend : arcGISLayerInfo.getLegend()) {
-					// // Log.v("mandy", "legend: " + legend.getLabel());
-					// //
-					// // }
-					// Toast.makeText(mContext, arcGISLayerInfo.getName(),
-					// Toast.LENGTH_LONG).show();
+					
+//					Log.v("mandy", "layer name: " + arcGISLayerInfo.getName() + arcGISLayerInfo.isVisible()
+//							+ "  child layer: "
+//							+ arcGISLayerInfo.getLayers().length);
+//					
+//					
+//////					Log.v("mandy", "legend size: " + arcGISLayerInfo.getLegend().size());
+////					for (Legend legend : arcGISLayerInfo.getLegend()) {
+////						Log.v("mandy", "legend: " + legend.getLabel());
+////						
+////					}
+//					Toast.makeText(mContext, arcGISLayerInfo.getName(), Toast.LENGTH_LONG).show();
 				}
 				map.addLayer(tms);
-				// map.requestLayout();
-
-				Layer[] layer = map.getLayers();
-				Log.v("mandy", "layer: " + layer.length);
-
-				for (int i = 0; i < layer.length; i++) {
-
-					Log.v("mandy", "layer name : " + layer[i].getName());
-				}
-
-				// ArcGIS
-				int[] jj = { 0, 1 };
-
-				// ArcGISDynamicMapServiceLayer layers = new
-				// ArcGISDynamicMapServiceLayer("http://www.arcgisonline.cn/ArcGIS/rest/services/ChinaCities_Community_BaseMap_CHN/Beijing_Community_BaseMap_CHN/MapServer",
-				// jj);
-				// ArcGISLocalTiledLayer yy = new ArcGISLocalTiledLayer(path);
-
-				// ArcGISLocalTiledLayer
-				// ArcGISTiledMapServiceLayer layer = new
-				// ArcGISTiledMapServiceLayer("http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/0");
-				// Layer layer2 = new Layer() {
-				//
-				// @Override
-				// protected void initLayer() {
-				// // TODO Auto-generated method stub
-				//
-				// }
-				//
-				// @Override
-				// protected long create() {
-				// // TODO Auto-generated method stub
-				// return 0;
-				// }
-				// };
-				// map.addLayer(layers);
-				// map.invalidate();
+//				map.requestLayout();
+				
+			Layer[] layer =	map.getLayers();
+			Log.v("mandy", "layer: " + layer.length);
+			
+			for (int i = 0; i < layer.length; i++) {
+				
+				Log.v("mandy", "layer name : " +   layer[i].getName());
+			}
+				
+//				ArcGIS
+				int [] jj = {0,1};
+				
+//				ArcGISDynamicMapServiceLayer layers = new ArcGISDynamicMapServiceLayer("http://www.arcgisonline.cn/ArcGIS/rest/services/ChinaCities_Community_BaseMap_CHN/Beijing_Community_BaseMap_CHN/MapServer", jj);
+//				ArcGISLocalTiledLayer yy = new ArcGISLocalTiledLayer(path);
+				
+//				ArcGISLocalTiledLayer
+//				ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer("http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/0");
+//			Layer layer2 = new Layer() {
+//				
+//				@Override
+//				protected void initLayer() {
+//					// TODO Auto-generated method stub
+//					
+//				}
+//				
+//				@Override
+//				protected long create() {
+//					// TODO Auto-generated method stub
+//					return 0;
+//				}
+//			};
+//				map.addLayer(layers);
+//				map.invalidate();
+				
 
 			}
 
@@ -660,6 +614,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.d(tag, "main----------------------onResume");
 		map.unpause();
 		closeKeyboard();
 		new Handler().postDelayed(new Runnable() {
@@ -674,33 +629,38 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						+ mMenuBtnWidth + "  ly: " + mLocation4Line[1]);
 			}
 		}, 500);
+		
+//		Message msg = new Message();
+//		msg.what = 1;
+//		handler.sendMessageDelayed(msg, 15000);
 
-		// Message msg = new Message();
-		// msg.what = 1;
-		// handler.sendMessageDelayed(msg, 15000);
-
-		// new Thread(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// while (map.isLoaded()) {
-		//
-		//
-		// }
-		//
-		// }
-		// }).start();
+//		new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//               while (map.isLoaded()) {
+//            	   
+//            	   
+//               }
+//				
+//			}
+//		}).start();
 
 	}
 
 	LayerDialog mLayerDialog;
-
+	
+	/**
+	 * 油气藏类型
+	 */
+	private String mTopicType;
 	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
 		if (property.getId() == v.getId()) {
 			Log.v("mandy", "property is clicked");
 			Intent intent = new Intent(this, SelectActivity.class);
+			intent.putExtra(CommonData.KeyTopicType, mTopicType);
 			intent.putExtra("name", "属性");
 			startActivity(intent);
 
@@ -717,7 +677,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			startActivity(intent);
 		} else if (mBtnLayer.getId() == v.getId()) {
 			// start layer dialog
-			if (mLayerDialog == null) {
+			if(mLayerDialog == null){
 				mLayerDialog = new LayerDialog();
 			}
 			mLayerDialog.setMapView(map);
@@ -764,54 +724,49 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			map.zoomin();
 		} else if (mBtnScaleSmall.getId() == v.getId()) {
 			map.zoomout();
-		} else if (mBtnSearch.getId() == v.getId()) {
-			// map.zoomTo(centerPt, factor);
-			// SearchFragment search = new SearchFragment(mEditText.);
-			// search.show(getFragmentManager(), "search");
-			// search();
-			SearchFindTask task = new SearchFindTask(mContext, mListView,
-					mList, mSearchViewGroup, mSearchAdapter, "");
-			task.execute(mEditText.getText().toString());
+		} else if (mEditText.getId() == v.getId()) {
+//			map.zoomTo(centerPt, factor);
+			mFragmentLayout.setVisibility(View.VISIBLE);
+			fragmentManager.beginTransaction().replace(R.id.fragmentlayout, searchFragment).commit();
+//			search.show(getFragmentManager(), "search");
+//			search();
+//			SearchFindTask task = new SearchFindTask(mContext, mListView, mList, mSearchViewGroup, mSearchAdapter,"");
+//		    task.execute(mEditText.getText().toString());
 		}
 
 	}
 
 	private GeocoderTask mGeocoderTask;
-
-	private void search() {
+	private void search(){
 		String address = mEditText.getText().toString();
-		try {
-			// create Locator parameters from single line address string
-			LocatorFindParameters findParams = new LocatorFindParameters(
-					address);
-			// TODO:国家是否设置 set the search country to USA
-			Log.d("map", "----------国家: " + findParams.getSourceCountry());
-			findParams.setSourceCountry("world");
-			// limit the results to 2
-			findParams.setMaxLocations(2);
-			// set address spatial reference to match map
-			findParams.setOutSR(map.getSpatialReference());
-			// execute async task to geocode address
-			mGeocoderTask = new GeocoderTask(mContext, this, mListView,
-					mSearchViewGroup, mSearchAdapter);
-			mGeocoderTask.execute(findParams);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+        try {
+            // create Locator parameters from single line address string
+            LocatorFindParameters findParams = new LocatorFindParameters(address);
+            //TODO:国家是否设置 set the search country to USA
+            Log.d("map", "----------国家: "+findParams.getSourceCountry());
+            findParams.setSourceCountry("world");
+            // limit the results to 2
+            findParams.setMaxLocations(2);
+            // set address spatial reference to match map
+            findParams.setOutSR(map.getSpatialReference());
+            // execute async task to geocode address
+            mGeocoderTask = new GeocoderTask(mContext, this, mListView, mSearchViewGroup, mSearchAdapter);
+            mGeocoderTask.execute(findParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
 	}
-
 	/**
 	 * 是否选择了折线
 	 */
 	private boolean mTag4OperateInLine = false;
-
 	private void setButtonsStatus(int vId) {
 		if (btnFrame.getId() == vId) {
 			mTag4OperateInLine = false;
-			if (btnFrame.isSelected()) {
+			if(btnFrame.isSelected()){
 				btnFrame.setSelected(false);
-			} else {
+			}else{
 				btnFrame.setSelected(true);
 			}
 			btnMultiple.setSelected(false);
@@ -820,9 +775,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnCurScreen.setSelected(false);
 		} else if (btnLine.getId() == vId) {
 			mTag4OperateInLine = true;
-			if (btnLine.isSelected()) {
+			if(btnLine.isSelected()){
 				btnLine.setSelected(false);
-			} else {
+			}else{
 				btnLine.setSelected(true);
 			}
 			btnMultiple.setSelected(false);
@@ -831,9 +786,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnCurScreen.setSelected(false);
 		} else if (btnPolygon.getId() == vId) {
 			mTag4OperateInLine = false;
-			if (btnPolygon.isSelected()) {
+			if(btnPolygon.isSelected()){
 				btnPolygon.setSelected(false);
-			} else {
+			}else{
 				btnPolygon.setSelected(true);
 			}
 			btnMultiple.setSelected(false);
@@ -842,9 +797,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnCurScreen.setSelected(false);
 		} else if (btnCurScreen.getId() == vId) {
 			mTag4OperateInLine = false;
-			if (btnCurScreen.isSelected()) {
+			if(btnCurScreen.isSelected()){
 				btnCurScreen.setSelected(false);
-			} else {
+			}else{
 				btnCurScreen.setSelected(true);
 			}
 			btnMultiple.setSelected(false);
@@ -853,9 +808,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnLine.setSelected(false);
 		} else if (btnMultiple.getId() == vId) {
 			mTag4OperateInLine = false;
-			if (btnMultiple.isSelected()) {
+			if(btnMultiple.isSelected()){
 				btnMultiple.setSelected(false);
-			} else {
+			}else{
 				btnMultiple.setSelected(true);
 			}
 			btnFrame.setSelected(false);
@@ -867,47 +822,47 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		showCancelButton();
 	}
 
-	// 设置底部按钮的点击效果
+	//设置底部按钮的点击效果
 	private void setMenuButtonsStatus(int vId) {
-		if (mMenuViewTool.getId() == vId) {
-			if (mMenuViewTool.isSelected()) {
-				mMenuViewTool.setSelected(false);
-			} else {
-				mMenuViewTool.setSelected(true);
-			}
-			mMenuViewCount.setSelected(false);
-			mMenuViewCompare.setSelected(false);
-			mMenuViewMine.setSelected(false);
-		} else if (mMenuViewCount.getId() == vId) {
-			if (mMenuViewCount.isSelected()) {
+			if (mMenuViewTool.getId() == vId) {
+				if(mMenuViewTool.isSelected()){
+					mMenuViewTool.setSelected(false);
+				}else{
+					mMenuViewTool.setSelected(true);
+				}
 				mMenuViewCount.setSelected(false);
-			} else {
-				mMenuViewCount.setSelected(true);
-			}
-			mMenuViewTool.setSelected(false);
-			mMenuViewCompare.setSelected(false);
-			mMenuViewMine.setSelected(false);
-		} else if (mMenuViewCompare.getId() == vId) {
-			if (mMenuViewCompare.isSelected()) {
 				mMenuViewCompare.setSelected(false);
-			} else {
-				mMenuViewCompare.setSelected(true);
-			}
-			mMenuViewTool.setSelected(false);
-			mMenuViewCount.setSelected(false);
-			mMenuViewMine.setSelected(false);
-		} else if (mMenuViewMine.getId() == vId) {
-			if (mMenuViewMine.isSelected()) {
 				mMenuViewMine.setSelected(false);
-			} else {
-				mMenuViewMine.setSelected(true);
+			} else if (mMenuViewCount.getId() == vId) {
+				if(mMenuViewCount.isSelected()){
+					mMenuViewCount.setSelected(false);
+				}else{
+					mMenuViewCount.setSelected(true);
+				}
+				mMenuViewTool.setSelected(false);
+				mMenuViewCompare.setSelected(false);
+				mMenuViewMine.setSelected(false);
+			} else if (mMenuViewCompare.getId() == vId) {
+				if(mMenuViewCompare.isSelected()){
+					mMenuViewCompare.setSelected(false);
+				}else{
+					mMenuViewCompare.setSelected(true);
+				}
+				mMenuViewTool.setSelected(false);
+				mMenuViewCount.setSelected(false);
+				mMenuViewMine.setSelected(false);
+			} else if (mMenuViewMine.getId() == vId) {
+				if(mMenuViewMine.isSelected()){
+					mMenuViewMine.setSelected(false);
+				}else{
+					mMenuViewMine.setSelected(true);
+				}
+				mMenuViewTool.setSelected(false);
+				mMenuViewCount.setSelected(false);
+				mMenuViewCompare.setSelected(false);
+				
 			}
-			mMenuViewTool.setSelected(false);
-			mMenuViewCount.setSelected(false);
-			mMenuViewCompare.setSelected(false);
-
 		}
-	}
 
 	private View view;
 	private View mLastClickedView;
@@ -989,25 +944,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		HashMap<String, Object> map = (HashMap<String, Object>) arg0
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
-		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map
-				.get("clicktag");
-		if (showMap != null && !showMap.get(tag)) {
+		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map.get("clicktag");
+		if(showMap != null && !showMap.get(tag)){
 			return;
 		}
-
+		
 		Log.d("sinopec", "-------点击p: " + position + "  tag: " + tag);
 		if ("toolDistance".equals(tag)) {
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-			String[] name = { "KM", "M" };
+			String[] name = {"KM", "M"};
 			for (int i = 0; i < name.length; i++) {
 				HashMap<String, Object> distancMap = new HashMap<String, Object>();
 				distancMap.put("name", name[i]);
 				distancMap.put("tag", name[i]);
 				list.add(distancMap);
 			}
-			// btnPolygon
-			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout,
-					mMenuListView, mMenuAdapter, this, list);
+			//btnPolygon
+			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
 			drawTool.calculateAreaAndLength();
 		} else if ("toolArea".equals(tag)) {
 			drawTool.calculateAreaAndLength();
@@ -1401,22 +1354,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void onBackPressed() {
 		// super.onBackPressed();
-		if (mSearchViewGroup.getVisibility() == View.VISIBLE) {
+		if(mSearchViewGroup.getVisibility() == View.VISIBLE){
 			mSearchViewGroup.setVisibility(View.GONE);
-		} else {
+		}else{
 			exitDialog();
 		}
 	}
 
 	@Override
 	public void handleDrawEvent(DrawEvent event) {
-
+		
 		this.drawLayer.addGraphic(event.getDrawGraphic());
-
-		// if (map.getLayerByID(drawLayer.getID()) != null) {
-		// map.removeLayer(drawLayer);
-
-		// }
+		
+//		if (map.getLayerByID(drawLayer.getID()) != null) {
+//			map.removeLayer(drawLayer);
+			
+//		}
+		
 
 	}
 
@@ -1424,29 +1378,52 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	public void clear() {
 		drawLayer.removeAll();
 	}
-
+	
 	private void jumpToMap(LocatorGeocodeResult result) {
-		if (result != null) {
-			Geometry resultLocGeom = result.getLocation();
-			// create marker symbol to represent location
-			SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(
-					Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
-			// create graphic object for resulting location
-			Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
-			// add graphic to location layer
-			drawLayer.addGraphic(resultLocation);
-			// create text symbol for return address
-			TextSymbol resultAddress = new TextSymbol(12, result.getAddress(),
-					Color.BLACK);
-			// create offset for text
-			resultAddress.setOffsetX(10);
-			resultAddress.setOffsetY(50);
-			// create a graphic object for address text
-			Graphic resultText = new Graphic(resultLocGeom, resultAddress);
-			// add address text graphic to location graphics layer
-			drawLayer.addGraphic(resultText);
-			// zoom to geocode result
-			map.zoomToResolution(result.getLocation(), 2);
+		if(result != null){
+	        Geometry resultLocGeom = result.getLocation();
+	        // create marker symbol to represent location
+	        SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
+	        // create graphic object for resulting location
+	        Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+	        // add graphic to location layer
+	        drawLayer.addGraphic(resultLocation);
+	        // create text symbol for return address
+	        TextSymbol resultAddress = new TextSymbol(12, result.getAddress(), Color.BLACK);
+	        // create offset for text
+	        resultAddress.setOffsetX(10);
+	        resultAddress.setOffsetY(50);
+	        // create a graphic object for address text
+	        Graphic resultText = new Graphic(resultLocGeom, resultAddress);
+	        // add address text graphic to location graphics layer
+	        drawLayer.addGraphic(resultText);
+	        // zoom to geocode result
+	        map.zoomToResolution(result.getLocation(), 2);
 		}
 	}
+
+	private SearchFragment searchFragment;
+	private FragmentManager fragmentManager;
+	@Override
+	public void setData(Object data) {
+		FindResult result = (FindResult)data; 
+		Geometry geometry = result.getGeometry();
+		Envelope envelope = new Envelope();
+		geometry.queryEnvelope(envelope);
+		Point point = envelope.getCenter();
+		map.zoomToScale(point, 5000000);
+		mTopicType = result.getLayerName();
+		
+		if (callout.isShowing()) {
+			callout.hide();
+		}
+		callout.show(point);
+		mLongTouchTitle.setText(result.getValue());
+
+		hideInput();
+		Log.d(tag, "---------main-------------setData: "+mTopicType);
+		fragmentManager.beginTransaction().remove(searchFragment);
+		mFragmentLayout.setVisibility(View.GONE);
+	}
+	
 }

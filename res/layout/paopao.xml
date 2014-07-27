@@ -25,16 +25,16 @@
     <Button
         android:id="@+id/paopao_name"
         style="@style/style_pop_button"
-        android:layout_x="50dp"
-        android:layout_y="23dp"
+        android:layout_x="53dp"
+        android:layout_y="17dp"
         android:background="@drawable/selector_paopao_title_bg"
         android:text="塔里木彭迪" />
 
     <Button
         android:id="@+id/statistics"
         style="@style/style_pop_button"
-        android:layout_x="177dp"
-        android:layout_y="53dp"
+        android:layout_x="172dp"
+        android:layout_y="49dp"
         android:background="@drawable/selector_paopao_count_bg"
         android:text="@string/btn_count" />
 

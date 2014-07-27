@@ -1,126 +1,126 @@
 package com.sinopec.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.annotation.SuppressLint;
-import android.app.DialogFragment;
+import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.esri.core.tasks.ags.find.FindResult;
+import com.sinopec.adapter.SearchAdapter;
+import com.sinopec.common.InterfaceDataCallBack;
+import com.sinopec.task.SearchFindTask;
+import com.sinopec.view.MenuButtonNoIcon;
 
 @SuppressLint({ "NewApi", "ValidFragment" })
-public class SearchFragment extends DialogFragment implements OnClickListener {
-
-	
-	int resID = R.layout.layout_serch;
+public class SearchFragment extends Fragment implements OnClickListener {
+	private String tag= "SearchFragment";
 	private ListView mListView;
+	private Context mContext;
+	private MenuButtonNoIcon mConfirm;
+	private ViewGroup mViewGroup;
+	private EditText mEditText;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme);
+		this.mContext = getActivity();
+		Log.d(tag, "----------------------onCreate");
 	}
 	
-	Editable keyWord;
+	private InterfaceDataCallBack mInterfaceDataCallBack;
 	
-	public SearchFragment(Editable keyWord) {
-		this.keyWord = keyWord;
+	public SearchFragment(InterfaceDataCallBack data) {
+		this.mInterfaceDataCallBack = data;
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
-		View view = inflater.inflate(resID, null);
-		
-		
-		mListView = (ListView) view.findViewById(R.id.id_lstview_search_1);
-		mListView.setAdapter(new MyAdapter());
-		mListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				showAlert();
-			}
-		});
-		
-		TextView tx = (TextView) view.findViewById(R.id.id_txview_searhKey);
-		if(keyWord != null && keyWord.toString() != null){
-			
-			tx.setText("\"" +keyWord.toString() + "\"" + " 搜索结果");
-		}
-		
-		
-		
-		view.findViewById(R.id.id_btn_operator_1).setOnClickListener(this);
-		view.findViewById(R.id.id_btn_operator_2).setOnClickListener(this);
+		View view = inflater.inflate(R.layout.activity_search, null);
+		initView(view);
+		initData();
+		Log.d(tag, "----------------------onCreateView");
 		return view;
 		
 	}
 	
-	void showAlert(){
-		Toast.makeText(getActivity(), "功能暂时未支持", -1).show() ;
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.d(tag, "----------------------onPause");
 	}
 	
-	class MyAdapter extends BaseAdapter {
-		ArrayList<String> mList = new ArrayList<String>();
-		
-		public MyAdapter() {
-			mList.add("亚洲");
-			mList.add("太平洋");
-			mList.add("非洲");
-			mList.add("欧洲");
-			mList.add("胜利油田");
-			mList.add("大庆油田");
-		}
-		
-		@Override
-		public int getCount() {
-			return mList.size();
-		}
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d(tag, "----------------------onDestroy");
+	}
+	
+	private ImageButton mBtnBack;
+	private void initView(View view) {
+		mConfirm = (MenuButtonNoIcon) view.findViewById(R.id.btn_search_confirm);
+		mConfirm.setOnClickListener(this);
+		mListView = (ListView) view.findViewById(R.id.search_listview);
+		mViewGroup = (ViewGroup) view.findViewById(R.id.search_listview_layout);
+		mBtnBack = (ImageButton) view.findViewById(R.id.btn_login_back);
+		mBtnBack.setOnClickListener(new OnClickListener() {
 
-		@Override
-		public Object getItem(int arg0) {
-			return null;
-		}
-
-		@Override
-		public long getItemId(int arg0) {
-			return 0;
-		}
-
-		@Override
-		public View getView(int arg0, View arg1, ViewGroup arg2) {
-			if(arg1 == null){
-				arg1 = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_layer_serch, null);
+			@Override
+			public void onClick(View arg0) {
+				
 			}
-			
-			TextView layerName = (TextView) arg1.findViewById(R.id.id_txview_layer);
-			
-			layerName.setText(mList.get(arg0));
-			return arg1;
-		}
+		});
+		mEditText = (EditText) view.findViewById(R.id.edittext_search);
+		mListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+				FindResult result = (FindResult) tmpMap.get("FindResult");
+				mInterfaceDataCallBack.setData(result);
+				//TODO:弹出pappap
+				mViewGroup.setVisibility(View.GONE);
+				mList.clear();
+				mAdapter.notifyDataSetChanged();
+			}
+		});
 		
+	}
+	
+	private ArrayList<HashMap<String, Object>> mList = new ArrayList<HashMap<String, Object>>();
+	private SearchAdapter mAdapter;
+
+	private void initData() {
+		mAdapter = new SearchAdapter(mContext, mList);
+		mListView.setAdapter(mAdapter);
+
 	}
 
 	@Override
 	public void onClick(View v) {
-		switch(v.getId()){
-		case R.id.id_btn_operator_1:
-			dismiss();
-			showAlert();
+		switch (v.getId()) {
+		case R.id.btn_search_confirm:
+			String key = mEditText.getText().toString();
+			SearchFindTask task = new SearchFindTask(mContext, mListView, mList,  mViewGroup, mAdapter,"");
+		    task.execute(key);
+			
 			break;
 		case R.id.id_btn_operator_2:
-			dismiss();
 			break;
 		}
 	}
