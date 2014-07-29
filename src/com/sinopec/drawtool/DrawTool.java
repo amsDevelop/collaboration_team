@@ -2,6 +2,8 @@ package com.sinopec.drawtool;
 
 import java.util.ArrayList;
 
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -12,14 +14,12 @@ import android.widget.Toast;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.MapOnTouchListener;
 import com.esri.android.map.MapView;
-import com.esri.android.map.event.OnSingleTapListener;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Line;
 import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polygon;
 import com.esri.core.geometry.Polyline;
-import com.esri.core.geometry.Segment;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.FillSymbol;
 import com.esri.core.symbol.LineSymbol;
@@ -28,14 +28,15 @@ import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
-import com.sinopec.application.SinoApplication;
+import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.sinopec.task.SearchIdentifyTask;
+import com.sinopec.task.SearchIdentifyTask.OnFinishListener;
 
 /**
  * 
- * @author ropp gispace@yeah.net
  * 
- *         ��ͼʵ���֧࣬�ֻ��㡢���Ρ��ߡ�����Ρ�Բ���ֻ��ߡ��ֻ�����Σ������ø���ͼ�ε�symbol��
+ * 
+ *  
  */
 public class DrawTool extends Subject {
 
@@ -65,10 +66,9 @@ public class DrawTool extends Subject {
 	public static final int FREEHAND_POLYLINE = 8;
 
 	private static final int TEMP_LAYER_ID = -999999;
-	private Context mContext;
-	public DrawTool(MapView mapView, Context context) {
+
+	public DrawTool(MapView mapView) {
 		this.mapView = mapView;
-		this.mContext = context;
 		this.tempLayer = new GraphicsLayer();
 //		this.tempLayer.set
 		this.mapView.addLayer(this.tempLayer);
@@ -85,8 +85,9 @@ public class DrawTool extends Subject {
 		lineSymbol = new SimpleLineSymbol(Color.RED, 5,
 				SimpleLineSymbol.STYLE.DASH);
 		
-		this.fillSymbol = new SimpleFillSymbol(Color.BLACK);
-		this.fillSymbol.setAlpha(90);
+		fillSymbol = new SimpleFillSymbol(Color.BLACK);
+		fillSymbol.setOutline(new SimpleLineSymbol(Color.RED, 2));
+		fillSymbol.setAlpha(100);
 		
 	
 		
@@ -121,15 +122,15 @@ public class DrawTool extends Subject {
 			
 			break;
 		case DrawTool.ENVELOPE:
-		   tempLayer.removeAll();
+//		   tempLayer.removeAll();
 			this.envelope = new Envelope();
 //			drawGraphic.setGeometry(this.envelope);
 //			drawGraphic.setSymbol(fillSymbol);
 //			
-			drawGraphic = new Graphic(this.envelope, fillSymbol);
-			
-////			drawGraphic.
-			this.tempLayer.addGraphic(drawGraphic);
+//			drawGraphic = new Graphic(this.envelope, fillSymbol);
+//			
+//////			drawGraphic.
+//			this.tempLayer.addGraphic(drawGraphic);
 			
 			break;
 		case DrawTool.POLYGON:
@@ -158,7 +159,7 @@ public class DrawTool extends Subject {
 		this.active = false;
 		this.drawType = -1;
 		this.point = null;
-		this.envelope = null;
+//		this.envelope = null;
 		this.polygon = null;
 		this.polyline = null;
 		this.drawGraphic = null;
@@ -194,12 +195,9 @@ public class DrawTool extends Subject {
 		DrawEvent e = new DrawEvent(this, DrawEvent.DRAW_END,
 				DrawTool.this.drawGraphic);
 		DrawTool.this.notifyEvent(e);
-		if (envelope != null) {
-		String sArea = getAreaString(envelope.calculateArea2D());
-
-		Toast.makeText(mapView.getContext(), "总面积： " + sArea,
-				Toast.LENGTH_SHORT).show();
-		}
+//		if (envelope != null) {
+//	
+//		}
 		int type = this.drawType;
 		this.deactivate();
 		this.activate(type);
@@ -213,6 +211,7 @@ public class DrawTool extends Subject {
 		private ArrayList<Point> points = null;// 记录全部点
 		private Polygon tempPolygon = null;// 记录绘制过程中的多边形
 		MultiPath poly;
+		private int uid = -1;
 
 		public DrawTouchListener(Context context, MapView view) {
 			super(context, view);
@@ -233,9 +232,9 @@ public class DrawTool extends Subject {
 					sendDrawEndEvent();
 					break;
 				case DrawTool.ENVELOPE:
-					startPoint = point;
-					envelope.setCoords(point.getX(), point.getY(),
-							point.getX(), point.getY());
+//					startPoint = point;
+//					envelope.setCoords(point.getX(), point.getY(),
+//							point.getX(), point.getY());
 					break;
 				case DrawTool.CIRCLE:
 					startPoint = point;
@@ -259,14 +258,34 @@ public class DrawTool extends Subject {
 				Point point = mapView.toMapPoint(to.getX(), to.getY());
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
-					envelope.setXMin(startPoint.getX() > point.getX() ? point
-							.getX() : startPoint.getX());
-					envelope.setYMin(startPoint.getY() > point.getY() ? point
-							.getY() : startPoint.getY());
-					envelope.setXMax(startPoint.getX() < point.getX() ? point
-							.getX() : startPoint.getX());
-					envelope.setYMax(startPoint.getY() < point.getY() ? point
-							.getY() : startPoint.getY());
+//					envelope.setXMin(startPoint.getX() > point.getX() ? point
+//							.getX() : startPoint.getX());
+//					envelope.setYMin(startPoint.getY() > point.getY() ? point
+//							.getY() : startPoint.getY());
+//					envelope.setXMax(startPoint.getX() < point.getX() ? point
+//							.getX() : startPoint.getX());
+//					envelope.setYMax(startPoint.getY() < point.getY() ? point
+//							.getY() : startPoint.getY());
+					
+					if (uid == -1) { // first time
+						drawLayer.removeAll();
+						Log.v("mandy", "onDragPointerMove uid == -1");
+						Graphic g = new Graphic(null, fillSymbol);
+					  	startPoint = mapView.toMapPoint(from.getX(), from.getY());
+						uid  = drawLayer.addGraphic(g);
+
+					} else { 
+						Log.v("mandy", "onDragPointerMove uid != -1");
+//						gLayer.removeAll();
+						Point p2 = mapView.toMapPoint(new Point(to.getX(), to.getY()));
+//						Envelope envelope = new Envelope();
+						envelope.merge(startPoint);
+						envelope.merge(p2);
+						drawLayer.updateGraphic(uid, envelope);
+						
+					}
+					
+					
 					break;
 				case DrawTool.FREEHAND_POLYGON:
 					polygon.lineTo(point);
@@ -308,6 +327,7 @@ public class DrawTool extends Subject {
 					break;
 					
 				}
+				Log.v("mandy", "onDragPointerMove......");
 //				tempLayer.postInvalidate();
 				return true;
 			}
@@ -321,31 +341,22 @@ public class DrawTool extends Subject {
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
 //					DrawEvent e = new DrawEvent();
-					DrawTool.this.notifyClear();
-					envelope.setXMin(startPoint.getX() > point.getX() ? point
-							.getX() : startPoint.getX());
-					envelope.setYMin(startPoint.getY() > point.getY() ? point
-							.getY() : startPoint.getY());
-					envelope.setXMax(startPoint.getX() < point.getX() ? point
-							.getX() : startPoint.getX());
-					envelope.setYMax(startPoint.getY() < point.getY() ? point
-							.getY() : startPoint.getY());
-					//----zcn-----------------------
-					IdentifyParameters mIdentifyParameters = new IdentifyParameters();
-					  mIdentifyParameters.setTolerance(20);
-					  mIdentifyParameters.setDPI(98);
-					  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
-					  mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
+//					DrawTool.this.notifyClear();
+//					envelope.setXMin(startPoint.getX() > point.getX() ? point
+//							.getX() : startPoint.getX());
+//					envelope.setYMin(startPoint.getY() > point.getY() ? point
+//							.getY() : startPoint.getY());
+//					envelope.setXMax(startPoint.getX() < point.getX() ? point
+//							.getX() : startPoint.getX());
+//					envelope.setYMax(startPoint.getY() < point.getY() ? point
+//							.getY() : startPoint.getY());
+					String sArea = getAreaString(envelope.calculateArea2D());
 
-					  mIdentifyParameters.setGeometry(envelope);
-					  mIdentifyParameters.setSpatialReference(mapView.getSpatialReference());         
-					  mIdentifyParameters.setMapHeight(mapView.getHeight());
-					  mIdentifyParameters.setMapWidth(mapView.getWidth());
-					  mIdentifyParameters.setMapExtent(envelope);
-						SearchIdentifyTask task = new SearchIdentifyTask(mContext);
-					    task.execute(mIdentifyParameters); 
-					  
-					//----zcn-----------------------
+					Toast.makeText(mapView.getContext(), "总面积： " + sArea,
+							Toast.LENGTH_SHORT).show();
+					queryAttribute();
+					
+					
 					break;
 				case DrawTool.FREEHAND_POLYGON:
 					polygon.lineTo(point);
@@ -372,6 +383,7 @@ public class DrawTool extends Subject {
 				}
 				sendDrawEndEvent();
 				this.startPoint = null;
+				uid = -1;
 				return true;
 			}
 			return super.onDragPointerUp(from, to);
@@ -572,6 +584,51 @@ public class DrawTool extends Subject {
 			sArea = Double.toString(area) + " 平方米";
 
 		return sArea;
+	}
+
+
+	public void queryAttribute() {
+		if (envelope == null) {
+			return;
+		}
+		
+//		IdentifyParameters identifyParameters = new IdentifyParameters();
+//		
+//		identifyParameters.setGeometry(envelope);
+//		identifyParameters.setLayers(new int[]{0,1,2,3,4,5});
+//		identifyParameters.setLayerMode(IdentifyParameters.ALL_LAYERS);
+////		identifyParameters.setTolerance(20);
+//		identifyParameters.setSpatialReference(mapView.getSpatialReference()); 
+//		identifyParameters.setMapExtent(envelope);
+//		identifyParameters.setMapHeight(mapView.getHeight());
+//		identifyParameters.setMapWidth(mapView.getWidth());
+//		identifyParameters.setDPI(98);
+		IdentifyParameters mIdentifyParameters = new IdentifyParameters();
+		  mIdentifyParameters.setTolerance(20);
+		  mIdentifyParameters.setDPI(98);
+		  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
+		  mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
+
+		  mIdentifyParameters.setGeometry(envelope);
+		  mIdentifyParameters.setSpatialReference(mapView.getSpatialReference());         
+		  mIdentifyParameters.setMapHeight(mapView.getHeight());
+		  mIdentifyParameters.setMapWidth(mapView.getWidth());
+		  mIdentifyParameters.setMapExtent(envelope);
+		  
+			SearchIdentifyTask task = new SearchIdentifyTask(mapView.getContext(),mapView.getLayers()[0].getUrl());
+		    task.execute(mIdentifyParameters); 
+
+	      task.setFinishListener(new OnFinishListener() {
+			
+			@Override
+			public void onFinish(ArrayList<IdentifyResult> resultList) {
+				// TODO Auto-generated method stub
+				   Toast.makeText(mapView.getContext(), "查询到 " + resultList.size() + " 个： " + resultList.toString() , Toast.LENGTH_LONG).show();
+			}
+		});
+		
+	 
+		
 	}
 
 	

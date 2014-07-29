@@ -7,6 +7,8 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.esri.core.tasks.ags.find.FindResult;
 import com.sinopec.adapter.SearchAdapter;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.task.SearchFindTask;
+import com.sinopec.view.ClearableEditText;
 import com.sinopec.view.MenuButtonNoIcon;
 
 @SuppressLint({ "NewApi", "ValidFragment" })
@@ -32,7 +35,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	private Context mContext;
 	private MenuButtonNoIcon mConfirm;
 	private ViewGroup mViewGroup;
-	private EditText mEditText;
+	private ClearableEditText mEditText;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,7 +87,37 @@ public class SearchFragment extends Fragment implements OnClickListener {
 				getActivity().onBackPressed();
 			}
 		});
-		mEditText = (EditText) view.findViewById(R.id.edittext_search);
+		mEditText = (ClearableEditText) view.findViewById(R.id.edittext_search);
+		mEditText.addTextChangedListener(new TextWatcher() {
+			private String tag = "text";
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+//				Log.d(tag, "-----onTextChanged: "+arg0.toString());
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {
+//				Log.d(tag, "-----afterTextChanged: "+arg0.toString());
+				String key = arg0.toString();
+				if("".equals(key)){
+					if(mAdapter != null){
+						mList.clear();
+						mAdapter.notifyDataSetChanged();
+						mViewGroup.setVisibility(View.GONE);
+					}
+				}else{
+//					search(arg0.toString());
+				}
+				
+			}
+		});
+		
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -93,7 +126,6 @@ public class SearchFragment extends Fragment implements OnClickListener {
 				HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
 				FindResult result = (FindResult) tmpMap.get("FindResult");
 				mInterfaceDataCallBack.setData(result);
-				//TODO:弹出pappap
 				mViewGroup.setVisibility(View.GONE);
 				mList.clear();
 				mAdapter.notifyDataSetChanged();
@@ -115,13 +147,19 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_search_confirm:
-			String key = mEditText.getText().toString();
-			SearchFindTask task = new SearchFindTask(mContext, mListView, mList,  mViewGroup, mAdapter,"");
-		    task.execute(key);
-			
+//			String key = mEditText.getText().toString();
+//			SearchFindTask task = new SearchFindTask(mInterfaceDataCallBack, mContext, mListView, mList,  mViewGroup, mAdapter,"");
+//		    task.execute(key);
+			search(mEditText.getText().toString());
 			break;
 		case R.id.id_btn_operator_2:
 			break;
 		}
+	}
+	
+	private void search(String key) {
+		SearchFindTask task = new SearchFindTask(mInterfaceDataCallBack, mContext, mListView, mList,  mViewGroup, mAdapter,"");
+		task.execute(key);
+		
 	}
 }

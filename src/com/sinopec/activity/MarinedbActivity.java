@@ -200,7 +200,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		addPopupWindow();
 		getAboutDisplay();
 		initLayout();
-		drawTool = new DrawTool(map, mContext);
+		drawTool = new DrawTool(map);
 		drawTool.addEventListener(this);
 		drawTool.setDrawLayer(drawLayer);
 		// mapTouchListener = new MapTouchListener(this, map);

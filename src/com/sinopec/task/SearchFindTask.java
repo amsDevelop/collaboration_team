@@ -26,7 +26,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	private Context mContext;
 	private ProgressDialog mProgressDialog;
 	private Locator locator;
-	private InterfaceDataCallBack mActivity;
+	private InterfaceDataCallBack mCallBack;
 	private ListView mListView;
 	private ArrayList<HashMap<String, Object>> mList = new ArrayList<HashMap<String, Object>>();
 	private SearchAdapter mAdapter;
@@ -34,7 +34,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	private String mServicesUrl;
 	public SearchFindTask(InterfaceDataCallBack callBack, Context context, ListView listView,ArrayList<HashMap<String, Object>> list, ViewGroup viewGroup, SearchAdapter adapter, String servicesUrl){
 		this.mContext = context;
-		this.mActivity = callBack;
+		this.mCallBack = callBack;
 		this.mAdapter = adapter;
 		this.mList = list;
 		this.mSearchViewGroup = viewGroup;
@@ -77,8 +77,14 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 			return;
 		}
 
-		updateData(results);
-
+		if(results.size() == 1){
+			//只有一个结果就直接跳转地图
+			mAdapter.notifyDataSetChanged();
+			mSearchViewGroup.setVisibility(View.VISIBLE);
+			mCallBack.setData(results.get(0));
+		}else{
+			updateData(results);
+		}
 		// TODO:
 		// gLayer.removeAll();
 		// Geometry geom = results[index].getGeometry();

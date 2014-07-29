@@ -14,9 +14,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:background="@drawable/toolbottom_bg"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:background="@drawable/toolbottom_bg">
+        android:orientation="horizontal" >
 
         <ImageButton
             android:id="@+id/btn_login_back"
@@ -30,15 +30,15 @@
             android:gravity="center_vertical"
             android:orientation="horizontal" >
 
-            <EditText
+            <com.sinopec.view.ClearableEditText
                 android:id="@+id/edittext_search"
                 android:layout_width="1100dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/searchbtn"
-                android:textColor="@color/black"
-                android:singleLine="true"
                 android:hint="搜索"
+                android:singleLine="true"
                 android:text="塔里木"
+                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <com.sinopec.view.MenuButtonNoIcon
@@ -59,20 +59,20 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginTop="15dp"
-        android:gravity="center_horizontal"
         android:background="@drawable/search_listview_bg"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:visibility="gone" >
 
-               <ListView
+        <ListView
             android:id="@+id/search_listview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:cacheColorHint="#00000000"
-            android:dividerHeight="1dp"
-            android:divider="@color/lightgray"/>
+            android:divider="@color/lightgray"
+            android:dividerHeight="1dp" />
     </LinearLayout>
 
 </LinearLayout>
