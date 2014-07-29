@@ -21,7 +21,7 @@ import com.esri.core.tasks.ags.identify.IdentifyTask;
 import com.sinopec.activity.R;
 
 /**
- * 根据点 查询的task： SearchIdentifyTask
+ * 根据(点 查询)的task： SearchIdentifyTask
  */
 public class SearchIdentifyTask extends
 		AsyncTask<IdentifyParameters, Void, IdentifyResult[]> {
@@ -39,6 +39,13 @@ public class SearchIdentifyTask extends
 		this.mAnchor = anchorPoint;
 		this.mServicesUrl = url;
 		this.mTitle = title;
+		mProgressDialog = new ProgressDialog(mContext);
+		mProgressDialog.setTitle(context.getString(R.string.search_loading));
+	}
+	
+	
+	public SearchIdentifyTask(Context context){
+		this.mContext = context;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
 	}
@@ -65,21 +72,20 @@ public class SearchIdentifyTask extends
 		if (results == null) {
 			return;
 		}
-		String message = "查询结果: \n";
+//		String message = "查询结果: \n";
 		for (int index = 0; index < results.length; index++) {
-			message += "选中图层名称: " + results[index].getLayerName() + "\n";
-			message += "属性字段与值: " + "\n";
-			Map<String, Object> attrMap = results[index].getAttributes();
-			Set<Entry<String, Object>> ents = attrMap.entrySet();
-			for (Entry<String, Object> ent : ents) {
-				message += ent.getKey() + " : " + ent.getValue() + "\n";
-			}
-			Log.d("map", "-msg :　"+ message);
+			IdentifyResult result = results[index];
+			Log.d("map", "-结果 len:　"+ results.length+"  "+result.getValue()+"  Name: "+result.getLayerName()+" id: "+result.getLayerId());
+//			message += "选中图层名称: " + results[index].getLayerName() + "\n";
+//			message += "属性字段与值: " + "\n";
+//			Map<String, Object> attrMap = results[index].getAttributes();
+//			Set<Entry<String, Object>> ents = attrMap.entrySet();
+//			for (Entry<String, Object> ent : ents) {
+//				message += ent.getKey() + " : " + ent.getValue() + "\n";
+//			}
+//			Log.d("map", "-msg :　"+ message);
 		}
 //		mTitle.setText(results[0].getValue().toString());
-//		Toast toast = Toast.makeText(mContext, message,
-//				Toast.LENGTH_LONG);
-//		toast.show();
 	}
 
 	@Override

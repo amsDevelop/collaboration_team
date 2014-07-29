@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -65,6 +67,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	}
 
 	private void initData() {
+		layerInfos.removeAll(layerInfos);
 		// TODO Auto-generated method stub
 		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
 		if(arc != null){
@@ -151,6 +154,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private void executeLayerGeographic() {
 		// executeLayer1();
 		mCover.setVisibility(View.VISIBLE);
+		mListView.setEnabled(false);
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(true);
 		mBtn3.setSelected(false);
@@ -174,6 +178,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private void executeOilGas() {
 //		mContaner.setVisibility(View.VISIBLE);
 		mCover.setVisibility(View.GONE);
+		mListView.setEnabled(true);
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(false);
 		mBtn3.setSelected(true);
@@ -185,9 +190,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	}
 
 	private void executeLayerSatellite() {
-//		mContaner.setVisibility(View.GONE);
 		mCover.setVisibility(View.VISIBLE);
-
+		mListView.setEnabled(false);
 //		dismiss();
 		mapView.removeAll();
 		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
@@ -239,8 +243,57 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 			TextView txView = (TextView) convertView.findViewById(R.id.layer_name);
 			holder.mCBcur = (CheckBox) convertView.findViewById(R.id.layer_can_operator);
-
+            switch (position) {
+			case 0:
+				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer");
+				break;
+			case 1:
+				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer");
+				break;
+			case 2:
+				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/well/MapServer");
+				break;
+			case 3:
+				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/oilfields/MapServer");
+				break;
+			case 4:
+				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/gasfields/MapServer");
+				break;
+			case 5:
+				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer");
+				break;
+			default:
+				break;
+			}
+			
+			
+			
 			txView.setText(layerInfos.get(position).getName());
+			
+			holder.mCBcur.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				      
+					if (isChecked) {
+						Log.v("mandy", "buttonView.getTag(): " + buttonView.getTag());
+//						Log.v("mandy", "holder.mCBcur: " + holder.mCBcur.getTag());
+//						mapView.removeAll();
+						ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
+								"http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaCities_Community_BaseMap_CHN/Beijing_Community_BaseMap_CHN/MapServer");
+						mapView.addLayer(arcGISTiledMapServiceLayer);
+						
+					}
+				}
+			});
+			
+//			盆地：http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer
+//				油藏：http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer
+//				气藏：http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer
+//				油田：http://202.204.193.201:6080/arcgis/rest/services/oilfields/MapServer
+//				气田：http://202.204.193.201:6080/arcgis/rest/services/gasfields/MapServer
+//				井位：http://202.204.193.201:6080/arcgis/rest/services/well/MapServer
+//			
 
 			return convertView;
 		}

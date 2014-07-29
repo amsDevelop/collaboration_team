@@ -2,43 +2,81 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:background="@color/white"
+    android:orientation="vertical"
+        android:paddingLeft="5dp"
+    android:paddingRight="5dp" >
 
     <LinearLayout
-        android:id="@+id/leftLayout"
+        android:id="@+id/menu_children_grid"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:background="#f7f5f5"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/toolbottom_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/btn_login_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_btn_back" />
 
         <TextView
             android:id="@+id/titleName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/background_dark"
-            android:textSize="35sp" />
-
-        <ExpandableListView
-            android:id="@+id/expanList"
-            android:layout_width="wrap_content"
-            android:layout_height="800dip"
-            android:cacheColorHint="#00000000"
-            android:divider="@color/lightgray"
-            android:dividerHeight="1dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="2dip"
-        android:layout_height="match_parent"
-        android:src="@android:color/holo_orange_dark" />
-
-    <ListView
-        android:id="@+id/listView"
+    <LinearLayout
+        android:id="@+id/leftLayout"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:background="#f3f1f1"
-        android:cacheColorHint="#00000000" />
+        android:layout_height="wrap_content"
+        android:background="#f7f5f5"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ExpandableListView
+                android:id="@+id/expanList"
+                android:layout_width="fill_parent"
+                android:layout_weight="5"
+                android:layout_height="800dip"
+                android:cacheColorHint="#00000000"
+                android:divider="@color/lightgray"
+                android:scrollbars="none"
+                android:dividerHeight="1dp" />
+
+            <LinearLayout
+                android:id="@+id/content"
+                android:gravity="center"
+                android:layout_width="fill_parent"
+                android:layout_weight="1"
+                android:layout_height="800dp"
+                android:background="@color/lightyellow"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="2dip"
+            android:layout_height="match_parent"
+            android:src="@android:color/holo_orange_dark" 
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="#f3f1f1"
+            android:cacheColorHint="#00000000" 
+            android:visibility="gone"/>
+    </LinearLayout>
 
 </LinearLayout>

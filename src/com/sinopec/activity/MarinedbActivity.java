@@ -22,6 +22,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -199,7 +200,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		addPopupWindow();
 		getAboutDisplay();
 		initLayout();
-		drawTool = new DrawTool(map);
+		drawTool = new DrawTool(map, mContext);
 		drawTool.addEventListener(this);
 		drawTool.setDrawLayer(drawLayer);
 		// mapTouchListener = new MapTouchListener(this, map);
@@ -251,7 +252,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
 	  mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
 
-	  mIdentifyParameters.setGeometry(pt);
+	  mIdentifyParameters.setGeometry(new Envelope(pt));
 	  mIdentifyParameters.setSpatialReference(map.getSpatialReference());         
 	  mIdentifyParameters.setMapHeight(map.getHeight());
 	  mIdentifyParameters.setMapWidth(map.getWidth());
@@ -319,9 +320,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						address2 = "未知地址";
 						//TODO:找到对象的属性等数据 url
 						
-						initSearchParams(pt);
-						SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, "", mLongTouchTitle);
-					    task.execute(mIdentifyParameters); 
+//						initSearchParams(pt);
+//						SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, "", mLongTouchTitle);
+//					    task.execute(mIdentifyParameters); 
 					     
 						try {
 							curX = x1;
@@ -654,6 +655,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 * 油气藏类型
 	 */
 	private String mTopicType;
+	/**
+	 * 宝藏名字
+	 */
+	private String mTopicName;
 	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
@@ -661,6 +666,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			Log.v("mandy", "property is clicked");
 			Intent intent = new Intent(this, SelectActivity.class);
 			intent.putExtra(CommonData.KeyTopicType, mTopicType);
+			intent.putExtra(CommonData.KeyTopicName, mTopicName);
 			intent.putExtra("name", "属性");
 			startActivity(intent);
 
@@ -668,11 +674,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			Log.v("mandy", "statistics is clicked");
 			Intent intent = new Intent(this, SelectActivity.class);
+			intent.putExtra(CommonData.KeyTopicType, mTopicType);
 			intent.putExtra("name", "统计");
 			startActivity(intent);
 		} else if (doc.getId() == v.getId()) {
 			Log.v("mandy", "doc is clicked");
 			Intent intent = new Intent(this, SelectActivity.class);
+			intent.putExtra(CommonData.KeyTopicType, mTopicType);
 			intent.putExtra("name", "文档");
 			startActivity(intent);
 		} else if (mBtnLayer.getId() == v.getId()) {
@@ -1354,13 +1362,25 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void onBackPressed() {
 		// super.onBackPressed();
-		if(mSearchViewGroup.getVisibility() == View.VISIBLE){
-			mSearchViewGroup.setVisibility(View.GONE);
+		if(mFragmentLayout.getVisibility() == View.VISIBLE){
+			mFragmentLayout.setVisibility(View.GONE);
 		}else{
 			exitDialog();
 		}
 	}
 
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		if(keyCode == KeyEvent.KEYCODE_BACK){
+//			if (mSearchViewGroup.getVisibility() == View.VISIBLE) {
+//				mSearchViewGroup.setVisibility(View.GONE);
+//			} else {
+//				exitDialog();
+//			}
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
+	
 	@Override
 	public void handleDrawEvent(DrawEvent event) {
 		
@@ -1416,6 +1436,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		Point point = envelope.getCenter();
 		map.zoomToScale(point, 5000000);
 		mTopicType = result.getLayerName();
+		mTopicName = result.getValue();
 		mHashMap4Property = (HashMap<String, Object>) result.getAttributes();
 		if (callout.isShowing()) {
 			callout.hide();
@@ -1426,7 +1447,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		hideInput();
 		Log.d(tag, "---------main-------------setData: "+mTopicType);
-		fragmentManager.beginTransaction().remove(searchFragment);
+		fragmentManager.beginTransaction().remove(searchFragment).commit();
 		mFragmentLayout.setVisibility(View.GONE);
 	}
 	

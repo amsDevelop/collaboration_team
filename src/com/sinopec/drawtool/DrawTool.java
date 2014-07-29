@@ -27,6 +27,9 @@ import com.esri.core.symbol.MarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
+import com.esri.core.tasks.ags.identify.IdentifyParameters;
+import com.sinopec.application.SinoApplication;
+import com.sinopec.task.SearchIdentifyTask;
 
 /**
  * 
@@ -62,9 +65,10 @@ public class DrawTool extends Subject {
 	public static final int FREEHAND_POLYLINE = 8;
 
 	private static final int TEMP_LAYER_ID = -999999;
-
-	public DrawTool(MapView mapView) {
+	private Context mContext;
+	public DrawTool(MapView mapView, Context context) {
 		this.mapView = mapView;
+		this.mContext = context;
 		this.tempLayer = new GraphicsLayer();
 //		this.tempLayer.set
 		this.mapView.addLayer(this.tempLayer);
@@ -326,6 +330,22 @@ public class DrawTool extends Subject {
 							.getX() : startPoint.getX());
 					envelope.setYMax(startPoint.getY() < point.getY() ? point
 							.getY() : startPoint.getY());
+					//----zcn-----------------------
+					IdentifyParameters mIdentifyParameters = new IdentifyParameters();
+					  mIdentifyParameters.setTolerance(20);
+					  mIdentifyParameters.setDPI(98);
+					  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
+					  mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
+
+					  mIdentifyParameters.setGeometry(envelope);
+					  mIdentifyParameters.setSpatialReference(mapView.getSpatialReference());         
+					  mIdentifyParameters.setMapHeight(mapView.getHeight());
+					  mIdentifyParameters.setMapWidth(mapView.getWidth());
+					  mIdentifyParameters.setMapExtent(envelope);
+						SearchIdentifyTask task = new SearchIdentifyTask(mContext);
+					    task.execute(mIdentifyParameters); 
+					  
+					//----zcn-----------------------
 					break;
 				case DrawTool.FREEHAND_POLYGON:
 					polygon.lineTo(point);
