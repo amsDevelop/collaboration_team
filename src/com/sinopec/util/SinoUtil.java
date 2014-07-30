@@ -39,6 +39,5 @@ public class SinoUtil {
 		popupWindow.setOutsideTouchable(true);
 		 // 显示在屏幕的最中央  
 		popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0); 
-
 	}
 }

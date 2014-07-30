@@ -106,15 +106,11 @@ public class SelectActivity extends Activity {
 				String groupName = childs.get(groupPosition).get(childPosition);
 				Log.v("map", "groupPosition: " + groupName);
 				if(groupName.contains("基础属性")){
-					Set<Entry<String, Object>> ents = SinoApplication.findResult.getAttributes().entrySet();
-					StringBuilder sb = null;
-					sb = new StringBuilder();
-					for (Entry<String, Object> ent : ents) {
-//						sb = new StringBuilder();
-						sb.append(ent.getKey());
-						sb.append(":  ");
-						sb.append(ent.getValue() + "\n");
-//						rightList.add(sb.toString());
+					StringBuilder sb = new StringBuilder();
+					if(SinoApplication.findResult != null){
+						getFindResultData(sb);
+					}else if(SinoApplication.identifyResult != null){
+						getIdentifyResultData(sb);
 					}
 					
 					showBaseProperty(sb.toString());
@@ -139,19 +135,28 @@ public class SelectActivity extends Activity {
 	private void getData() {
 		Intent intent = getIntent();
 		ArrayList<String> list = new ArrayList<String>();
-		if (intent != null) {
+		if(SinoApplication.identifyResult != null){
+			//来自长按查询
 			dataName = intent.getStringExtra("name");
-			mTopicType = intent.getStringExtra(CommonData.KeyTopicType);
-			titleName.setText(intent.getStringExtra(CommonData.KeyTopicName));
-			Log.d("map", "-------mType: " + mTopicType);
-			if (CommonData.TypeProperty.equals(dataName)) {
-				list = initChildMenuData4Property();
-			} else if (CommonData.TypeCount.equals(dataName)) {
-				list = initChildMenuData4Count();
-			} else if (CommonData.TypeDocument.equals(dataName)) {
-				list = initChildMenuData4Document();
-			}
-		}		
+			mTopicType = SinoApplication.identifyResult.getLayerName();
+			Map<String, Object> attributes = SinoApplication.identifyResult.getAttributes();
+			String name = (String) attributes.get("NAME_CN");
+			titleName.setText(name);
+		}else{
+			if (intent != null) {
+				dataName = intent.getStringExtra("name");
+				mTopicType = intent.getStringExtra(CommonData.KeyTopicType);
+				titleName.setText(intent.getStringExtra(CommonData.KeyTopicName));
+			}	
+		}
+		Log.d("map", "-------mType: " + mTopicType);
+		if (CommonData.TypeProperty.equals(dataName)) {
+			list = initChildMenuData4Property();
+		} else if (CommonData.TypeCount.equals(dataName)) {
+			list = initChildMenuData4Count();
+		} else if (CommonData.TypeDocument.equals(dataName)) {
+			list = initChildMenuData4Document();
+		}
 		initData(list);
 	}
 	
@@ -171,6 +176,8 @@ public class SelectActivity extends Activity {
 			titils = new String[] { "油气藏基础属性", "油气藏储量产量", "油气藏烃源条件",
 					"油气藏储集条件", "油气藏盖层条件", "油气藏原油性质", "油气藏天然气性质",
 					"油气藏水性质", };
+		}else{
+			titils = new String[]{"没有结果"};
 		}
 		for (int i = 0; i < titils.length; i++) {
 			list.add(titils[i]);
@@ -230,6 +237,28 @@ public class SelectActivity extends Activity {
 		mTVBaseProperty.setGravity(Gravity.CENTER);
 		mContentLayout.addView(mTVBaseProperty);
 		
+	}
+	
+	private void getFindResultData(StringBuilder sb) {
+		Set<Entry<String, Object>> ents = SinoApplication.findResult.getAttributes().entrySet();
+		for (Entry<String, Object> ent : ents) {
+//			sb = new StringBuilder();
+			sb.append(ent.getKey());
+			sb.append(":  ");
+			sb.append(ent.getValue() + "\n");
+//			rightList.add(sb.toString());
+		}
+	}
+	
+	private void getIdentifyResultData(StringBuilder sb) {
+		Set<Entry<String, Object>> ents = SinoApplication.identifyResult.getAttributes().entrySet();
+		for (Entry<String, Object> ent : ents) {
+//			sb = new StringBuilder();
+			sb.append(ent.getKey());
+			sb.append(":  ");
+			sb.append(ent.getValue() + "\n");
+//			rightList.add(sb.toString());
+		}
 	}
 
 }

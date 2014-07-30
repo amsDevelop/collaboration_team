@@ -29,6 +29,7 @@ import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.sinopec.common.CommonData;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.task.SearchIdentifyTask.OnFinishListener;
 
@@ -371,6 +372,7 @@ public class DrawTool extends Subject {
 							+ Math.pow(startPoint.getY() - point.getY(), 2));
 					
 					getCircle(startPoint, radius, polygon);
+					queryAttribute();
 					break;
 				case DrawTool.ANY_POLYGON:
 					poly.lineTo((float) startPoint.getX(),
@@ -379,6 +381,7 @@ public class DrawTool extends Subject {
 					drawLayer.addGraphic(new Graphic(poly, fillSymbol));
 					// points.add(startPoint);
 					startPoint = null;
+					queryAttribute();
 					break;
 				}
 				sendDrawEndEvent();
@@ -615,15 +618,21 @@ public class DrawTool extends Subject {
 		  mIdentifyParameters.setMapWidth(mapView.getWidth());
 		  mIdentifyParameters.setMapExtent(envelope);
 		  
-			SearchIdentifyTask task = new SearchIdentifyTask(mapView.getContext(),mapView.getLayers()[0].getUrl());
+			SearchIdentifyTask task = new SearchIdentifyTask(mapView.getContext(),mapView.getLayers()[0].getUrl(),
+					CommonData.TypeOperateFrameChoos);
 		    task.execute(mIdentifyParameters); 
 
 	      task.setFinishListener(new OnFinishListener() {
 			
 			@Override
 			public void onFinish(ArrayList<IdentifyResult> resultList) {
-				// TODO Auto-generated method stub
-				   Toast.makeText(mapView.getContext(), "查询到 " + resultList.size() + " 个： " + resultList.toString() , Toast.LENGTH_LONG).show();
+				StringBuilder sb = new StringBuilder();
+				sb.append("查询到 " + resultList.size()+"  ");
+				for (int i = 0; i < resultList.size(); i++) {
+					IdentifyResult result = resultList.get(i);
+					sb.append("名字： "+result.getValue() + " ; ");
+				}
+				Toast.makeText(mapView.getContext(), sb.toString() , Toast.LENGTH_LONG).show();
 			}
 		});
 		

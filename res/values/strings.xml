@@ -42,4 +42,5 @@
     <string name="layer_show">是否显示</string>
     <string name="layer_current">设为当前图层</string>
     <string name="search_loading">正在查询...</string>
+    <string name="search_no_result">抱歉，没有结果</string>
 </resources>

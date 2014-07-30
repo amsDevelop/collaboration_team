@@ -68,10 +68,9 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 	private void initData() {
 		layerInfos.removeAll(layerInfos);
-		// TODO Auto-generated method stub
 		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
 		if(arc != null){
-			Log.d(tag, "-----onCreateView: "+arc.length);
+//			Log.d(tag, "-----onCreateView: "+arc.length);
 			for (int i = 0; i < arc.length; i++) {
 				layerInfos.add(arc[i]);
 			}
@@ -123,14 +122,29 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		switch (arg0.getId()) {
 		case R.id.id_btn_layer_1:
 			executeLayerSatellite();
+			mapView.removeAll();
+			ArcGISTiledMapServiceLayer layerSatellite = new ArcGISTiledMapServiceLayer(
+					MarinedbActivity.imageUrl);
+			mapView.addLayer(layerSatellite);
+			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNsatellite;
 			break;
 		case R.id.id_btn_layer_2:
 			executeLayerGeographic();
+			mapView.removeAll();
+			ArcGISTiledMapServiceLayer layerGeographic = new ArcGISTiledMapServiceLayer(
+					MarinedbActivity.genUrl);
+			mapView.addLayer(layerGeographic);
+			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
 		case R.id.id_btn_layer_3:
 			executeOilGas();
+//			mapView.removeAll();
+			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
+					MarinedbActivity.oilUrl);
+			mapView.addLayer(layerOilGas);
+			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNoilGas;
 			break;
 
@@ -159,11 +173,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn2.setSelected(true);
 		mBtn3.setSelected(false);
 //		dismiss();
-		mapView.removeAll();
-		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
-				MarinedbActivity.genUrl);
-		mapView.addLayer(arcGISTiledMapServiceLayer);
-		addDrawLayer();
+
 	}
 
 	private void addDrawLayer() {
@@ -182,22 +192,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn1.setSelected(false);
 		mBtn2.setSelected(false);
 		mBtn3.setSelected(true);
-		mapView.removeAll();
-		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
-				MarinedbActivity.oilUrl);
-		mapView.addLayer(arcGISTiledMapServiceLayer);
-		addDrawLayer();
+
 	}
 
 	private void executeLayerSatellite() {
 		mCover.setVisibility(View.VISIBLE);
 		mListView.setEnabled(false);
 //		dismiss();
-		mapView.removeAll();
-		ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
-				MarinedbActivity.imageUrl);
-		mapView.addLayer(arcGISTiledMapServiceLayer);
-		addDrawLayer();
 		showAlert();
 		mBtn1.setSelected(true);
 		mBtn2.setSelected(false);

@@ -14,4 +14,10 @@ public class CommonData {
 	public static String TopicOilGasMine = "油气藏";
 	public static String KeyTopicType = "KeyTopicType";
 	public static String KeyTopicName = "KeyTopicName";
+	
+	/**
+	 * 长按操作
+	 */
+	public static String TypeOperateLongPress = "TypeLongPress";
+	public static String TypeOperateFrameChoos = "TypeOperateFrameChoose";
 }
