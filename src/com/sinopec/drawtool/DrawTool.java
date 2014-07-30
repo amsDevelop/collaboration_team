@@ -15,6 +15,7 @@ import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.MapOnTouchListener;
 import com.esri.android.map.MapView;
 import com.esri.core.geometry.Envelope;
+import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Line;
 import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
@@ -283,9 +284,7 @@ public class DrawTool extends Subject {
 						envelope.merge(startPoint);
 						envelope.merge(p2);
 						drawLayer.updateGraphic(uid, envelope);
-						
 					}
-					
 					
 					break;
 				case DrawTool.FREEHAND_POLYGON:
@@ -355,8 +354,7 @@ public class DrawTool extends Subject {
 
 					Toast.makeText(mapView.getContext(), "总面积： " + sArea,
 							Toast.LENGTH_SHORT).show();
-					queryAttribute();
-					
+					queryAttribute(envelope);
 					
 					break;
 				case DrawTool.FREEHAND_POLYGON:
@@ -372,16 +370,17 @@ public class DrawTool extends Subject {
 							+ Math.pow(startPoint.getY() - point.getY(), 2));
 					
 					getCircle(startPoint, radius, polygon);
-					queryAttribute();
+					queryAttribute(polygon);
 					break;
 				case DrawTool.ANY_POLYGON:
 					poly.lineTo((float) startPoint.getX(),
 							(float) startPoint.getY());
 					drawLayer.removeAll();
 					drawLayer.addGraphic(new Graphic(poly, fillSymbol));
+					queryAttribute(poly);
 					// points.add(startPoint);
 					startPoint = null;
-					queryAttribute();
+				
 					break;
 				}
 				sendDrawEndEvent();
@@ -441,6 +440,8 @@ public class DrawTool extends Subject {
 						drawLayer.removeAll();
 						Graphic g = new Graphic(tempPolygon, fillSymbol);
 						drawLayer.addGraphic(g);
+						
+						queryAttribute(tempPolygon);
 //
 //						// 计算当前面积
 //						String sArea = getAreaString(tempPolygon
@@ -590,33 +591,19 @@ public class DrawTool extends Subject {
 	}
 
 
-	public void queryAttribute() {
-		if (envelope == null) {
-			return;
-		}
+	public void queryAttribute(Geometry geometry) {
 		
-//		IdentifyParameters identifyParameters = new IdentifyParameters();
-//		
-//		identifyParameters.setGeometry(envelope);
-//		identifyParameters.setLayers(new int[]{0,1,2,3,4,5});
-//		identifyParameters.setLayerMode(IdentifyParameters.ALL_LAYERS);
-////		identifyParameters.setTolerance(20);
-//		identifyParameters.setSpatialReference(mapView.getSpatialReference()); 
-//		identifyParameters.setMapExtent(envelope);
-//		identifyParameters.setMapHeight(mapView.getHeight());
-//		identifyParameters.setMapWidth(mapView.getWidth());
-//		identifyParameters.setDPI(98);
 		IdentifyParameters mIdentifyParameters = new IdentifyParameters();
 		  mIdentifyParameters.setTolerance(20);
 		  mIdentifyParameters.setDPI(98);
 		  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
 		  mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
 
-		  mIdentifyParameters.setGeometry(envelope);
+		  mIdentifyParameters.setGeometry(geometry);
 		  mIdentifyParameters.setSpatialReference(mapView.getSpatialReference());         
 		  mIdentifyParameters.setMapHeight(mapView.getHeight());
 		  mIdentifyParameters.setMapWidth(mapView.getWidth());
-		  mIdentifyParameters.setMapExtent(envelope);
+		  mIdentifyParameters.setMapExtent(new Envelope());
 		  
 			SearchIdentifyTask task = new SearchIdentifyTask(mapView.getContext(),mapView.getLayers()[0].getUrl(),
 					CommonData.TypeOperateFrameChoos);

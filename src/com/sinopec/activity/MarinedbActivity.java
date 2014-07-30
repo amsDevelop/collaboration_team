@@ -2,32 +2,24 @@ package com.sinopec.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
-import android.R.layout;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.gesture.GesturePoint;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -37,44 +29,34 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.esri.android.map.Callout;
 import com.esri.android.map.GraphicsLayer;
-import com.esri.android.map.Layer;
 import com.esri.android.map.MapOnTouchListener;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISFeatureLayer;
 import com.esri.android.map.ags.ArcGISFeatureLayer.MODE;
 import com.esri.android.map.ags.ArcGISFeatureLayer.Options;
-import com.esri.android.map.ags.ArcGISLayerInfo;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 import com.esri.android.map.event.OnLongPressListener;
 import com.esri.android.map.event.OnSingleTapListener;
+import com.esri.android.map.event.OnStatusChangedListener;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Geometry;
-import com.esri.core.geometry.Line;
-import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polygon;
-import com.esri.core.geometry.Polyline;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.SimpleFillSymbol;
-import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.symbol.TextSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
-import com.esri.core.tasks.ags.geocode.LocatorFindParameters;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.sinopec.adapter.MenuAdapter;
@@ -86,8 +68,6 @@ import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
-import com.sinopec.task.GeocoderTask;
-import com.sinopec.task.SearchFindTask;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.SinoUtil;
@@ -98,16 +78,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		OnItemClickListener, DrawEventListener, InterfaceDataCallBack {
 	private String tag = "map";
 	private TextView mTVContent;
-	private ProgressBar mProgressBar;
-
-	private TextView mTextView;
-
-	private LinearLayout mToolBar;
 
 	// 泡泡变量
-	private LinearLayout.LayoutParams popParams = null;
 	private View popView = null;
-	private Button poptitle = null;
 	Callout callout = null;
 	private ImageView imageAnim = null;
 	String name2 = null;
@@ -118,10 +91,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	double x1;
 	double y1;
 	private Graphic LongPressPOI = null;
-	private double curX;
-	private double curY;
-	private String curname = null;
-	private String curadd = null;
 	private Point anchorPt = null;
 
 	private MapView map = null;
@@ -146,11 +115,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private GridView mGridView;
 	private RelativeLayout mGridViewLayout;
 	private GraphicsLayer drawLayer;
-	private SimpleLineSymbol lineSymbol;
-	private SimpleMarkerSymbol markerSymbol;
 	private SimpleFillSymbol fillSymbol;
 	private MapTouchListener mapTouchListener;
-	private Envelope envelope;
 	private DrawTool drawTool;
 	private ArcGISTiledMapServiceLayer tms;
 	public static final String imageUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer";
@@ -172,10 +138,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		setContentView(R.layout.activity_main);
 		initView();
 		map = (MapView) findViewById(R.id.map);
-//		map.setExtent(new Envelope(-10868502.895856911, 4470034.144641369,
-//				-10837928.084542884, 4492965.25312689), 0);
+		map.setExtent(new Envelope(-180, -85.46971899999994,
+				180,  87.93330000000003), 0);
+//		 -86.36436463525025 getY: 40.28780276447719
+		map.centerAt(new Point( -86.36436463525025, 40.28780276447719), false);
+		map.zoomTo(new Point( -86.36436463525025, 40.28780276447719), 1);
+		map.zoomToScale(new Point( -86.36436463525025, 40.28780276447719), 5000000);
+		
 		tms = new ArcGISTiledMapServiceLayer(
-				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
+				oilUrl);
 
 		map.addLayer(tms);
 
@@ -195,7 +166,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		drawLayer = new GraphicsLayer();
 		map.addLayer(drawLayer);
 		initSymbols();// 初始化符号
-		envelope = new Envelope();
 		// add by gaolixiao
 		addPopupWindow();
 		getAboutDisplay();
@@ -203,18 +173,19 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		drawTool = new DrawTool(map);
 		drawTool.addEventListener(this);
 		drawTool.setDrawLayer(drawLayer);
-		// mapTouchListener = new MapTouchListener(this, map);
-		// map.setOnTouchListener(mapTouchListener);
+		 mapTouchListener = new MapTouchListener(this, map);
+		 map.setOnTouchListener(mapTouchListener);
+		 map.setOnStatusChangedListener(new MapStatusListener());
 		initData();
 		searchFragment = new SearchFragment(this);
 		fragmentManager = getFragmentManager();
 	}
 
 	private void initSymbols() {
-		lineSymbol = new SimpleLineSymbol(Color.RED, 5,
-				SimpleLineSymbol.STYLE.DASH);
-		markerSymbol = new SimpleMarkerSymbol(Color.BLUE, 10,
-				SimpleMarkerSymbol.STYLE.CIRCLE);
+//		lineSymbol = new SimpleLineSymbol(Color.RED, 5,
+//				SimpleLineSymbol.STYLE.DASH);
+//		markerSymbol = new SimpleMarkerSymbol(Color.BLUE, 10,
+//				SimpleMarkerSymbol.STYLE.CIRCLE);
 		fillSymbol = new SimpleFillSymbol(Color.RED);
 		fillSymbol.setAlpha(33);
 	}
@@ -235,10 +206,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	public void getAboutDisplay() {
 		DisplayMetrics metric = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metric);
-		int width = metric.widthPixels; // 屏幕宽度（像素）
-		int height = metric.heightPixels; // 屏幕高度（像素）
-		SinoApplication.density = metric.density; // 屏幕密度（0.75 / 1.0 / 1.5）
-		int densityDpi = metric.densityDpi; // 屏幕密度DPI（120 / 160 / 240）
+//		int width = metric.widthPixels; // 屏幕宽度（像素）
+//		int height = metric.heightPixels; // 屏幕高度（像素）
+//		SinoApplication.density = metric.density; // 屏幕密度（0.75 / 1.0 / 1.5）
+//		int densityDpi = metric.densityDpi; // 屏幕密度DPI（120 / 160 / 240）
 		// 此设备 width: 2560 hei: 1600 density: 2.0 densityDpi: 320
 //		Log.d("sinopec", "width: " + width + "  hei: " + height + "  density: "
 //				+ SinoApplication.density + "  densityDpi: " + densityDpi);
@@ -270,10 +241,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		// 泡泡代码
 		popView = View.inflate(this, R.layout.paopao, null);
-		// ImageView imageSMS =
-		// (ImageView)popView.findViewById(R.id.tvImageSMS);
-		// ImageView imageNavi =
-		// (ImageView)popView.findViewById(R.id.tvImageNavi);
 		property = (Button) popView.findViewById(R.id.property);
 		statistics = (Button) popView.findViewById(R.id.statistics);
 		doc = (Button) popView.findViewById(R.id.doc);
@@ -281,14 +248,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		property.setOnClickListener(this);
 		statistics.setOnClickListener(this);
 		doc.setOnClickListener(this);
-
-		Drawable drawable1 = getResources().getDrawable(R.drawable.info1);
-		// imageSMS.setBackgroundDrawable(drawable1);
-		// imageSMS.getBackground().setAlpha(100);
-		Drawable drawable2 = getResources().getDrawable(R.drawable.info3);
-		// imageNavi.setBackgroundDrawable(drawable2);
-		// imageNavi.getBackground().setAlpha(100);
-		// poptitle.getBackground().setAlpha(100);
 
 		imageAnim = (ImageView) findViewById(R.id.poiAnim);
 		imageAnim.setVisibility(View.INVISIBLE);
@@ -323,10 +282,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						//TODO:找到对象的属性等数据 url
 						
 						try {
-							curX = x1;
-							curY = y1;
-							curname = name2;
-							curadd = address2;
+//							curX = x1;
+//							curY = y1;
+//							curname = name2;
+//							curadd = address2;
 							Point pxPt = MarinedbActivity.this.map
 									.toScreenPoint(new Point(x1, y1));
 							
@@ -398,17 +357,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //						return true;
 					}// onLongPress
 				});
-		
-		MarinedbActivity.this.map.setOnTouchListener(new OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				if(mGridViewLayout.getVisibility() == View.VISIBLE)
-					mGridViewLayout.setVisibility(View.GONE);
-				return false;
-			}
-		});
-
 	}
 
 	private MenuButton mMenuViewCompare;
@@ -423,19 +371,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mListView = (ListView) findViewById(R.id.search_listview);
 		mBaseLayout = (ViewGroup) findViewById(R.id.baselayout);
 		mFragmentLayout = (ViewGroup) findViewById(R.id.fragmentlayout);
-		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
+//		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
 
-		// mBtnMenuTool = (Button) findViewById(R.id.menu_tool);
-		// mBtnMenuCount = (Button) findViewById(R.id.menu_count);
-		// mBtnMenuCompare = (Button) findViewById(R.id.menu_compare);
-		// mBtnMenuMine = (Button) findViewById(R.id.menu_mine);
+	
 		mGridViewLayout = (RelativeLayout) findViewById(R.id.menu_children_grid);
 		mGridView = (GridView) findViewById(R.id.menu_gridview);
 		mGridView.setOnItemClickListener(this);
 		// mGridView.setStretchMode(GridView.NO_STRETCH);
 
 		initGridViewData();
-		mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
+//		mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
 		mTVContent = (TextView) findViewById(R.id.tv_content);
 		mTVContent.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mBtnLayer = (Button) findViewById(R.id.btn_map_layout);
@@ -550,78 +495,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		super.onPause();
 		map.pause();
 	}
-
-	private Handler handler = new Handler() {
-
-		public void handleMessage(android.os.Message msg) {
-			if (msg.what == 1) {
-                Log.v("mandy", "loaded: " + map.isLoaded());
-				ArcGISLayerInfo[] arc = tms.getAllLayers();
-				
-				for (int i = 0; i < arc.length; i++) {
-					
-					arc[i].setVisible(false);
-					
-					
-				}
-				
-				for (ArcGISLayerInfo arcGISLayerInfo : arc) {
-					
-//					Log.v("mandy", "layer name: " + arcGISLayerInfo.getName() + arcGISLayerInfo.isVisible()
-//							+ "  child layer: "
-//							+ arcGISLayerInfo.getLayers().length);
-//					
-//					
-//////					Log.v("mandy", "legend size: " + arcGISLayerInfo.getLegend().size());
-////					for (Legend legend : arcGISLayerInfo.getLegend()) {
-////						Log.v("mandy", "legend: " + legend.getLabel());
-////						
-////					}
-//					Toast.makeText(mContext, arcGISLayerInfo.getName(), Toast.LENGTH_LONG).show();
-				}
-				map.addLayer(tms);
-//				map.requestLayout();
-				
-			Layer[] layer =	map.getLayers();
-			Log.v("mandy", "layer: " + layer.length);
-			
-			for (int i = 0; i < layer.length; i++) {
-				
-				Log.v("mandy", "layer name : " +   layer[i].getName());
-			}
-				
-//				ArcGIS
-				int [] jj = {0,1};
-				
-//				ArcGISDynamicMapServiceLayer layers = new ArcGISDynamicMapServiceLayer("http://www.arcgisonline.cn/ArcGIS/rest/services/ChinaCities_Community_BaseMap_CHN/Beijing_Community_BaseMap_CHN/MapServer", jj);
-//				ArcGISLocalTiledLayer yy = new ArcGISLocalTiledLayer(path);
-				
-//				ArcGISLocalTiledLayer
-//				ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer("http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/0");
-//			Layer layer2 = new Layer() {
-//				
-//				@Override
-//				protected void initLayer() {
-//					// TODO Auto-generated method stub
-//					
-//				}
-//				
-//				@Override
-//				protected long create() {
-//					// TODO Auto-generated method stub
-//					return 0;
-//				}
-//			};
-//				map.addLayer(layers);
-//				map.invalidate();
-				
-
-			}
-
-		};
-
-	};
-
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -707,7 +580,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			Log.v("mandy", "drawTool frame........");
 			drawTool.activate(DrawTool.ENVELOPE);
-			// drawLayer.removeAll();
+			 drawLayer.removeAll();
 
 			setButtonsStatus(v.getId());
 		} else if (btnLine.getId() == v.getId()) {
@@ -726,15 +599,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				list.add(map);
 			}
 			showWindow(btnPolygon, list, mLocation4Polygon);
-			// drawTool.activate(DrawTool.POLYGON);
-			// mapTouchListener.setType("Polygon");
-			// drawLayer.removeAll();
 			setButtonsStatus(v.getId());
 		} else if (btnCurScreen.getId() == v.getId()) {
-			setButtonsStatus(v.getId());
-		} else if (btnMultiple.getId() == v.getId()) {
-			setButtonsStatus(v.getId());
-		} else if (btnCurScreen.getId() == v.getId()) {
+			//屏幕范围查询
+			drawTool.queryAttribute(map.getExtent());
 			setButtonsStatus(v.getId());
 		} else if (btnMultiple.getId() == v.getId()) {
 			setButtonsStatus(v.getId());
@@ -746,35 +614,32 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //			map.zoomTo(centerPt, factor);
 			mFragmentLayout.setVisibility(View.VISIBLE);
 			fragmentManager.beginTransaction().replace(R.id.fragmentlayout, searchFragment).commit();
-//			search.show(getFragmentManager(), "search");
-//			search();
-//			SearchFindTask task = new SearchFindTask(mContext, mListView, mList, mSearchViewGroup, mSearchAdapter,"");
-//		    task.execute(mEditText.getText().toString());
 		}
 
 	}
 
-	private GeocoderTask mGeocoderTask;
-	private void search(){
-		String address = mEditText.getText().toString();
-        try {
-            // create Locator parameters from single line address string
-            LocatorFindParameters findParams = new LocatorFindParameters(address);
-            //TODO:国家是否设置 set the search country to USA
-            Log.d("map", "----------国家: "+findParams.getSourceCountry());
-            findParams.setSourceCountry("world");
-            // limit the results to 2
-            findParams.setMaxLocations(2);
-            // set address spatial reference to match map
-            findParams.setOutSR(map.getSpatialReference());
-            // execute async task to geocode address
-            mGeocoderTask = new GeocoderTask(mContext, this, mListView, mSearchViewGroup, mSearchAdapter);
-            mGeocoderTask.execute(findParams);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-		
-	}
+//	private GeocoderTask mGeocoderTask;
+	
+//	private void search(){
+//		String address = mEditText.getText().toString();
+//        try {
+//            // create Locator parameters from single line address string
+//            LocatorFindParameters findParams = new LocatorFindParameters(address);
+//            //TODO:国家是否设置 set the search country to USA
+//            Log.d("map", "----------国家: "+findParams.getSourceCountry());
+//            findParams.setSourceCountry("world");
+//            // limit the results to 2
+//            findParams.setMaxLocations(2);
+//            // set address spatial reference to match map
+//            findParams.setOutSR(map.getSpatialReference());
+//            // execute async task to geocode address
+//            mGeocoderTask = new GeocoderTask(mContext, this, mListView, mSearchViewGroup, mSearchAdapter);
+//            mGeocoderTask.execute(findParams);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//		
+//	}
 	/**
 	 * 是否选择了折线
 	 */
@@ -1008,10 +873,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if ("points".equals(tag)) {
 
 			drawTool.activate(DrawTool.POLYGON);
+			drawLayer.removeAll();
 			// 多边形点绘制
 			hidePopupWindow();
 		} else if ("cycle".equals(tag)) {
 			drawTool.activate(DrawTool.CIRCLE);
+			drawLayer.removeAll();
 			// 多边形任意点绘制
 			hidePopupWindow();
 		} else if ("points".equals(tag)) {
@@ -1040,315 +907,56 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mMenuViewMine.setSelected(false);
 	}
 
-	private Point ptStart = null;// 起点
-	private Point ptPrevious = null;// 上一个点
-	private ArrayList<Point> points = null;// 记录全部点
-	private Polygon tempPolygon = null;// 记录绘制过程中的多边形
-	MultiPath poly;
-	String type = "";
-	Point startPoint = null;
+	class MapStatusListener implements OnStatusChangedListener {
 
+		@Override
+		public void onStatusChanged(Object arg0, STATUS arg1) {
+//			  Log.v("mandy", "path: " + path + "state: " + state);
+		    Log.i("mandy", "map load status:" + arg1.name());
+			 if (OnStatusChangedListener.STATUS.INITIALIZED == arg1 && arg0 == map) {
+		           Log.i("mandy", "resolution:" + map.getResolution() +"is loaded: " + map.isLoaded());
+		           map.zoomToScale(new Point( -86.36436463525025, 40.28780276447719), 5000000);
+		         }
+		}
+	}
+	
+	
 	class MapTouchListener extends MapOnTouchListener {
-		// private Geometry.Type geoType = null;//用于判定当前选择的几何图形类型
 
 		public MapTouchListener(Context context, MapView view) {
 			super(context, view);
 
-			points = new ArrayList<Point>();
 		}
-
-		// 根据用户选择设置当前绘制的几何图形类型
-		public void setType(String geometryType) {
-			type = geometryType;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		@Override
-		public boolean onSingleTap(MotionEvent point) {
-			Log.d("map", "--------onSingleTap ");
-			showCancelButton();
-			Point ptCurrent = map.toMapPoint(new Point(point.getX(), point
-					.getY()));
-			if (ptStart == null)
-				drawLayer.removeAll();// 第一次开始前，清空全部graphic
-
-			if (type.equalsIgnoreCase("Point")) {// 直接画点
-				drawLayer.removeAll();
-				ptStart = ptCurrent;
-
-				Graphic graphic = new Graphic(ptStart, markerSymbol);
-				drawLayer.addGraphic(graphic);
-
-				// btnClear.setEnabled(true);
-				return true;
-			} else// 绘制线或多边形
-			{
-				points.add(ptCurrent);// 将当前点加入点集合中
-
-				if (ptStart == null) {// 画线或多边形的第一个点
-					ptStart = ptCurrent;
-
-					// 绘制第一个点
-					Graphic graphic = new Graphic(ptStart, markerSymbol);
-					drawLayer.addGraphic(graphic);
-				} else {// 画线或多边形的其他点
-						// 绘制其他点
-					Graphic graphic = new Graphic(ptCurrent, markerSymbol);
-					drawLayer.addGraphic(graphic);
-
-					// 生成当前线段（由当前点和上一个点构成）
-					Line line = new Line();
-					line.setStart(ptPrevious);
-					line.setEnd(ptCurrent);
-
-					if (type.equalsIgnoreCase("Polyline")) {
-						// 绘制当前线段
-						Polyline polyline = new Polyline();
-						polyline.addSegment(line, true);
-
-						Graphic g = new Graphic(polyline, lineSymbol);
-						drawLayer.addGraphic(g);
-
-						// 计算当前线段的长度
-						String length = Double.toString(Math.round(line
-								.calculateLength2D())) + " 米";
-
-						Toast.makeText(map.getContext(), "长度： " + length,
-								Toast.LENGTH_SHORT).show();
-					} else {
-						// 绘制临时多边形
-						if (tempPolygon == null)
-							tempPolygon = new Polygon();
-						tempPolygon.addSegment(line, false);
-
-						drawLayer.removeAll();
-						Graphic g = new Graphic(tempPolygon, fillSymbol);
-						drawLayer.addGraphic(g);
-
-						// 计算当前面积
-						String sArea = getAreaString(tempPolygon
-								.calculateArea2D());
-
-						Toast.makeText(map.getContext(), "面积： " + sArea,
-								Toast.LENGTH_SHORT).show();
-					}
-				}
-
-				ptPrevious = ptCurrent;
-				return true;
-			}
-		}
-
-		@Override
-		public boolean onDoubleTap(MotionEvent point) {
-			Log.d("map", "--------onDoubleTap ");
-			return false;
-		}
-
-		public boolean onDragPointerMove(MotionEvent from, MotionEvent to) {
-			// Log.d("map", "--------onDragPointerMove ");
-			hideCancelButton();
-			if (mGridViewLayout.getVisibility() == View.VISIBLE) {
-				mGridViewLayout.setVisibility(View.INVISIBLE);
-			}
-			if (type.equalsIgnoreCase("point")) {
-				// Log.v("mandy", "type: move");
-				//
-				Point mapPt = map.toMapPoint(to.getX(), to.getY());
-				// envelope.setXMin(startPoint.getX() > mapPt.getX() ? mapPt
-				// .getX() : startPoint.getX());
-				// envelope.setYMin(startPoint.getY() > mapPt.getY() ? mapPt
-				// .getY() : startPoint.getY());
-				// envelope.setXMax(startPoint.getX() < mapPt.getX() ? mapPt
-				// .getX() : startPoint.getX());
-				// envelope.setYMax(startPoint.getY() < mapPt.getY() ? mapPt
-				// .getY() : startPoint.getY());
-
-				/*
-				 * if StartPoint is null, create a polyline and start a path.
-				 */
-				if (startPoint == null) {
-					drawLayer.removeAll();
-					// poly = type.equalsIgnoreCase("POLYLINE") ? new Polyline()
-					// : new Polygon();
-					poly = new Polygon();
-					startPoint = map.toMapPoint(from.getX(), from.getY());
-					poly.startPath((float) startPoint.getX(),
-							(float) startPoint.getY());
-
-					/*
-					 * Create a Graphic and add polyline geometry
-					 */
-					Graphic graphic = new Graphic(startPoint, fillSymbol);
-
-					/*
-					 * add the updated graphic to graphics layer
-					 */
-					drawLayer.addGraphic(graphic);
-				}
-
-				poly.lineTo((float) mapPt.getX(), (float) mapPt.getY());
-				// poly.calculateArea2D();
-				// poly.calculateLength2D();
-
-				return true;
-			}
-			return super.onDragPointerMove(from, to);
-
-		}
-
-		@Override
+		 @Override
+		 public boolean onTouch(View v, MotionEvent event) {
+			 
+			 if(mGridViewLayout.getVisibility() == View.VISIBLE)
+					mGridViewLayout.setVisibility(View.GONE);
+		    return super.onTouch(v, event);
+		 }
+		 
+		 @Override
 		public boolean onDragPointerUp(MotionEvent from, MotionEvent to) {
-			Log.d("map", "--------onDragPointerUp ");
-			showCancelButton();
-			// if (type.length() > 1
-			// && (type.equalsIgnoreCase("POLYLINE") || type
-			// .equalsIgnoreCase("POLYGON"))) {
-
-			/*
-			 * When user releases finger, add the last point to polyline.
-			 */
-			if (type.equalsIgnoreCase("point")) {
-				// Log.d("map", "--------onDragPointerUp type " + type);
-				// Point point = map.toMapPoint(to.getX(), to.getY());
-				// envelope.setXMin(startPoint.getX() > point.getX() ? point
-				// .getX() : startPoint.getX());
-				// envelope.setYMin(startPoint.getY() > point.getY() ? point
-				// .getY() : startPoint.getY());
-				// envelope.setXMax(startPoint.getX() < point.getX() ? point
-				// .getX() : startPoint.getX());
-				// envelope.setYMax(startPoint.getY() < point.getY() ? point
-				// .getY() : startPoint.getY());
-
-				// Graphic drawGraphic = new Graphic(envelope, fillSymbol);
-				// // drawGraphic.
-				// drawLayer.addGraphic(drawGraphic);
-
-				poly.lineTo((float) startPoint.getX(),
-						(float) startPoint.getY());
-				drawLayer.removeAll();
-				drawLayer.addGraphic(new Graphic(poly, fillSymbol));
-				// points.add(startPoint);
-				startPoint = null;
-				// 计算面积
-				String sArea = getAreaString(poly.calculateArea2D());
-
-				Toast.makeText(map.getContext(), "面积： " + sArea,
-						Toast.LENGTH_SHORT).show();
-
-				return true;
-			}
-			// graphicsLayer.addGraphic(new Graphic(poly,new
-			// SimpleLineSymbol(Color.BLUE,5)));
-			// startPoint = null;
-			// clearButton.setEnabled(true);
-			// return true;
-			// }
+			// TODO Auto-generated method stub
+			Point point = map.toMapPoint(to.getX(), to.getY());
+			
+			
+//			System.out.println("getx: " + point.getX() + " getY: " + point.getY());
+			
+			Log.v("mandy", "getx: " + point.getX() + " getY: " + point.getY());
+			
+//			  point.getX()
+			 
+			Polygon polygon =  map.getExtent();
+			
+			
+			
+//			polygon.
+			 
 			return super.onDragPointerUp(from, to);
 		}
 
-		// @Override
-		// public boolean onTouch(View v, MotionEvent event) {
-		// Log.v("mandy", "on touch&&&&&&&&&&&&&&&&&&&");
-		// Point point = map.toMapPoint(event.getX(), event.getY());
-		// startPoint = point;
-		// envelope.setCoords(point.getX(), point.getY(),
-		// point.getX(), point.getY());
-		// drawLayer.removeAll();
-		// return super.onTouch(v, event);
-		// }
-
 	}
-
-	// private void calculateAreaAndLength() {
-	// drawLayer.removeAll();
-	// if (type.equalsIgnoreCase("Polyline")) {
-	// Polyline polyline = new Polyline();
-	//
-	// Point startPoint = null;
-	// Point endPoint = null;
-	//
-	// // 绘制完整的线段
-	// for (int i = 1; i < points.size(); i++) {
-	// startPoint = points.get(i - 1);
-	// endPoint = points.get(i);
-	//
-	// Line line = new Line();
-	// line.setStart(startPoint);
-	// line.setEnd(endPoint);
-	//
-	// polyline.addSegment(line, false);
-	// }
-	//
-	// Graphic g = new Graphic(polyline, lineSymbol);
-	// drawLayer.addGraphic(g);
-	//
-	// // 计算总长度
-	// String length = Double.toString(Math.round(polyline
-	// .calculateLength2D())) + " 米";
-	//
-	// Toast.makeText(map.getContext(), "总长度： " + length,
-	// Toast.LENGTH_SHORT).show();
-	// } else {
-	// Polygon polygon = new Polygon();
-	//
-	// Point startPoint = null;
-	// Point endPoint = null;
-	// // 绘制完整的多边形
-	// for (int i = 1; i < points.size(); i++) {
-	// startPoint = points.get(i - 1);
-	// endPoint = points.get(i);
-	//
-	// Line line = new Line();
-	// line.setStart(startPoint);
-	// line.setEnd(endPoint);
-	//
-	// polygon.addSegment(line, false);
-	// }
-	//
-	// Graphic g = new Graphic(polygon, fillSymbol);
-	// drawLayer.addGraphic(g);
-	//
-	// // 计算总面积
-	// String sArea = getAreaString(polygon.calculateArea2D());
-	//
-	// Toast.makeText(map.getContext(), "总面积： " + sArea,
-	// Toast.LENGTH_SHORT).show();
-	// }
-	//
-	// // 其他清理工作
-	// // btnClear.setEnabled(true);
-	// ptStart = null;
-	// ptPrevious = null;
-	// points.clear();
-	// tempPolygon = null;
-	// }
-
-	private void clearGraphic() {
-
-		ptStart = null;
-		ptPrevious = null;
-		points.clear();
-		tempPolygon = null;
-
-	}
-
-	private String getAreaString(double dValue) {
-		long area = Math.abs(Math.round(dValue));
-		String sArea = "";
-		// 顺时针绘制多边形，面积为正，逆时针绘制，则面积为负
-		if (area >= 1000000) {
-			double dArea = area / 1000000.0;
-			sArea = Double.toString(dArea) + " 平方公里";
-		} else
-			sArea = Double.toString(area) + " 平方米";
-
-		return sArea;
-	}
-
 	private void exitDialog() {
 		final AlertDialog dlg = new AlertDialog.Builder(this).create();
 		dlg.setTitle("是否退出?");

@@ -140,7 +140,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			break;
 		case R.id.id_btn_layer_3:
 			executeOilGas();
-//			mapView.removeAll();
+			mapView.removeAll();
 			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
 					MarinedbActivity.oilUrl);
 			mapView.addLayer(layerOilGas);
@@ -267,8 +267,6 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				break;
 			}
 			
-			
-			
 			txView.setText(layerInfos.get(position).getName());
 			
 			holder.mCBcur.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -279,11 +277,11 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 					if (isChecked) {
 						Log.v("mandy", "buttonView.getTag(): " + buttonView.getTag());
 //						Log.v("mandy", "holder.mCBcur: " + holder.mCBcur.getTag());
-//						mapView.removeAll();
+						mapView.removeAll();
 						ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
-								"http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaCities_Community_BaseMap_CHN/Beijing_Community_BaseMap_CHN/MapServer");
+								buttonView.getTag().toString());
 						mapView.addLayer(arcGISTiledMapServiceLayer);
-						
+						addDrawLayer();
 					}
 				}
 			});
