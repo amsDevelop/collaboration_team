@@ -95,6 +95,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 
 	@Override
 	protected void onPreExecute() {
+//		mFindTask = new FindTask(mServicesUrl);
 		mFindTask = new FindTask(
 				"http://10.225.14.201:6080/arcgis/rest/services/marine_oil/MapServer");
 		mProgressDialog.show();

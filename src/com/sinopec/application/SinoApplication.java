@@ -1,8 +1,11 @@
 package com.sinopec.application;
 
+import java.util.ArrayList;
+
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.sinopec.common.OilGasData;
 
 import android.app.Application;
 import android.content.Context;
@@ -21,6 +24,17 @@ public class SinoApplication extends Application {
 	 * 图层设置中选择图层的名称
 	 */
 	public static String layerName = LNoilGas;
+	public static final String imageUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer";
+    public static final String genUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer";
+    /**
+     * 搜索和长按 所用的url
+     */
+    public static final String oilUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer";
+    /**
+     * 当前图层URL
+     */
+    public static String currentLayerUrl = genUrl;
+	
 	/**
 	 * 主页面底部菜单分成屏幕宽度的几份
 	 */
@@ -39,4 +53,9 @@ public class SinoApplication extends Application {
 		super.onCreate();
 		this.mContext = this;
 	}
+	
+	/**
+	 * 纪录油气专题的选中情况
+	 */
+	public static ArrayList<OilGasData> mOilGasData = new ArrayList<OilGasData>();
 }

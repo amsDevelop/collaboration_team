@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="oilgas_url_theme">
+        <item>@string/url_oilreservoirs</item>
+        <item>@string/url_gasreservoirs</item>
+        <item>@string/url_well</item>
+        <item>@string/url_oilfields</item>
+        <item>@string/url_gasfields</item>
+        <item>@string/url_basin</item>
+    </string-array> 
+    
+    
+    <string-array name="all_layer_urls">
+        <item>@string/url_marine_image</item>
+        <item>@string/url_marine_geo</item>
+        <item>@string/url_basin</item>
+        <item>@string/url_oilreservoirs</item>
+        <item>@string/url_gasreservoirs</item>
+        <item>@string/url_oilfields</item>
+        <item>@string/url_gasfields</item>
+        <item>@string/url_well</item>
+    </string-array> 
+</resources> 

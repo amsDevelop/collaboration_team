@@ -23,6 +23,7 @@ import android.widget.ListView;
 
 import com.esri.core.tasks.ags.find.FindResult;
 import com.sinopec.adapter.SearchAdapter;
+import com.sinopec.application.SinoApplication;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.task.SearchFindTask;
 import com.sinopec.view.ClearableEditText;
@@ -158,7 +159,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	}
 	
 	private void search(String key) {
-		SearchFindTask task = new SearchFindTask(mInterfaceDataCallBack, mContext, mListView, mList,  mViewGroup, mAdapter,"");
+		SearchFindTask task = new SearchFindTask(mInterfaceDataCallBack, mContext, mListView, mList,  mViewGroup, mAdapter,SinoApplication.oilUrl);
 		task.execute(key);
 		
 	}

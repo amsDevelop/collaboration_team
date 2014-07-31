@@ -1,6 +1,7 @@
 package com.sinopec.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -24,6 +25,7 @@ import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISLayerInfo;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.common.OilGasData;
 
 @SuppressLint("NewApi")
 public class LayerDialog extends DialogFragment implements OnClickListener {
@@ -40,7 +42,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private GraphicsLayer drawLayer;
 
 	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
-
+	private MyAdapter mOilGasAdapter;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -60,17 +63,19 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //		mContaner.setVisibility(View.GONE);
 		mCover.setVisibility(View.VISIBLE);
 		mListView = (ListView) view.findViewById(R.id.id_lstview_layer_1);
-		mListView.setAdapter(new MyAdapter());
+		mOilGasAdapter = new MyAdapter();
+		mListView.setAdapter(mOilGasAdapter);
 		initData();
 
 		return view;
 	}
 
 	private void initData() {
-		layerInfos.removeAll(layerInfos);
+//		layerInfos.removeAll(layerInfos);
+		layerInfos.clear();
 		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
 		if(arc != null){
-//			Log.d(tag, "-----onCreateView: "+arc.length);
+			Log.d(tag, "---图层专题数量--onCreateView: "+arc.length);
 			for (int i = 0; i < arc.length; i++) {
 				layerInfos.add(arc[i]);
 			}
@@ -124,7 +129,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			executeLayerSatellite();
 			mapView.removeAll();
 			ArcGISTiledMapServiceLayer layerSatellite = new ArcGISTiledMapServiceLayer(
-					MarinedbActivity.imageUrl);
+					SinoApplication.imageUrl);
 			mapView.addLayer(layerSatellite);
 			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNsatellite;
@@ -133,8 +138,9 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			executeLayerGeographic();
 			mapView.removeAll();
 			ArcGISTiledMapServiceLayer layerGeographic = new ArcGISTiledMapServiceLayer(
-					MarinedbActivity.genUrl);
+					SinoApplication.genUrl);
 			mapView.addLayer(layerGeographic);
+			SinoApplication.currentLayerUrl = SinoApplication.genUrl;
 			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
@@ -142,7 +148,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			executeOilGas();
 //			mapView.removeAll();
 			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
-					MarinedbActivity.oilUrl);
+					SinoApplication.oilUrl);
+			SinoApplication.currentLayerUrl = SinoApplication.oilUrl;
 			mapView.addLayer(layerOilGas);
 			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNoilGas;
@@ -206,27 +213,20 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	}
 
 	class MyAdapter extends BaseAdapter {
-		// ArrayList<String> mList = new ArrayList<String>();
-
-		// public MyAdapter() {
-		// mList.add("油气");
-		// mList.add("盆地");
-		// mList.add("石油");
-		// }
-
+		
 		@Override
 		public int getCount() {
-			return layerInfos.size();
+			return SinoApplication.mOilGasData.size();
 		}
 
 		@Override
-		public Object getItem(int arg0) {
-			return null;
+		public OilGasData getItem(int position) {
+			return SinoApplication.mOilGasData.get(position);
 		}
 
 		@Override
-		public long getItemId(int arg0) {
-			return 0;
+		public long getItemId(int position) {
+			return position;
 		}
 
 		@Override
@@ -234,56 +234,50 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			ViewHolder holder = new ViewHolder();
 			if (convertView == null) {
 				convertView = LayoutInflater.from(getActivity()).inflate(R.layout.layer_list_item, null);
-
-				holder.mName = (TextView) convertView.findViewById(R.id.menu_item_name);
+				
+				holder.mName = (TextView) convertView.findViewById(R.id.layer_name);
+				holder.mCBshow = (CheckBox) convertView.findViewById(R.id.layer_show);
+				holder.mCBcur = (CheckBox) convertView.findViewById(R.id.layer_can_operator);
 
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			TextView txView = (TextView) convertView.findViewById(R.id.layer_name);
-			holder.mCBcur = (CheckBox) convertView.findViewById(R.id.layer_can_operator);
-            switch (position) {
-			case 0:
-				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer");
-				break;
-			case 1:
-				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer");
-				break;
-			case 2:
-				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/well/MapServer");
-				break;
-			case 3:
-				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/oilfields/MapServer");
-				break;
-			case 4:
-				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/gasfields/MapServer");
-				break;
-			case 5:
-				holder.mCBcur.setTag("http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer");
-				break;
-			default:
-				break;
-			}
+			OilGasData data = SinoApplication.mOilGasData.get(position);
+			holder.mCBshow.setTag(data.getUrl());
+			holder.mCBcur.setTag(data.getUrl());
+
+			holder.mCBshow.setChecked(data.isVisible());
+			holder.mCBcur.setChecked(data.isChecked());
 			
+			holder.mName.setText(layerInfos.get(position).getName());
 			
-			
-			txView.setText(layerInfos.get(position).getName());
-			
+			holder.mCBshow.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isVisible) {
+				     //处理是否可见
+					String url = buttonView.getTag().toString();
+					if(mapView.getLayerByURL(url) != null){
+						mapView.getLayerByURL(url).setVisible(isVisible);
+						resetVisibleData(url, isVisible);
+					}
+				}
+			});
 			holder.mCBcur.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				      
+					String url = buttonView.getTag().toString();
 					if (isChecked) {
-						Log.v("mandy", "buttonView.getTag(): " + buttonView.getTag());
-//						Log.v("mandy", "holder.mCBcur: " + holder.mCBcur.getTag());
+						Log.d("map", "buttonView.getTag(): " + buttonView.getTag());
 //						mapView.removeAll();
-						ArcGISTiledMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISTiledMapServiceLayer(
-								"http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaCities_Community_BaseMap_CHN/Beijing_Community_BaseMap_CHN/MapServer");
-						mapView.addLayer(arcGISTiledMapServiceLayer);
-						
+//						ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(url);
+						SinoApplication.currentLayerUrl = url;
+//						mapView.addLayer(layer);
+//							addDrawLayer();
+						resetCheckData(url, isChecked);
 					}
 				}
 			});
@@ -301,10 +295,40 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		
 		private class ViewHolder {
 			public TextView mName;
+			public CheckBox mCBshow;
 			public CheckBox mCBcur;
 		}
 		
 
+		public void resetCheckData(String tag, boolean isChecked) {
+			for (int i = 0; i < SinoApplication.mOilGasData.size(); i++) {
+				OilGasData data = SinoApplication.mOilGasData.get(i);
+				String url = data.getUrl();
+				if(tag.equals(url)){
+					SinoApplication.mOilGasData.get(i).setChecked(true);
+				}else{
+					SinoApplication.mOilGasData.get(i).setChecked(false);
+				}
+			}
+			
+			reShow();
+		}
+		
+		public void resetVisibleData(String tag, boolean isVisible) {
+			for (int i = 0; i < SinoApplication.mOilGasData.size(); i++) {
+				OilGasData data = SinoApplication.mOilGasData.get(i);
+				String url = data.getUrl();
+				if(tag.equals(url)){
+					SinoApplication.mOilGasData.get(i).setVisible(isVisible);
+				}
+			}
+			reShow();
+		}
+		
 	}
 
+	//重新显示
+	public void reShow() {
+		mOilGasAdapter.notifyDataSetChanged();
+	}
 }

@@ -2,18 +2,13 @@ package com.sinopec.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
-import android.R.layout;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.gesture.GesturePoint;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -22,12 +17,10 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -37,7 +30,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -83,11 +75,11 @@ import com.sinopec.adapter.SearchAdapter;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
+import com.sinopec.common.OilGasData;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
 import com.sinopec.task.GeocoderTask;
-import com.sinopec.task.SearchFindTask;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.SinoUtil;
@@ -153,9 +145,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Envelope envelope;
 	private DrawTool drawTool;
 	private ArcGISTiledMapServiceLayer tms;
-	public static final String imageUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer";
-    public static final String genUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer";
-    public static final String oilUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer";
     private ViewGroup mBaseLayout;
     private ViewGroup mFragmentLayout;
     
@@ -176,9 +165,19 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //				-10837928.084542884, 4492965.25312689), 0);
 		tms = new ArcGISTiledMapServiceLayer(
 				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
+//	            "http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer");
 
-		map.addLayer(tms);
-
+//		map.addLayer(tms);
+		
+		//加入6个专题图层 
+		String[] urls = getResources().getStringArray(R.array.all_layer_urls);
+		for (int i = 0; i < urls.length; i++) {
+			ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(urls[i]);
+			map.addLayer(layer);
+		}
+		
+		
+		
 		Options o = new Options();
 		o.mode = MODE.ONDEMAND;
 		o.outFields = new String[] { "FIELD_KID", "APPROXACRE", "FIELD_NAME",
@@ -345,9 +344,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							
 							Log.d(tag, "-------长按   x: "+anchorPt.getX()+"  y: "+anchorPt.getY());
 							//TODO:传入正确的url
-							String url = "";
 							initSearchParams(anchorPt);
-							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, url, mLongTouchTitle, imageAnim, 
+							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, imageAnim, 
 									poiAnimation, CommonData.TypeOperateLongPress);
 						    task.execute(mIdentifyParameters); 
 							
@@ -399,15 +397,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					}// onLongPress
 				});
 		
-		MarinedbActivity.this.map.setOnTouchListener(new OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				if(mGridViewLayout.getVisibility() == View.VISIBLE)
-					mGridViewLayout.setVisibility(View.GONE);
-				return false;
-			}
-		});
+//		MarinedbActivity.this.map.setOnTouchListener(new OnTouchListener() {
+//			
+//			@Override
+//			public boolean onTouch(View arg0, MotionEvent arg1) {
+//				if(mGridViewLayout.getVisibility() == View.VISIBLE)
+//					mGridViewLayout.setVisibility(View.GONE);
+//				return false;
+//			}
+//		});
 
 	}
 
@@ -534,6 +532,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 * 初始化搜索结果列表数据
 	 */
 	private void initData() {
+		String[] urls = getResources().getStringArray(R.array.oilgas_url_theme);
+//		Log.d(tag, "- ********* --图层专题  url 数目 --main : "+urls.length);
+		for (int i = 0; i < urls.length; i++) {
+			OilGasData data = new OilGasData();
+			data.setUrl(urls[i]);
+			data.setChecked(false);
+			data.setVisible(false);
+			SinoApplication.mOilGasData.add(data);
+		}
+		
 		mSearchAdapter = new SearchAdapter(mContext, mList);
 		mListView.setAdapter(mSearchAdapter);
 	}
@@ -695,6 +703,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			startActivity(intent);
 		} else if (mBtnLayer.getId() == v.getId()) {
 			// start layer dialog
+			hideCallOut();
 			if(mLayerDialog == null){
 				mLayerDialog = new LayerDialog();
 			}
@@ -982,7 +991,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			//btnPolygon
 //			SinoUtil.showWindow(mContext, popupWindow, mMenuViewTool, mMenuListView, mMenuAdapter, this, list);
 			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
-			drawTool.calculateAreaAndLength();
+//			drawTool.calculateAreaAndLength();
 		} else if ("toolArea".equals(tag)) {
 			drawTool.calculateAreaAndLength();
 		} else if ("mineLogin".equals(tag)) {
@@ -996,10 +1005,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 折线长度以km显示
 			hidePopupWindow();
 			mBaseLayout.performClick();
+			drawTool.calculateAreaAndLength();
 		} else if ("M".equals(tag)) {
 			// 折线长度以m显示
 			hidePopupWindow();
 			mBaseLayout.performClick();
+			drawTool.calculateAreaAndLength();
 		} else if ("anyPoint".equals(tag)) {
 			Log.v("mandy", "anypoint..........");
 			drawTool.activate(DrawTool.ANY_POLYGON);
@@ -1488,8 +1499,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			}
 		}
 
-		if(mGridViewLayout.getVisibility() == View.VISIBLE)
+		if(mGridViewLayout.getVisibility() == View.VISIBLE){
 			mGridViewLayout.setVisibility(View.GONE);
+			//底下四个按钮置为常态
+			mMenuViewTool.setSelected(false);
+			mMenuViewCount.setSelected(false);
+			mMenuViewCompare.setSelected(false);
+			mMenuViewMine.setSelected(false);
+		}
 	}
 	
 }
