@@ -538,7 +538,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			OilGasData data = new OilGasData();
 			data.setUrl(urls[i]);
 			data.setChecked(false);
-			data.setVisible(false);
+			data.setVisible(true);
 			SinoApplication.mOilGasData.add(data);
 		}
 		

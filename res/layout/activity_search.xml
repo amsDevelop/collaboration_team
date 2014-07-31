@@ -37,7 +37,6 @@
                 android:background="@drawable/searchbtn"
                 android:hint="搜索"
                 android:singleLine="true"
-                android:text="塔里木"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -47,7 +46,7 @@
                 android:layout_marginLeft="2dp"
                 android:background="@drawable/selector_btn_toolbar"
                 android:gravity="center"
-                android:text="@string/btn_confirm"
+                android:text="@string/search"
                 android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
