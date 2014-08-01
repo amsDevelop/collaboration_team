@@ -20,4 +20,23 @@
         <item>@string/url_gasfields</item>
         <item>@string/url_well</item>
     </string-array> 
+    
+    <string-array name="all_layer_urls_4image">
+        <item>@string/url_marine_image</item>
+        <item>@string/url_basin</item>
+        <item>@string/url_oilreservoirs</item>
+        <item>@string/url_gasreservoirs</item>
+        <item>@string/url_oilfields</item>
+        <item>@string/url_gasfields</item>
+        <item>@string/url_well</item>
+    </string-array> 
+    <string-array name="all_layer_urls_4geo">
+        <item>@string/url_marine_geo</item>
+        <item>@string/url_basin</item>
+        <item>@string/url_oilreservoirs</item>
+        <item>@string/url_gasreservoirs</item>
+        <item>@string/url_oilfields</item>
+        <item>@string/url_gasfields</item>
+        <item>@string/url_well</item>
+    </string-array> 
 </resources> 

@@ -170,7 +170,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //		map.addLayer(tms);
 		
 		//加入6个专题图层 
-		String[] urls = getResources().getStringArray(R.array.all_layer_urls);
+		String[] urls = getResources().getStringArray(R.array.all_layer_urls_4image);
 		for (int i = 0; i < urls.length; i++) {
 			ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(urls[i]);
 			map.addLayer(layer);
@@ -740,6 +740,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// drawLayer.removeAll();
 			setButtonsStatus(v.getId());
 		} else if (btnCurScreen.getId() == v.getId()) {
+			drawTool.queryAttribute(map.getExtent());
 			setButtonsStatus(v.getId());
 		} else if (btnMultiple.getId() == v.getId()) {
 			setButtonsStatus(v.getId());
