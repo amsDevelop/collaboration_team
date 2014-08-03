@@ -30,9 +30,6 @@
           <activity android:name=".LoginActivity"
               android:windowSoftInputMode="stateHidden|stateAlwaysHidden"
               android:screenOrientation="landscape"/>
-          <activity android:name=".SearchActivity"
-              android:windowSoftInputMode="stateHidden|stateAlwaysHidden"
-              android:screenOrientation="landscape"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
