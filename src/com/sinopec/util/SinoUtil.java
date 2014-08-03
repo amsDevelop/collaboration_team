@@ -18,11 +18,7 @@ import com.sinopec.adapter.MenuAdapter;
 public class SinoUtil {
 	public static void showWindow(Context context, PopupWindow popupWindow, View view, 
 			ListView listview, BaseAdapter baseadapter, OnItemClickListener listener, ArrayList<HashMap<String, Object>> list) {
-		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-		view = layoutInflater.inflate(R.layout.view_menu_popwindow, null);
-		// 创建一个PopuWidow对象
-		popupWindow = new PopupWindow(view, 600, 400);
+	
 
 		listview = (ListView) view.findViewById(R.id.menu_listview);
 

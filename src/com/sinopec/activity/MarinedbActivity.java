@@ -697,10 +697,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			startActivity(intent);
 		} else if (doc.getId() == v.getId()) {
 			Log.v("mandy", "doc is clicked");
-			Intent intent = new Intent(this, SelectActivity.class);
-			intent.putExtra(CommonData.KeyTopicType, mTopicType);
-			intent.putExtra("name", "文档");
-			startActivity(intent);
+			Toast.makeText(mContext, "此功能暂未实现...", Toast.LENGTH_SHORT).show();
+//			Intent intent = new Intent(this, SelectActivity.class);
+//			intent.putExtra(CommonData.KeyTopicType, mTopicType);
+//			intent.putExtra("name", "文档");
+//			startActivity(intent);
 		} else if (mBtnLayer.getId() == v.getId()) {
 			// start layer dialog
 			hideCallOut();
@@ -991,6 +992,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			}
 			//btnPolygon
 //			SinoUtil.showWindow(mContext, popupWindow, mMenuViewTool, mMenuListView, mMenuAdapter, this, list);
+			// 创建一个PopuWidow对象
+			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
+			popupWindow = new PopupWindow(mBaseLayout, 600, 400);
+			
 			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
 //			drawTool.calculateAreaAndLength();
 		} else if ("toolArea".equals(tag)) {

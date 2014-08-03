@@ -147,10 +147,10 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		case R.id.id_btn_layer_3:
 			executeOilGas();
 //			mapView.removeAll();
-			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
-					SinoApplication.oilUrl);
+//			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
+//					SinoApplication.oilUrl);
 			SinoApplication.currentLayerUrl = SinoApplication.oilUrl;
-			mapView.addLayer(layerOilGas);
+//			mapView.addLayer(layerOilGas);
 			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNoilGas;
 			break;
@@ -320,6 +320,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				String url = data.getUrl();
 				if(tag.equals(url)){
 					SinoApplication.mOilGasData.get(i).setVisible(isVisible);
+					break;
 				}
 			}
 			reShow();
