@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.esri.android.map.Callout;
 import com.esri.android.map.GraphicsLayer;
+import com.esri.android.map.Layer;
 import com.esri.android.map.MapOnTouchListener;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISFeatureLayer;
@@ -152,13 +153,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //		map.addLayer(tms);
 		
 		//加入6个专题图层 
-		String[] urls = getResources().getStringArray(R.array.all_layer_urls_4image);
+		String[] urls = getResources().getStringArray(R.array.all_layer_urls);
 		for (int i = 0; i < urls.length; i++) {
 			ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(urls[i]);
 			map.addLayer(layer);
 		}
-		
-		
+		//不显示卫星图
+		Layer layerSatellite = map.getLayerByURL(SinoApplication.imageUrl);
+		layerSatellite.setVisible(false);
 		
 		Options o = new Options();
 		o.mode = MODE.ONDEMAND;
@@ -284,6 +286,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						if (!map.isLoaded()) {
 							return;
 						}
+						
+						//TODO:清空之前高亮显示
+						drawLayer.removeAll();
+						drawTool.deactivate();
+						
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
 						x1 = pt.getX();
 						y1 = pt.getY();
@@ -313,10 +320,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //							imageAnim.startAnimation(poiAnimation);
 							
 							Log.d(tag, "-------长按   x: "+anchorPt.getX()+"  y: "+anchorPt.getY());
-							//TODO:传入正确的url
 							initSearchParams(anchorPt);
 							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, imageAnim, 
-									poiAnimation, CommonData.TypeOperateLongPress);
+									poiAnimation, CommonData.TypeOperateLongPress, drawLayer);
 						    task.execute(mIdentifyParameters); 
 							
 							
@@ -464,6 +470,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				
 				drawLayer.removeAll();
 				drawTool.deactivate();
+				
+				if (callout.isShowing()) {
+					callout.hide();
+				}
 			}
 		});
 
@@ -1065,29 +1075,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		drawLayer.removeAll();
 	}
 	
-	private void jumpToMap(LocatorGeocodeResult result) {
-		if(result != null){
-	        Geometry resultLocGeom = result.getLocation();
-	        // create marker symbol to represent location
-	        SimpleMarkerSymbol resultSymbol = new SimpleMarkerSymbol(Color.BLUE, 20, SimpleMarkerSymbol.STYLE.CIRCLE);
-	        // create graphic object for resulting location
-	        Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
-	        // add graphic to location layer
-	        drawLayer.addGraphic(resultLocation);
-	        // create text symbol for return address
-	        TextSymbol resultAddress = new TextSymbol(12, result.getAddress(), Color.BLACK);
-	        // create offset for text
-	        resultAddress.setOffsetX(10);
-	        resultAddress.setOffsetY(50);
-	        // create a graphic object for address text
-	        Graphic resultText = new Graphic(resultLocGeom, resultAddress);
-	        // add address text graphic to location graphics layer
-	        drawLayer.addGraphic(resultText);
-	        // zoom to geocode result
-	        map.zoomToResolution(result.getLocation(), 2);
-		}
-	}
-
 	private SearchFragment searchFragment;
 	private FragmentManager fragmentManager;
 	private HashMap<String, Object> mHashMap4Property = new HashMap<String, Object>();
@@ -1097,11 +1084,19 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		FindResult result = (FindResult)data; 
 		SinoApplication.findResult = result;
 		Geometry geometry = result.getGeometry();
+		
+        
 		Envelope envelope = new Envelope();
 		geometry.queryEnvelope(envelope);
 		Point point = envelope.getCenter();
 		Log.d(tag, "-------查询出的坐标  x: "+point.getX()+"  y: "+point.getY());
 		map.zoomToScale(point, 5000000);
+
+		//绘制高亮区域
+		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+		Graphic resultLocation = new Graphic(geometry, resultSymbol);
+		drawLayer.addGraphic(resultLocation);
+		
 		mTopicType = result.getLayerName();
 		mTopicName = result.getValue();
 		mHashMap4Property = (HashMap<String, Object>) result.getAttributes();

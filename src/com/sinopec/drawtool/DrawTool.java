@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,11 +18,14 @@ import com.esri.android.map.MapOnTouchListener;
 import com.esri.android.map.MapView;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Geometry;
+import com.esri.core.geometry.GeometryEngine;
 import com.esri.core.geometry.Line;
+import com.esri.core.geometry.LinearUnit;
 import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polygon;
 import com.esri.core.geometry.Polyline;
+import com.esri.core.geometry.SpatialReference;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.FillSymbol;
 import com.esri.core.symbol.LineSymbol;
@@ -29,6 +33,7 @@ import com.esri.core.symbol.MarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
+import com.esri.core.symbol.TextSymbol;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.sinopec.application.SinoApplication;
@@ -514,7 +519,6 @@ public class DrawTool extends Subject {
 //		drawLayer.removeAll();
 		if (DrawTool.POLYLINE == drawType) {
 			Polyline polyline = new Polyline();
-
 			Point startPoint = null;
 			Point endPoint = null;
 
@@ -526,7 +530,7 @@ public class DrawTool extends Subject {
 				Line line = new Line();
 				line.setStart(startPoint);
 				line.setEnd(endPoint);
-
+//				Log.d("map", "--for---折线长度："+line.calculateLength2D());
 				polyline.addSegment(line, false);
 			}
 
@@ -534,8 +538,18 @@ public class DrawTool extends Subject {
 			drawLayer.addGraphic(g);
 
 			// 计算总长度
-			String length = Double.toString(Math.round(polyline
-					.calculateLength2D())) + " 米";
+			Envelope envelope = new Envelope();
+			polyline.queryEnvelope(envelope);
+			SpatialReference spatialReference = new SpatialReference("WKID_WGS84");
+			LinearUnit linearUnit = new LinearUnit(LinearUnit.Code.CENTIMETER);
+			double len = GeometryEngine.geodesicLength(envelope.createInstance(), SpatialReference.createLocal(), linearUnit);
+//			double len = geometryEngine.geodesicLength(envelope.createInstance(), spatialReference, linearUnit);
+//			Log.d("map", "-----折线长度："+polyline.calculateLength2D());
+			
+			String length = Double.toString(len) + " 米";
+//			String length = Double.toString(Math.round(envelope.calculateLength2D())) + " 米";
+//			String length = Double.toString(Math.round(polyline
+//					.calculateLength2D())) + " 米";
 
 			Toast.makeText(mapView.getContext(), "总长度： " + length,
 					Toast.LENGTH_SHORT).show();
@@ -620,9 +634,13 @@ public class DrawTool extends Subject {
 				sb.append("查询到 " + resultList.size()+"  ");
 				for (int i = 0; i < resultList.size(); i++) {
 					IdentifyResult result = resultList.get(i);
-					Map<String, Object> attributes = result.getAttributes();
-					String name = (String) attributes.get("NAME_CN");
-					sb.append("名字： "+name + " ; ");
+//					Map<String, Object> attributes = result.getAttributes();
+//					String name = (String) attributes.get("NAME_CN");
+//					if(TextUtils.isEmpty(name)){
+//						name = result.getValue().toString();
+//					}
+//					sb.append("名字： "+name + " ; ");
+					drawHighLight(result);
 				}
 				Toast.makeText(mapView.getContext(), sb.toString() , Toast.LENGTH_LONG).show();
 			}
@@ -632,5 +650,31 @@ public class DrawTool extends Subject {
 		
 	}
 
+	/**
+	 * 绘制高亮区域
+	 * @param result
+	 */
+	private void drawHighLight(IdentifyResult result) {
+		if(result != null){
+	        Geometry resultLocGeom = result.getGeometry();
+	        // create marker symbol to represent location
+	   	 	SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+	        // create graphic object for resulting location
+	        Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+	        // add graphic to location layer
+	        drawLayer.addGraphic(resultLocation);
+	        // create text symbol for return address
+//	        TextSymbol resultAddress = new TextSymbol(12, result.getAddress(), Color.BLACK);
+//	        // create offset for text
+//	        resultAddress.setOffsetX(10);
+//	        resultAddress.setOffsetY(50);
+	        // create a graphic object for address text
+//	        Graphic resultText = new Graphic(resultLocGeom, resultAddress);
+	        // add address text graphic to location graphics layer
+//	        drawLayer.addGraphic(resultText);
+	        // zoom to geocode result
+//	        map.zoomToResolution(result.getLocation(), 2);
+		}
+	}
 	
 }

@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.esri.android.map.GraphicsLayer;
+import com.esri.android.map.Layer;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISLayerInfo;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
@@ -124,34 +125,41 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 	@Override
 	public void onClick(View arg0) {
+		Layer layerSatellite = mapView.getLayerByURL(SinoApplication.imageUrl);
+		Layer layerGeographic = mapView.getLayerByURL(SinoApplication.genUrl);
 		switch (arg0.getId()) {
 		case R.id.id_btn_layer_1:
 			executeLayerSatellite();
-			mapView.removeAll();
-			ArcGISTiledMapServiceLayer layerSatellite = new ArcGISTiledMapServiceLayer(
-					SinoApplication.imageUrl);
-			mapView.addLayer(layerSatellite);
-			addDrawLayer();
+//			mapView.removeAll();
+//			ArcGISTiledMapServiceLayer layerSatellite = new ArcGISTiledMapServiceLayer(
+//					SinoApplication.imageUrl);
+//			mapView.addLayer(layerSatellite);
+//			addDrawLayer();
+			layerSatellite.setVisible(true);
+			layerGeographic.setVisible(false);
 			SinoApplication.layerName = SinoApplication.LNsatellite;
 			break;
 		case R.id.id_btn_layer_2:
 			executeLayerGeographic();
-			mapView.removeAll();
-			ArcGISTiledMapServiceLayer layerGeographic = new ArcGISTiledMapServiceLayer(
-					SinoApplication.genUrl);
-			mapView.addLayer(layerGeographic);
+//			mapView.removeAll();
+//			ArcGISTiledMapServiceLayer layerGeographic = new ArcGISTiledMapServiceLayer(
+//					SinoApplication.genUrl);
+//			mapView.addLayer(layerGeographic);
+			layerSatellite.setVisible(false);
+			layerGeographic.setVisible(true);
 			SinoApplication.currentLayerUrl = SinoApplication.genUrl;
-			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
 		case R.id.id_btn_layer_3:
 			executeOilGas();
+			layerSatellite.setVisible(false);
+			layerGeographic.setVisible(true);
 //			mapView.removeAll();
 //			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
 //					SinoApplication.oilUrl);
 			SinoApplication.currentLayerUrl = SinoApplication.oilUrl;
 //			mapView.addLayer(layerOilGas);
-			addDrawLayer();
+//			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNoilGas;
 			break;
 

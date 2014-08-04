@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +14,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.esri.android.map.GraphicsLayer;
+import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
+import com.esri.core.map.Graphic;
+import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.identify.IdentifyTask;
@@ -37,9 +42,10 @@ public class SearchIdentifyTask extends
 	private ImageView mImageView;
 	private Animation mAnimation;
 	private String OperateType = CommonData.TypeOperateLongPress;
-
+	private GraphicsLayer mDrawLayer;
+	
 	public SearchIdentifyTask(Context context, Point anchorPoint, String url,
-			Button title, ImageView imageAnim, Animation animation, String operateType) {
+		Button title, ImageView imageAnim, Animation animation, String operateType, GraphicsLayer drawLayer) {
 		this.mContext = context;
 		this.mAnchor = anchorPoint;
 		this.mServicesUrl = url;
@@ -47,6 +53,7 @@ public class SearchIdentifyTask extends
 		this.mAnimation = animation;
 		this.mTitle = title;
 		this.OperateType = operateType;
+		this.mDrawLayer = drawLayer;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
 		mProgressDialog.setCancelable(false);
@@ -110,6 +117,15 @@ public class SearchIdentifyTask extends
 				}
 
 				mTitle.setText(name);
+				
+				//绘制高亮区域
+				if(mDrawLayer != null){
+					Geometry geometry = results[0].getGeometry();
+					SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+					Graphic resultLocation = new Graphic(geometry, resultSymbol);
+					mDrawLayer.addGraphic(resultLocation);
+				}
+				
 			}else if(CommonData.TypeOperateFrameChoos.equals(OperateType)){
 				if(finishListener != null){
 					ArrayList<IdentifyResult> resultList = new ArrayList<IdentifyResult>();
