@@ -42,7 +42,7 @@ public class SearchIdentifyTask extends
 	private ImageView mImageView;
 	private Animation mAnimation;
 	private String OperateType = CommonData.TypeOperateLongPress;
-	private GraphicsLayer mDrawLayer;
+	private GraphicsLayer mDrawLayer4HighLight;
 	
 	public SearchIdentifyTask(Context context, Point anchorPoint, String url,
 		Button title, ImageView imageAnim, Animation animation, String operateType, GraphicsLayer drawLayer) {
@@ -53,7 +53,7 @@ public class SearchIdentifyTask extends
 		this.mAnimation = animation;
 		this.mTitle = title;
 		this.OperateType = operateType;
-		this.mDrawLayer = drawLayer;
+		this.mDrawLayer4HighLight = drawLayer;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
 		mProgressDialog.setCancelable(false);
@@ -119,11 +119,11 @@ public class SearchIdentifyTask extends
 				mTitle.setText(name);
 				
 				//绘制高亮区域
-				if(mDrawLayer != null){
+				if(mDrawLayer4HighLight != null){
 					Geometry geometry = results[0].getGeometry();
 					SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
 					Graphic resultLocation = new Graphic(geometry, resultSymbol);
-					mDrawLayer.addGraphic(resultLocation);
+					mDrawLayer4HighLight.addGraphic(resultLocation);
 				}
 				
 			}else if(CommonData.TypeOperateFrameChoos.equals(OperateType)){

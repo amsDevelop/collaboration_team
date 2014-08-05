@@ -67,6 +67,7 @@ public class DrawTool extends Subject {
 	private MapOnTouchListener defaultListener;
 	private Graphic drawGraphic;
 	private GraphicsLayer drawLayer;
+	private GraphicsLayer mDrawLayer4HighLight;
 
 	public static final int POINT = 1;
 	public static final int ENVELOPE = 2;
@@ -111,8 +112,9 @@ public class DrawTool extends Subject {
 	}
     
 	
-	public void setDrawLayer(GraphicsLayer drawLayer) {
+	public void setDrawLayer(GraphicsLayer drawLayer, GraphicsLayer drawLayer4HighLight) {
 		this.drawLayer = drawLayer;
+		this.mDrawLayer4HighLight = drawLayer4HighLight;
 	}
 
 
@@ -645,6 +647,8 @@ public class DrawTool extends Subject {
 			
 			@Override
 			public void onFinish(ArrayList<IdentifyResult> resultList) {
+				//把之前高亮显示结果清除
+				mDrawLayer4HighLight.removeAll();
 				StringBuilder sb = new StringBuilder();
 				sb.append("查询到 " + resultList.size()+"  ");
 				for (int i = 0; i < resultList.size(); i++) {
@@ -657,8 +661,9 @@ public class DrawTool extends Subject {
 //					sb.append("名字： "+name + " ; ");
 					drawHighLight(result);
 				}
+				deactivate();
 				mCallback.setSearchData(resultList);
-				Toast.makeText(mapView.getContext(), sb.toString() , Toast.LENGTH_LONG).show();
+//				Toast.makeText(mapView.getContext(), sb.toString() , Toast.LENGTH_LONG).show();
 			}
 		});
 		
@@ -678,7 +683,7 @@ public class DrawTool extends Subject {
 	        // create graphic object for resulting location
 	        Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
 	        // add graphic to location layer
-	        drawLayer.addGraphic(resultLocation);
+	        mDrawLayer4HighLight.addGraphic(resultLocation);
 	        // create text symbol for return address
 //	        TextSymbol resultAddress = new TextSymbol(12, result.getAddress(), Color.BLACK);
 //	        // create offset for text

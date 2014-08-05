@@ -33,7 +33,7 @@ public class SinoApplication extends Application {
      */
     public static final String oilUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer";
     /**
-     * 当前图层URL
+     * 当前图层URL(初始化为盆地)
      */
     public static String currentLayerUrl = genUrl;
 	
@@ -45,7 +45,6 @@ public class SinoApplication extends Application {
 	public static FindResult findResult;
 	public static IdentifyResult identifyResult;
 	public static IdentifyResult identifyResult4Frame;
-	
 
 	public static Context getContext() {
 		return mContext;
@@ -66,7 +65,7 @@ public class SinoApplication extends Application {
 	 */
 	public static ArrayList<IdentifyResult> mResultList4FrameSearch = new ArrayList<IdentifyResult>();
 	/**
-	 * 获得IdentifyResult中的名字
+	 * 获得IdentifyResult中地理元素的名字
 	 * @param result
 	 * @return
 	 */

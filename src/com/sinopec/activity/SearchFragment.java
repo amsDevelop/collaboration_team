@@ -39,10 +39,6 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	private MenuButtonNoIcon mConfirm;
 	private ViewGroup mViewGroup;
 	private ClearableEditText mEditText;
-	/**
-	 * 查询入口类型
-	 */
-	public String OperateType = CommonData.TypeBtnSearch4Fuzzy;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -142,9 +138,6 @@ public class SearchFragment extends Fragment implements OnClickListener {
 					HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
 					IdentifyResult identifyResult = (IdentifyResult) tmpMap.get("IdentifyResult");
 					mInterfaceDataCallBack.setData4Frame(identifyResult);
-//					mViewGroup.setVisibility(View.GONE);
-//					mList.clear();
-//					mAdapter.notifyDataSetChanged();
 				}
 
 			}
