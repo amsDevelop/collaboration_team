@@ -20,4 +20,13 @@ public class CommonData {
 	 */
 	public static String TypeOperateLongPress = "TypeLongPress";
 	public static String TypeOperateFrameChoos = "TypeOperateFrameChoose";
+	
+	/**
+	 * 从框选查询进入searchFragment
+	 */
+	public static String TypeBtnSearchFrameChoos = "TypeBtnSearchFrameChoos";
+	/**
+	 * 模糊查询进入searchFragment
+	 */
+	public static String TypeBtnSearch4Fuzzy = "TypeBtnSearch4Fuzzy";
 }

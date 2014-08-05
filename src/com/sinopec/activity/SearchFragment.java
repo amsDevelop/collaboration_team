@@ -22,8 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.esri.core.tasks.ags.find.FindResult;
+import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.sinopec.adapter.SearchAdapter;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.task.SearchFindTask;
 import com.sinopec.view.ClearableEditText;
@@ -37,6 +39,11 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	private MenuButtonNoIcon mConfirm;
 	private ViewGroup mViewGroup;
 	private ClearableEditText mEditText;
+	/**
+	 * 查询入口类型
+	 */
+	public String OperateType = CommonData.TypeBtnSearch4Fuzzy;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -124,12 +131,22 @@ public class SearchFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
-				HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
-				FindResult result = (FindResult) tmpMap.get("FindResult");
-				mInterfaceDataCallBack.setData(result);
-				mViewGroup.setVisibility(View.GONE);
-				mList.clear();
-				mAdapter.notifyDataSetChanged();
+				if(SinoApplication.mResultList4FrameSearch.size() == 0){
+					HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+					FindResult result = (FindResult) tmpMap.get("FindResult");
+					mInterfaceDataCallBack.setData(result);
+					mViewGroup.setVisibility(View.GONE);
+					mList.clear();
+					mAdapter.notifyDataSetChanged();
+				}else{
+					HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+					IdentifyResult identifyResult = (IdentifyResult) tmpMap.get("IdentifyResult");
+					mInterfaceDataCallBack.setData4Frame(identifyResult);
+//					mViewGroup.setVisibility(View.GONE);
+//					mList.clear();
+//					mAdapter.notifyDataSetChanged();
+				}
+
 			}
 		});
 		
@@ -139,8 +156,25 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	private SearchAdapter mAdapter;
 
 	private void initData() {
-		mAdapter = new SearchAdapter(mContext, mList);
-		mListView.setAdapter(mAdapter);
+		if(SinoApplication.mResultList4FrameSearch.size() == 0){
+			mConfirm.setVisibility(View.VISIBLE);
+			mEditText.setVisibility(View.VISIBLE);
+			mAdapter = new SearchAdapter(mContext, mList);
+			mListView.setAdapter(mAdapter);
+			
+//		}else if(CommonData.TypeBtnSearchFrameChoos.equals(OperateType)){
+		}else{
+			mConfirm.setVisibility(View.GONE);
+			mEditText.setVisibility(View.GONE);
+			for (int i = 0; i < SinoApplication.mResultList4FrameSearch.size(); i++) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("IdentifyResult", SinoApplication.mResultList4FrameSearch.get(i));
+				mList.add(map);
+			}
+			mAdapter = new SearchAdapter(mContext, mList);
+			mListView.setAdapter(mAdapter);
+			mViewGroup.setVisibility(View.VISIBLE);
+		}
 
 	}
 

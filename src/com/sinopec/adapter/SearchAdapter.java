@@ -14,7 +14,9 @@ import com.esri.core.geometry.Geometry;
 import com.esri.core.map.Graphic;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
+import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.sinopec.activity.R;
+import com.sinopec.application.SinoApplication;
 
 /**
  * 查询结果的adapter
@@ -60,9 +62,15 @@ public class SearchAdapter extends BaseAdapter {
 
 		HashMap<String, Object> map = mList.get(position);
 		FindResult result = (FindResult) map.get("FindResult");
-		Geometry geometry = result.getGeometry();
+		IdentifyResult identifyResult = (IdentifyResult) map.get("IdentifyResult");
+		String name = "";
+		if(result == null){
+			name = SinoApplication.getIdentifyResultName(identifyResult);
+		}else{
+			name = result.getValue();
+		}
+//		Geometry geometry = result.getGeometry();
 //		Map<String, Object> attributes = result.getAttributes();
-		String name = result.getValue();
 //		LocatorGeocodeResult result = (LocatorGeocodeResult) map.get("LocatorGeocodeResult");
 //		String name = result.getAddress();
 		holder.mName.setText(name);

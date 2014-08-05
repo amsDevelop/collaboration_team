@@ -1,5 +1,7 @@
 package com.sinopec.drawtool;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -38,6 +40,7 @@ import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
+import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.task.SearchIdentifyTask.OnFinishListener;
 
@@ -75,9 +78,10 @@ public class DrawTool extends Subject {
 	public static final int FREEHAND_POLYLINE = 8;
 
 	private static final int TEMP_LAYER_ID = -999999;
-
-	public DrawTool(MapView mapView) {
+	private InterfaceDataCallBack mCallback;
+	public DrawTool(MapView mapView, InterfaceDataCallBack callback) {
 		this.mapView = mapView;
+		this.mCallback = callback;
 		this.tempLayer = new GraphicsLayer();
 //		this.tempLayer.set
 		this.mapView.addLayer(this.tempLayer);
@@ -432,9 +436,21 @@ public class DrawTool extends Subject {
 						Graphic g = new Graphic(polyline, lineSymbol);
 						drawLayer.addGraphic(g);
 
+						double len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
+								null);
+						String length = "";
+						DecimalFormat df = new DecimalFormat("#.00");
+//						if("KM".equals(tag)){
+							double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
+							length = df.format(temp)+ " 千米";
+//						}else if("M".equals(tag)){
+//							length = df.format(len)+ " 米";
+//						}
+						Log.d("map", "-----折线长度："+length);
+						
 						// 计算当前线段的长度
-						String length = Double.toString(Math.round(line
-								.calculateLength2D())) + " 米";
+//						String length = Double.toString(Math.round(line
+//								.calculateLength2D())) + " 米";
 
 						Toast.makeText(mapView.getContext(), "长度： " + length,
 								Toast.LENGTH_SHORT).show();
@@ -515,7 +531,8 @@ public class DrawTool extends Subject {
 			return points;
 		}
 	}
-	public void calculateAreaAndLength() {
+	
+	public void calculateAreaAndLength(String tag) {
 //		drawLayer.removeAll();
 		if (DrawTool.POLYLINE == drawType) {
 			Polyline polyline = new Polyline();
@@ -537,20 +554,18 @@ public class DrawTool extends Subject {
 			Graphic g = new Graphic(polyline, lineSymbol);
 			drawLayer.addGraphic(g);
 
-			// 计算总长度
-			Envelope envelope = new Envelope();
-			polyline.queryEnvelope(envelope);
-			SpatialReference spatialReference = new SpatialReference("WKID_WGS84");
-			LinearUnit linearUnit = new LinearUnit(LinearUnit.Code.CENTIMETER);
-			double len = GeometryEngine.geodesicLength(envelope.createInstance(), SpatialReference.createLocal(), linearUnit);
-//			double len = geometryEngine.geodesicLength(envelope.createInstance(), spatialReference, linearUnit);
+			double len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
+					null);
 //			Log.d("map", "-----折线长度："+polyline.calculateLength2D());
+			String length = "";
+			DecimalFormat df = new DecimalFormat("#.00");
+			if("KM".equals(tag)){
+				double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
+				length = df.format(temp)+ " 千米";
+			}else if("M".equals(tag)){
+				length = df.format(len)+ " 米";
+			}
 			
-			String length = Double.toString(len) + " 米";
-//			String length = Double.toString(Math.round(envelope.calculateLength2D())) + " 米";
-//			String length = Double.toString(Math.round(polyline
-//					.calculateLength2D())) + " 米";
-
 			Toast.makeText(mapView.getContext(), "总长度： " + length,
 					Toast.LENGTH_SHORT).show();
 		} else if (drawType == DrawTool.POLYGON || drawType == DrawTool.ANY_POLYGON){
@@ -642,6 +657,7 @@ public class DrawTool extends Subject {
 //					sb.append("名字： "+name + " ; ");
 					drawHighLight(result);
 				}
+				mCallback.setSearchData(resultList);
 				Toast.makeText(mapView.getContext(), sb.toString() , Toast.LENGTH_LONG).show();
 			}
 		});

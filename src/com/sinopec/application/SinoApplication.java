@@ -1,6 +1,7 @@
 package com.sinopec.application;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
@@ -9,6 +10,7 @@ import com.sinopec.common.OilGasData;
 
 import android.app.Application;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
 public class SinoApplication extends Application {
@@ -42,6 +44,7 @@ public class SinoApplication extends Application {
 	public static LocatorGeocodeResult searchResult;
 	public static FindResult findResult;
 	public static IdentifyResult identifyResult;
+	public static IdentifyResult identifyResult4Frame;
 	
 
 	public static Context getContext() {
@@ -58,4 +61,22 @@ public class SinoApplication extends Application {
 	 * 纪录油气专题的选中情况
 	 */
 	public static ArrayList<OilGasData> mOilGasData = new ArrayList<OilGasData>();
+	/**
+	 * 纪录框选查询结果
+	 */
+	public static ArrayList<IdentifyResult> mResultList4FrameSearch = new ArrayList<IdentifyResult>();
+	/**
+	 * 获得IdentifyResult中的名字
+	 * @param result
+	 * @return
+	 */
+	public static String getIdentifyResultName(IdentifyResult result) {
+		Map<String, Object> attributes = result.getAttributes();
+		String name = (String) attributes.get("NAME_CN");
+		if(TextUtils.isEmpty(name)){
+			name = result.getValue().toString();
+		}
+		return name;
+	}
+	
 }
