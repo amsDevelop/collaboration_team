@@ -104,7 +104,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d(tag, "-----onResume: "+SinoApplication.layerName);
+//		Log.d(tag, "-----onResume: "+SinoApplication.layerName);
 		if(SinoApplication.LNsatellite.equals(SinoApplication.layerName)){
 			executeLayerSatellite();
 		}else if(SinoApplication.LNgeographic.equals(SinoApplication.layerName)){

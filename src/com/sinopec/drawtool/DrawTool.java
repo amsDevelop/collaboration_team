@@ -493,6 +493,7 @@ public class DrawTool extends Subject {
 
 		}
 		public boolean onDoubleTap(MotionEvent event) {
+			Log.d("map", "-------onDoubleTap ");
 //			Point point = mapView.toMapPoint(event.getX(), event.getY());
 //			if (active &&(drawType==POLYGON || drawType==POLYLINE)) {
 //				switch (drawType) {

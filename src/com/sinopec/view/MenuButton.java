@@ -47,6 +47,7 @@ public class MenuButton extends Button {
 		
 		mRealWidth = SinoApplication.screenWidth / 4;
 		setWidth(mRealWidth);
+		setFocusableInTouchMode(false);
 	}
 
 	private Paint mPaint = new Paint();

@@ -455,6 +455,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
+				Log.d(tag, "--------mMenuViewTool");
 				Boolean[] clickTag = new Boolean[] { true, true, true };
 				if(mTag4OperateInLine){
 					clickTag = new Boolean[] { true, false, false };
@@ -585,7 +586,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d(tag, "main----------------------onResume");
+//		Log.d(tag, "main----------------------onResume");
 		map.unpause();
 		closeKeyboard();
 		new Handler().postDelayed(new Runnable() {
@@ -632,6 +633,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
+		if(mFragmentLayout.getVisibility() == View.VISIBLE){
+			//显示的时候不相应，防止穿透
+			return;
+		}
+		
 		if (property.getId() == v.getId()) {
 			Intent intent = new Intent(this, SelectActivity.class);
 			intent.putExtra(CommonData.KeyTopicType, mTopicType);
@@ -645,7 +651,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			intent.putExtra("name", "统计");
 			startActivity(intent);
 		} else if (doc.getId() == v.getId()) {
-			Log.v("mandy", "doc is clicked");
 			Toast.makeText(mContext, "此功能暂未实现...", Toast.LENGTH_SHORT).show();
 //			Intent intent = new Intent(this, SelectActivity.class);
 //			intent.putExtra(CommonData.KeyTopicType, mTopicType);
@@ -732,6 +737,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 */
 	private boolean mTag4OperateInLine = false;
 	private void setButtonsStatus(int vId) {
+		mLastClickedView = null;
 		if (btnFrame.getId() == vId) {
 			mTag4OperateInLine = false;
 			if(btnFrame.isSelected()){
@@ -902,9 +908,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		if (mLastClickedView == view) {
 			mGridViewLayout.setVisibility(View.INVISIBLE);
 			mLastClickedView = null;
+			Log.d(tag, "is view "+ mLastClickedView);
 		} else {
 			mGridViewLayout.setVisibility(View.VISIBLE);
 			mLastClickedView = view;
+			Log.d(tag, "not view "+ mLastClickedView);
 		}
 		// else
 		// mLastClickedView = null;
@@ -1023,7 +1031,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 		 @Override
 		 public boolean onTouch(View v, MotionEvent event) {
-			 
+			 Log.d(tag, "----MapTouchListener---onTouch--- ");
 			 if(mGridViewLayout.getVisibility() == View.VISIBLE)
 					mGridViewLayout.setVisibility(View.GONE);
 		    return super.onTouch(v, event);
