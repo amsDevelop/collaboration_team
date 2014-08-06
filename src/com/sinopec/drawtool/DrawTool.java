@@ -557,15 +557,21 @@ public class DrawTool extends Subject {
 			Graphic g = new Graphic(polyline, lineSymbol);
 			drawLayer.addGraphic(g);
 
-			double len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
-					null);
+			double len = 0.0;
+			
 //			Log.d("map", "-----折线长度："+polyline.calculateLength2D());
 			String length = "";
 			DecimalFormat df = new DecimalFormat("#.00");
 			if("KM".equals(tag)){
+				len = 0.0;
+				len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
+						new LinearUnit(LinearUnit.Code.KILOMETER));
 				double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
 				length = df.format(temp)+ " 千米";
 			}else if("M".equals(tag)){
+				len = 0.0;
+				len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
+						new LinearUnit(LinearUnit.Code.METER));
 				length = df.format(len)+ " 米";
 			}
 			
@@ -593,7 +599,10 @@ public class DrawTool extends Subject {
 
 			// 计算总面积
 			String sArea = getAreaString(polygon.calculateArea2D());
-
+//			GeometryEngine.geodesicLength(polygon, mapView.getSpatialReference(),
+//					new LinearUnit(LinearUnit.Code.KILOMETER));
+			
+//			GeometryEngine.geodesicArea();
 			Toast.makeText(mapView.getContext(), "总面积： " + sArea,
 					Toast.LENGTH_SHORT).show();
 		} else if (drawType == DrawTool.ENVELOPE) {
@@ -606,10 +615,10 @@ public class DrawTool extends Subject {
 
 		// 其他清理工作
 		// btnClear.setEnabled(true);
-		drawListener.ptStart = null;
-		drawListener.ptPrevious = null;
-		drawListener.points.clear();
-		drawListener.tempPolygon = null;
+//		drawListener.ptStart = null;
+//		drawListener.ptPrevious = null;
+//		drawListener.points.clear();
+//		drawListener.tempPolygon = null;
 	}
 	private String getAreaString(double dValue) {
 		long area = Math.abs(Math.round(dValue));
