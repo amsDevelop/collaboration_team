@@ -65,6 +65,10 @@ public class SinoApplication extends Application {
 	 */
 	public static ArrayList<IdentifyResult> mResultList4FrameSearch = new ArrayList<IdentifyResult>();
 	/**
+	 * 纪录多选查询结果
+	 */
+	public static ArrayList<IdentifyResult> mResultListMulti = new ArrayList<IdentifyResult>();
+	/**
 	 * 获得IdentifyResult中地理元素的名字
 	 * @param result
 	 * @return

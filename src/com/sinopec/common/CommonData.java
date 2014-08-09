@@ -19,6 +19,10 @@ public class CommonData {
 	 * 长按操作
 	 */
 	public static String TypeOperateLongPress = "TypeLongPress";
+	/**
+	 * 多选
+	 */
+	public static String TypeOperateMulti = "TypeMulti";
 	public static String TypeOperateFrameChoos = "TypeOperateFrameChoose";
 	
 	/**

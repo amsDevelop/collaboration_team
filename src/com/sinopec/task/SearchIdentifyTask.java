@@ -104,7 +104,7 @@ public class SearchIdentifyTask extends
 			return;
 		}
 		
-		Log.d(tag, "onPostExecute......................" + results.length);
+//		Log.d(tag, "onPostExecute......................" + results.length);
 
 		if(results.length > 0){
 			if(CommonData.TypeOperateLongPress.equals(OperateType)){
@@ -127,6 +127,14 @@ public class SearchIdentifyTask extends
 				}
 				
 			}else if(CommonData.TypeOperateFrameChoos.equals(OperateType)){
+				if(finishListener != null){
+					ArrayList<IdentifyResult> resultList = new ArrayList<IdentifyResult>();
+					for (int index = 0; index < results.length; index++) {
+						resultList.add(results[index]);
+					}
+					finishListener.onFinish(resultList);
+				}
+			}else if(CommonData.TypeOperateMulti.equals(OperateType)){
 				if(finishListener != null){
 					ArrayList<IdentifyResult> resultList = new ArrayList<IdentifyResult>();
 					for (int index = 0; index < results.length; index++) {

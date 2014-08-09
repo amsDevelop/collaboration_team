@@ -336,6 +336,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						drawTool.deactivate();
 						
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
+						Log.d("map", "-----长按------Long--x:"+x+"  y: "+y+" -toMapPoint--x:"+pt.getX()+"  y: "+pt.getY());
 						x1 = pt.getX();
 						y1 = pt.getY();
 						name2 = "未知地名";
@@ -695,6 +696,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawTool.queryAttribute(map.getExtent());
 			setButtonsStatus(v.getId());
 		} else if (btnMultiple.getId() == v.getId()) {
+			//TODO:多选,进入多
+			SinoApplication.mResultListMulti.clear();
+			drawTool.activate(DrawTool.MULTI_POINT);
+//			drawLayer.removeAll();
 			setButtonsStatus(v.getId());
 		} else if (mBtnScaleBig.getId() == v.getId()) {
 			map.zoomin();
@@ -921,6 +926,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 			long arg3) {
+		mLastClickedView = null;
 		HashMap<String, Object> map = (HashMap<String, Object>) arg0
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
@@ -957,13 +963,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if ("KM".equals(tag)) {
 			// 折线长度以km显示
 			hidePopupWindow();
-			mBaseLayout.performClick();
 			drawTool.calculateAreaAndLength("KM");
+			mBtnCancelChoose.performClick();
 		} else if ("M".equals(tag)) {
 			// 折线长度以m显示
 			hidePopupWindow();
-			mBaseLayout.performClick();
 			drawTool.calculateAreaAndLength("M");
+			mBtnCancelChoose.performClick();
 		} else if ("anyPoint".equals(tag)) {
 			Log.v("mandy", "anypoint..........");
 			drawTool.activate(DrawTool.ANY_POLYGON);
@@ -1031,30 +1037,24 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 		 @Override
 		 public boolean onTouch(View v, MotionEvent event) {
-			 Log.d(tag, "----MapTouchListener---onTouch--- ");
+//			 Log.d(tag, "----MapTouchListener---onTouch--- ");
 			 if(mGridViewLayout.getVisibility() == View.VISIBLE)
 					mGridViewLayout.setVisibility(View.GONE);
 		    return super.onTouch(v, event);
 		 }
 		 
 		 @Override
+		public boolean onDoubleTap(MotionEvent point) {
+			 Log.d(tag, "----MapTouchListener---onDoubleTap--- ");
+			if(mFragmentLayout.getVisibility() == View.VISIBLE){
+				//显示的时候不相应，防止穿透
+				return false;
+			}
+			return super.onDoubleTap(point);
+		}
+		 
+		 @Override
 		public boolean onDragPointerUp(MotionEvent from, MotionEvent to) {
-			// TODO Auto-generated method stub
-			Point point = map.toMapPoint(to.getX(), to.getY());
-			
-			
-//			System.out.println("getx: " + point.getX() + " getY: " + point.getY());
-			
-//			Log.v("mandy", "getx: " + point.getX() + " getY: " + point.getY());
-			
-//			  point.getX()
-			 
-			Polygon polygon =  map.getExtent();
-			
-			
-			
-//			polygon.
-			 
 			return super.onDragPointerUp(from, to);
 		}
 
