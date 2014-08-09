@@ -1,6 +1,7 @@
 package com.sinopec.application;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.esri.core.tasks.ags.find.FindResult;
@@ -68,6 +69,11 @@ public class SinoApplication extends Application {
 	 * 纪录多选查询结果
 	 */
 	public static ArrayList<IdentifyResult> mResultListMulti = new ArrayList<IdentifyResult>();
+	public static HashMap<String, Integer> mResultMapMulti = new HashMap<String, Integer>();
+	/**
+	 * 对比用的集合
+	 */
+	public static ArrayList<IdentifyResult> mResultList4Compared = new ArrayList<IdentifyResult>();
 	/**
 	 * 获得IdentifyResult中地理元素的名字
 	 * @param result

@@ -163,7 +163,7 @@ public class SearchIdentifyTask extends
 	@Override
 	protected void onPreExecute() {
 		mIdentifyTask = new IdentifyTask(mServicesUrl);
-		Log.d(tag, "onPostExecute...............查询当前图层的url: " + mServicesUrl);
+//		Log.d(tag, "onPostExecute...............查询当前图层的url: " + mServicesUrl);
 //				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
 //				"http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer");
 		mProgressDialog.show();

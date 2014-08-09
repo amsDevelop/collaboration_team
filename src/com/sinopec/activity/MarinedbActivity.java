@@ -484,10 +484,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				Boolean[] clickTag = new Boolean[] { true };
-				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
-				mGridView.setNumColumns(1);
-				setGridView(list, arg0);
+//				Boolean[] clickTag = new Boolean[] { true };
+//				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
+//				mGridView.setNumColumns(1);
+//				setGridView(list, arg0);
+				showWindow4Compared(SinoApplication.mResultList4Compared);
 			}
 		});
 
@@ -891,6 +892,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 200,
 		// SinoApplication.screenHeight / 2);
 	}
+	
+	private void showWindow4Compared(ArrayList<IdentifyResult> list) {
+		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
+		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
+		
+		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
+//		popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
+	}
 
 	// 关闭软键盘
 	private void closeKeyboard() {
@@ -1207,6 +1217,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				mEditText.setText("查询到 "+size+" 个 结果，点击进入详情页面。");
 				mLeftBarLayout.startAnimation(aniOut);
 				mLeftBarLayout.setVisibility(View.GONE);
+				SinoApplication.mResultList4Compared = list;
 			}
 		}else{
 			Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();

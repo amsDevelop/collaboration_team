@@ -3,6 +3,7 @@ package com.sinopec.drawtool;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import java.util.List;
@@ -506,7 +507,7 @@ public class DrawTool extends Subject {
 
 		}
 		public boolean onDoubleTap(MotionEvent event) {
-			Log.d("map", "-------onDoubleTap ");
+//			Log.d("map", "-------onDoubleTap ");
 //			Point point = mapView.toMapPoint(event.getX(), event.getY());
 //			if (active &&(drawType==POLYGON || drawType==POLYLINE)) {
 //				switch (drawType) {
@@ -719,12 +720,13 @@ public class DrawTool extends Subject {
 				sb.append("多选单点 " + resultList.size()+"  ");
 				for (int i = 0; i < resultList.size(); i++) {
 					IdentifyResult result = resultList.get(i);
-					drawHighLight(result);
+//					drawHighLight(result);
+					objectIsChecked(result);
 				}
 //				deactivate();
-				SinoApplication.mResultListMulti.add(resultList.get(0));
-//				mCallback.setSearchData(resultList);
-				Toast.makeText(mapView.getContext(), sb.toString() , Toast.LENGTH_LONG).show();
+				SinoApplication.mResultList4Compared = SinoApplication.mResultListMulti;
+				
+//				Toast.makeText(mapView.getContext(), sb.toString() , Toast.LENGTH_LONG).show();
 			}
 		});
 	}
@@ -741,6 +743,7 @@ public class DrawTool extends Subject {
 	        // create graphic object for resulting location
 	        Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
 	        // add graphic to location layer
+	        Log.d("map", " drawHighLight ....uid: "+resultLocation.getUid());
 	        mDrawLayer4HighLight.addGraphic(resultLocation);
 	        // create text symbol for return address
 //	        TextSymbol resultAddress = new TextSymbol(12, result.getAddress(), Color.BLACK);
@@ -753,6 +756,49 @@ public class DrawTool extends Subject {
 //	        drawLayer.addGraphic(resultText);
 	        // zoom to geocode result
 //	        map.zoomToResolution(result.getLocation(), 2);
+		}
+	}
+	
+	private void drawHighLight4Multi(IdentifyResult result) {
+		if(result != null){
+			Geometry resultLocGeom = result.getGeometry();
+			// create marker symbol to represent location
+			SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+			// create graphic object for resulting location
+			Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+			// add graphic to location layer
+			Integer uid = mDrawLayer4HighLight.addGraphic(resultLocation);
+			Log.d("map", " drawHighLight ....uid: "+uid);
+			SinoApplication.mResultMapMulti.put(result.getValue().toString(), uid);
+		}
+	}
+	
+	//TODO:remove不起作用 
+	private void removeHighLight(IdentifyResult result) {
+		if(result != null){
+			Integer uid = SinoApplication.mResultMapMulti.get(result.getValue().toString());
+			Log.d("map", " remove ....uid: "+uid);
+			mDrawLayer4HighLight.removeGraphic(uid);
+		}
+	}
+	
+	private void objectIsChecked(IdentifyResult result) {
+		boolean isCheck = false;
+		for (int i = 0; i < SinoApplication.mResultList4Compared.size(); i++) {
+			IdentifyResult temp = SinoApplication.mResultList4Compared.get(i);
+			
+			if(result.getValue().toString().equals(temp.getValue().toString())){
+				SinoApplication.mResultList4Compared.remove(i);
+				isCheck = true;
+				break;
+			}
+		}
+		Log.d("map", " 是否选中.... : "+isCheck+" size: "+SinoApplication.mResultList4Compared.size());
+		if(isCheck){
+			removeHighLight(result);
+		}else{
+			SinoApplication.mResultListMulti.add(result);
+			drawHighLight4Multi(result);
 		}
 	}
 	
