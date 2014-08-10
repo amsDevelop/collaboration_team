@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
@@ -78,7 +80,9 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	}
 	
 	private ImageButton mBtnBack;
+	private TextView mTVTitle;
 	private void initView(View view) {
+		mTVTitle = (TextView) view.findViewById(R.id.search_layername);
 		mConfirm = (MenuButtonNoIcon) view.findViewById(R.id.btn_search_confirm);
 		mConfirm.setOnClickListener(this);
 		mListView = (ListView) view.findViewById(R.id.search_listview);
@@ -152,11 +156,17 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		if(SinoApplication.mResultList4FrameSearch.size() == 0){
 			mConfirm.setVisibility(View.VISIBLE);
 			mEditText.setVisibility(View.VISIBLE);
+			mTVTitle.setVisibility(View.GONE);
+
 			mAdapter = new SearchAdapter(mContext, mList);
 			mListView.setAdapter(mAdapter);
 			
 //		}else if(CommonData.TypeBtnSearchFrameChoos.equals(OperateType)){
 		}else{
+			if(!TextUtils.isEmpty(SinoApplication.mLayerName)){
+				mTVTitle.setVisibility(View.VISIBLE);
+				mTVTitle.setText("["+SinoApplication.mLayerName+"] 图层");
+			}
 			mConfirm.setVisibility(View.GONE);
 			mEditText.setVisibility(View.GONE);
 			for (int i = 0; i < SinoApplication.mResultList4FrameSearch.size(); i++) {
@@ -186,7 +196,8 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	}
 	
 	private void search(String key) {
-		SearchFindTask task = new SearchFindTask(mInterfaceDataCallBack, mContext, mListView, mList,  mViewGroup, mAdapter,SinoApplication.oilUrl);
+		SearchFindTask task = new SearchFindTask(mInterfaceDataCallBack, mContext, mListView, mList,  mViewGroup, mAdapter,
+				getString(R.string.url_marine_oil));
 		task.execute(key);
 		
 	}

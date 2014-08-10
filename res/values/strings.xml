@@ -12,6 +12,7 @@
     <string name="btn_cancel_chooise">取消选择</string>
     
     <string name="btn_tool">工具</string>
+    <string name="btn_search">查询</string>
     <string name="btn_count">统计</string>
     <string name="btn_compare">对比</string>
     <string name="btn_mine">我的</string>
@@ -43,6 +44,7 @@
     <string name="layer_current">设为当前图层</string>
     <string name="search_loading">正在查询...</string>
     <string name="search_no_result">抱歉，没有结果</string>
+    <string name="tip_no_objects">您还未选择对比目标</string>
     
     <string name="url_oilreservoirs">http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer</string>
     <string name="url_gasreservoirs">http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer</string>

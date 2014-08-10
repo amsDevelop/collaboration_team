@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -57,7 +58,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	protected List<FindResult> doInBackground(String... params) {
 		List<FindResult> mResult = null;
 		if (params != null && params.length > 0) {
-			int[] layerIDs = new int[] { 7 };
+			int[] layerIDs = new int[] { 0,1,2,3,4,5,6,7 };
 			FindParameters mParams = new FindParameters(params[0], layerIDs);
 
 			try {
@@ -95,9 +96,10 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 
 	@Override
 	protected void onPreExecute() {
-//		mFindTask = new FindTask(mServicesUrl);
-		mFindTask = new FindTask(
-				"http://10.225.14.201:6080/arcgis/rest/services/marine_oil/MapServer");
+		mFindTask = new FindTask(mServicesUrl);
+		Log.d("search", "onPostExecute..........模糊擦鞋.....url: " + mServicesUrl);
+//		mFindTask = new FindTask(
+//				"http://10.225.14.201:6080/arcgis/rest/services/marine_oil/MapServer");
 //				"http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer");
 		mProgressDialog.show();
 	}
