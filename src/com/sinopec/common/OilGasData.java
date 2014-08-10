@@ -5,6 +5,10 @@ package com.sinopec.common;
  */
 public class OilGasData {
 	private String url;
+	private int id;
+	private String name;
+	private int color;
+	
 	private boolean isChecked = false;
 	private boolean isVisible = false;
 	public String getUrl() {
@@ -25,4 +29,24 @@ public class OilGasData {
 	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getColor() {
+		return color;
+	}
+	public void setColor(int color) {
+		this.color = color;
+	}
+	
+	
 }

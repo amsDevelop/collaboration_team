@@ -6,7 +6,9 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.CalendarContract.Colors;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +25,11 @@ import android.widget.TextView;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.Layer;
 import com.esri.android.map.MapView;
+import com.esri.android.map.ags.ArcGISFeatureLayer;
+import com.esri.android.map.ags.ArcGISFeatureLayer.MODE;
 import com.esri.android.map.ags.ArcGISLayerInfo;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
+import com.esri.core.map.Legend;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.OilGasData;
 
@@ -42,14 +47,14 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private ArcGISTiledMapServiceLayer mapServiceLayer;
 	private GraphicsLayer drawLayer;
 
-	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
+//	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
 	private MyAdapter mOilGasAdapter;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(resID, null);
-
+//		layerName = new String[6]; 
 		mBtn1 = (Button) view.findViewById(R.id.id_btn_layer_1);
 		mBtn2 = (Button) view.findViewById(R.id.id_btn_layer_2);
 		mBtn3 = (Button) view.findViewById(R.id.id_btn_layer_3);
@@ -66,23 +71,9 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mListView = (ListView) view.findViewById(R.id.id_lstview_layer_1);
 		mOilGasAdapter = new MyAdapter();
 		mListView.setAdapter(mOilGasAdapter);
-		initData();
-
 		return view;
 	}
-
-	private void initData() {
-//		layerInfos.removeAll(layerInfos);
-		layerInfos.clear();
-		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
-		if(arc != null){
-			Log.d(tag, "---图层专题数量--onCreateView: "+arc.length);
-			for (int i = 0; i < arc.length; i++) {
-				layerInfos.add(arc[i]);
-			}
-		}
-	}
-
+	
 	public void setMapView(MapView mapView) {
 		this.mapView = mapView;
 	}
@@ -161,6 +152,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //			mapView.addLayer(layerOilGas);
 //			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNoilGas;
+			
+		
 			break;
 
 		case R.id.id_btn_operator_1:
@@ -175,7 +168,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		}
 
 	}
-
+   
 	void showAlert() {
 		// Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
 	}
@@ -238,7 +231,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView, ViewGroup parent) {
 			ViewHolder holder = new ViewHolder();
 			if (convertView == null) {
 				convertView = LayoutInflater.from(getActivity()).inflate(R.layout.layer_list_item, null);
@@ -259,7 +252,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			holder.mCBshow.setChecked(data.isVisible());
 			holder.mCBcur.setChecked(data.isChecked());
 			
-			holder.mName.setText(layerInfos.get(position).getName());
+			holder.mName.setText(data.getName());
+			holder.mName.setBackgroundColor(data.getColor());
 			
 			holder.mCBshow.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				
@@ -278,6 +272,10 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					String url = buttonView.getTag().toString();
+					OilGasData data = SinoApplication.mOilGasData.get(position);
+					Log.v("mandy", "position: " + position + " url: " + data.getUrl() + " name: " + data.getName() +" id: " + data.getId());
+					
+					
 					if (isChecked) {
 						Log.d("map", "buttonView.getTag(): " + buttonView.getTag());
 //						mapView.removeAll();
@@ -290,7 +288,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				}
 			});
 			
-//			盆地：http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer
+//			     盆地：http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer
 //				油藏：http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer
 //				气藏：http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer
 //				油田：http://202.204.193.201:6080/arcgis/rest/services/oilfields/MapServer
