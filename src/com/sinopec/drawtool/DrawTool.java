@@ -290,13 +290,11 @@ public class DrawTool extends Subject {
 					
 					if (uid == -1) { // first time
 						drawLayer.removeAll();
-						Log.v("mandy", "onDragPointerMove uid == -1");
 						Graphic g = new Graphic(null, fillSymbol);
 					  	startPoint = mapView.toMapPoint(from.getX(), from.getY());
 						uid  = drawLayer.addGraphic(g);
 
 					} else { 
-						Log.v("mandy", "onDragPointerMove uid != -1");
 //						gLayer.removeAll();
 						Point p2 = mapView.toMapPoint(new Point(to.getX(), to.getY()));
 //						Envelope envelope = new Envelope();
@@ -480,8 +478,6 @@ public class DrawTool extends Subject {
 							Graphic g = new Graphic(tempPolygon, fillSymbol);
 							drawLayer.addGraphic(g);
 							
-							queryAttribute(tempPolygon);
-	//
 	//						// 计算当前面积
 	//						String sArea = getAreaString(tempPolygon
 	//								.calculateArea2D());
@@ -521,6 +517,29 @@ public class DrawTool extends Subject {
 //				sendDrawEndEvent();
 //				this.startPoint = null;
 //			}
+			 if (drawType == DrawTool.POLYGON || drawType == DrawTool.ANY_POLYGON){
+					Polygon polygon = new Polygon();
+
+					Point startPoint = null;
+					Point endPoint = null;
+					// 绘制完整的多边形
+					for (int i = 1; i < drawListener.points.size(); i++) {
+						startPoint = drawListener.points.get(i - 1);
+						endPoint = drawListener.points.get(i);
+
+						Line line = new Line();
+						line.setStart(startPoint);
+						line.setEnd(endPoint);
+
+						polygon.addSegment(line, false);
+					}
+
+					Graphic g = new Graphic(polygon, fillSymbol);
+					drawLayer.addGraphic(g);
+					queryAttribute(polygon);
+					return true;
+			
+			 }
 			return super.onDoubleTap(event);
 		}
 
