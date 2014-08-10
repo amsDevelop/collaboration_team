@@ -45,7 +45,7 @@ public class MenuButton extends Button {
 		
 		bitmap = BitmapFactory.decodeResource(context.getResources(), mIconId);
 		
-		mRealWidth = SinoApplication.screenWidth / 4;
+		mRealWidth = SinoApplication.screenWidth / 5;
 		setWidth(mRealWidth);
 		setFocusableInTouchMode(false);
 	}

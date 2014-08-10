@@ -103,16 +103,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp" >
 
-                        <Button
-                            android:id="@+id/btn_map_layout"
-                            style="@style/btn_toolbar_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginRight="5dp"
-                            android:drawableTop="@drawable/tc"
-                            android:text="@string/btn_layout" />
-
                         <LinearLayout
                             android:id="@+id/map_scale_layout"
                             android:layout_width="wrap_content"
@@ -145,6 +135,12 @@
                     android:layout_centerVertical="true"
                     android:orientation="vertical" >
 
+                    <Button
+                        android:id="@+id/btn_map_layout"
+                        style="@style/btn_toolbar_btn"
+                        android:drawableTop="@drawable/tc"
+                        android:text="@string/btn_layout" />
+                                          
                     <Button
                         android:id="@+id/tb_single"
                         style="@style/btn_toolbar_btn"
@@ -216,7 +212,15 @@
                         iconbutton:mtext="@string/btn_tool"
                         iconbutton:relation="icon_right"
                         iconbutton:text_size="16sp" />
-
+                    
+                    <com.sinopec.view.MenuButton
+                        android:id="@+id/menuview_search"
+                        style="@style/btn_menuview_btn"
+                        iconbutton:icon="@drawable/menu_mine"
+                        iconbutton:mtext="@string/btn_search"
+                        iconbutton:relation="icon_right"
+                        iconbutton:text_size="16sp" />
+                    
                     <com.sinopec.view.MenuButton
                         android:id="@+id/menuview_count"
                         style="@style/btn_menuview_btn"

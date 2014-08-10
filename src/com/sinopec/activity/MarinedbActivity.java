@@ -423,8 +423,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MenuButton mMenuViewCount;
 	private MenuButton mMenuViewMine;
 	private MenuButton mMenuViewTool;
+	private MenuButton mMenuViewSearch;
 	private ListView mListView;
 	private ViewGroup mSearchViewGroup;
+	/**
+	 * 底部五个按钮跟布局
+	 */
+	private ViewGroup mToolBar;
 	
 	private void initView() {
 		mSearchViewGroup = (ViewGroup) findViewById(R.id.search_listview_layout);
@@ -432,7 +437,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBaseLayout = (ViewGroup) findViewById(R.id.baselayout);
 		mLeftBarLayout = (ViewGroup) findViewById(R.id.tool_bar);
 		mFragmentLayout = (ViewGroup) findViewById(R.id.fragmentlayout);
-//		mToolBar = (LinearLayout) findViewById(R.id.menu_bar);
+		mToolBar = (ViewGroup) findViewById(R.id.menu_bar);
 
 	
 		mGridViewLayout = (RelativeLayout) findViewById(R.id.menu_children_grid);
@@ -466,15 +471,32 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				setGridView(list, arg0);
 			}
 		});
+		
+		mMenuViewSearch = (MenuButton) findViewById(R.id.menuview_search);
+		mMenuViewSearch.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Log.d(tag, "--------mMenuViewSearch");
+				//TODO:
+				Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true };
+				ChildrenMenuDataUtil.setSearchChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
+				mGridView.setNumColumns(7);
+				setGridView(list, arg0);
+			}
+		});
 
 		mMenuViewCount = (MenuButton) findViewById(R.id.menuview_count);
 		mMenuViewCount.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				Boolean[] clickTag = new Boolean[] { true, true, true,true, true, true  };
+				Boolean[] clickTag = new Boolean[] { true, true,};
 				ChildrenMenuDataUtil.setCountChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
-				mGridView.setNumColumns(6);
+				mGridView.setNumColumns(2);
+//				Boolean[] clickTag = new Boolean[] { true, true, true,true, true, true  };
+//				ChildrenMenuDataUtil.setCountChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
+//				mGridView.setNumColumns(6);
 				setGridView(list, arg0);
 			}
 		});
@@ -488,7 +510,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 //				mGridView.setNumColumns(1);
 //				setGridView(list, arg0);
-				showWindow4Compared(SinoApplication.mResultList4Compared);
+				if(SinoApplication.mResultList4Compared == null || SinoApplication.mResultList4Compared.size() == 0){
+					Toast.makeText(mContext, getString(R.string.tip_no_objects), Toast.LENGTH_SHORT).show();
+				}else{
+					showWindow4Compared(SinoApplication.mResultList4Compared);
+				}
 			}
 		});
 
@@ -526,6 +552,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				
 				if (callout.isShowing()) {
 					callout.hide();
+					callout.refresh();
 				}
 				
 				//清空上次查询数据
@@ -703,6 +730,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //			drawLayer.removeAll();
 			setButtonsStatus(v.getId());
 		} else if (mBtnScaleBig.getId() == v.getId()) {
+			Log.d(tag, "--------------缩小："+callout.isShowing());
 			map.zoomin();
 		} else if (mBtnScaleSmall.getId() == v.getId()) {
 			map.zoomout();
@@ -814,6 +842,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				mMenuViewTool.setSelected(true);
 			}
 			mMenuViewCount.setSelected(false);
+			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewCount.getId() == vId) {
@@ -823,6 +852,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				mMenuViewCount.setSelected(true);
 			}
 			mMenuViewTool.setSelected(false);
+			mMenuViewSearch.setSelected(false);
+			mMenuViewCompare.setSelected(false);
+			mMenuViewMine.setSelected(false);
+		} else if (mMenuViewSearch.getId() == vId) {
+			if(mMenuViewSearch.isSelected()){
+				mMenuViewSearch.setSelected(false);
+			}else{
+				mMenuViewSearch.setSelected(true);
+			}
+			mMenuViewTool.setSelected(false);
+			mMenuViewCount.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewCompare.getId() == vId) {
@@ -832,6 +872,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				mMenuViewCompare.setSelected(true);
 			}
 			mMenuViewTool.setSelected(false);
+			mMenuViewSearch.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewMine.getId() == vId) {
@@ -841,6 +882,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				mMenuViewMine.setSelected(true);
 			}
 			mMenuViewTool.setSelected(false);
+			mMenuViewSearch.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			
@@ -981,7 +1023,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawTool.calculateAreaAndLength("M");
 			mBtnCancelChoose.performClick();
 		} else if ("anyPoint".equals(tag)) {
-			Log.v("mandy", "anypoint..........");
 			drawTool.activate(DrawTool.ANY_POLYGON);
 			// 多边形任意点绘制
 			hidePopupWindow();
@@ -1005,9 +1046,34 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if ("cycle".equals(tag)) {
 			// 多边形 圆形
 			hidePopupWindow();
+		} else if ("CountChildrenMenuTwo".equals(tag)) {
+			//TODO:统计二级菜单
+			Log.d("map", "--统计  左       二级菜单..........");
+			Boolean[] clickTag = new Boolean[] { true, true,true, true };
+			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(list, clickTag, mChildMenuSplitNumber);
+			mGridView.setNumColumns(4);
+			setGridView4LevelTwoChildrenMenu(list, arg0);
+		} else if ("CountChildrenMenuOne".equals(tag)) {
+			Log.d("map", "--统计  右            二级菜单..........");
+			Boolean[] clickTag = new Boolean[] { true, true,true, true, true, true, true, true, true, true, true, };
+			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
+			mGridView.setNumColumns(11);
+			setGridView4LevelTwoChildrenMenu(list, arg0);
 		}
 		
 		hideCallOut();
+	}
+	
+	private void setGridView4LevelTwoChildrenMenu(ArrayList<HashMap<String, Object>> list, View view) {
+//		setMenuButtonsStatus(view.getId());
+		mAdapter.notifyDataSetChanged();
+		mToolBar.setVisibility(View.GONE);
+		
+//		if (mLastClickedView == view) {
+//			mGridViewLayout.setVisibility(View.INVISIBLE);
+//		} else {
+//			mGridViewLayout.setVisibility(View.VISIBLE);
+//		}
 	}
 
 	private void hidePopupWindow() {
@@ -1020,6 +1086,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 		
 		mMenuViewTool.setSelected(false);
+		mMenuViewSearch.setSelected(false);
 		mMenuViewCount.setSelected(false);
 		mMenuViewCompare.setSelected(false);
 		mMenuViewMine.setSelected(false);
@@ -1174,9 +1241,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		if (callout.isShowing()) {
 			callout.hide();
 		}
-		callout.show(point);
-		mLongTouchTitle.setText(result.getValue());
-//		statistics.setText(result.getValue());
+		Log.d(tag, "-------------main---------setData: "+result.getLayerName());
+		if(!"chinapoi".equals(result.getLayerName()) && !"国家".equals(result.getLayerName())){
+			callout.show(point);
+			mLongTouchTitle.setText(result.getValue());
+	//		statistics.setText(result.getValue());
+		}
 
 		hideInput();
 		fragmentManager.beginTransaction().remove(searchFragment).commit();
@@ -1200,11 +1270,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			//底下四个按钮置为常态
 			mMenuViewTool.setSelected(false);
 			mMenuViewCount.setSelected(false);
+			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		}
 	}
-
+	
+	//框选查询返回的数据
 	@Override
 	public void setSearchData(ArrayList<IdentifyResult> list) {
 		//搜索按钮显示提示（点击查看详情）
@@ -1212,14 +1284,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			SinoApplication.mResultList4FrameSearch = list;
 			int size = list.size();
 			if(size == 0){
+				SinoApplication.mLayerName = "";
 				Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();
 			}else{
-				mEditText.setText("查询到 "+size+" 个 结果，点击进入详情页面。");
+				SinoApplication.mLayerName = list.get(0).getLayerName();
+				mEditText.setText("在 ["+list.get(0).getLayerName()+"] 图层查询到 "+size+" 个 结果，点击进入详情页面。");
 				mLeftBarLayout.startAnimation(aniOut);
 				mLeftBarLayout.setVisibility(View.GONE);
 				SinoApplication.mResultList4Compared = list;
 			}
 		}else{
+			SinoApplication.mLayerName = "";
 			Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();
 		}
 		//

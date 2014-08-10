@@ -24,6 +24,15 @@
             android:layout_height="wrap_content"
             android:background="@drawable/selector_btn_back" />
 
+        <TextView
+            android:id="@+id/search_layername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
