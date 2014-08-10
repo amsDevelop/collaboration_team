@@ -3,6 +3,7 @@ package com.sinopec.drawtool;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import java.util.List;
@@ -77,6 +78,10 @@ public class DrawTool extends Subject {
 	public static final int ANY_POLYGON = 6;
 	public static final int FREEHAND_POLYGON = 7;
 	public static final int FREEHAND_POLYLINE = 8;
+	/**
+	 * 多选
+	 */
+	public static final int MULTI_POINT = 9;
 
 	private static final int TEMP_LAYER_ID = -999999;
 	private InterfaceDataCallBack mCallback;
@@ -169,7 +174,7 @@ public class DrawTool extends Subject {
 	}
 
 	public void deactivate() {
-		this.mapView.setOnTouchListener(defaultListener);
+//		this.mapView.setOnTouchListener(defaultListener);
 		this.tempLayer.removeAll();
 		this.active = false;
 		this.drawType = -1;
@@ -222,6 +227,7 @@ public class DrawTool extends Subject {
 
 		private Point startPoint;
 		private Point ptStart = null;// 起点
+		private Point ptOnly = null;// 纪录一个点
 		private Point ptPrevious = null;// 上一个点
 		private ArrayList<Point> points = null;// 记录全部点
 		private Polygon tempPolygon = null;// 记录绘制过程中的多边形
@@ -407,76 +413,84 @@ public class DrawTool extends Subject {
 		public boolean onSingleTap(MotionEvent point) {
 //			Point point = mapView.toMapPoint(event.getX(), event.getY());
 //			 clearGraphic();
-			if (active && (drawType==POLYGON || drawType==POLYLINE)) {
+			if (active && (drawType==POLYGON || drawType==POLYLINE ||drawType == MULTI_POINT)) {
 				if (ptStart == null)
 					drawLayer.removeAll();// 第一次开始前，清空全部graphic
 				
 				Point ptCurrent = mapView.toMapPoint(new Point(point.getX(), point
 						.getY()));
 				points.add(ptCurrent);// 将当前点加入点集合中
-
-				if (ptStart == null) {// 画线或多边形的第一个点
-					ptStart = ptCurrent;
-
-					// 绘制第一个点
-					Graphic graphic = new Graphic(ptStart, markerSymbol);
-					drawLayer.addGraphic(graphic);
-				} else {// 画线或多边形的其他点
+				if (drawType == MULTI_POINT) {
+					//多选
+//					Log.d("map", "------点选-多选 ------SingleTap--x:"+point.getX()+"  y: "+point.getY());
+					ptOnly = null;
+					ptOnly = mapView.toMapPoint(point.getX(), point.getY());
+					
+					drawLayer.removeAll();
+					queryAttribute4OnlyOnePonit(ptOnly);
+				}else{
+					if (ptStart == null) {// 画线或多边形的第一个点
+						ptStart = ptCurrent;
+	
+						// 绘制第一个点
+						Graphic graphic = new Graphic(ptStart, markerSymbol);
+						drawLayer.addGraphic(graphic);
+					} else {// 画线或多边形的其他点
 						// 绘制其他点
-					Graphic graphic = new Graphic(ptCurrent, markerSymbol);
-					drawLayer.addGraphic(graphic);
-
-					// 生成当前线段（由当前点和上一个点构成）
-					Line line = new Line();
-					line.setStart(ptPrevious);
-					line.setEnd(ptCurrent);
-
-					if (drawType == DrawTool.POLYLINE) {
-						// 绘制当前线段
-						Polyline polyline = new Polyline();
-						polyline.addSegment(line, true);
-						Graphic g = new Graphic(polyline, lineSymbol);
-						drawLayer.addGraphic(g);
-
-						double len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
-								null);
-						String length = "";
-						DecimalFormat df = new DecimalFormat("#.00");
-//						if("KM".equals(tag)){
-							double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
-							length = df.format(temp)+ " 千米";
-//						}else if("M".equals(tag)){
-//							length = df.format(len)+ " 米";
-//						}
-						Log.d("map", "-----折线长度："+length);
-						
-						// 计算当前线段的长度
-//						String length = Double.toString(Math.round(line
-//								.calculateLength2D())) + " 米";
-
-						Toast.makeText(mapView.getContext(), "长度： " + length,
-								Toast.LENGTH_SHORT).show();
-					} else {
-//						tempPolygon = null;
-						// 绘制临时多边形
-						if (tempPolygon == null)
-							tempPolygon = new Polygon();
-						tempPolygon.addSegment(line, false);
-						drawLayer.removeAll();
-						Graphic g = new Graphic(tempPolygon, fillSymbol);
-						drawLayer.addGraphic(g);
-						
-						queryAttribute(tempPolygon);
-//
-//						// 计算当前面积
-//						String sArea = getAreaString(tempPolygon
-//								.calculateArea2D());
-//
-//						Toast.makeText(map.getContext(), "面积： " + sArea,
-//								Toast.LENGTH_SHORT).show();
+						Graphic graphic = new Graphic(ptCurrent, markerSymbol);
+						drawLayer.addGraphic(graphic);
+	
+						// 生成当前线段（由当前点和上一个点构成）
+						Line line = new Line();
+						line.setStart(ptPrevious);
+						line.setEnd(ptCurrent);
+	
+						if (drawType == DrawTool.POLYLINE) {
+							// 绘制当前线段
+							Polyline polyline = new Polyline();
+							polyline.addSegment(line, true);
+							Graphic g = new Graphic(polyline, lineSymbol);
+							drawLayer.addGraphic(g);
+	
+							double len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
+									null);
+							String length = "";
+							DecimalFormat df = new DecimalFormat("#.00");
+	//						if("KM".equals(tag)){
+								double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
+								length = df.format(temp)+ " 千米";
+	//						}else if("M".equals(tag)){
+	//							length = df.format(len)+ " 米";
+	//						}
+							Log.d("map", "-----折线长度："+length);
+							
+							// 计算当前线段的长度
+	//						String length = Double.toString(Math.round(line
+	//								.calculateLength2D())) + " 米";
+	
+							Toast.makeText(mapView.getContext(), "长度： " + length,
+									Toast.LENGTH_SHORT).show();
+						} else {
+	//						tempPolygon = null;
+							// 绘制临时多边形
+							if (tempPolygon == null)
+								tempPolygon = new Polygon();
+							tempPolygon.addSegment(line, false);
+							drawLayer.removeAll();
+							Graphic g = new Graphic(tempPolygon, fillSymbol);
+							drawLayer.addGraphic(g);
+							
+							queryAttribute(tempPolygon);
+	//
+	//						// 计算当前面积
+	//						String sArea = getAreaString(tempPolygon
+	//								.calculateArea2D());
+	//
+	//						Toast.makeText(map.getContext(), "面积： " + sArea,
+	//								Toast.LENGTH_SHORT).show();
+						}
 					}
 				}
-
 				ptPrevious = ptCurrent;
 //				tempLayer.postInvalidate();
 				return true;
@@ -485,7 +499,7 @@ public class DrawTool extends Subject {
 		}
 
 		private void clearGraphic() {
-
+			ptOnly = null;
 			ptStart = null;
 			ptPrevious = null;
 			points.clear();
@@ -493,7 +507,7 @@ public class DrawTool extends Subject {
 
 		}
 		public boolean onDoubleTap(MotionEvent event) {
-			Log.d("map", "-------onDoubleTap ");
+//			Log.d("map", "-------onDoubleTap ");
 //			Point point = mapView.toMapPoint(event.getX(), event.getY());
 //			if (active &&(drawType==POLYGON || drawType==POLYLINE)) {
 //				switch (drawType) {
@@ -566,8 +580,8 @@ public class DrawTool extends Subject {
 				len = 0.0;
 				len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
 						new LinearUnit(LinearUnit.Code.KILOMETER));
-				double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
-				length = df.format(temp)+ " 千米";
+//				double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
+				length = len + " 千米";
 			}else if("M".equals(tag)){
 				len = 0.0;
 				len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
@@ -677,8 +691,44 @@ public class DrawTool extends Subject {
 			}
 		});
 		
-	 
+	}
+	
+	public void queryAttribute4OnlyOnePonit(Geometry geometry) {
+		IdentifyParameters mIdentifyParameters = new IdentifyParameters();
+		mIdentifyParameters.setTolerance(20);
+		mIdentifyParameters.setDPI(98);
+		mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
+		mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
 		
+		mIdentifyParameters.setGeometry(geometry);
+		mIdentifyParameters.setSpatialReference(mapView.getSpatialReference());         
+		mIdentifyParameters.setMapHeight(mapView.getHeight());
+		mIdentifyParameters.setMapWidth(mapView.getWidth());
+		mIdentifyParameters.setMapExtent(new Envelope());
+		
+		SearchIdentifyTask task = new SearchIdentifyTask(mapView.getContext(), SinoApplication.currentLayerUrl,
+				CommonData.TypeOperateMulti);
+		task.execute(mIdentifyParameters); 
+		
+		task.setFinishListener(new OnFinishListener() {
+			
+			@Override
+			public void onFinish(ArrayList<IdentifyResult> resultList) {
+				//把之前高亮显示结果清除
+//				mDrawLayer4HighLight.removeAll();
+				StringBuilder sb = new StringBuilder();
+				sb.append("多选单点 " + resultList.size()+"  ");
+				for (int i = 0; i < resultList.size(); i++) {
+					IdentifyResult result = resultList.get(i);
+//					drawHighLight(result);
+					objectIsChecked(result);
+				}
+//				deactivate();
+				SinoApplication.mResultList4Compared = SinoApplication.mResultListMulti;
+				
+//				Toast.makeText(mapView.getContext(), sb.toString() , Toast.LENGTH_LONG).show();
+			}
+		});
 	}
 
 	/**
@@ -693,6 +743,7 @@ public class DrawTool extends Subject {
 	        // create graphic object for resulting location
 	        Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
 	        // add graphic to location layer
+	        Log.d("map", " drawHighLight ....uid: "+resultLocation.getUid());
 	        mDrawLayer4HighLight.addGraphic(resultLocation);
 	        // create text symbol for return address
 //	        TextSymbol resultAddress = new TextSymbol(12, result.getAddress(), Color.BLACK);
@@ -705,6 +756,49 @@ public class DrawTool extends Subject {
 //	        drawLayer.addGraphic(resultText);
 	        // zoom to geocode result
 //	        map.zoomToResolution(result.getLocation(), 2);
+		}
+	}
+	
+	private void drawHighLight4Multi(IdentifyResult result) {
+		if(result != null){
+			Geometry resultLocGeom = result.getGeometry();
+			// create marker symbol to represent location
+			SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+			// create graphic object for resulting location
+			Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+			// add graphic to location layer
+			Integer uid = mDrawLayer4HighLight.addGraphic(resultLocation);
+			Log.d("map", " drawHighLight ....uid: "+uid);
+			SinoApplication.mResultMapMulti.put(result.getValue().toString(), uid);
+		}
+	}
+	
+	//TODO:remove不起作用 
+	private void removeHighLight(IdentifyResult result) {
+		if(result != null){
+			Integer uid = SinoApplication.mResultMapMulti.get(result.getValue().toString());
+			Log.d("map", " remove ....uid: "+uid);
+			mDrawLayer4HighLight.removeGraphic(uid);
+		}
+	}
+	
+	private void objectIsChecked(IdentifyResult result) {
+		boolean isCheck = false;
+		for (int i = 0; i < SinoApplication.mResultList4Compared.size(); i++) {
+			IdentifyResult temp = SinoApplication.mResultList4Compared.get(i);
+			
+			if(result.getValue().toString().equals(temp.getValue().toString())){
+				SinoApplication.mResultList4Compared.remove(i);
+				isCheck = true;
+				break;
+			}
+		}
+		Log.d("map", " 是否选中.... : "+isCheck+" size: "+SinoApplication.mResultList4Compared.size());
+		if(isCheck){
+			removeHighLight(result);
+		}else{
+			SinoApplication.mResultListMulti.add(result);
+			drawHighLight4Multi(result);
 		}
 	}
 	

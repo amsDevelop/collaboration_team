@@ -104,7 +104,7 @@ public class SearchIdentifyTask extends
 			return;
 		}
 		
-		Log.d(tag, "onPostExecute......................" + results.length);
+//		Log.d(tag, "onPostExecute......................" + results.length);
 
 		if(results.length > 0){
 			if(CommonData.TypeOperateLongPress.equals(OperateType)){
@@ -134,6 +134,14 @@ public class SearchIdentifyTask extends
 					}
 					finishListener.onFinish(resultList);
 				}
+			}else if(CommonData.TypeOperateMulti.equals(OperateType)){
+				if(finishListener != null){
+					ArrayList<IdentifyResult> resultList = new ArrayList<IdentifyResult>();
+					for (int index = 0; index < results.length; index++) {
+						resultList.add(results[index]);
+					}
+					finishListener.onFinish(resultList);
+				}
 			}
 		}else{
 			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
@@ -155,7 +163,7 @@ public class SearchIdentifyTask extends
 	@Override
 	protected void onPreExecute() {
 		mIdentifyTask = new IdentifyTask(mServicesUrl);
-		Log.d(tag, "onPostExecute...............查询当前图层的url: " + mServicesUrl);
+//		Log.d(tag, "onPostExecute...............查询当前图层的url: " + mServicesUrl);
 //				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
 //				"http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer");
 		mProgressDialog.show();
