@@ -63,9 +63,14 @@ public class SearchAdapter extends BaseAdapter {
 		HashMap<String, Object> map = mList.get(position);
 		FindResult result = (FindResult) map.get("FindResult");
 		IdentifyResult identifyResult = (IdentifyResult) map.get("IdentifyResult");
+		String layerName = identifyResult.getLayerName();
 		String name = "";
 		if(result == null){
-			name = SinoApplication.getIdentifyResultName(identifyResult);
+			if("井".equals(layerName)){
+				name = SinoApplication.getIdentifyResultNameByType(identifyResult, 3);
+			}else{
+				name = SinoApplication.getIdentifyResultName(identifyResult);
+			}
 		}else{
 			name = result.getValue();
 		}

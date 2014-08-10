@@ -85,7 +85,22 @@ public class SinoApplication extends Application {
 	 */
 	public static String getIdentifyResultName(IdentifyResult result) {
 		Map<String, Object> attributes = result.getAttributes();
-		String name = (String) attributes.get("NAME_CN");
+		String name = (String) attributes.get("OBJ_NAME_C");
+		if(TextUtils.isEmpty(name)){
+			name = result.getValue().toString();
+		}
+		return name;
+	}
+	
+	public static String getIdentifyResultNameByType(IdentifyResult result, int type) {
+		Map<String, Object> attributes = result.getAttributes();
+		String name = (String) attributes.get("OBJ_NAME_C");
+		if(type == 3){
+			name = (String) attributes.get("井位名称");
+		}else if(type == 3){
+			
+		}
+		
 		if(TextUtils.isEmpty(name)){
 			name = result.getValue().toString();
 		}

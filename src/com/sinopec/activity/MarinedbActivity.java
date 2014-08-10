@@ -3,6 +3,8 @@ package com.sinopec.activity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -265,7 +267,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	
 	private IdentifyParameters mIdentifyParameters = new IdentifyParameters();
 	private void initSearchParams(Point pt) {
-		  //设置Identify查询参数
+	  //TODO:设置Identify查询参数
 	  mIdentifyParameters.setTolerance(20);
 	  mIdentifyParameters.setDPI(98);
 	  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
@@ -1332,7 +1334,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			callout.hide();
 		}
 		callout.show(point);
-		mLongTouchTitle.setText(SinoApplication.getIdentifyResultName(result));
+		Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
+		for (Entry<String, Object> ent : ents) {
+			Log.d("data", "井  key: "+ent.getKey()+"  val: "+ent.getValue());
+		}
+		
+		mLongTouchTitle.setText(SinoApplication.getIdentifyResultNameByType(result, 3));
 //		statistics.setText(result.getValue());
 
 		hideInput();
