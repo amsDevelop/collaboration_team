@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,20 +115,24 @@ public class ConditionQuery extends BaseDialogFragment implements
 			}
 		}
 	}
-
+	ParserTask task ;
 	public void init() {
 		XmlResourceParser xrp = getActivity().getResources().getXml(
 				R.xml.search_widget_config);
-		XmlParser parser = new XmlParser(xrp) {
-			@Override
-			protected void onExecueStartTagEvent(XmlResourceParser parser,
-					String name) {
-				ConditionQuery.this.parser(parser, name);
-			}
-		};
-		parser.parser();
+		if(task == null){
+			task = new ParserTask();
+		}
+		task.execute(xrp);
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if(task != null){
+			task.cancel(true);
+		}
+	}
+	
 	private boolean isTvalue(String name) {
 		return name.equals("tvalue");
 	}
@@ -194,6 +199,10 @@ public class ConditionQuery extends BaseDialogFragment implements
 		return item;
 	}
 
+	
+
+	
+	
 	class QueryItem extends LinearLayout implements OnItemSelectedListener {
 
 		Spinner mSpinnerFisrt;
@@ -316,8 +325,13 @@ public class ConditionQuery extends BaseDialogFragment implements
 				conditionValueIndex = position;
 
 			}
-			String selectItem = mSpinnerConditionValue.getSelectedItem()
-					.toString();
+			String selectItem = null;
+			try {
+				selectItem = mSpinnerConditionValue.getSelectedItem()
+						.toString();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			slog.p(TAG, "selectItem " + selectItem);
 			if (mETValue1 != null && mETValue2 != null) {
 				if (selectItem != null && selectItem.equals("自定义")) {
@@ -337,4 +351,26 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 	}
 
+	
+	class ParserTask extends AsyncTask<XmlResourceParser,Void,Void> {
+
+		@Override
+		protected Void doInBackground(XmlResourceParser... arg0) {
+
+			// TODO Auto-generated method stub
+			
+			XmlParser parser = new XmlParser(arg0[0]) {
+				@Override
+				protected void onExecueStartTagEvent(XmlResourceParser parser,
+						String name) {
+					ConditionQuery.this.parser(parser, name);
+				}
+			};
+			parser.parser();
+			
+			return null;
+		}
+		
+	}
+	
 }
