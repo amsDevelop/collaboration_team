@@ -116,39 +116,6 @@ public class ConditionQuery extends BaseDialogFragment implements
 		}
 	}
 	ParserTask task ;
-	public void init() {
-		XmlResourceParser xrp = getActivity().getResources().getXml(
-				R.xml.search_widget_config);
-		if(task == null){
-			task = new ParserTask();
-		}
-		task.execute(xrp);
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		if(task != null){
-			task.cancel(true);
-		}
-	}
-	
-	private boolean isTvalue(String name) {
-		return name.equals("tvalue");
-	}
-
-	private boolean isSvalue(String name) {
-		return name.equals("svalue");
-	}
-
-	private boolean isFvalue(String name) {
-		return name.equals("fvalue");
-	}
-
-	private boolean isValue(String name) {
-		return name.equals("value");
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -163,10 +130,26 @@ public class ConditionQuery extends BaseDialogFragment implements
 		return view;
 	}
 
+	public void init() {
+		XmlResourceParser xrp = getActivity().getResources().getXml(
+				R.xml.search_widget_config);
+		if(task == null){
+			task = new ParserTask();
+		}
+		task.execute(xrp);
+	}
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		addItem();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if(task != null){
+			task.cancel(true);
+		}
 	}
 
 	public void onClick(View v) {
@@ -178,6 +161,22 @@ public class ConditionQuery extends BaseDialogFragment implements
 			removeItem();
 			break;
 		}
+	}
+
+	private boolean isTvalue(String name) {
+		return name.equals("tvalue");
+	}
+
+	private boolean isSvalue(String name) {
+		return name.equals("svalue");
+	}
+
+	private boolean isFvalue(String name) {
+		return name.equals("fvalue");
+	}
+
+	private boolean isValue(String name) {
+		return name.equals("value");
 	}
 
 	private void removeItem() {
@@ -371,6 +370,11 @@ public class ConditionQuery extends BaseDialogFragment implements
 			return null;
 		}
 		
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			addItem();
+		}
 	}
 	
 }
