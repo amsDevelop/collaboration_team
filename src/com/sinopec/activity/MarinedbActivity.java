@@ -65,6 +65,7 @@ import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.lenovo.nova.util.slog;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
@@ -1005,6 +1006,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
 		} else if ("toolArea".equals(tag)) {
 			drawTool.calculateAreaAndLength("");
+		} else if ("toolSelect".equals(tag)) {
+			//TODO:
+			slog.p("serach ......");
+			ConditionQuery query = new ConditionQuery();
+			query.show(getFragmentManager(), ConditionQuery.class.getName());
+			
 		} else if ("mineLogin".equals(tag)) {
 			Intent intent = new Intent(mContext, LoginActivity.class);
 			startActivity(intent);

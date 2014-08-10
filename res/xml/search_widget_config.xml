@@ -1,0 +1,477 @@
+<?xml version="1.0" ?>
+<configuration>
+	<PropertySearch>
+		<GeoObject id="" name="盆地">
+		  <GeoCondition id="" name="沉积体系" state="normal">
+			<value id="" name="海相碎屑岩" />
+			<value id="" name="海相碳酸盐岩" />
+			<value id="" name="陆相碎屑岩" />
+			<value id="" name="陆相碳酸盐岩" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="地层层系" state="normal">
+			<value id="" name="始太古代" />
+			<value id="" name="早太古代" />
+			<value id="" name="中太古代" />
+			<value id="" name="晚太古代" />
+			<value id="" name="早远古代" />
+			<value id="" name="中远古代" />
+			<value id="" name="晚远古代" />
+			<value id="" name="古生代" />
+			<value id="" name="中生代" />
+			<value id="" name="近生代" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="石油资源量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="天然气资源量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="总资源量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="石油储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="天然气储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="总储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="面积大小" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		</GeoObject>
+		<GeoObject id="" name="油气田">
+	      <GeoCondition id="" name="沉积相" state="tree">
+			<fvalue id="" name="陆相" >
+			  <svalue id="" name=""/>
+			</fvalue>  
+			<fvalue id="" name="海相" >
+			  <svalue id="" name="碎屑岩沉积相"/>
+			  <svalue id="" name="碳酸盐岩沉积相">
+			    <tvalue id="" name="碳酸盐岩潮坪相"/>
+			    <tvalue id="" name="局限碳酸盐岩台地相"/>
+			    <tvalue id="" name="开阔碳酸盐岩台地相"/>
+			    <tvalue id="" name="碳酸盐岩海滩滩相"/>
+			    <tvalue id="" name="生物礁相"/>
+			    <tvalue id="" name="碳酸盐岩浅海陆棚相"/>
+			    <tvalue id="" name="碳酸盐岩斜坡相"/>
+			    <tvalue id="" name="碳酸盐岩盆地相"/>
+			  </svalue>
+			</fvalue>
+			<fvalue id="" name="过度相" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="地层层系" tate="normal">
+			<value id="" name="始太古代" />
+			<value id="" name="早太古代" />
+			<value id="" name="中太古代" />
+			<value id="" name="晚太古代" />
+			<value id="" name="早远古代" />
+			<value id="" name="中远古代" />
+			<value id="" name="晚远古代" />
+			<value id="" name="古生代" />
+			<value id="" name="中生代" />
+			<value id="" name="近生代" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="油气类型" state="normal">
+			<value id="" name="油田" />
+			<value id="" name="气田" />
+			<value id="" name="油气田" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="石油储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="天然气储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="总储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="面积大小" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="烃源岩性" state="tree">
+			<fvalue id="" name="沉积岩" >
+			  <svalue id="" name="碎屑岩">
+			    <tvalue id="" name="砾岩_角砾岩"/>
+			    <tvalue id="" name="砂岩"/>
+			    <tvalue id="" name="粉砂岩"/>
+			    <tvalue id="" name="页岩"/>
+			    <tvalue id="" name="泥岩"/>
+			    <tvalue id="" name="火山碎屑岩"/>
+			    <tvalue id="" name="其它碎屑岩"/>
+			  </svalue>
+			  <svalue id="" name="碳酸盐岩">
+			  	<tvalue id="" name="石灰岩"/>
+			    <tvalue id="" name="白云岩"/>
+			    <tvalue id="" name="生物碎屑"/>
+			    <tvalue id="" name="其它碳酸盐岩"/>
+			  </svalue>
+			  <svalue id="" name="蒸发岩">
+			  	<tvalue id="" name="盐岩"/>
+			    <tvalue id="" name="膏岩"/>
+			    <tvalue id="" name="其它蒸发岩"/>
+			  </svalue>
+			  <svalue id="" name="其它沉积岩">
+			  	<tvalue id="" name="煤"/>
+			    <tvalue id="" name="沥青"/>
+			  </svalue>
+			</fvalue>
+		  </GeoCondition>
+		  <GeoCondition id="" name="储层岩性" state="tree">
+		    <fvalue id="" name="火成岩"/>
+			<fvalue id="" name="沉积岩" >
+			  <svalue id="" name="碎屑岩">
+			    <tvalue id="" name="砾岩_角砾岩"/>
+			    <tvalue id="" name="砂岩"/>
+			    <tvalue id="" name="粉砂岩"/>
+			    <tvalue id="" name="页岩"/>
+			    <tvalue id="" name="泥岩"/>
+			    <tvalue id="" name="火山碎屑岩"/>
+			    <tvalue id="" name="其它碎屑岩"/>
+			  </svalue>
+			  <svalue id="" name="碳酸盐岩">
+			  	<tvalue id="" name="石灰岩"/>
+			    <tvalue id="" name="白云岩"/>
+			    <tvalue id="" name="生物碎屑"/>
+			    <tvalue id="" name="其它碳酸盐岩"/>
+			  </svalue>
+			  <svalue id="" name="蒸发岩">
+			  	<tvalue id="" name="盐岩"/>
+			    <tvalue id="" name="膏岩"/>
+			    <tvalue id="" name="其它蒸发岩"/>
+			  </svalue>
+			  <svalue id="" name="其它沉积岩">
+			  	<tvalue id="" name="煤"/>
+			    <tvalue id="" name="沥青"/>
+			  </svalue>
+			</fvalue>
+			<fvalue id="" name="变质岩"/>
+		  </GeoCondition>
+		  <GeoCondition id="" name="盖层岩性" state="tree">
+			<fvalue id="" name="沉积岩" >
+			  <svalue id="" name="碎屑岩">
+			    <tvalue id="" name="砾岩_角砾岩"/>
+			    <tvalue id="" name="砂岩"/>
+			    <tvalue id="" name="粉砂岩"/>
+			    <tvalue id="" name="页岩"/>
+			    <tvalue id="" name="泥岩"/>
+			    <tvalue id="" name="火山碎屑岩"/>
+			    <tvalue id="" name="其它碎屑岩"/>
+			  </svalue>
+			  <svalue id="" name="碳酸盐岩">
+			  	<tvalue id="" name="石灰岩"/>
+			    <tvalue id="" name="白云岩"/>
+			    <tvalue id="" name="生物碎屑"/>
+			    <tvalue id="" name="其它碳酸盐岩"/>
+			  </svalue>
+			  <svalue id="" name="蒸发岩">
+			  	<tvalue id="" name="盐岩"/>
+			    <tvalue id="" name="膏岩"/>
+			    <tvalue id="" name="其它蒸发岩"/>
+			  </svalue>
+			  <svalue id="" name="其它沉积岩">
+			  	<tvalue id="" name="煤"/>
+			    <tvalue id="" name="沥青"/>
+			  </svalue>
+			</fvalue>
+		  </GeoCondition>
+		  <GeoCondition id="" name="圈闭" state="normal">
+			<value id="" name="构造圈闭" />
+			<value id="" name="生物礁圈闭" />
+			<value id="" name="非生物礁圈闭" />
+			<value id="" name="水动力圈闭" />
+			<value id="" name="符合圈闭" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="构造" state="tree">
+			<fvalue id="" name="盆地边缘" >
+				<svalue id="" name="断块带" />
+				<svalue id="" name="生长断层带" />
+				<svalue id="" name="逆掩断层带" />
+				<svalue id="" name="褶皱带" />
+				<svalue id="" name="背斜带" />
+				<svalue id="" name="单斜带" />
+				<svalue id="" name="地垒带" />
+			</fvalue>
+			<fvalue id="" name="盆地中部" >
+				<svalue id="" name="断块带" />
+				<svalue id="" name="生长断层带" />
+				<svalue id="" name="逆掩断层带" />
+				<svalue id="" name="褶皱带" />
+				<svalue id="" name="背斜带" />
+				<svalue id="" name="单斜带" />
+				<svalue id="" name="地垒带" />
+			</fvalue>
+			<fvalue id="" name="盆间隆起" >
+				<svalue id="" name="断块带" />
+				<svalue id="" name="生长断层带" />
+				<svalue id="" name="逆掩断层带" />
+				<svalue id="" name="褶皱带" />
+				<svalue id="" name="背斜带" />
+				<svalue id="" name="单斜带" />
+				<svalue id="" name="地垒带" />
+			</fvalue>
+		  </GeoCondition>
+		  <GeoCondition id="" name="国家" state="normal">
+		      <value></value>
+		  </GeoCondition>
+
+		</GeoObject>
+		<GeoObject id="" name="油气藏">
+		  <GeoCondition id="" name="沉积相" state="tree">
+			<fvalue id="" name="陆相" >
+			  <svalue id="" name=""/>
+			</fvalue>  
+			<fvalue id="" name="海相" >
+			  <svalue id="" name="碎屑岩沉积相"/>
+			  <svalue id="" name="碳酸盐岩沉积相">
+			    <tvalue id="" name="碳酸盐岩潮坪相"/>
+			    <tvalue id="" name="局限碳酸盐岩台地相"/>
+			    <tvalue id="" name="开阔碳酸盐岩台地相"/>
+			    <tvalue id="" name="碳酸盐岩海滩滩相"/>
+			    <tvalue id="" name="生物礁相"/>
+			    <tvalue id="" name="碳酸盐岩浅海陆棚相"/>
+			    <tvalue id="" name="碳酸盐岩斜坡相"/>
+			    <tvalue id="" name="碳酸盐岩盆地相"/>
+			  </svalue>
+			</fvalue>
+			<fvalue id="" name="过度相" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="地层层系" state="normal">
+			<value id="" name="始太古代" />
+			<value id="" name="早太古代" />
+			<value id="" name="中太古代" />
+			<value id="" name="晚太古代" />
+			<value id="" name="早远古代" />
+			<value id="" name="中远古代" />
+			<value id="" name="晚远古代" />
+			<value id="" name="古生代" />
+			<value id="" name="中生代" />
+			<value id="" name="近生代" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="油气类型" state="normal">
+			<value id="" name="油田" />
+			<value id="" name="气田" />
+			<value id="" name="油气田" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="石油储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="天然气储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="总储量规模" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="面积大小" state="normal">
+			<value id="" name="特大型" values="200 300" />
+			<value id="" name="超大型" values="200 300" />
+			<value id="" name="大型" values="200 300" />
+			<value id="" name="中型" values="200 300" />
+			<value id="" name="小型" values="200 300" />
+			<value id="" name="自定义" values="200 300" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="烃源岩性" state="tree">
+			<fvalue id="" name="沉积岩" >
+			  <svalue id="" name="碎屑岩">
+			    <tvalue id="" name="砾岩_角砾岩"/>
+			    <tvalue id="" name="砂岩"/>
+			    <tvalue id="" name="粉砂岩"/>
+			    <tvalue id="" name="页岩"/>
+			    <tvalue id="" name="泥岩"/>
+			    <tvalue id="" name="火山碎屑岩"/>
+			    <tvalue id="" name="其它碎屑岩"/>
+			  </svalue>
+			  <svalue id="" name="碳酸盐岩">
+			  	<tvalue id="" name="石灰岩"/>
+			    <tvalue id="" name="白云岩"/>
+			    <tvalue id="" name="生物碎屑"/>
+			    <tvalue id="" name="其它碳酸盐岩"/>
+			  </svalue>
+			  <svalue id="" name="蒸发岩">
+			  	<tvalue id="" name="盐岩"/>
+			    <tvalue id="" name="膏岩"/>
+			    <tvalue id="" name="其它蒸发岩"/>
+			  </svalue>
+			  <svalue id="" name="其它沉积岩">
+			  	<tvalue id="" name="煤"/>
+			    <tvalue id="" name="沥青"/>
+			  </svalue>
+			</fvalue>
+		  </GeoCondition>
+		  <GeoCondition id="" name="储层岩性" state="tree">
+		    <fvalue id="" name="火成岩"/>
+			<fvalue id="" name="沉积岩" >
+			  <svalue id="" name="碎屑岩">
+			    <tvalue id="" name="砾岩_角砾岩"/>
+			    <tvalue id="" name="砂岩"/>
+			    <tvalue id="" name="粉砂岩"/>
+			    <tvalue id="" name="页岩"/>
+			    <tvalue id="" name="泥岩"/>
+			    <tvalue id="" name="火山碎屑岩"/>
+			    <tvalue id="" name="其它碎屑岩"/>
+			  </svalue>
+			  <svalue id="" name="碳酸盐岩">
+			  	<tvalue id="" name="石灰岩"/>
+			    <tvalue id="" name="白云岩"/>
+			    <tvalue id="" name="生物碎屑"/>
+			    <tvalue id="" name="其它碳酸盐岩"/>
+			  </svalue>
+			  <svalue id="" name="蒸发岩">
+			  	<tvalue id="" name="盐岩"/>
+			    <tvalue id="" name="膏岩"/>
+			    <tvalue id="" name="其它蒸发岩"/>
+			  </svalue>
+			  <svalue id="" name="其它沉积岩">
+			  	<tvalue id="" name="煤"/>
+			    <tvalue id="" name="沥青"/>
+			  </svalue>
+			</fvalue>
+			<fvalue id="" name="变质岩"/>
+		  </GeoCondition>
+		  <GeoCondition id="" name="盖层岩性" state="tree">
+			<fvalue id="" name="沉积岩" >
+			  <svalue id="" name="碎屑岩">
+			    <tvalue id="" name="砾岩_角砾岩"/>
+			    <tvalue id="" name="砂岩"/>
+			    <tvalue id="" name="粉砂岩"/>
+			    <tvalue id="" name="页岩"/>
+			    <tvalue id="" name="泥岩"/>
+			    <tvalue id="" name="火山碎屑岩"/>
+			    <tvalue id="" name="其它碎屑岩"/>
+			  </svalue>
+			  <svalue id="" name="碳酸盐岩">
+			  	<tvalue id="" name="石灰岩"/>
+			    <tvalue id="" name="白云岩"/>
+			    <tvalue id="" name="生物碎屑"/>
+			    <tvalue id="" name="其它碳酸盐岩"/>
+			  </svalue>
+			  <svalue id="" name="蒸发岩">
+			  	<tvalue id="" name="盐岩"/>
+			    <tvalue id="" name="膏岩"/>
+			    <tvalue id="" name="其它蒸发岩"/>
+			  </svalue>
+			  <svalue id="" name="其它沉积岩">
+			  	<tvalue id="" name="煤"/>
+			    <tvalue id="" name="沥青"/>
+			  </svalue>
+			</fvalue>
+		  </GeoCondition>
+		  <GeoCondition id="" name="圈闭" state="normal">
+			<value id="" name="构造圈闭" />
+			<value id="" name="生物礁圈闭" />
+			<value id="" name="非生物礁圈闭" />
+			<value id="" name="水动力圈闭" />
+			<value id="" name="符合圈闭" />
+		  </GeoCondition>
+		  <GeoCondition id="" name="构造" state="tree">
+			<fvalue id="" name="盆地边缘" >
+				<svalue id="" name="断块带" />
+				<svalue id="" name="生长断层带" />
+				<svalue id="" name="逆掩断层带" />
+				<svalue id="" name="褶皱带" />
+				<svalue id="" name="背斜带" />
+				<svalue id="" name="单斜带" />
+				<svalue id="" name="地垒带" />
+			</fvalue>
+			<fvalue id="" name="盆地中部" >
+				<svalue id="" name="断块带" />
+				<svalue id="" name="生长断层带" />
+				<svalue id="" name="逆掩断层带" />
+				<svalue id="" name="褶皱带" />
+				<svalue id="" name="背斜带" />
+				<svalue id="" name="单斜带" />
+				<svalue id="" name="地垒带" />
+			</fvalue>
+			<fvalue id="" name="盆间隆起" >
+				<svalue id="" name="断块带" />
+				<svalue id="" name="生长断层带" />
+				<svalue id="" name="逆掩断层带" />
+				<svalue id="" name="褶皱带" />
+				<svalue id="" name="背斜带" />
+				<svalue id="" name="单斜带" />
+				<svalue id="" name="地垒带" />
+			</fvalue>
+		  </GeoCondition>
+		  <GeoCondition id="" name="国家" state="normal">
+		      <value></value>
+		  </GeoCondition>
+		 
+		</GeoObject>
+
+	</PropertySearch>
+
+</configuration>
+
+<!-- See Search widget tag reference at http://links.esri.com/searchwidget -->
