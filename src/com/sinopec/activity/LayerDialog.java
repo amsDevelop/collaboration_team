@@ -98,7 +98,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme);
+		setStyle(DialogFragment.STYLE_NORMAL, R.style.scenic_util_dialog_theme);
 	}
 
 	@Override
