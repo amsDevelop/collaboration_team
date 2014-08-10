@@ -586,10 +586,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 */
 	private void initData() {
 		String[] urls = getResources().getStringArray(R.array.oilgas_url_theme);
+		String[] ids = getResources().getStringArray(R.array.all_layer_id);
+		String[] names = getResources().getStringArray(R.array.all_layer_name);
+		String[] colors = getResources().getStringArray(R.array.all_layer_color);
 //		Log.d(tag, "- ********* --图层专题  url 数目 --main : "+urls.length);
 		for (int i = 0; i < urls.length; i++) {
 			OilGasData data = new OilGasData();
 			data.setUrl(urls[i]);
+			data.setName(names[i]);
+			data.setId(Integer.valueOf(ids[i]));
+			Log.v("mandy", "colors: " + colors[i]);
+			data.setColor(Color.parseColor(colors[i]));
 			if(getString(R.string.url_basin).equals(urls[i])){
 				data.setChecked(true);
 			}else{
@@ -597,6 +604,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			}
 			data.setVisible(true);
 			SinoApplication.mOilGasData.add(data);
+			
 		}
 		
 		mSearchAdapter = new SearchAdapter(mContext, mList);

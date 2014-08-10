@@ -39,4 +39,28 @@
         <item>@string/url_gasfields</item>
         <item>@string/url_well</item>
     </string-array> 
+    <string-array name="all_layer_name">
+       <item>油藏 </item>
+       <item>气藏</item>
+       <item>井</item>
+       <item>油田</item>
+       <item>气田</item>
+       <item>盆地</item>
+    </string-array>
+     <string-array name="all_layer_id">
+       <item>1</item>
+       <item>2</item>
+       <item>3</item>
+       <item>5</item>
+       <item>6</item>
+       <item>7</item>
+    </string-array>
+     <string-array name="all_layer_color">
+       <item>#4DE41B</item>
+       <item>#ff0000 </item>
+       <item>#E65B00</item>
+       <item>#FFFFFF</item>	
+       <item>#B8D600</item>
+       <item>#7C7CAD</item>
+    </string-array>
 </resources> 
