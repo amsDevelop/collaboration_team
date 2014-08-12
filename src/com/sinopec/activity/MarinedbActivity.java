@@ -553,7 +553,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				
 				if (callout.isShowing()) {
 					callout.hide();
-					callout.refresh();
+//					callout.refresh();
 				}
 				
 				//清空上次查询数据
