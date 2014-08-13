@@ -62,17 +62,17 @@ public class SearchAdapter extends BaseAdapter {
 
 		HashMap<String, Object> map = mList.get(position);
 		FindResult result = (FindResult) map.get("FindResult");
+		String layerName = "";
 		IdentifyResult identifyResult = (IdentifyResult) map.get("IdentifyResult");
-		String layerName = identifyResult.getLayerName();
 		String name = "";
+		if(identifyResult != null){
+			layerName = identifyResult.getLayerName();
+		}
+		
 		if(result == null){
-			if("井".equals(layerName)){
-				name = SinoApplication.getIdentifyResultNameByType(identifyResult, 3);
-			}else{
-				name = SinoApplication.getIdentifyResultName(identifyResult);
-			}
+			name = SinoApplication.getIdentifyResultNameByType(identifyResult, layerName);
 		}else{
-			name = result.getValue();
+			name = SinoApplication.getFindResultNameByType(result, layerName);
 		}
 //		Geometry geometry = result.getGeometry();
 //		Map<String, Object> attributes = result.getAttributes();

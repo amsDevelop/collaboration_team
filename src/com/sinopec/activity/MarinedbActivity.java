@@ -154,6 +154,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		this.mContext = this;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		SinoApplication.getLayerIDAndKeyMap();
 		setTitle(R.string.app_name);
 		SinoApplication.screenWidth = this.getWindowManager()
 				.getDefaultDisplay().getWidth();
@@ -211,7 +212,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		addPopupWindow();
 		getAboutDisplay();
 		initLayout();
-		drawTool = new DrawTool(map, this);
+		drawTool = new DrawTool(map, this, callout);
 		drawTool.addEventListener(this);
 		drawTool.setDrawLayer(drawLayer, mDrawLayer4HighLight);
 		 mapTouchListener = new MapTouchListener(this, map);
@@ -1343,11 +1344,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 		callout.show(point);
 		Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
+		Log.d("data", "setData4Frame  获得图层 id : "+result.getLayerId()+" name: "+result.getLayerName());
 		for (Entry<String, Object> ent : ents) {
 			Log.d("data", "井  key: "+ent.getKey()+"  val: "+ent.getValue());
 		}
 		
-		mLongTouchTitle.setText(SinoApplication.getIdentifyResultNameByType(result, 3));
+		mLongTouchTitle.setText(SinoApplication.getIdentifyResultNameByType(result, result.getLayerName()));
 //		statistics.setText(result.getValue());
 
 		hideInput();

@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.esri.android.map.Callout;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.MapOnTouchListener;
 import com.esri.android.map.MapView;
@@ -85,9 +86,10 @@ public class DrawTool extends Subject {
 
 	private static final int TEMP_LAYER_ID = -999999;
 	private InterfaceDataCallBack mCallback;
-	public DrawTool(MapView mapView, InterfaceDataCallBack callback) {
+	public DrawTool(MapView mapView, InterfaceDataCallBack callback, Callout callout) {
 		this.mapView = mapView;
 		this.mCallback = callback;
+		this.mCallout = callout;
 		this.tempLayer = new GraphicsLayer();
 //		this.tempLayer.set
 		this.mapView.addLayer(this.tempLayer);
@@ -223,6 +225,7 @@ public class DrawTool extends Subject {
 		this.activate(type);
 	}
 
+	private Callout mCallout;
 	class DrawTouchListener extends MapOnTouchListener {
 
 		private Point startPoint;
@@ -240,7 +243,9 @@ public class DrawTool extends Subject {
 		}
 
 		public boolean onTouch(View view, MotionEvent event) {
-			
+//			if (mCallout.isShowing()) {
+//				mCallout.hide();
+//			}
 			if (active
 					&& (drawType == POINT || drawType == ENVELOPE
 							|| drawType == CIRCLE

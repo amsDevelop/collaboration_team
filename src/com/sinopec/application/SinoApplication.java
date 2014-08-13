@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Application;
+import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.sinopec.common.OilGasData;
-
-import android.app.Application;
-import android.content.Context;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
 
 public class SinoApplication extends Application {
 	public static Context mContext;
@@ -62,6 +62,11 @@ public class SinoApplication extends Application {
 	}
 	
 	/**
+	 * 图层id和查询结果map中，包含中午名称的key 对应关系的map
+	 */
+	public static HashMap<String, String> mapLayerIDAndKey =  new HashMap<String, String>();
+
+	/**
 	 * 纪录油气专题的选中情况
 	 */
 	public static ArrayList<OilGasData> mOilGasData = new ArrayList<OilGasData>();
@@ -92,19 +97,35 @@ public class SinoApplication extends Application {
 		return name;
 	}
 	
-	public static String getIdentifyResultNameByType(IdentifyResult result, int type) {
+	public static String getIdentifyResultNameByType(IdentifyResult result, String type) {
 		Map<String, Object> attributes = result.getAttributes();
-		String name = (String) attributes.get("OBJ_NAME_C");
-		if(type == 3){
-			name = (String) attributes.get("井位名称");
-		}else if(type == 3){
-			
+		String name = (String) attributes.get(SinoApplication.mapLayerIDAndKey.get(type));
+		if(TextUtils.isEmpty(name)){
+			name = result.getValue().toString();
 		}
+		return name;
+	}
+	
+	public static String getFindResultNameByType(FindResult result, String type) {
+		Map<String, Object> attributes = result.getAttributes();
+		String name = (String) attributes.get(SinoApplication.mapLayerIDAndKey.get(type));
 		
 		if(TextUtils.isEmpty(name)){
 			name = result.getValue().toString();
 		}
 		return name;
+	}
+	
+	/**
+	 * 获得图层id和查询结果map中，包含中午名称的key 对应关系的map
+	 */
+	public static void getLayerIDAndKeyMap() {
+		mapLayerIDAndKey.put("气田", "油气田名称");
+		mapLayerIDAndKey.put("油田", "油气田名称");
+		mapLayerIDAndKey.put("井", "井位名称");
+		mapLayerIDAndKey.put("盆地", "OBJ_NAME_C");
+		mapLayerIDAndKey.put("气藏点", "名称");
+		mapLayerIDAndKey.put("油藏点", "名称");
 	}
 	
 }
