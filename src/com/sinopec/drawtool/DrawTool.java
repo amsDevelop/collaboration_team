@@ -284,14 +284,6 @@ public class DrawTool extends Subject {
 				Point point = mapView.toMapPoint(to.getX(), to.getY());
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
-//					envelope.setXMin(startPoint.getX() > point.getX() ? point
-//							.getX() : startPoint.getX());
-//					envelope.setYMin(startPoint.getY() > point.getY() ? point
-//							.getY() : startPoint.getY());
-//					envelope.setXMax(startPoint.getX() < point.getX() ? point
-//							.getX() : startPoint.getX());
-//					envelope.setYMax(startPoint.getY() < point.getY() ? point
-//							.getY() : startPoint.getY());
 					
 					if (uid == -1) { // first time
 						drawLayer.removeAll();
@@ -324,30 +316,31 @@ public class DrawTool extends Subject {
 					getCircle(hh, radius, polygon);
 					break;
 				case DrawTool.ANY_POLYGON:
-					Log.v("mandy", "any polygone.....");
-					if (startPoint == null) {
+					if (uid == -1) {
 						drawLayer.removeAll();
-						// poly = type.equalsIgnoreCase("POLYLINE") ? new Polyline()
-						// : new Polygon();
 						poly = new Polygon();
 						startPoint = mapView.toMapPoint(from.getX(), from.getY());
 						poly.startPath((float) startPoint.getX(),
 								(float) startPoint.getY());
 						
-						/*
-						 * Create a Graphic and add polyline geometry
-						 */
-						Graphic graphic = new Graphic(startPoint, fillSymbol);
-
-						/*
-						 * add the updated graphic to graphics layer
-						 */
-						drawLayer.addGraphic(graphic);
-					}
-
-					poly.lineTo((float) point.getX(), (float) point.getY());
+						poly.lineTo((float) startPoint.getX(),
+								(float) startPoint.getY());
+//						/*
+//						 * Create a Graphic and add polyline geometry
+//						 */
+						Graphic graphic = new Graphic(poly, fillSymbol);
+//
+//						/*
+//						 * add the updated graphic to graphics layer
+//						 */
+						uid = drawLayer.addGraphic(graphic);
+						
+					} else {
+						poly.lineTo((float) point.getX(), (float) point.getY());
+						drawLayer.updateGraphic(uid, poly);
+						
+					} 
 					break;
-					
 				}
 				Log.v("mandy", "onDragPointerMove......");
 //				tempLayer.postInvalidate();
@@ -362,16 +355,7 @@ public class DrawTool extends Subject {
 				Point point = mapView.toMapPoint(to.getX(), to.getY());
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
-//					DrawEvent e = new DrawEvent();
-//					DrawTool.this.notifyClear();
-//					envelope.setXMin(startPoint.getX() > point.getX() ? point
-//							.getX() : startPoint.getX());
-//					envelope.setYMin(startPoint.getY() > point.getY() ? point
-//							.getY() : startPoint.getY());
-//					envelope.setXMax(startPoint.getX() < point.getX() ? point
-//							.getX() : startPoint.getX());
-//					envelope.setYMax(startPoint.getY() < point.getY() ? point
-//							.getY() : startPoint.getY());
+
 					String sArea = getAreaString(envelope.calculateArea2D());
 
 					Toast.makeText(mapView.getContext(), "总面积： " + sArea,
@@ -395,14 +379,7 @@ public class DrawTool extends Subject {
 					queryAttribute(polygon);
 					break;
 				case DrawTool.ANY_POLYGON:
-					poly.lineTo((float) startPoint.getX(),
-							(float) startPoint.getY());
-					drawLayer.removeAll();
-					drawLayer.addGraphic(new Graphic(poly, fillSymbol));
 					queryAttribute(poly);
-					// points.add(startPoint);
-					startPoint = null;
-				
 					break;
 				}
 				sendDrawEndEvent();
@@ -508,20 +485,7 @@ public class DrawTool extends Subject {
 
 		}
 		public boolean onDoubleTap(MotionEvent event) {
-//			Log.d("map", "-------onDoubleTap ");
-//			Point point = mapView.toMapPoint(event.getX(), event.getY());
-//			if (active &&(drawType==POLYGON || drawType==POLYLINE)) {
-//				switch (drawType) {
-//				case DrawTool.POLYGON:
-//					polygon.lineTo(point);
-//					break;
-//				case DrawTool.POLYLINE:
-//					polyline.lineTo(point);
-//					break;
-//				}
-//				sendDrawEndEvent();
-//				this.startPoint = null;
-//			}
+
 			 if (drawType == DrawTool.POLYGON || drawType == DrawTool.ANY_POLYGON){
 					Polygon polygon = new Polygon();
 
