@@ -249,6 +249,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	
 	private Animation aniIn;
 	private Animation aniOut;
+	private Animation aniUp;
+	private Animation aniDown;
 	private void initAnimations() {
 		aniIn = AnimationUtils.loadAnimation(mContext, R.anim.ani_leftmenu_in);
 		aniOut = AnimationUtils.loadAnimation(mContext, R.anim.ani_leftmenu_out);
@@ -1066,26 +1068,43 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			hidePopupWindow();
 		} else if ("CountChildrenMenuTwo".equals(tag)) {
 			//TODO:统计二级菜单
-			Log.d("map", "--统计  左       二级菜单..........");
+			Log.d("map", "--统计  right      二级菜单..........");
 			Boolean[] clickTag = new Boolean[] { true, true,true, true };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(list, clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(4);
 			setGridView4LevelTwoChildrenMenu(list, arg0);
 		} else if ("CountChildrenMenuOne".equals(tag)) {
-			Log.d("map", "--统计  右            二级菜单..........");
+			Log.d("map", "--统计  left            二级菜单..........");
 			Boolean[] clickTag = new Boolean[] { true, true,true, true, true, true, true, true, true, true, true, };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(list, arg0);
+//			Boolean[] clickTag = new Boolean[] { true, true,true, true };
+//			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(list, clickTag, mChildMenuSplitNumber);
+//			mGridView.setNumColumns(4);
+//			setGridView4LevelTwoChildrenMenu(list, arg0);
 		}
 		
-		hideCallOut();
+		if(!"CountChildrenMenuOne".equals(tag) && !"CountChildrenMenuTwo".equals(tag)){
+			hideCallOut();
+		}
 	}
 	
 	private void setGridView4LevelTwoChildrenMenu(ArrayList<HashMap<String, Object>> list, View view) {
 //		setMenuButtonsStatus(view.getId());
 		mAdapter.notifyDataSetChanged();
-		mToolBar.setVisibility(View.GONE);
+//		mToolBar.setVisibility(View.INVISIBLE);
+		mGridViewLayout.setVisibility(View.VISIBLE);
+		// showAndHideGridView();
+//		if (mLastClickedView == view) {
+//			mGridViewLayout.setVisibility(View.INVISIBLE);
+//			mLastClickedView = null;
+//			Log.d(tag, "is view "+ mLastClickedView);
+//		} else {
+//			mGridViewLayout.setVisibility(View.VISIBLE);
+//			mLastClickedView = view;
+//			Log.d(tag, "not view "+ mLastClickedView);
+//		}
 		
 //		if (mLastClickedView == view) {
 //			mGridViewLayout.setVisibility(View.INVISIBLE);
@@ -1166,6 +1185,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		Button ok = (Button) window.findViewById(R.id.btn_ok);
 		ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				SinoApplication.mOilGasData.clear();
 				finish(); // 退出应用...
 			}
 		});

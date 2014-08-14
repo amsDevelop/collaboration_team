@@ -141,9 +141,11 @@ public class ChildrenMenuDataUtil {
 	public static void setCountLevelTwoChildrenMenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
 		String[] name4count = new String[] { "前寒武系", "寒武系", "至留系","泥盆系", "二叠系", "奥陶系",
 				"侏罗系", "白垩系","石灰系", "古近系", "新近系"  };
-		Integer[] icon4count = { R.drawable.icon_rang_oilgas,
-				R.drawable.icon_rang_oilgas, R.drawable.icon_range_volume,
-				R.drawable.icon_distribute, R.drawable.icon_diffrent_object_nubmer, R.drawable.icon_diffrent_object_nubmer, };
+		Integer[] icon4count = { 
+				R.drawable.icon_rang_oilgas, R.drawable.icon_range_volume,R.drawable.icon_rang_oilgas,
+				R.drawable.icon_distribute, R.drawable.icon_diffrent_object_nubmer, R.drawable.icon_diffrent_object_nubmer,
+				R.drawable.icon_distribute, R.drawable.icon_diffrent_object_nubmer, R.drawable.icon_diffrent_object_nubmer,
+				 R.drawable.icon_diffrent_object_nubmer, R.drawable.icon_diffrent_object_nubmer,};
 		
 		String[] tag = new String[] { "前寒武系", "寒武系", "至留系","泥盆系", "二叠系", "奥陶系",
 				"侏罗系", "白垩系","石灰系", "古近系", "新近系" };
