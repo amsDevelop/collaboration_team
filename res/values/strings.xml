@@ -46,11 +46,17 @@
     <string name="search_no_result">抱歉，没有结果</string>
     <string name="tip_no_objects">您还未选择对比目标</string>
     
+    <!--  油藏-->
     <string name="url_oilreservoirs">http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer</string>
+    <!-- 气藏-->
     <string name="url_gasreservoirs">http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer</string>
+    <!-- 井-->
     <string name="url_well">http://202.204.193.201:6080/arcgis/rest/services/well/MapServer</string>
+     <!-- 油田-->
     <string name="url_oilfields">http://202.204.193.201:6080/arcgis/rest/services/oilfields/MapServer</string>
+      <!-- 气田-->
     <string name="url_gasfields">http://202.204.193.201:6080/arcgis/rest/services/gasfields/MapServer</string>
+      <!-- 盆地-->
     <string name="url_basin">http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer</string>
 
     <!-- 基础地理 -->
