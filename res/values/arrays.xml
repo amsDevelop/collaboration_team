@@ -39,8 +39,8 @@
        <item>7</item>
     </string-array>
      <string-array name="all_layer_color">
-       <item>#FFFFFF</item>	
-       <item>#B8D600</item>
-       <item>#7C7CAD</item>
+       <item>#f248ab</item>	
+       <item>#d6b800</item>
+       <item>#a57d7d</item>
     </string-array>
 </resources> 
