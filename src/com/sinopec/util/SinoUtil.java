@@ -80,7 +80,7 @@ public class SinoUtil {
 		for (int i = 0; i < list.size(); i++) {
 			LinearLayout layoutContent = new LinearLayout(context);
 			layoutContent.setOrientation(LinearLayout.VERTICAL);
-			String name = SinoApplication.getIdentifyResultName(list.get(i));
+			String name = SinoApplication.getIdentifyResultName(list.get(i), list.get(i).getLayerName());
 			
 			TextView tvname = new TextView(context);
 			tvname.setText(name);

@@ -567,8 +567,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				SinoApplication.mResultList4FrameSearch.clear();
 				mEditText.setText(getString(R.string.search));
 				
-				mToolBar.setVisibility(View.VISIBLE);
-				mToolBar.startAnimation(aniUp);
+				if(mToolBar.getVisibility() == View.INVISIBLE){
+					mToolBar.setVisibility(View.VISIBLE);
+					mToolBar.startAnimation(aniUp);
+					mGridViewLayout.setVisibility(View.GONE);
+				}
 			}
 		});
 

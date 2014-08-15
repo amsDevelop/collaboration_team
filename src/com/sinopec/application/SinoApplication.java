@@ -88,11 +88,15 @@ public class SinoApplication extends Application {
 	 * @param result
 	 * @return
 	 */
-	public static String getIdentifyResultName(IdentifyResult result) {
+	public static String getIdentifyResultName(IdentifyResult result, String type) {
 		Map<String, Object> attributes = result.getAttributes();
-		String name = (String) attributes.get("OBJ_NAME_C");
+		String name = (String) attributes.get(SinoApplication.mapLayerIDAndKey.get(type));
+		//气田： {发现日期=0, 圈闭数量=0, 区域=, 可采储量=0.00000000000, OBJ_ID=201102001074, OBJ_NAME=, 状态=, 所在盆地=, OBJ_NAME_C=威远, 经度=, 操作者=, 剩余可采=0.00000000000, 国家=, Shape=Polygon, FID=10308, 纬度=, ESRI_OID=, 油气田类型=}
 		if(TextUtils.isEmpty(name)){
-			name = result.getValue().toString();
+			if("气田".equals(type) || "油田".equals(type)){
+				name = (String) attributes.get("OBJ_NAME_C");
+			}
+//			name = result.getValue().toString();
 		}
 		return name;
 	}
@@ -101,7 +105,10 @@ public class SinoApplication extends Application {
 		Map<String, Object> attributes = result.getAttributes();
 		String name = (String) attributes.get(SinoApplication.mapLayerIDAndKey.get(type));
 		if(TextUtils.isEmpty(name)){
-			name = result.getValue().toString();
+			if("气田".equals(type) || "油田".equals(type)){
+				name = (String) attributes.get("OBJ_NAME_C");
+			}
+//			name = result.getValue().toString();
 		}
 		return name;
 	}
@@ -111,7 +118,10 @@ public class SinoApplication extends Application {
 		String name = (String) attributes.get(SinoApplication.mapLayerIDAndKey.get(type));
 		
 		if(TextUtils.isEmpty(name)){
-			name = result.getValue().toString();
+			if("气田".equals(type) || "油田".equals(type)){
+				name = (String) attributes.get("OBJ_NAME_C");
+			}
+//			name = result.getValue().toString();
 		}
 		return name;
 	}
@@ -120,8 +130,11 @@ public class SinoApplication extends Application {
 	 * 获得图层id和查询结果map中，包含中午名称的key 对应关系的map
 	 */
 	public static void getLayerIDAndKeyMap() {
-		mapLayerIDAndKey.put("气田", "油气田名称");
-		mapLayerIDAndKey.put("油田", "油气田名称");
+		mapLayerIDAndKey.put("气田", "OBJ_NAME");
+//		mapLayerIDAndKey.put("气田", "OBJ_NAME_C");
+//		mapLayerIDAndKey.put("油田", "油气田名称");
+		mapLayerIDAndKey.put("油田", "OBJ_NAME");
+//		mapLayerIDAndKey.put("油田", "OBJ_NAME");
 		mapLayerIDAndKey.put("井", "井位名称");
 		mapLayerIDAndKey.put("盆地", "OBJ_NAME_C");
 		mapLayerIDAndKey.put("气藏点", "名称");

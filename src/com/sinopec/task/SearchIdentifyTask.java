@@ -110,7 +110,7 @@ public class SearchIdentifyTask extends
 			if(CommonData.TypeOperateLongPress.equals(OperateType)){
 				mImageView.startAnimation(mAnimation);
 				SinoApplication.identifyResult = results[0];
-				String name = SinoApplication.getIdentifyResultName(results[0]);
+				String name = SinoApplication.getIdentifyResultName(results[0], results[0].getLayerName());
 				mTitle.setText(name);
 				
 				//绘制高亮区域
