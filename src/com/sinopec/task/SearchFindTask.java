@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.esri.core.tasks.ags.find.FindParameters;
 import com.esri.core.tasks.ags.find.FindResult;
@@ -75,6 +76,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	protected void onPostExecute(List<FindResult> results) {
 		mProgressDialog.dismiss();
 		if (results == null) {
+			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -83,15 +85,12 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 			mAdapter.notifyDataSetChanged();
 			mSearchViewGroup.setVisibility(View.VISIBLE);
 			mCallBack.setData(results.get(0));
+			
+		}else if(results.size() == 0){
+			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
 		}else{
 			updateData(results);
 		}
-		// TODO:
-		// gLayer.removeAll();
-		// Geometry geom = results[index].getGeometry();
-		// Graphic pGraphic = new Graphic(geom, selectSym);
-		// gLayer.addGraphic(pGraphic);
-		// TODO:
 	}
 
 	@Override

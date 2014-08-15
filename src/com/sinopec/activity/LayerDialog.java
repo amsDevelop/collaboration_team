@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.provider.CalendarContract.Colors;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -59,7 +61,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn2 = (Button) view.findViewById(R.id.id_btn_layer_2);
 		mBtn3 = (Button) view.findViewById(R.id.id_btn_layer_3);
 		mCover = (TextView) view.findViewById(R.id.layer_lstview_cover);
-
+		mCover.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				return true;
+			}
+		});
 		view.findViewById(R.id.id_btn_operator_1).setOnClickListener(this);
 		view.findViewById(R.id.id_btn_operator_2).setOnClickListener(this);
 		mBtn3 = (Button) view.findViewById(R.id.id_btn_layer_3);
@@ -127,7 +135,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //			mapView.addLayer(layerSatellite);
 //			addDrawLayer();
 			layerSatellite.setVisible(true);
-			layerGeographic.setVisible(false);
+//			layerGeographic.setVisible(false);
 			SinoApplication.layerName = SinoApplication.LNsatellite;
 			break;
 		case R.id.id_btn_layer_2:
@@ -136,15 +144,15 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //			ArcGISTiledMapServiceLayer layerGeographic = new ArcGISTiledMapServiceLayer(
 //					SinoApplication.genUrl);
 //			mapView.addLayer(layerGeographic);
-			layerSatellite.setVisible(false);
+//			layerSatellite.setVisible(false);
 			layerGeographic.setVisible(true);
 			SinoApplication.currentLayerUrl = SinoApplication.genUrl;
 			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
 		case R.id.id_btn_layer_3:
 			executeOilGas();
-			layerSatellite.setVisible(false);
-			layerGeographic.setVisible(true);
+//			layerSatellite.setVisible(false);
+//			layerGeographic.setVisible(true);
 //			mapView.removeAll();
 //			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
 //					SinoApplication.oilUrl);
@@ -177,29 +185,28 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		// executeLayer1();
 		mCover.setVisibility(View.VISIBLE);
 		mListView.setEnabled(false);
-		mBtn1.setSelected(false);
-		mBtn2.setSelected(true);
-		mBtn3.setSelected(false);
+//		mBtn1.setSelected(false);
+		if(mBtn2.isSelected()){
+			mBtn2.setSelected(false);
+		}else{
+			mBtn2.setSelected(true);
+		}
+//		mBtn3.setSelected(false);
 //		dismiss();
 
-	}
-
-	private void addDrawLayer() {
-		if (mapView.getLayerByID(drawLayer.getID()) != null) {
-			mapView.removeLayer(drawLayer);
-			mapView.addLayer(drawLayer);
-		} else {
-			mapView.addLayer(drawLayer);
-		}
 	}
 
 	private void executeOilGas() {
 //		mContaner.setVisibility(View.VISIBLE);
 		mCover.setVisibility(View.GONE);
 		mListView.setEnabled(true);
-		mBtn1.setSelected(false);
-		mBtn2.setSelected(false);
-		mBtn3.setSelected(true);
+//		mBtn1.setSelected(false);
+//		mBtn2.setSelected(false);
+		if(mBtn3.isSelected()){
+			mBtn3.setSelected(false);
+		}else{
+			mBtn3.setSelected(true);
+		}
 
 	}
 
@@ -208,9 +215,13 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mListView.setEnabled(false);
 //		dismiss();
 		showAlert();
-		mBtn1.setSelected(true);
-		mBtn2.setSelected(false);
-		mBtn3.setSelected(false);
+		if(mBtn1.isSelected()){
+			mBtn1.setSelected(false);
+		}else{
+			mBtn1.setSelected(true);
+		}
+//		mBtn2.setSelected(false);
+//		mBtn3.setSelected(false);
 	}
 
 	class MyAdapter extends BaseAdapter {

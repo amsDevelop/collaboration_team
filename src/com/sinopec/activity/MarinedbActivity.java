@@ -254,6 +254,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private void initAnimations() {
 		aniIn = AnimationUtils.loadAnimation(mContext, R.anim.ani_leftmenu_in);
 		aniOut = AnimationUtils.loadAnimation(mContext, R.anim.ani_leftmenu_out);
+		aniDown = AnimationUtils.loadAnimation(mContext, R.anim.ani_menu_down);
+		aniUp = AnimationUtils.loadAnimation(mContext, R.anim.ani_menu_up);
 	}
 
 	public void getAboutDisplay() {
@@ -564,6 +566,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				//清空上次查询数据
 				SinoApplication.mResultList4FrameSearch.clear();
 				mEditText.setText(getString(R.string.search));
+				
+				mToolBar.setVisibility(View.VISIBLE);
+				mToolBar.startAnimation(aniUp);
 			}
 		});
 
@@ -1093,8 +1098,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private void setGridView4LevelTwoChildrenMenu(ArrayList<HashMap<String, Object>> list, View view) {
 //		setMenuButtonsStatus(view.getId());
 		mAdapter.notifyDataSetChanged();
-//		mToolBar.setVisibility(View.INVISIBLE);
+		mToolBar.setVisibility(View.INVISIBLE);
+		mToolBar.startAnimation(aniDown);
 		mGridViewLayout.setVisibility(View.VISIBLE);
+		
 		// showAndHideGridView();
 //		if (mLastClickedView == view) {
 //			mGridViewLayout.setVisibility(View.INVISIBLE);
