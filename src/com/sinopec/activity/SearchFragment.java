@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.esri.core.map.Graphic;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.sinopec.adapter.SearchAdapter;
@@ -131,17 +132,23 @@ public class SearchFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
-				if(SinoApplication.mResultList4FrameSearch.size() == 0){
+				if(SinoApplication.mFeatureSet4Query != null){
 					HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
-					FindResult result = (FindResult) tmpMap.get("FindResult");
-					mInterfaceDataCallBack.setData(result);
-					mViewGroup.setVisibility(View.GONE);
-					mList.clear();
-					mAdapter.notifyDataSetChanged();
+					Graphic graphic = (Graphic) tmpMap.get("Graphic");
+					mInterfaceDataCallBack.setData4Query(graphic);
 				}else{
-					HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
-					IdentifyResult identifyResult = (IdentifyResult) tmpMap.get("IdentifyResult");
-					mInterfaceDataCallBack.setData4Frame(identifyResult);
+					if(SinoApplication.mResultList4FrameSearch.size() == 0){
+						HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+						FindResult result = (FindResult) tmpMap.get("FindResult");
+						mInterfaceDataCallBack.setData(result);
+						mViewGroup.setVisibility(View.GONE);
+						mList.clear();
+						mAdapter.notifyDataSetChanged();
+					}else{
+						HashMap<String, Object> tmpMap = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+						IdentifyResult identifyResult = (IdentifyResult) tmpMap.get("IdentifyResult");
+						mInterfaceDataCallBack.setData4Frame(identifyResult);
+					}
 				}
 
 			}
@@ -153,30 +160,45 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	private SearchAdapter mAdapter;
 
 	private void initData() {
-		if(SinoApplication.mResultList4FrameSearch.size() == 0){
+		if(SinoApplication.mFeatureSet4Query != null){
+//			mList.clear();
 			mConfirm.setVisibility(View.VISIBLE);
 			mEditText.setVisibility(View.VISIBLE);
 			mTVTitle.setVisibility(View.GONE);
-
-			mAdapter = new SearchAdapter(mContext, mList);
-			mListView.setAdapter(mAdapter);
-			
-//		}else if(CommonData.TypeBtnSearchFrameChoos.equals(OperateType)){
-		}else{
-			if(!TextUtils.isEmpty(SinoApplication.mLayerName)){
-				mTVTitle.setVisibility(View.VISIBLE);
-				mTVTitle.setText("["+SinoApplication.mLayerName+"] 图层");
-			}
-			mConfirm.setVisibility(View.GONE);
-			mEditText.setVisibility(View.GONE);
-			for (int i = 0; i < SinoApplication.mResultList4FrameSearch.size(); i++) {
+			Graphic[] graphics = SinoApplication.mFeatureSet4Query.getGraphics();
+			for (int i = 0; i < graphics.length; i++) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("IdentifyResult", SinoApplication.mResultList4FrameSearch.get(i));
+				map.put("Graphic", graphics[i]);
 				mList.add(map);
 			}
+			
 			mAdapter = new SearchAdapter(mContext, mList);
 			mListView.setAdapter(mAdapter);
 			mViewGroup.setVisibility(View.VISIBLE);
+		}else{
+			if(SinoApplication.mResultList4FrameSearch.size() == 0){
+				mConfirm.setVisibility(View.VISIBLE);
+				mEditText.setVisibility(View.VISIBLE);
+				mTVTitle.setVisibility(View.GONE);
+				
+				mAdapter = new SearchAdapter(mContext, mList);
+				mListView.setAdapter(mAdapter);
+			}else{
+				if(!TextUtils.isEmpty(SinoApplication.mLayerName)){
+					mTVTitle.setVisibility(View.VISIBLE);
+					mTVTitle.setText("["+SinoApplication.mLayerName+"] 图层");
+				}
+				mConfirm.setVisibility(View.GONE);
+				mEditText.setVisibility(View.GONE);
+				for (int i = 0; i < SinoApplication.mResultList4FrameSearch.size(); i++) {
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("IdentifyResult", SinoApplication.mResultList4FrameSearch.get(i));
+					mList.add(map);
+				}
+				mAdapter = new SearchAdapter(mContext, mList);
+				mListView.setAdapter(mAdapter);
+				mViewGroup.setVisibility(View.VISIBLE);
+			}
 		}
 
 	}

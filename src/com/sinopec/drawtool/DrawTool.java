@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
-import java.util.List;
+import java.util.Map.Entry;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -29,7 +27,7 @@ import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polygon;
 import com.esri.core.geometry.Polyline;
-import com.esri.core.geometry.SpatialReference;
+import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.FillSymbol;
 import com.esri.core.symbol.LineSymbol;
@@ -37,14 +35,16 @@ import com.esri.core.symbol.MarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
-import com.esri.core.symbol.TextSymbol;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.esri.core.tasks.ags.query.Query;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.task.SearchIdentifyTask.OnFinishListener;
+import com.sinopec.task.SearchQueryTask;
+import com.sinopec.task.SearchQueryTask.OnQueryFinishListener;
 
 /**
  * 
@@ -360,7 +360,9 @@ public class DrawTool extends Subject {
 
 					Toast.makeText(mapView.getContext(), "总面积： " + sArea,
 							Toast.LENGTH_SHORT).show();
-					queryAttribute(envelope);
+					//紧急
+//					queryAttribute(envelope);
+					queryAttribute4Query(envelope);
 					
 					break;
 				case DrawTool.FREEHAND_POLYGON:
@@ -376,10 +378,10 @@ public class DrawTool extends Subject {
 							+ Math.pow(startPoint.getY() - point.getY(), 2));
 					
 					getCircle(startPoint, radius, polygon);
-					queryAttribute(polygon);
+					queryAttribute4OnlyOnePonit(polygon);
 					break;
 				case DrawTool.ANY_POLYGON:
-					queryAttribute(poly);
+					queryAttribute4OnlyOnePonit(poly);
 					break;
 				}
 				sendDrawEndEvent();
@@ -505,7 +507,8 @@ public class DrawTool extends Subject {
 
 					Graphic g = new Graphic(polygon, fillSymbol);
 					drawLayer.addGraphic(g);
-					queryAttribute(polygon);
+//					queryAttribute(polygon);
+					queryAttribute4Query(polygon);
 					return true;
 			
 			 }
@@ -681,6 +684,56 @@ public class DrawTool extends Subject {
 		
 	}
 	
+	
+	public void queryAttribute4Query(Geometry geometry) {
+//		Envelope m_WorldEnvelope = new Envelope();
+//		m_WorldEnvelope = mapView.getMapBoundaryExtent();
+		Query query = new Query();
+		query.setGeometry(geometry);
+		query.setReturnGeometry(true);
+		query.setOutFields(new String[]{"OBJ_NAME_C"});
+//		query.setSpatialRelationship(query.getSpatialRelationship().INTERSECTS);
+		query.setOutSpatialReference(mapView.getSpatialReference());
+//		query.setWhere("NAME_CN='���ľ���' or NAME_CN='��������'");
+		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
+				SinoApplication.currentLayerUrl,
+				CommonData.TypeOperateFrameChoos);
+		task.execute(query);
+
+		task.setQueryFinishListener(new OnQueryFinishListener() {
+
+			@Override
+			public void onFinish(FeatureSet results) {
+				SinoApplication.mFeatureSet4Query = results;
+				Graphic[] graphics = results.getGraphics();
+				// 把之前高亮显示结果清除
+				mDrawLayer4HighLight.removeAll();
+				if(graphics != null){
+					Log.d("test", "模糊查询  结果个数 : "+graphics.length+" "+results.getObjectIdFieldName());
+//					for (Entry<String, Object> ent : results.getFieldAliases().entrySet()) {
+//						Log.d("test", "00模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
+//					}
+					for (int i = 0; i < graphics.length; i++) {
+						Graphic graphic = graphics[i];
+//						Log.d("test", "模糊查询  getAttributes 个数 : "+graphic.getAttributes().entrySet().size());
+						for (Entry<String, Object> ent : graphic.getAttributes().entrySet()) {
+							Log.d("test", "模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
+						}
+	//					 String name = (String) result.getAttributes().get("NAME_CN");
+	//					 sb.append("名字： "+name + " ; ");
+						drawHighLight4Query(graphic);
+					}
+					deactivate();
+					mCallback.setSearchData4Query(results);
+					// Toast.makeText(mapView.getContext(), sb.toString() ,
+					// Toast.LENGTH_LONG).show();
+				}
+			}
+
+		});
+
+	}
+	
 	public void queryAttribute4OnlyOnePonit(Geometry geometry) {
 		IdentifyParameters mIdentifyParameters = new IdentifyParameters();
 		mIdentifyParameters.setTolerance(20);
@@ -744,6 +797,24 @@ public class DrawTool extends Subject {
 //	        drawLayer.addGraphic(resultText);
 	        // zoom to geocode result
 //	        map.zoomToResolution(result.getLocation(), 2);
+		}
+	}
+	
+	/**
+	 * 绘制高亮区域
+	 * @param result
+	 */
+	private void drawHighLight4Query(Graphic result) {
+		if(result != null){
+			Geometry resultLocGeom = result.getGeometry();
+			// create marker symbol to represent location
+			SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+			// create graphic object for resulting location
+			Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+			// add graphic to location layer
+			Log.d("map", " drawHighLight ....uid: "+resultLocation.getUid());
+			mDrawLayer4HighLight.addGraphic(resultLocation);
+			// create text symbol for return address
 		}
 	}
 	

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.esri.core.map.FeatureSet;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
@@ -74,6 +75,10 @@ public class SinoApplication extends Application {
 	 * 纪录框选查询结果
 	 */
 	public static ArrayList<IdentifyResult> mResultList4FrameSearch = new ArrayList<IdentifyResult>();
+	/**
+	 * 纪录框选查询结果（queryTask查询回来的）
+	 */
+	public static FeatureSet mFeatureSet4Query = null;
 	/**
 	 * 纪录多选查询结果
 	 */

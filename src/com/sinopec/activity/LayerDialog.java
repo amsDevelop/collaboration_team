@@ -1,14 +1,8 @@
 package com.sinopec.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.CalendarContract.Colors;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,11 +21,7 @@ import android.widget.TextView;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.Layer;
 import com.esri.android.map.MapView;
-import com.esri.android.map.ags.ArcGISFeatureLayer;
-import com.esri.android.map.ags.ArcGISFeatureLayer.MODE;
-import com.esri.android.map.ags.ArcGISLayerInfo;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
-import com.esri.core.map.Legend;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.OilGasData;
 
@@ -56,6 +46,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(resID, null);
+		layerSatellite = mapView.getLayerByURL(SinoApplication.imageUrl);
+		layerGeographic = mapView.getLayerByURL(SinoApplication.genUrl);
 //		layerName = new String[6]; 
 		mBtn1 = (Button) view.findViewById(R.id.id_btn_layer_1);
 		mBtn2 = (Button) view.findViewById(R.id.id_btn_layer_2);
@@ -122,10 +114,11 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn3.setOnClickListener(this);
 	}
 
+	
+	private Layer layerSatellite = null;
+	private Layer layerGeographic = null;
 	@Override
 	public void onClick(View arg0) {
-		Layer layerSatellite = mapView.getLayerByURL(SinoApplication.imageUrl);
-		Layer layerGeographic = mapView.getLayerByURL(SinoApplication.genUrl);
 		switch (arg0.getId()) {
 		case R.id.id_btn_layer_1:
 			executeLayerSatellite();
@@ -134,7 +127,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //					SinoApplication.imageUrl);
 //			mapView.addLayer(layerSatellite);
 //			addDrawLayer();
-			layerSatellite.setVisible(true);
+//			layerSatellite.setVisible(true);
 //			layerGeographic.setVisible(false);
 			SinoApplication.layerName = SinoApplication.LNsatellite;
 			break;
@@ -145,7 +138,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //					SinoApplication.genUrl);
 //			mapView.addLayer(layerGeographic);
 //			layerSatellite.setVisible(false);
-			layerGeographic.setVisible(true);
+//			layerGeographic.setVisible(true);
 			SinoApplication.currentLayerUrl = SinoApplication.genUrl;
 			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
@@ -183,12 +176,12 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 	private void executeLayerGeographic() {
 		// executeLayer1();
-		mCover.setVisibility(View.VISIBLE);
-		mListView.setEnabled(false);
 //		mBtn1.setSelected(false);
 		if(mBtn2.isSelected()){
+			layerGeographic.setVisible(false);
 			mBtn2.setSelected(false);
 		}else{
+			layerGeographic.setVisible(true);
 			mBtn2.setSelected(true);
 		}
 //		mBtn3.setSelected(false);
@@ -198,26 +191,28 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 	private void executeOilGas() {
 //		mContaner.setVisibility(View.VISIBLE);
-		mCover.setVisibility(View.GONE);
-		mListView.setEnabled(true);
 //		mBtn1.setSelected(false);
 //		mBtn2.setSelected(false);
 		if(mBtn3.isSelected()){
 			mBtn3.setSelected(false);
+			mListView.setEnabled(false);
+			mCover.setVisibility(View.VISIBLE);
 		}else{
 			mBtn3.setSelected(true);
+			mListView.setEnabled(true);
+			mCover.setVisibility(View.GONE);
 		}
 
 	}
 
 	private void executeLayerSatellite() {
-		mCover.setVisibility(View.VISIBLE);
-		mListView.setEnabled(false);
 //		dismiss();
 		showAlert();
 		if(mBtn1.isSelected()){
+			layerSatellite.setVisible(false);
 			mBtn1.setSelected(false);
 		}else{
+			layerSatellite.setVisible(true);
 			mBtn1.setSelected(true);
 		}
 //		mBtn2.setSelected(false);
@@ -284,14 +279,17 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					String url = buttonView.getTag().toString();
 					OilGasData data = SinoApplication.mOilGasData.get(position);
-					Log.v("mandy", "position: " + position + " url: " + data.getUrl() + " name: " + data.getName() +" id: " + data.getId());
+					String url4search = data.getSearchUrl();
+//					Log.d("map", " url: " + data.getUrl() + " name: " + data.getName() +" id: " + data.getId());
 					
 					
 					if (isChecked) {
-						Log.d("map", "buttonView.getTag(): " + buttonView.getTag());
+						Log.d("map", " 选中当前图层 url: " + url + " name: " + data.getName() +" id: " + data.getId());
+//						Log.d("map", "buttonView.getTag(): " + buttonView.getTag());
 //						mapView.removeAll();
 //						ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(url);
-						SinoApplication.currentLayerUrl = url;
+						SinoApplication.currentLayerUrl = url4search;
+						SinoApplication.mLayerName = data.getName();
 //						mapView.addLayer(layer);
 //							addDrawLayer();
 						resetCheckData(url, isChecked);

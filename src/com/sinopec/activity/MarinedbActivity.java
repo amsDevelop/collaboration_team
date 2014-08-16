@@ -59,6 +59,7 @@ import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polygon;
+import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
@@ -163,22 +164,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		setContentView(R.layout.activity_main);
 		initView();
 		map = (MapView) findViewById(R.id.map);
-		Envelope envelope = new Envelope(new Point(-29.440589,5.065565));
-		map.setExtent(envelope, 0);
-//		map.setExtent(new Envelope(-180, -85.46971899999994,
-//				180,  87.93330000000003), 0);
-//		map.setExtent(new Envelope(map.getCenter()), 0);
-//		 -86.36436463525025 getY: 40.28780276447719
-//		map.centerAt(new Point( -86.36436463525025, 40.28780276447719), false);
-//		map.zoomTo(new Point( -86.36436463525025, 40.28780276447719), 1);
-//		map.zoomToScale(new Point( -86.36436463525025, 40.28780276447719), 5000000);
-		
+//		Envelope envelope = new Envelope(new Point(-29.440589,5.065565));
+//		map.setExtent(envelope, 0);
 		tms = new ArcGISTiledMapServiceLayer(
 				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
 //				oilUrl);
 
-//		map.addLayer(tms);
-		
 		//加入6个专题图层 
 		String[] urls = getResources().getStringArray(R.array.all_layer_urls);
 		for (int i = 0; i < urls.length; i++) {
@@ -217,12 +208,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		drawTool.setDrawLayer(drawLayer, mDrawLayer4HighLight);
 		 mapTouchListener = new MapTouchListener(this, map);
 		 map.setOnTouchListener(mapTouchListener);
-		 map.setOnStatusChangedListener(new MapStatusListener());
+		 //这个干哈用？？
+//		 map.setOnStatusChangedListener(new MapStatusListener());
 		initData();
 		initAnimations();
 		searchFragment = new SearchFragment(this);
 		fragmentManager = getFragmentManager();
 		SinoApplication.currentLayerUrl = getString(R.string.url_basin);
+		map.zoomTo(new Point(0,0), (float) map.getMaxResolution());
 	}
 
 	private void initSymbols() {
@@ -422,6 +415,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						
+						callout.setCoordinates(anchorPt);
+						if (!callout.isShowing())
+							callout.show();
+						callout.refresh();
 //						return true;
 					}// onLongPress
 				});
@@ -469,13 +467,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				Log.d(tag, "--------mMenuViewTool");
-				Boolean[] clickTag = new Boolean[] { true, true, true };
+				Boolean[] clickTag = new Boolean[] { true, true };
 				if(mTag4OperateInLine){
-					clickTag = new Boolean[] { true, false, false };
+					clickTag = new Boolean[] { true, false };
 				} 
 				ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
-				mGridView.setNumColumns(3);
+				mGridView.setNumColumns(2);
 				setGridView(list, arg0);
 			}
 		});
@@ -565,6 +562,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				
 				//清空上次查询数据
 				SinoApplication.mResultList4FrameSearch.clear();
+				SinoApplication.mFeatureSet4Query = null;
 				mEditText.setText(getString(R.string.search));
 				
 				if(mToolBar.getVisibility() == View.INVISIBLE){
@@ -597,6 +595,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 */
 	private void initData() {
 		String[] urls = getResources().getStringArray(R.array.oilgas_url_theme);
+		String[] urls_4search = getResources().getStringArray(R.array.oilgas_url_theme_4search);
 		String[] ids = getResources().getStringArray(R.array.all_layer_id);
 		String[] names = getResources().getStringArray(R.array.all_layer_name);
 		String[] colors = getResources().getStringArray(R.array.all_layer_color);
@@ -604,6 +603,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		for (int i = 0; i < urls.length; i++) {
 			OilGasData data = new OilGasData();
 			data.setUrl(urls[i]);
+			data.setSearchUrl(urls_4search[i]);
 			data.setName(names[i]);
 			data.setId(Integer.valueOf(ids[i]));
 			Log.v("mandy", "colors: " + colors[i]);
@@ -1144,11 +1144,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		@Override
 		public void onStatusChanged(Object arg0, STATUS arg1) {
 //			  Log.v("mandy", "path: " + path + "state: " + state);
-		    Log.i("mandy", "map load status:" + arg1.name());
-			 if (OnStatusChangedListener.STATUS.INITIALIZED == arg1 && arg0 == map) {
-		           Log.i("mandy", "resolution:" + map.getResolution() +"is loaded: " + map.isLoaded());
-		           map.zoomToScale(new Point( -86.36436463525025, 40.28780276447719), 5000000);
-		         }
+//		    Log.i("mandy", " 阿里的房间拉屎京东方  map load status:" + arg1.name());
+//			 if (OnStatusChangedListener.STATUS.INITIALIZED == arg1 && arg0 == map) {
+//		           Log.i("mandy", "resolution:" + map.getResolution() +"is loaded: " + map.isLoaded());
+//		           map.zoomToScale(new Point( -86.36436463525025, 40.28780276447719), 5000000);
+//		         }
 		}
 	}
 	
@@ -1268,6 +1268,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void setData(Object data) {
 		FindResult result = (FindResult)data; 
+		
+		Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
+		Log.d("data", "setData4Frame  获得图层 id : "+result.getLayerId()+" name: "+result.getLayerName());
+		for (Entry<String, Object> ent : ents) {
+			Log.d("data", "模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
+		}
+		
 		SinoApplication.findResult = result;
 		Geometry geometry = result.getGeometry();
 		
@@ -1386,5 +1393,68 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		fragmentManager.beginTransaction().remove(searchFragment).commit();
 		searchFragment = null;
 		mFragmentLayout.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void setSearchData4Query(FeatureSet results) {
+		if(results != null){
+			SinoApplication.mFeatureSet4Query = results;
+//			SinoApplication.mResultList4FrameSearch = list;
+			int size = results.getGraphics().length;
+			if(size == 0){
+				SinoApplication.mLayerName = "";
+				Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();
+			}else{
+//				SinoApplication.mLayerName = list.get(0).getLayerName();
+				mEditText.setText("在 ["+SinoApplication.mLayerName+"] 图层查询到 "+size+" 个 结果，点击进入详情页面。");
+				mLeftBarLayout.startAnimation(aniOut);
+				mLeftBarLayout.setVisibility(View.GONE);
+			}
+		}else{
+			SinoApplication.mLayerName = "";
+			Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();
+		}
+	}
+
+	@Override
+	public void setData4Query(Object data) {
+		Graphic graphic = (Graphic)data; 
+//		FindResult result = (FindResult)data; 
+		
+		Set<Entry<String, Object>> ents = graphic.getAttributes().entrySet();
+		for (Entry<String, Object> ent : ents) {
+			Log.d("data", "框选查询 setData4Query  key: "+ent.getKey()+"  val: "+ent.getValue());
+		}
+		
+//		SinoApplication.findResult = result;
+		Geometry geometry = graphic.getGeometry();
+		
+        
+		Envelope envelope = new Envelope();
+		geometry.queryEnvelope(envelope);
+		Point point = envelope.getCenter();
+		map.zoomToScale(point, 5000000);
+
+		//绘制高亮区域
+		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+		Graphic resultLocation = new Graphic(geometry, resultSymbol);
+		mDrawLayer4HighLight.addGraphic(resultLocation);
+		
+		mTopicType = SinoApplication.mLayerName;
+//		mTopicName = result.getValue();
+		mHashMap4Property = (HashMap<String, Object>) graphic.getAttributes();
+		if (callout.isShowing()) {
+			callout.hide();
+		}
+		Log.d(tag, "-------------setData4Query---------setData: "+SinoApplication.mLayerName);
+		callout.show(point);
+		mLongTouchTitle.setText((String) graphic.getAttributes().get("OBJ_NAME_C"));
+	//		statistics.setText(result.getValue());
+
+		hideInput();
+		fragmentManager.beginTransaction().remove(searchFragment).commit();
+		searchFragment = null;
+		mFragmentLayout.setVisibility(View.GONE);
+		
 	}
 }

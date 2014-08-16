@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="oilgas_url_theme_4search">
+        <item>@string/url_oilfields_4search</item>
+        <item>@string/url_gasfields_4search</item>
+        <item>@string/url_basin_4search</item>
+    </string-array> 
     <string-array name="oilgas_url_theme">
         <item>@string/url_oilfields</item>
         <item>@string/url_gasfields</item>
@@ -14,13 +19,6 @@
         <item>@string/url_oilfields</item>
         <item>@string/url_gasfields</item>
     </string-array> 
-    
-    <!-- <string-array name="all_layer_urls_4image">
-        <item>@string/url_marine_image</item>
-        <item>@string/url_basin</item>
-        <item>@string/url_oilfields</item>
-        <item>@string/url_gasfields</item>
-    </string-array>  -->
     
     <string-array name="all_layer_urls_4geo">
         <item>@string/url_marine_geo</item>

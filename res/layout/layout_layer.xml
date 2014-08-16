@@ -116,7 +116,7 @@
         <TextView
             android:id="@+id/layer_lstview_cover"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="350dp"
             android:layout_gravity="center"
             android:background="@drawable/layer_cover_bg"
             android:gravity="center"

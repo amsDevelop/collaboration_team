@@ -5,8 +5,15 @@ package com.sinopec.common;
  */
 public class OilGasData {
 	private String url;
+	private String searchUrl;
 	private int id;
 	private String name;
+	public String getSearchUrl() {
+		return searchUrl;
+	}
+	public void setSearchUrl(String searchUrl) {
+		this.searchUrl = searchUrl;
+	}
 	private int color;
 	
 	private boolean isChecked = false;
