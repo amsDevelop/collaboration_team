@@ -42,6 +42,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 		this.mSearchViewGroup = viewGroup;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
+		mProgressDialog.setCancelable(false);
 		this.mServicesUrl = servicesUrl;
 	}
 	
@@ -52,6 +53,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 		this.mSearchViewGroup = viewGroup;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
+		mProgressDialog.setCancelable(false);
 		this.mServicesUrl = servicesUrl;
 	}
 	
@@ -76,6 +78,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	protected void onPostExecute(List<FindResult> results) {
 		mProgressDialog.dismiss();
 		if (results == null) {
+			mCallBack.setData(null);
 			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -88,7 +91,9 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 			
 		}else if(results.size() == 0){
 			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+			mCallBack.setData(null);
 		}else{
+			mCallBack.setData(null);
 			updateData(results);
 		}
 	}

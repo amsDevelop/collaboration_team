@@ -435,7 +435,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				Boolean[] clickTag = new Boolean[] { true, true };
 				if(mTag4OperateInLine){
 					clickTag = new Boolean[] { true, false };
-				} 
+				}else if(mTag4ToolDistanceOk){
+					clickTag = new Boolean[] { true, false };
+				}else if(mTag4ToolAreaOk){
+					clickTag = new Boolean[] { false, true };
+				}
 				ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(2);
 				setGridView(list, arg0);
@@ -691,13 +695,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			Log.v("mandy", "drawTool frame........");
 			drawTool.activate(DrawTool.ENVELOPE);
 			 drawLayer.removeAll();
-
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 			setButtonsStatus(v.getId());
 		} else if (btnLine.getId() == v.getId()) {
 			// mapTouchListener.setType("Polyline");
 			drawTool.activate(DrawTool.POLYLINE);
 			drawLayer.removeAll();
 			setButtonsStatus(v.getId());
+			 mTag4ToolAreaOk = false;
+			 mTag4ToolDistanceOk = true;
 		} else if (btnPolygon.getId() == v.getId()) {
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 			String[] name = { "任意点绘制", "点绘制", "圆形" };
@@ -713,6 +720,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			//屏幕范围查询
 			drawTool.queryAttribute(map.getExtent());
 			setButtonsStatus(v.getId());
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 		} else if (btnMultiple.getId() == v.getId()) {
 			//TODO:多选,进入多
 			SinoApplication.mResultListMulti.clear();
@@ -822,6 +831,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		showCancelButton();
 		hideCallOut();
 	}
+	
+	//测面积可用
+	private boolean mTag4ToolAreaOk = false;
+	//测距可用
+	private boolean mTag4ToolDistanceOk = false;
 
 	//设置底部按钮的点击效果
 	private void setMenuButtonsStatus(int vId) {
@@ -999,9 +1013,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if ("toolArea".equals(tag)) {
 			//调用drawTool里面 的一个变量
 			drawTool.calculateAreaAndLength("");
-		} else if ("toolSelect".equals(tag)) {
+		} else if ("定制查询".equals(tag)) {
 			//TODO:
-			slog.p("serach ......");
 			ConditionQuery query = new ConditionQuery();
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 			
@@ -1027,6 +1040,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 多边形任意点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 		} else if ("points".equals(tag)) {
 
 			drawTool.activate(DrawTool.POLYGON);
@@ -1034,18 +1049,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 多边形点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 		} else if ("cycle".equals(tag)) {
 			drawTool.activate(DrawTool.CIRCLE);
 			drawLayer.removeAll();
 			// 多边形任意点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
-		} else if ("points".equals(tag)) {
-			// 多边形点绘制
-			hidePopupWindow();
-		} else if ("cycle".equals(tag)) {
-			// 多边形 圆形
-			hidePopupWindow();
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 		} else if ("CountChildrenMenuOne".equals(tag)) {
 			//TODO:统计二级菜单
 			Boolean[] clickTag = new Boolean[] { true, true,true, true };
@@ -1257,6 +1270,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	
 	@Override
 	public void setData(Object data) {
+		closeKeyboard();
+		if(data == null){
+			return;
+		}
 		FindResult result = (FindResult)data; 
 		
 		Set<Entry<String, Object>> ents = result.getAttributes().entrySet();

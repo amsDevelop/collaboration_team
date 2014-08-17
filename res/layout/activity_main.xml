@@ -286,12 +286,6 @@
             android:layout_centerInParent="true"
             android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/poiAnim"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:src="@drawable/ballon2" />
     </RelativeLayout>
 
     <RelativeLayout

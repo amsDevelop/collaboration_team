@@ -80,6 +80,7 @@ public class SearchAdapter extends BaseAdapter {
 		}else{
 //			name = SinoApplication.getFindResultNameByType(result, layerName);
 			name = (String) result.getAttributes().get("OBJ_NAME_C");
+			layerName = result.getLayerName();
 		}
 //		Geometry geometry = result.getGeometry();
 //		Map<String, Object> attributes = result.getAttributes();
