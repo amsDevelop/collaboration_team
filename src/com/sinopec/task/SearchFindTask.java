@@ -96,7 +96,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	@Override
 	protected void onPreExecute() {
 		mFindTask = new FindTask(mServicesUrl);
-		Log.d("search", "onPostExecute..........模糊擦鞋.....url: " + mServicesUrl);
+		Log.d("searchtask", "onPostExecute..........SearchFindTask.....url: " + mServicesUrl);
 //		mFindTask = new FindTask(
 //				"http://10.225.14.201:6080/arcgis/rest/services/marine_oil/MapServer");
 //				"http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer");

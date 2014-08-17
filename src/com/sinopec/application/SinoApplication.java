@@ -13,6 +13,7 @@ import com.esri.core.map.FeatureSet;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.sinopec.activity.R;
 import com.sinopec.common.OilGasData;
 
 public class SinoApplication extends Application {
@@ -39,9 +40,13 @@ public class SinoApplication extends Application {
      */
     public static String currentLayerUrl = genUrl;
     /**
+     * 给多选使用的  当前图层URL(初始化为盆地)
+     */
+    public static String currentLayerUrl4Multi = genUrl;
+    /**
      * 当前查询图层的名字
      */
-    public static String mLayerName = "";
+    public static String mLayerName = "盆地";
 	
 	/**
 	 * 主页面底部菜单分成屏幕宽度的几份
@@ -59,7 +64,7 @@ public class SinoApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		this.mContext = this;
+		SinoApplication.mContext = this;
 	}
 	
 	/**

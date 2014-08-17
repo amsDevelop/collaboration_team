@@ -35,6 +35,7 @@ import com.esri.core.symbol.MarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
+import com.esri.core.tasks.SpatialRelationship;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.query.Query;
@@ -692,7 +693,9 @@ public class DrawTool extends Subject {
 		query.setGeometry(geometry);
 		query.setReturnGeometry(true);
 		query.setOutFields(new String[]{"OBJ_NAME_C"});
-//		query.setSpatialRelationship(query.getSpatialRelationship().INTERSECTS);
+		//SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
+		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
+//		Log.d("searchtask", "queryAttribute4Query......SpatialReference: " + query.getSpatialRelationship());
 		query.setOutSpatialReference(mapView.getSpatialReference());
 //		query.setWhere("NAME_CN='���ľ���' or NAME_CN='��������'");
 		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
@@ -734,6 +737,7 @@ public class DrawTool extends Subject {
 
 	}
 	
+	//多选单点的时候
 	public void queryAttribute4OnlyOnePonit(Geometry geometry) {
 		IdentifyParameters mIdentifyParameters = new IdentifyParameters();
 		mIdentifyParameters.setTolerance(20);
@@ -747,7 +751,7 @@ public class DrawTool extends Subject {
 		mIdentifyParameters.setMapWidth(mapView.getWidth());
 		mIdentifyParameters.setMapExtent(new Envelope());
 		
-		SearchIdentifyTask task = new SearchIdentifyTask(mapView.getContext(), SinoApplication.currentLayerUrl,
+		SearchIdentifyTask task = new SearchIdentifyTask(mapView.getContext(), SinoApplication.currentLayerUrl4Multi,
 				CommonData.TypeOperateMulti);
 		task.execute(mIdentifyParameters); 
 		
