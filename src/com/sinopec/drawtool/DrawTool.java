@@ -368,10 +368,10 @@ public class DrawTool extends Subject {
 					polyline.lineTo(point);
 					break;
 				case DrawTool.CIRCLE:
-					queryAttribute4OnlyOnePonit(polygon);
+					queryAttribute4Query(polygon);
 					break;
 				case DrawTool.ANY_POLYGON:
-					queryAttribute4OnlyOnePonit(poly);
+					queryAttribute4Query(poly);
 					break;
 				}
 				sendDrawEndEvent();

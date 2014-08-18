@@ -432,7 +432,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				Boolean[] clickTag = new Boolean[] { true, true };
+				Boolean[] clickTag = new Boolean[] { false, false };
 				if(mTag4OperateInLine){
 					clickTag = new Boolean[] { true, false };
 				}else if(mTag4ToolDistanceOk){
@@ -718,7 +718,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			showWindow(btnPolygon, list, mLocation4Polygon);
 		} else if (btnCurScreen.getId() == v.getId()) {
 			//屏幕范围查询
-			drawTool.queryAttribute(map.getExtent());
+			drawTool.queryAttribute4Query(map.getExtent());
 			setButtonsStatus(v.getId());
 			 mTag4ToolAreaOk = true;
 			 mTag4ToolDistanceOk = false;
@@ -840,51 +840,36 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	//设置底部按钮的点击效果
 	private void setMenuButtonsStatus(int vId) {
 		if (mMenuViewTool.getId() == vId) {
-			if(mMenuViewTool.isSelected()){
-				mMenuViewTool.setSelected(false);
-			}else{
-				mMenuViewTool.setSelected(true);
-			}
+			dealClickRepeat(mMenuViewTool);
+			
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewCount.getId() == vId) {
-			if(mMenuViewCount.isSelected()){
-				mMenuViewCount.setSelected(false);
-			}else{
-				mMenuViewCount.setSelected(true);
-			}
+			dealClickRepeat(mMenuViewCount);
+			
 			mMenuViewTool.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewSearch.getId() == vId) {
-			if(mMenuViewSearch.isSelected()){
-				mMenuViewSearch.setSelected(false);
-			}else{
-				mMenuViewSearch.setSelected(true);
-			}
+			dealClickRepeat(mMenuViewSearch);
+		
 			mMenuViewTool.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewCompare.getId() == vId) {
-			if(mMenuViewCompare.isSelected()){
-				mMenuViewCompare.setSelected(false);
-			}else{
-				mMenuViewCompare.setSelected(true);
-			}
+			dealClickRepeat(mMenuViewCompare);
+		
 			mMenuViewTool.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewMine.getId() == vId) {
-			if(mMenuViewMine.isSelected()){
-				mMenuViewMine.setSelected(false);
-			}else{
-				mMenuViewMine.setSelected(true);
-			}
+			dealClickRepeat(mMenuViewMine);
+	
 			mMenuViewTool.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCount.setSelected(false);
@@ -892,6 +877,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			
 		}
 		hideCallOut();
+	}
+	
+	private void dealClickRepeat(View view) {
+		if(view.isSelected()){
+			view.setSelected(false);
+		}else{
+			view.setSelected(true);
+		}
 	}
 
 	private View view;
@@ -1131,31 +1124,21 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 	
 	private void hidePopupWindow4CountDistanceArea() {
-		if (popupWindow != null){
-			popupWindow.dismiss();
+		if((!mTag4ToolDistanceOk && !mTag4ToolAreaOk)){
+			//都不可用的时候
+			if (popupWindow != null){
+				popupWindow.dismiss();
+			}
+		}else{
+			if(mTag4ToolDistanceOk || mTag4ToolAreaOk ){
+				
+			}else{
+				
+			}
 		}
 		
-		mMenuViewTool.setSelected(false);
-		mMenuViewSearch.setSelected(false);
-		mMenuViewCount.setSelected(false);
-		mMenuViewCompare.setSelected(false);
-		mMenuViewMine.setSelected(false);
 	}
 
-	class MapStatusListener implements OnStatusChangedListener {
-
-		@Override
-		public void onStatusChanged(Object arg0, STATUS arg1) {
-//			  Log.v("mandy", "path: " + path + "state: " + state);
-//		    Log.i("mandy", " 阿里的房间拉屎京东方  map load status:" + arg1.name());
-//			 if (OnStatusChangedListener.STATUS.INITIALIZED == arg1 && arg0 == map) {
-//		           Log.i("mandy", "resolution:" + map.getResolution() +"is loaded: " + map.isLoaded());
-//		           map.zoomToScale(new Point( -86.36436463525025, 40.28780276447719), 5000000);
-//		         }
-		}
-	}
-	
-	
 	class MapTouchListener extends MapOnTouchListener {
 
 		public MapTouchListener(Context context, MapView view) {
