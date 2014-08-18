@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import android.content.Context;
@@ -18,6 +19,7 @@ import com.esri.android.map.Callout;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.MapOnTouchListener;
 import com.esri.android.map.MapView;
+import com.esri.core.geometry.AreaUnit;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.GeometryEngine;
@@ -27,6 +29,8 @@ import com.esri.core.geometry.MultiPath;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polygon;
 import com.esri.core.geometry.Polyline;
+import com.esri.core.geometry.SpatialReference;
+import com.esri.core.geometry.Transformation2D;
 import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.FillSymbol;
@@ -35,6 +39,7 @@ import com.esri.core.symbol.MarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
+import com.esri.core.symbol.Symbol;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.query.Query;
@@ -46,12 +51,7 @@ import com.sinopec.task.SearchIdentifyTask.OnFinishListener;
 import com.sinopec.task.SearchQueryTask;
 import com.sinopec.task.SearchQueryTask.OnQueryFinishListener;
 
-/**
- * 
- * 
- * 
- *  
- */
+
 public class DrawTool extends Subject {
 
 	private MapView mapView;
@@ -70,6 +70,7 @@ public class DrawTool extends Subject {
 	private Graphic drawGraphic;
 	private GraphicsLayer drawLayer;
 	private GraphicsLayer mDrawLayer4HighLight;
+	private List<Line> lines = new ArrayList<Line>();
 
 	public static final int POINT = 1;
 	public static final int ENVELOPE = 2;
@@ -79,12 +80,12 @@ public class DrawTool extends Subject {
 	public static final int ANY_POLYGON = 6;
 	public static final int FREEHAND_POLYGON = 7;
 	public static final int FREEHAND_POLYLINE = 8;
+	public  boolean isSelectDraw = false;
 	/**
 	 * 多选
 	 */
 	public static final int MULTI_POINT = 9;
 
-	private static final int TEMP_LAYER_ID = -999999;
 	private InterfaceDataCallBack mCallback;
 	public DrawTool(MapView mapView, InterfaceDataCallBack callback, Callout callout) {
 		this.mapView = mapView;
@@ -126,6 +127,8 @@ public class DrawTool extends Subject {
 
 
 	public void activate(int drawType) {
+		isSelectDraw = true;
+		
 		if (this.mapView == null)
 			return;
 		this.mapView.setOnTouchListener(drawListener);
@@ -140,20 +143,9 @@ public class DrawTool extends Subject {
 			drawGraphic = new Graphic(this.point, markerSymbol);
 //			drawGraphic.
 			this.tempLayer.addGraphic(drawGraphic);
-			
-			
 			break;
 		case DrawTool.ENVELOPE:
-//		   tempLayer.removeAll();
 			this.envelope = new Envelope();
-//			drawGraphic.setGeometry(this.envelope);
-//			drawGraphic.setSymbol(fillSymbol);
-//			
-//			drawGraphic = new Graphic(this.envelope, fillSymbol);
-//			
-//////			drawGraphic.
-//			this.tempLayer.addGraphic(drawGraphic);
-			
 			break;
 		case DrawTool.POLYGON:
 		case DrawTool.CIRCLE:
@@ -182,7 +174,7 @@ public class DrawTool extends Subject {
 		this.drawType = -1;
 		this.point = null;
 //		this.envelope = null;
-		this.polygon = null;
+//		this.polygon = null;
 		this.polyline = null;
 		this.drawGraphic = null;
 		drawListener.clearGraphic();
@@ -213,13 +205,10 @@ public class DrawTool extends Subject {
 	}
 
 	private void sendDrawEndEvent() {
-		
-		DrawEvent e = new DrawEvent(this, DrawEvent.DRAW_END,
-				DrawTool.this.drawGraphic);
-		DrawTool.this.notifyEvent(e);
-//		if (envelope != null) {
-//	
-//		}
+//		
+//		DrawEvent e = new DrawEvent(this, DrawEvent.DRAW_END,
+//				DrawTool.this.drawGraphic);
+//		DrawTool.this.notifyEvent(e);
 		int type = this.drawType;
 		this.deactivate();
 		this.activate(type);
@@ -308,12 +297,22 @@ public class DrawTool extends Subject {
 					polyline.lineTo(point);
 					break;
 				case DrawTool.CIRCLE:
+					
 					double radius = Math.sqrt(Math.pow(startPoint.getX()
 							- point.getX(), 2)
 							+ Math.pow(startPoint.getY() - point.getY(), 2));
-					Point hh = mapView.toMapPoint(((float)(startPoint.getX() + point.getX()/2)), (float)(startPoint.getY() + point.getY()/2));
 					
-					getCircle(hh, radius, polygon);
+					if (uid == -1) { // first time
+						drawLayer.removeAll();
+						getCircle(startPoint, radius, polygon);
+						Graphic g = new Graphic(null, fillSymbol);
+						uid  = drawLayer.addGraphic(g);
+
+					} else { 
+						getCircle(startPoint, radius, polygon);
+						drawLayer.updateGraphic(uid, polygon);
+					}
+					
 					break;
 				case DrawTool.ANY_POLYGON:
 					if (uid == -1) {
@@ -342,27 +341,24 @@ public class DrawTool extends Subject {
 					} 
 					break;
 				}
-				Log.v("mandy", "onDragPointerMove......");
-//				tempLayer.postInvalidate();
 				return true;
 			}
 			return super.onDragPointerMove(from, to);
 		}
-
+   
 		public boolean onDragPointerUp(MotionEvent from, MotionEvent to) {
 			if (active && (drawType == ENVELOPE || drawType == FREEHAND_POLYGON
 					|| drawType == FREEHAND_POLYLINE || drawType == CIRCLE || drawType == ANY_POLYGON)) {
 				Point point = mapView.toMapPoint(to.getX(), to.getY());
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
-
+//					String sArea = getAreaString(envelope.calculateArea2D());
+//					Toast.makeText(mapView.getContext(), "总面积： " + sArea,
+//							Toast.LENGTH_SHORT).show();
 					String sArea = getAreaString(envelope.calculateArea2D());
-
-					Toast.makeText(mapView.getContext(), "总面积： " + sArea,
-							Toast.LENGTH_SHORT).show();
-					//紧急
-//					queryAttribute(envelope);
-					queryAttribute4Query(envelope);
+					Toast.makeText(mapView.getContext(), sArea, Toast.LENGTH_SHORT).show();
+					
+//					queryAttribute4Query(envelope);
 					
 					break;
 				case DrawTool.FREEHAND_POLYGON:
@@ -372,12 +368,6 @@ public class DrawTool extends Subject {
 					polyline.lineTo(point);
 					break;
 				case DrawTool.CIRCLE:
-					DrawTool.this.notifyClear();
-					double radius = Math.sqrt(Math.pow(startPoint.getX()
-							- point.getX(), 2)
-							+ Math.pow(startPoint.getY() - point.getY(), 2));
-					
-					getCircle(startPoint, radius, polygon);
 					queryAttribute4OnlyOnePonit(polygon);
 					break;
 				case DrawTool.ANY_POLYGON:
@@ -413,12 +403,16 @@ public class DrawTool extends Subject {
 				}else{
 					if (ptStart == null) {// 画线或多边形的第一个点
 						ptStart = ptCurrent;
-	
+						
+						markerSymbol = new SimpleMarkerSymbol(Color.BLUE, 10,
+								SimpleMarkerSymbol.STYLE.CIRCLE);
 						// 绘制第一个点
 						Graphic graphic = new Graphic(ptStart, markerSymbol);
 						drawLayer.addGraphic(graphic);
 					} else {// 画线或多边形的其他点
 						// 绘制其他点
+						markerSymbol = new SimpleMarkerSymbol(Color.BLUE, 15,
+								SimpleMarkerSymbol.STYLE.DIAMOND);
 						Graphic graphic = new Graphic(ptCurrent, markerSymbol);
 						drawLayer.addGraphic(graphic);
 	
@@ -438,37 +432,30 @@ public class DrawTool extends Subject {
 									null);
 							String length = "";
 							DecimalFormat df = new DecimalFormat("#.00");
-	//						if("KM".equals(tag)){
 								double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
 								length = df.format(temp)+ " 千米";
-	//						}else if("M".equals(tag)){
-	//							length = df.format(len)+ " 米";
-	//						}
-							Log.d("map", "-----折线长度："+length);
-							
-							// 计算当前线段的长度
-	//						String length = Double.toString(Math.round(line
-	//								.calculateLength2D())) + " 米";
-	
 							Toast.makeText(mapView.getContext(), "长度： " + length,
 									Toast.LENGTH_SHORT).show();
 						} else {
-	//						tempPolygon = null;
-							// 绘制临时多边形
+                         
 							if (tempPolygon == null)
 								tempPolygon = new Polygon();
-							tempPolygon.addSegment(line, false);
-							drawLayer.removeAll();
-							Graphic g = new Graphic(tempPolygon, fillSymbol);
-							drawLayer.addGraphic(g);
 							
-	//						// 计算当前面积
-	//						String sArea = getAreaString(tempPolygon
-	//								.calculateArea2D());
-	//
-	//						Toast.makeText(map.getContext(), "面积： " + sArea,
-	//								Toast.LENGTH_SHORT).show();
+							if (uid == -1) {
+								tempPolygon.addSegment(line, false);
+								Graphic g = new Graphic(tempPolygon, fillSymbol);
+								uid = drawLayer.addGraphic(g);
+							
+								
+							} else {
+								tempPolygon.addSegment(line, false);
+								drawLayer.updateGraphic(uid, tempPolygon);
+							}
+							
+	
+							
 						}
+						lines.add(line);
 					}
 				}
 				ptPrevious = ptCurrent;
@@ -484,6 +471,8 @@ public class DrawTool extends Subject {
 			ptPrevious = null;
 			points.clear();
 			tempPolygon = null;
+			uid = -1;
+			isSelectDraw = false;
 
 		}
 		public boolean onDoubleTap(MotionEvent event) {
@@ -497,7 +486,7 @@ public class DrawTool extends Subject {
 					for (int i = 1; i < drawListener.points.size(); i++) {
 						startPoint = drawListener.points.get(i - 1);
 						endPoint = drawListener.points.get(i);
-
+                        
 						Line line = new Line();
 						line.setStart(startPoint);
 						line.setEnd(endPoint);
@@ -513,6 +502,14 @@ public class DrawTool extends Subject {
 			
 			 }
 			return super.onDoubleTap(event);
+		}
+		
+		@Override
+		public void onLongPress(MotionEvent point) {
+		   if (isSelectDraw) {
+			    return ;
+		   }
+		   super.onLongPress(point);
 		}
 
 		private void getCircle(Point center, double radius, Polygon circle) {
@@ -571,7 +568,6 @@ public class DrawTool extends Subject {
 				len = 0.0;
 				len = GeometryEngine.geodesicLength(polyline, mapView.getSpatialReference(),
 						new LinearUnit(LinearUnit.Code.KILOMETER));
-//				double temp = BigDecimal.valueOf(len).divide(new BigDecimal(1000)).doubleValue();
 				length = len + " 千米";
 			}else if("M".equals(tag)){
 				len = 0.0;
