@@ -27,7 +27,6 @@ import com.sinopec.common.OilGasData;
 
 @SuppressLint("NewApi")
 public class LayerDialog extends DialogFragment implements OnClickListener {
-	private String tag = "map";
 	int resID = R.layout.layout_layer;
 	Button mBtn1 = null;
 	Button mBtn2 = null;
@@ -288,6 +287,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //						Log.d("map", "buttonView.getTag(): " + buttonView.getTag());
 //						mapView.removeAll();
 //						ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(url);
+						SinoApplication.currentLayerUrl4Multi = data.getUrl();
 						SinoApplication.currentLayerUrl = url4search;
 						SinoApplication.mLayerName = data.getName();
 //						mapView.addLayer(layer);

@@ -1,30 +1,18 @@
 package com.sinopec.task;
 
-import java.util.ArrayList;
-
-import org.achartengine.internal.GraphicalView;
-
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.esri.android.map.Callout;
 import com.esri.android.map.GraphicsLayer;
-import com.esri.core.geometry.Envelope;
-import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
 import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
-import com.esri.core.symbol.PictureMarkerSymbol;
-import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.query.Query;
 import com.esri.core.tasks.ags.query.QueryTask;
 import com.sinopec.activity.R;
@@ -99,7 +87,7 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 	
 	protected void onPreExecute() {
 		mProgressDialog.show();
-		Log.d("search", "-面积 query查询 -----onPreExecute  --000000000000 "+mServicesUrl);
+		Log.d("searchtask", "-SearchQueryTask  -url "+mServicesUrl);
 		m_qTask = new QueryTask(mServicesUrl);
 	}
 	

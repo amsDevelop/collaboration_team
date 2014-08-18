@@ -93,7 +93,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	// 泡泡变量
 	private View popView = null;
 	Callout callout = null;
-	private ImageView imageAnim = null;
+//	private ImageView imageAnim = null;
 	String name2 = null;
 	String Point_X = null;
 	String Point_Y = null;
@@ -214,7 +214,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		initAnimations();
 		searchFragment = new SearchFragment(this);
 		fragmentManager = getFragmentManager();
-		SinoApplication.currentLayerUrl = getString(R.string.url_basin);
+		SinoApplication.currentLayerUrl = getString(R.string.url_basin_4search);
+		SinoApplication.currentLayerUrl4Multi = getString(R.string.url_basin);
 		map.zoomTo(new Point(0,0), (float) map.getMaxResolution());
 	}
 
@@ -297,8 +298,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		statistics.setOnClickListener(this);
 		doc.setOnClickListener(this);
 
-		imageAnim = (ImageView) findViewById(R.id.poiAnim);
-		imageAnim.setVisibility(View.INVISIBLE);
+//		imageAnim = (ImageView) findViewById(R.id.poiAnim);
+//		imageAnim.setVisibility(View.INVISIBLE);
 		callout = map.getCallout();
 		callout.setContent(popView);
 		callout.setStyle(R.layout.calloutwindow);
@@ -360,15 +361,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							anchorPt = MarinedbActivity.this.map.toMapPoint(
 									pxx, pxy);
 							
-							Animation poiAnimation = new TranslateAnimation(
-									pxx, pxx, 0, y);
-							poiAnimation.setDuration(500);
 //							imageAnim.startAnimation(poiAnimation);
 							
 							Log.d(tag, "-------长按   x: "+anchorPt.getX()+"  y: "+anchorPt.getY());
 							initSearchParams(anchorPt);
-							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, imageAnim, 
-									poiAnimation, CommonData.TypeOperateLongPress, mDrawLayer4HighLight);
+							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, CommonData.TypeOperateLongPress, mDrawLayer4HighLight);
 						    task.execute(mIdentifyParameters); 
 							
 							
@@ -378,38 +375,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 										.removeGraphic(LongPressPOI.getUid());
 							}
 							// MarinedbActivity.this.gLayer.postInvalidate();
-							poiAnimation
-									.setAnimationListener(new AnimationListener() {
-
-										@Override
-										public void onAnimationStart(
-												Animation animation) {
-											// TODO Auto-generated method stub
-											imageAnim
-													.setVisibility(View.VISIBLE);
-										}
-
-										@Override
-										public void onAnimationRepeat(
-												Animation animation) {
-											// TODO Auto-generated method stub
-
-										}
-
-										@Override
-										public void onAnimationEnd(
-												Animation animation) {
-											// TODO Auto-generated method stub
-											imageAnim
-													.setVisibility(View.INVISIBLE);
-
-											callout.setCoordinates(anchorPt);
-											if (!callout.isShowing())
-												callout.show();
-											callout.refresh();
-
-										}
-									});
 
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -470,7 +435,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				Boolean[] clickTag = new Boolean[] { true, true };
 				if(mTag4OperateInLine){
 					clickTag = new Boolean[] { true, false };
-				} 
+				}else if(mTag4ToolDistanceOk){
+					clickTag = new Boolean[] { true, false };
+				}else if(mTag4ToolAreaOk){
+					clickTag = new Boolean[] { false, true };
+				}
 				ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(2);
 				setGridView(list, arg0);
@@ -565,7 +534,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				SinoApplication.mFeatureSet4Query = null;
 				mEditText.setText(getString(R.string.search));
 				
-				if(mToolBar.getVisibility() == View.INVISIBLE){
+				if(mToolBar.getVisibility() == View.GONE){
 					mToolBar.setVisibility(View.VISIBLE);
 					mToolBar.startAnimation(aniUp);
 					mGridViewLayout.setVisibility(View.GONE);
@@ -594,6 +563,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 * 初始化搜索结果列表数据
 	 */
 	private void initData() {
+		if(SinoApplication.mOilGasData != null){
+			SinoApplication.mOilGasData.clear();
+		}
 		String[] urls = getResources().getStringArray(R.array.oilgas_url_theme);
 		String[] urls_4search = getResources().getStringArray(R.array.oilgas_url_theme_4search);
 		String[] ids = getResources().getStringArray(R.array.all_layer_id);
@@ -723,13 +695,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			Log.v("mandy", "drawTool frame........");
 			drawTool.activate(DrawTool.ENVELOPE);
 			 drawLayer.removeAll();
-
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 			setButtonsStatus(v.getId());
 		} else if (btnLine.getId() == v.getId()) {
 			// mapTouchListener.setType("Polyline");
 			drawTool.activate(DrawTool.POLYLINE);
 			drawLayer.removeAll();
 			setButtonsStatus(v.getId());
+			 mTag4ToolAreaOk = false;
+			 mTag4ToolDistanceOk = true;
 		} else if (btnPolygon.getId() == v.getId()) {
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 			String[] name = { "任意点绘制", "点绘制", "圆形" };
@@ -745,6 +720,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			//屏幕范围查询
 			drawTool.queryAttribute(map.getExtent());
 			setButtonsStatus(v.getId());
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 		} else if (btnMultiple.getId() == v.getId()) {
 			//TODO:多选,进入多
 			SinoApplication.mResultListMulti.clear();
@@ -854,6 +831,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		showCancelButton();
 		hideCallOut();
 	}
+	
+	//测面积可用
+	private boolean mTag4ToolAreaOk = false;
+	//测距可用
+	private boolean mTag4ToolDistanceOk = false;
 
 	//设置底部按钮的点击效果
 	private void setMenuButtonsStatus(int vId) {
@@ -1011,25 +993,28 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		
 		Log.d("sinopec", "-------点击p: " + position + "  tag: " + tag);
 		if ("toolDistance".equals(tag)) {
-			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-			String[] name = {"KM", "M"};
-			for (int i = 0; i < name.length; i++) {
-				HashMap<String, Object> distancMap = new HashMap<String, Object>();
-				distancMap.put("name", name[i]);
-				distancMap.put("tag", name[i]);
-				list.add(distancMap);
-			}
-			// 创建一个PopuWidow对象
-			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
-			popupWindow = new PopupWindow(mBaseLayout, 600, 400);
+//			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+//			String[] name = {"KM", "M"};
+//			for (int i = 0; i < name.length; i++) {
+//				HashMap<String, Object> distancMap = new HashMap<String, Object>();
+//				distancMap.put("name", name[i]);
+//				distancMap.put("tag", name[i]);
+//				list.add(distancMap);
+//			}
+//			// 创建一个PopuWidow对象
+//			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//			mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
+//			popupWindow = new PopupWindow(mBaseLayout, 600, 400);
+//			
+//			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
 			
-			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
+			hidePopupWindow4CountDistanceArea();
+			drawTool.calculateAreaAndLength("KM");
 		} else if ("toolArea".equals(tag)) {
+			//调用drawTool里面 的一个变量
 			drawTool.calculateAreaAndLength("");
-		} else if ("toolSelect".equals(tag)) {
+		} else if ("定制查询".equals(tag)) {
 			//TODO:
-			slog.p("serach ......");
 			ConditionQuery query = new ConditionQuery();
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 			
@@ -1042,12 +1027,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			exitDialog();
 		} else if ("KM".equals(tag)) {
 			// 折线长度以km显示
-			hidePopupWindow();
+			hidePopupWindow4CountDistanceArea();
 			drawTool.calculateAreaAndLength("KM");
 			mBtnCancelChoose.performClick();
 		} else if ("M".equals(tag)) {
 			// 折线长度以m显示
-			hidePopupWindow();
+			hidePopupWindow4CountDistanceArea();
 			drawTool.calculateAreaAndLength("M");
 			mBtnCancelChoose.performClick();
 		} else if ("anyPoint".equals(tag)) {
@@ -1055,6 +1040,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 多边形任意点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 		} else if ("points".equals(tag)) {
 
 			drawTool.activate(DrawTool.POLYGON);
@@ -1062,38 +1049,42 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 多边形点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
 		} else if ("cycle".equals(tag)) {
 			drawTool.activate(DrawTool.CIRCLE);
 			drawLayer.removeAll();
 			// 多边形任意点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
-		} else if ("points".equals(tag)) {
-			// 多边形点绘制
-			hidePopupWindow();
-		} else if ("cycle".equals(tag)) {
-			// 多边形 圆形
-			hidePopupWindow();
-		} else if ("CountChildrenMenuTwo".equals(tag)) {
+			 mTag4ToolAreaOk = true;
+			 mTag4ToolDistanceOk = false;
+		} else if ("CountChildrenMenuOne".equals(tag)) {
 			//TODO:统计二级菜单
-			Log.d("map", "--统计  right      二级菜单..........");
 			Boolean[] clickTag = new Boolean[] { true, true,true, true };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(list, clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(4);
 			setGridView4LevelTwoChildrenMenu(list, arg0);
-		} else if ("CountChildrenMenuOne".equals(tag)) {
-			Log.d("map", "--统计  left            二级菜单..........");
+		} else if ("CountChildrenMenuTwo".equals(tag)) {
 			Boolean[] clickTag = new Boolean[] { true, true,true, true, true, true, true, true, true, true, true, };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(list, arg0);
-//			Boolean[] clickTag = new Boolean[] { true, true,true, true };
-//			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(list, clickTag, mChildMenuSplitNumber);
-//			mGridView.setNumColumns(4);
-//			setGridView4LevelTwoChildrenMenu(list, arg0);
+		} else if ("碳酸盐岩烃源分布".equals(tag)) {
+			Boolean[] clickTag = new Boolean[] { true, true,true, true, true, true, true, true, true, true,};
+			ChildrenMenuDataUtil.setSearchChildren4MenuData(list, clickTag, mChildMenuSplitNumber);
+			mGridView.setNumColumns(10);
+			setGridView4LevelTwoChildrenMenu(list, arg0);
+		} else if ("分类型盖层分布".equals(tag)) {
+			Boolean[] clickTag = new Boolean[] { true, true,true };
+			ChildrenMenuDataUtil.setSearchChildren6MenuData(list, clickTag, mChildMenuSplitNumber);
+			mGridView.setNumColumns(3);
+			setGridView4LevelTwoChildrenMenu(list, arg0);
 		}
 		
-		if(!"CountChildrenMenuOne".equals(tag) && !"CountChildrenMenuTwo".equals(tag)){
+		//三级子菜单都需要在这里处理
+		if(!"CountChildrenMenuOne".equals(tag) && !"CountChildrenMenuTwo".equals(tag) && !"toolDistance".equals(tag)
+				&& !"碳酸盐岩烃源分布".equals(tag) && !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)){
 			hideCallOut();
 		}
 	}
@@ -1101,7 +1092,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private void setGridView4LevelTwoChildrenMenu(ArrayList<HashMap<String, Object>> list, View view) {
 //		setMenuButtonsStatus(view.getId());
 		mAdapter.notifyDataSetChanged();
-		mToolBar.setVisibility(View.INVISIBLE);
+		mToolBar.setVisibility(View.GONE);
 		mToolBar.startAnimation(aniDown);
 		mGridViewLayout.setVisibility(View.VISIBLE);
 		
@@ -1130,6 +1121,18 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		
 		if (mGridViewLayout.getVisibility() == View.VISIBLE) {
 			mGridViewLayout.setVisibility(View.INVISIBLE);
+		}
+		
+		mMenuViewTool.setSelected(false);
+		mMenuViewSearch.setSelected(false);
+		mMenuViewCount.setSelected(false);
+		mMenuViewCompare.setSelected(false);
+		mMenuViewMine.setSelected(false);
+	}
+	
+	private void hidePopupWindow4CountDistanceArea() {
+		if (popupWindow != null){
+			popupWindow.dismiss();
 		}
 		
 		mMenuViewTool.setSelected(false);
@@ -1267,6 +1270,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	
 	@Override
 	public void setData(Object data) {
+		closeKeyboard();
+		if(data == null){
+			return;
+		}
 		FindResult result = (FindResult)data; 
 		
 		Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
