@@ -332,10 +332,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							return;
 						}
 						
-						//TODO:清空之前高亮显示
+						//清空之前高亮显示
 						drawLayer.removeAll();
 						mDrawLayer4HighLight.removeAll();
 						drawTool.deactivate();
+						//情况之前长按数据
+						if(callout.isShowing()){
+							callout.hide();
+							SinoApplication.identifyResult = null;
+						}
 						
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
 						Log.d("map", "-----长按------Long--x:"+x+"  y: "+y+" -toMapPoint--x:"+pt.getX()+"  y: "+pt.getY());
@@ -365,7 +370,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							
 							Log.d(tag, "-------长按   x: "+anchorPt.getX()+"  y: "+anchorPt.getY());
 							initSearchParams(anchorPt);
-							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, CommonData.TypeOperateLongPress, mDrawLayer4HighLight);
+							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, CommonData.TypeOperateLongPress, mDrawLayer4HighLight
+									,callout);
 						    task.execute(mIdentifyParameters); 
 							
 							
@@ -377,13 +383,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							// MarinedbActivity.this.gLayer.postInvalidate();
 
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						
 						callout.setCoordinates(anchorPt);
-						if (!callout.isShowing())
-							callout.show();
+//						if (!callout.isShowing())
+//							callout.show();
 						callout.refresh();
 //						return true;
 					}// onLongPress
@@ -533,6 +538,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				SinoApplication.mResultList4FrameSearch.clear();
 				SinoApplication.mFeatureSet4Query = null;
 				mEditText.setText(getString(R.string.search));
+				mTag4ToolDistanceOk = false;
+				mTag4ToolAreaOk = false;
 				
 				if(mToolBar.getVisibility() == View.GONE){
 					mToolBar.setVisibility(View.VISIBLE);
@@ -1445,6 +1452,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		fragmentManager.beginTransaction().remove(searchFragment).commit();
 		searchFragment = null;
 		mFragmentLayout.setVisibility(View.GONE);
+		
+	}
+
+	@Override
+	public void setData4LongPressed(Object data) {
+		// TODO Auto-generated method stub
 		
 	}
 }

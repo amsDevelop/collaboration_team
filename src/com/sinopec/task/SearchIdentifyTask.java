@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.esri.android.map.Callout;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
@@ -41,14 +42,15 @@ public class SearchIdentifyTask extends
 	private OnFinishListener finishListener;
 	private String OperateType = CommonData.TypeOperateLongPress;
 	private GraphicsLayer mDrawLayer4HighLight;
-	
+	private Callout mCallout;
 	public SearchIdentifyTask(Context context, Point anchorPoint, String url,
-		Button title, String operateType, GraphicsLayer drawLayer) {
+		Button title, String operateType, GraphicsLayer drawLayer, Callout callout) {
 		this.mContext = context;
 		this.mAnchor = anchorPoint;
 		this.mServicesUrl = url;
 		this.mTitle = title;
 		this.OperateType = operateType;
+		this.mCallout = callout;
 		this.mDrawLayer4HighLight = drawLayer;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
@@ -108,6 +110,10 @@ public class SearchIdentifyTask extends
 				if(result == null){
 					Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
 				}else{
+					if (!mCallout.isShowing()){
+						mCallout.show();
+					}
+					
 					SinoApplication.identifyResult = result;
 					String name = SinoApplication.getIdentifyResultName(result, result.getLayerName());
 					mTitle.setText(name);

@@ -358,7 +358,7 @@ public class DrawTool extends Subject {
 					String sArea = getAreaString(envelope.calculateArea2D());
 					Toast.makeText(mapView.getContext(), sArea, Toast.LENGTH_SHORT).show();
 					
-//					queryAttribute4Query(envelope);
+					queryAttribute4Query(envelope);
 					
 					break;
 				case DrawTool.FREEHAND_POLYGON:

@@ -11,6 +11,11 @@ public interface InterfaceDataCallBack {
 	 * @param list
 	 */
 	public void setData4Query(Object data);
+	/**
+	 * 长按查询返回结果方法(identifyTask)
+	 * @param list
+	 */
+	public void setData4LongPressed(Object data);
 	public void setData(Object data);
 	/**
 	 * 范围查询返回结果方法(queryTask)
