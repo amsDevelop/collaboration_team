@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -87,7 +88,10 @@ public class DrawTool extends Subject {
 	public static final int MULTI_POINT = 9;
 
 	private InterfaceDataCallBack mCallback;
-	public DrawTool(MapView mapView, InterfaceDataCallBack callback, Callout callout) {
+	private Context mContext;
+	private ProgressDialog mProgressDialog;
+	public DrawTool(MapView mapView, InterfaceDataCallBack callback, Callout callout, Context context) {
+		mProgressDialog = new ProgressDialog(context);
 		this.mapView = mapView;
 		this.mCallback = callback;
 		this.mCallout = callout;
@@ -695,7 +699,7 @@ public class DrawTool extends Subject {
 //		query.setWhere("NAME_CN='���ľ���' or NAME_CN='��������'");
 		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
 				SinoApplication.currentLayerUrl,
-				CommonData.TypeOperateFrameChoos);
+				CommonData.TypeOperateFrameChoos, mProgressDialog);
 		task.execute(query);
 
 		task.setQueryFinishListener(new OnQueryFinishListener() {
@@ -721,6 +725,7 @@ public class DrawTool extends Subject {
 	//					 sb.append("名字： "+name + " ; ");
 						drawHighLight4Query(graphic);
 					}
+					mProgressDialog.dismiss();
 					deactivate();
 					mCallback.setSearchData4Query(results);
 					// Toast.makeText(mapView.getContext(), sb.toString() ,

@@ -52,7 +52,16 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 		this.mContext = context;
 		this.mServicesUrl = url;
 		this.OperateType = operateType;
-		mProgressDialog = new ProgressDialog(mContext);
+//		mProgressDialog = new ProgressDialog(mContext);
+		mProgressDialog.setTitle(context.getString(R.string.search_loading));
+		mProgressDialog.setCancelable(false);
+	}
+	
+	public SearchQueryTask(Context context, String url, String operateType,ProgressDialog progressDialog) {
+		this.mContext = context;
+		this.mServicesUrl = url;
+		this.OperateType = operateType;
+		this.mProgressDialog = progressDialog;
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
 		mProgressDialog.setCancelable(false);
 	}
@@ -92,8 +101,9 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 	}
 	
 	protected void onPostExecute(FeatureSet results) {
-		mProgressDialog.dismiss();
+//		mProgressDialog.dismiss();
 		if (results == null) {
+		mProgressDialog.dismiss();
 			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
 			return;
 		}else{
