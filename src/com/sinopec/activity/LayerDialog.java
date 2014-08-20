@@ -1,16 +1,14 @@
 package com.sinopec.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -23,14 +21,12 @@ import android.widget.TextView;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.Layer;
 import com.esri.android.map.MapView;
-import com.esri.android.map.ags.ArcGISLayerInfo;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.OilGasData;
 
 @SuppressLint("NewApi")
 public class LayerDialog extends DialogFragment implements OnClickListener {
-	private String tag = "map";
 	int resID = R.layout.layout_layer;
 	Button mBtn1 = null;
 	Button mBtn2 = null;
@@ -42,19 +38,27 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private ArcGISTiledMapServiceLayer mapServiceLayer;
 	private GraphicsLayer drawLayer;
 
-	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
+//	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
 	private MyAdapter mOilGasAdapter;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(resID, null);
-
+		layerSatellite = mapView.getLayerByURL(SinoApplication.imageUrl);
+		layerGeographic = mapView.getLayerByURL(SinoApplication.genUrl);
+//		layerName = new String[6]; 
 		mBtn1 = (Button) view.findViewById(R.id.id_btn_layer_1);
 		mBtn2 = (Button) view.findViewById(R.id.id_btn_layer_2);
 		mBtn3 = (Button) view.findViewById(R.id.id_btn_layer_3);
 		mCover = (TextView) view.findViewById(R.id.layer_lstview_cover);
-
+		mCover.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				return true;
+			}
+		});
 		view.findViewById(R.id.id_btn_operator_1).setOnClickListener(this);
 		view.findViewById(R.id.id_btn_operator_2).setOnClickListener(this);
 		mBtn3 = (Button) view.findViewById(R.id.id_btn_layer_3);
@@ -66,23 +70,9 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mListView = (ListView) view.findViewById(R.id.id_lstview_layer_1);
 		mOilGasAdapter = new MyAdapter();
 		mListView.setAdapter(mOilGasAdapter);
-		initData();
-
 		return view;
 	}
-
-	private void initData() {
-//		layerInfos.removeAll(layerInfos);
-		layerInfos.clear();
-		ArcGISLayerInfo[] arc = mapServiceLayer.getAllLayers();
-		if(arc != null){
-			Log.d(tag, "---图层专题数量--onCreateView: "+arc.length);
-			for (int i = 0; i < arc.length; i++) {
-				layerInfos.add(arc[i]);
-			}
-		}
-	}
-
+	
 	public void setMapView(MapView mapView) {
 		this.mapView = mapView;
 	}
@@ -123,10 +113,11 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtn3.setOnClickListener(this);
 	}
 
+	
+	private Layer layerSatellite = null;
+	private Layer layerGeographic = null;
 	@Override
 	public void onClick(View arg0) {
-		Layer layerSatellite = mapView.getLayerByURL(SinoApplication.imageUrl);
-		Layer layerGeographic = mapView.getLayerByURL(SinoApplication.genUrl);
 		switch (arg0.getId()) {
 		case R.id.id_btn_layer_1:
 			executeLayerSatellite();
@@ -135,8 +126,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //					SinoApplication.imageUrl);
 //			mapView.addLayer(layerSatellite);
 //			addDrawLayer();
-			layerSatellite.setVisible(true);
-			layerGeographic.setVisible(false);
+//			layerSatellite.setVisible(true);
+//			layerGeographic.setVisible(false);
 			SinoApplication.layerName = SinoApplication.LNsatellite;
 			break;
 		case R.id.id_btn_layer_2:
@@ -145,15 +136,15 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //			ArcGISTiledMapServiceLayer layerGeographic = new ArcGISTiledMapServiceLayer(
 //					SinoApplication.genUrl);
 //			mapView.addLayer(layerGeographic);
-			layerSatellite.setVisible(false);
-			layerGeographic.setVisible(true);
+//			layerSatellite.setVisible(false);
+//			layerGeographic.setVisible(true);
 			SinoApplication.currentLayerUrl = SinoApplication.genUrl;
 			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
 		case R.id.id_btn_layer_3:
 			executeOilGas();
-			layerSatellite.setVisible(false);
-			layerGeographic.setVisible(true);
+//			layerSatellite.setVisible(false);
+//			layerGeographic.setVisible(true);
 //			mapView.removeAll();
 //			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
 //					SinoApplication.oilUrl);
@@ -161,6 +152,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //			mapView.addLayer(layerOilGas);
 //			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNoilGas;
+			
+		
 			break;
 
 		case R.id.id_btn_operator_1:
@@ -175,49 +168,54 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		}
 
 	}
-
+   
 	void showAlert() {
 		// Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
 	}
 
 	private void executeLayerGeographic() {
 		// executeLayer1();
-		mCover.setVisibility(View.VISIBLE);
-		mListView.setEnabled(false);
-		mBtn1.setSelected(false);
-		mBtn2.setSelected(true);
-		mBtn3.setSelected(false);
+//		mBtn1.setSelected(false);
+		if(mBtn2.isSelected()){
+			layerGeographic.setVisible(false);
+			mBtn2.setSelected(false);
+		}else{
+			layerGeographic.setVisible(true);
+			mBtn2.setSelected(true);
+		}
+//		mBtn3.setSelected(false);
 //		dismiss();
 
-	}
-
-	private void addDrawLayer() {
-		if (mapView.getLayerByID(drawLayer.getID()) != null) {
-			mapView.removeLayer(drawLayer);
-			mapView.addLayer(drawLayer);
-		} else {
-			mapView.addLayer(drawLayer);
-		}
 	}
 
 	private void executeOilGas() {
 //		mContaner.setVisibility(View.VISIBLE);
-		mCover.setVisibility(View.GONE);
-		mListView.setEnabled(true);
-		mBtn1.setSelected(false);
-		mBtn2.setSelected(false);
-		mBtn3.setSelected(true);
+//		mBtn1.setSelected(false);
+//		mBtn2.setSelected(false);
+		if(mBtn3.isSelected()){
+			mBtn3.setSelected(false);
+			mListView.setEnabled(false);
+			mCover.setVisibility(View.VISIBLE);
+		}else{
+			mBtn3.setSelected(true);
+			mListView.setEnabled(true);
+			mCover.setVisibility(View.GONE);
+		}
 
 	}
 
 	private void executeLayerSatellite() {
-		mCover.setVisibility(View.VISIBLE);
-		mListView.setEnabled(false);
 //		dismiss();
 		showAlert();
-		mBtn1.setSelected(true);
-		mBtn2.setSelected(false);
-		mBtn3.setSelected(false);
+		if(mBtn1.isSelected()){
+			layerSatellite.setVisible(false);
+			mBtn1.setSelected(false);
+		}else{
+			layerSatellite.setVisible(true);
+			mBtn1.setSelected(true);
+		}
+//		mBtn2.setSelected(false);
+//		mBtn3.setSelected(false);
 	}
 
 	class MyAdapter extends BaseAdapter {
@@ -238,7 +236,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView, ViewGroup parent) {
 			ViewHolder holder = new ViewHolder();
 			if (convertView == null) {
 				convertView = LayoutInflater.from(getActivity()).inflate(R.layout.layer_list_item, null);
@@ -259,7 +257,8 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			holder.mCBshow.setChecked(data.isVisible());
 			holder.mCBcur.setChecked(data.isChecked());
 			
-			holder.mName.setText(layerInfos.get(position).getName());
+			holder.mName.setText(data.getName());
+			holder.mName.setBackgroundColor(data.getColor());
 			
 			holder.mCBshow.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				
@@ -278,11 +277,19 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					String url = buttonView.getTag().toString();
+					OilGasData data = SinoApplication.mOilGasData.get(position);
+					String url4search = data.getSearchUrl();
+//					Log.d("map", " url: " + data.getUrl() + " name: " + data.getName() +" id: " + data.getId());
+					
+					
 					if (isChecked) {
-						Log.d("map", "buttonView.getTag(): " + buttonView.getTag());
+						Log.d("map", " 选中当前图层 url: " + url + " name: " + data.getName() +" id: " + data.getId());
+//						Log.d("map", "buttonView.getTag(): " + buttonView.getTag());
 //						mapView.removeAll();
 //						ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(url);
-						SinoApplication.currentLayerUrl = url;
+						SinoApplication.currentLayerUrl4Multi = data.getUrl();
+						SinoApplication.currentLayerUrl = url4search;
+						SinoApplication.mLayerName = data.getName();
 //						mapView.addLayer(layer);
 //							addDrawLayer();
 						resetCheckData(url, isChecked);
@@ -290,7 +297,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				}
 			});
 			
-//			盆地：http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer
+//			     盆地：http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer
 //				油藏：http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer
 //				气藏：http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer
 //				油田：http://202.204.193.201:6080/arcgis/rest/services/oilfields/MapServer

@@ -3,18 +3,19 @@ package com.sinopec.activity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ExpandableListView;
@@ -22,11 +23,15 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esri.core.tasks.ags.find.FindResult;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
+import com.sinopec.util.SimpleTableView;
 import com.sinopec.view.MyExpandableListAdapter;
 import com.sinopec.view.MyListAdapter;
 
@@ -108,12 +113,14 @@ public class SelectActivity extends Activity {
 				if(groupName.contains("基础属性")){
 					StringBuilder sb = new StringBuilder();
 					if(SinoApplication.findResult != null){
-						getFindResultData(sb);
+//						getFindResultData(sb);
+						addBasePropertyTable(SinoApplication.findResult.getAttributes().entrySet());
 					}else if(SinoApplication.identifyResult != null){
-						getIdentifyResultData(sb);
+						addBasePropertyTable(SinoApplication.identifyResult.getAttributes().entrySet());
+//						getIdentifyResultData(sb);
+//						showBaseProperty(sb.toString());
 					}
 					
-					showBaseProperty(sb.toString());
 				}else{
 					for (int i = 0; i < 20; i++) {
 						rightList.add(childs.get(groupPosition).get(childPosition)
@@ -237,6 +244,26 @@ public class SelectActivity extends Activity {
 		mTVBaseProperty.setGravity(Gravity.CENTER);
 		mContentLayout.addView(mTVBaseProperty);
 		
+	}
+	
+	private void addBasePropertyTable(Set<Entry<String, Object>> ents) {
+		SimpleTableView stv1=new SimpleTableView(this);
+		ArrayList<String> keyList = new ArrayList<String>();
+		ArrayList<String> valList = new ArrayList<String>();
+		for (Entry<String, Object> ent : ents) {
+			keyList.add(ent.getKey());
+			valList.add((String) ent.getValue());
+			stv1.AddRow(new String[]{ent.getKey(),(String) ent.getValue()});
+		}
+//		stv1.AddRow(new Object[]{"1",BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)});
+//		stv1.AddRow(new String[]{"12","1"});
+//		stv1.AddRow(new String[]{"12222","1"});
+		//stv1.m_LineColor=Color.RED;
+		
+		LayoutParams lp= new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT); 
+		lp.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);		
+		stv1.setLayoutParams(lp);
+		mContentLayout.addView(stv1);
 	}
 	
 	private void getFindResultData(StringBuilder sb) {

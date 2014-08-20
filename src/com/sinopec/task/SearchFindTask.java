@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.esri.core.tasks.ags.find.FindParameters;
 import com.esri.core.tasks.ags.find.FindResult;
@@ -41,6 +42,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 		this.mSearchViewGroup = viewGroup;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
+		mProgressDialog.setCancelable(false);
 		this.mServicesUrl = servicesUrl;
 	}
 	
@@ -51,6 +53,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 		this.mSearchViewGroup = viewGroup;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
+		mProgressDialog.setCancelable(false);
 		this.mServicesUrl = servicesUrl;
 	}
 	
@@ -75,6 +78,8 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	protected void onPostExecute(List<FindResult> results) {
 		mProgressDialog.dismiss();
 		if (results == null) {
+			mCallBack.setData(null);
+			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -83,21 +88,20 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 			mAdapter.notifyDataSetChanged();
 			mSearchViewGroup.setVisibility(View.VISIBLE);
 			mCallBack.setData(results.get(0));
+			
+		}else if(results.size() == 0){
+			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+			mCallBack.setData(null);
 		}else{
+			mCallBack.setData(null);
 			updateData(results);
 		}
-		// TODO:
-		// gLayer.removeAll();
-		// Geometry geom = results[index].getGeometry();
-		// Graphic pGraphic = new Graphic(geom, selectSym);
-		// gLayer.addGraphic(pGraphic);
-		// TODO:
 	}
 
 	@Override
 	protected void onPreExecute() {
 		mFindTask = new FindTask(mServicesUrl);
-		Log.d("search", "onPostExecute..........模糊擦鞋.....url: " + mServicesUrl);
+		Log.d("searchtask", "onPostExecute..........SearchFindTask.....url: " + mServicesUrl);
 //		mFindTask = new FindTask(
 //				"http://10.225.14.201:6080/arcgis/rest/services/marine_oil/MapServer");
 //				"http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer");

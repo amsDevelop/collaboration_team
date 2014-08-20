@@ -107,7 +107,7 @@
         <ListView
             android:id="@+id/id_lstview_layer_1"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             android:layout_gravity="center"
             android:cacheColorHint="#00000000"
             android:paddingLeft="12dp"
@@ -116,7 +116,7 @@
         <TextView
             android:id="@+id/layer_lstview_cover"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             android:layout_gravity="center"
             android:background="@drawable/layer_cover_bg"
             android:gravity="center"

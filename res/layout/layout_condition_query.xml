@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/text_mid_size"
-            android:text="属性查询" />
+            android:text="定制查询" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,6 +47,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" />
     </ScrollView>
-   
+           <Button
+            android:id="@+id/id_btn_condition_query_confirm"
+            style="@style/text_mid_size"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/confirm" />
 
 </LinearLayout>

@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.esri.android.map.Callout;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
@@ -39,21 +40,27 @@ public class SearchIdentifyTask extends
 	private String mServicesUrl;
 	private Button mTitle;
 	private OnFinishListener finishListener;
-	private ImageView mImageView;
-	private Animation mAnimation;
 	private String OperateType = CommonData.TypeOperateLongPress;
 	private GraphicsLayer mDrawLayer4HighLight;
-	
+	private Callout mCallout;
 	public SearchIdentifyTask(Context context, Point anchorPoint, String url,
-		Button title, ImageView imageAnim, Animation animation, String operateType, GraphicsLayer drawLayer) {
+		Button title, String operateType, GraphicsLayer drawLayer, Callout callout) {
 		this.mContext = context;
 		this.mAnchor = anchorPoint;
 		this.mServicesUrl = url;
-		this.mImageView = imageAnim;
-		this.mAnimation = animation;
 		this.mTitle = title;
 		this.OperateType = operateType;
+		this.mCallout = callout;
 		this.mDrawLayer4HighLight = drawLayer;
+		mProgressDialog = new ProgressDialog(mContext);
+		mProgressDialog.setTitle(context.getString(R.string.search_loading));
+		mProgressDialog.setCancelable(false);
+	}
+	
+	public SearchIdentifyTask(Context context, String url, String operateType) {
+		this.mContext = context;
+		this.mServicesUrl = url;
+		this.OperateType = operateType;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
 		mProgressDialog.setCancelable(false);
@@ -67,15 +74,6 @@ public class SearchIdentifyTask extends
 
 	public void setFinishListener(OnFinishListener finishListener) {
 		this.finishListener = finishListener;
-	}
-
-	public SearchIdentifyTask(Context context, String url, String operateType) {
-		this.mContext = context;
-		this.mServicesUrl = url;
-		this.OperateType = operateType;
-		mProgressDialog = new ProgressDialog(mContext);
-		mProgressDialog.setTitle(context.getString(R.string.search_loading));
-		mProgressDialog.setCancelable(false);
 	}
 
 	@Override
@@ -104,28 +102,30 @@ public class SearchIdentifyTask extends
 			return;
 		}
 		
-//		Log.d(tag, "onPostExecute......................" + results.length);
 
 		if(results.length > 0){
 			if(CommonData.TypeOperateLongPress.equals(OperateType)){
-				mImageView.startAnimation(mAnimation);
-				SinoApplication.identifyResult = results[0];
-				Map<String, Object> attributes = results[0].getAttributes();
-				String name = (String) attributes.get("NAME_CN");
-				if(TextUtils.isEmpty(name)){
-					name = results[0].getValue().toString();
+				Log.d("searchtask", "SearchIdentifyTask  onPostExecute......长按查询结果个数................" + results.length);
+				IdentifyResult result = filterLongPressResults(results);
+				if(result == null){
+					Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+				}else{
+					if (!mCallout.isShowing()){
+						mCallout.show();
+					}
+					
+					SinoApplication.identifyResult = result;
+					String name = SinoApplication.getIdentifyResultName(result, result.getLayerName());
+					mTitle.setText(name);
+					
+					//绘制高亮区域
+					if(mDrawLayer4HighLight != null){
+						Geometry geometry = result.getGeometry();
+						SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+						Graphic resultLocation = new Graphic(geometry, resultSymbol);
+						mDrawLayer4HighLight.addGraphic(resultLocation);
+					}
 				}
-
-				mTitle.setText(name);
-				
-				//绘制高亮区域
-				if(mDrawLayer4HighLight != null){
-					Geometry geometry = results[0].getGeometry();
-					SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
-					Graphic resultLocation = new Graphic(geometry, resultSymbol);
-					mDrawLayer4HighLight.addGraphic(resultLocation);
-				}
-				
 			}else if(CommonData.TypeOperateFrameChoos.equals(OperateType)){
 				if(finishListener != null){
 					ArrayList<IdentifyResult> resultList = new ArrayList<IdentifyResult>();
@@ -163,10 +163,24 @@ public class SearchIdentifyTask extends
 	@Override
 	protected void onPreExecute() {
 		mIdentifyTask = new IdentifyTask(mServicesUrl);
-//		Log.d(tag, "onPostExecute...............查询当前图层的url: " + mServicesUrl);
+		Log.d("searchtask", "onPostExecute......SearchIdentifyTask........当前图层的url: " + mServicesUrl);
 //				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
 //				"http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer");
 		mProgressDialog.show();
+	}
+	
+	private IdentifyResult filterLongPressResults(IdentifyResult[] results) {
+		IdentifyResult result = null;
+		for (int i = 0; i < results.length; i++) {
+			IdentifyResult temp = results[i];
+			if(temp != null){
+				if(temp.getLayerName().equals(SinoApplication.mLayerName)){
+					result = temp;
+					break;
+				}
+			}
+		}
+		return result;
 	}
 
 }

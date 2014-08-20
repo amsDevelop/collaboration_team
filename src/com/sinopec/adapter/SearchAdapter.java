@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,18 +64,32 @@ public class SearchAdapter extends BaseAdapter {
 
 		HashMap<String, Object> map = mList.get(position);
 		FindResult result = (FindResult) map.get("FindResult");
+		String layerName = "";
 		IdentifyResult identifyResult = (IdentifyResult) map.get("IdentifyResult");
 		String name = "";
-		if(result == null){
-			name = SinoApplication.getIdentifyResultName(identifyResult);
+		Graphic graphic = (Graphic) map.get("Graphic");
+		if(identifyResult != null){
+			layerName = identifyResult.getLayerName();
+		}
+		Log.d("map", "00000000000" +(graphic != null));
+		if(result == null && graphic == null){
+			name = SinoApplication.getIdentifyResultNameByType(identifyResult, layerName);
+		}else if(graphic != null){
+			name = (String) graphic.getAttributes().get("OBJ_NAME_C");
+			Log.d("map", "11111111 name: " + name);
 		}else{
-			name = result.getValue();
+//			name = SinoApplication.getFindResultNameByType(result, layerName);
+			name = (String) result.getAttributes().get("OBJ_NAME_C");
+			layerName = result.getLayerName();
 		}
 //		Geometry geometry = result.getGeometry();
 //		Map<String, Object> attributes = result.getAttributes();
 //		LocatorGeocodeResult result = (LocatorGeocodeResult) map.get("LocatorGeocodeResult");
 //		String name = result.getAddress();
-		holder.mName.setText(name);
+		if(TextUtils.isEmpty(layerName)){
+			layerName = SinoApplication.mLayerName;
+		}
+		holder.mName.setText(name+" ["+layerName+"]");
 		return convertView;
 	}
 

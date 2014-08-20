@@ -3,8 +3,8 @@
 	android:oneshot="true"
 	>
 	<translate
-		android:fromYDelta="0.0" 
-		android:toYDelta="1.0" 
-		android:duration="1000" 
+		android:fromYDelta="100%p" 
+		android:toYDelta="0" 
+		android:duration="500" 
 		/>
 </set>
