@@ -352,13 +352,15 @@ public class DrawTool extends Subject {
 				Point point = mapView.toMapPoint(to.getX(), to.getY());
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
-//					String sArea = getAreaString(envelope.calculateArea2D());
-//					Toast.makeText(mapView.getContext(), "总面积： " + sArea,
-//							Toast.LENGTH_SHORT).show();
-					String sArea = getAreaString(envelope.calculateArea2D());
-					Toast.makeText(mapView.getContext(), sArea, Toast.LENGTH_SHORT).show();
 					
-//					queryAttribute4Query(envelope);
+					SpatialReference sr = mapView.getSpatialReference();
+					SpatialReference webMercator = SpatialReference.create(102100);
+					Envelope newPoly = (Envelope) GeometryEngine.project(envelope, sr,webMercator);	
+					
+					String sArea = getAreaString(newPoly.calculateArea2D());
+					Toast.makeText(mapView.getContext(), sArea+"", Toast.LENGTH_SHORT).show();
+					
+					queryAttribute4Query(envelope);
 					
 					break;
 				case DrawTool.FREEHAND_POLYGON:

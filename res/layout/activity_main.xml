@@ -234,6 +234,7 @@
                             iconbutton:icon="@drawable/menu_tool"
                             iconbutton:mtext="@string/btn_tool"
                             iconbutton:relation="icon_right"
+                            android:focusableInTouchMode="true"
                             iconbutton:text_size="16sp" />
 
                         <com.sinopec.view.MenuButton
@@ -242,6 +243,7 @@
                             iconbutton:icon="@drawable/menu_mine"
                             iconbutton:mtext="@string/btn_search"
                             iconbutton:relation="icon_right"
+                            android:focusableInTouchMode="true"
                             iconbutton:text_size="16sp" />
 
                         <com.sinopec.view.MenuButton

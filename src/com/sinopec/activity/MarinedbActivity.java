@@ -2,9 +2,8 @@ package com.sinopec.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,7 +14,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,19 +22,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -54,21 +50,15 @@ import com.esri.android.map.ags.ArcGISFeatureLayer.Options;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 import com.esri.android.map.event.OnLongPressListener;
 import com.esri.android.map.event.OnSingleTapListener;
-import com.esri.android.map.event.OnStatusChangedListener;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
-import com.esri.core.geometry.Polygon;
 import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.SimpleFillSymbol;
-import com.esri.core.symbol.SimpleMarkerSymbol;
-import com.esri.core.symbol.TextSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
-import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
-import com.lenovo.nova.util.slog;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
@@ -384,7 +374,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						callout.setCoordinates(anchorPt);
 						if (!callout.isShowing())
 							callout.show();
-						callout.refresh();
+//						callout.refresh();
 //						return true;
 					}// onLongPress
 				});
@@ -446,6 +436,18 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			}
 		});
 		
+		mMenuViewTool.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+			    
+				Log.v("mandy", "ontouch: " +  v.isFocused());
+				
+//				v.setSelected(true);
+				return false;
+			}
+		});
+		
 		mMenuViewSearch = (MenuButton) findViewById(R.id.menuview_search);
 		mMenuViewSearch.setOnClickListener(new OnClickListener() {
 			
@@ -457,6 +459,18 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				ChildrenMenuDataUtil.setSearchChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(7);
 				setGridView(list, arg0);
+			}
+		});
+		
+		mMenuViewSearch.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+			    
+				Log.v("mandy", "ontouch: " +  v.isSelected());
+				
+//				v.setSelected(true);
+				return false;
 			}
 		});
 
@@ -956,7 +970,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 
 	private void setGridView(ArrayList<HashMap<String, Object>> list, View view) {
-		setMenuButtonsStatus(view.getId());
+//		setMenuButtonsStatus(view.getId());
 		mAdapter.notifyDataSetChanged();
 		// showAndHideGridView();
 		if (mLastClickedView == view) {
