@@ -241,7 +241,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 		private void initFirstValue(Context context) {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
-					android.R.layout.simple_spinner_item, new String[] { "或者",
+					getAdapterLayoutID(), new String[] { "或者",
 							"并且" });
 			mSpinnerFisrt.setAdapter(adapter);
 
@@ -256,7 +256,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 				adapterGeology.notifyDataSetChanged();
 			} else {
 				adapterGeology = new ArrayAdapter<String>(context,
-						android.R.layout.simple_spinner_item, str);
+						getAdapterLayoutID(), str);
 				mSpinnerGeology.setAdapter(adapterGeology);
 			}
 		}
@@ -271,9 +271,13 @@ public class ConditionQuery extends BaseDialogFragment implements
 				adapterCondition.notifyDataSetChanged();
 			} else {
 				adapterCondition = new ArrayAdapter<String>(context,
-						android.R.layout.simple_spinner_item, str);
+						getAdapterLayoutID(), str);
 				mSpinnerCondition.setAdapter(adapterCondition);
 			}
+		}
+
+		private int getAdapterLayoutID() {
+			return R.layout.adapter_layout_spinner;
 		}
 
 		private void initConditiontValue(Context context) {
@@ -290,7 +294,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 				adapterConditionValue.notifyDataSetChanged();
 			} else {
 				adapterConditionValue = new ArrayAdapter<String>(context,
-						android.R.layout.simple_spinner_item, str);
+						getAdapterLayoutID(), str);
 				mSpinnerConditionValue.setAdapter(adapterConditionValue);
 			}
 
