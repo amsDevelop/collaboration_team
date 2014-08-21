@@ -489,10 +489,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //				ChildrenMenuDataUtil.setCompareChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 //				mGridView.setNumColumns(1);
 //				setGridView(list, arg0);
-				if(SinoApplication.mResultList4Compared == null || SinoApplication.mResultList4Compared.size() == 0){
+				if((SinoApplication.mResultList4Compared == null || SinoApplication.mResultList4Compared.size() == 0)){
 					Toast.makeText(mContext, getString(R.string.tip_no_objects), Toast.LENGTH_SHORT).show();
 				}else{
 					showWindow4Compared(SinoApplication.mResultList4Compared);
+				}
+				if(SinoApplication.mFeatureSet4Compared == null){
+					Toast.makeText(mContext, getString(R.string.tip_no_objects), Toast.LENGTH_SHORT).show();
+				}else{
+					showWindow4Compared4FeatureSet(SinoApplication.mFeatureSet4Compared);
 				}
 			}
 		});
@@ -945,6 +950,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
 		
 		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
+//		popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
+	}
+	
+	private void showWindow4Compared4FeatureSet(FeatureSet featureset) {
+		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
+		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
+		
+		SinoUtil.showWindow4Compared4FeatureSet(mContext, popupWindow, mBaseLayout, featureset);
 //		popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
 	}
 

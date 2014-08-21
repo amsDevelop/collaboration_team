@@ -16,6 +16,7 @@ import com.esri.core.map.Graphic;
 import com.esri.core.tasks.ags.query.Query;
 import com.esri.core.tasks.ags.query.QueryTask;
 import com.sinopec.activity.R;
+import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
 
 public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
@@ -102,8 +103,9 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 	
 	protected void onPostExecute(FeatureSet results) {
 //		mProgressDialog.dismiss();
+		SinoApplication.mFeatureSet4Compared = results;
 		if (results == null) {
-		mProgressDialog.dismiss();
+			mProgressDialog.dismiss();
 			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
 			return;
 		}else{

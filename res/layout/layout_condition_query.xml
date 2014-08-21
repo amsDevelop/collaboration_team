@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white"
+    android:background="@drawable/layer_bg"
     android:orientation="vertical"
     android:paddingBottom="10dp"
     android:paddingLeft="15dp"
@@ -10,7 +10,7 @@
     android:paddingTop="10dp" >
 
     <LinearLayout
-        android:layout_width="800dip"
+        android:layout_width="1000dip"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 

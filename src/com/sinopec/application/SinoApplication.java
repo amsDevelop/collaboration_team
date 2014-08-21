@@ -94,6 +94,10 @@ public class SinoApplication extends Application {
 	 */
 	public static ArrayList<IdentifyResult> mResultList4Compared = new ArrayList<IdentifyResult>();
 	/**
+	 * 对比用的集合
+	 */
+	public static FeatureSet mFeatureSet4Compared = null;
+	/**
 	 * 获得IdentifyResult中地理元素的名字
 	 * @param result
 	 * @return
