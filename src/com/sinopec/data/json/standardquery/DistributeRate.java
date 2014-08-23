@@ -7,7 +7,7 @@ import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
 
 /**
- * 2.ȫ���������̼�����Ҳ�ϵ������ռ��������ܴ�������ֲ�
+ * 2.全球含油气盆地碳酸盐岩层系油气储量占盆地油气总储量比例分布
  * @author liuzhaodong
  */
 public class DistributeRate extends Bean{
@@ -23,19 +23,19 @@ public class DistributeRate extends Bean{
 	
 	public class RateForOilAndBasin extends Bean{
 		/**
-		 * �ܴ����Ҳ㴢��
+		 * 总储量岩层储量
 		 */
 		@JsonFieldName("ZCLYCCL")
 		private int allStorage;
 		
 		/**
-		 *  ̼�������Ҳ㴢��
+		 *  碳酸盐岩岩层储量
 		 */
 		@JsonFieldName("TSYYCCL")
 		private int storage2;
 		
 		/**
-		 * ������ر���
+		 * 所属盆地编码
 		 */
 		@JsonFieldName("SSPDBM")
 		private long codeBelongToBasin;

@@ -7,7 +7,7 @@ import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
 
 /**
- * 4.�ֲ�ϵȫ����̼��������Դ�ҷֲ�
+ * 五、统计
  * @author liuzhaodong
  */
 public class StatisticsValue extends Bean{
@@ -23,39 +23,40 @@ public class StatisticsValue extends Bean{
 	
 	public class DistributeChild extends Bean{
 		/**
-		 * ,		--���
-		LJYDZCL,		--�ۼ��͵��ʴ���
-		LJQDZCL,		--�ۼ�����ʴ���
-		LJNXYDZCL,		--�ۼ������͵��ʴ���
-		BZ		--��ע
+		 * ,		
+			ND,		--年度
+LJYDZCL,		--累计油地质储量
+LJQDZCL,		--累计气地质储量
+LJNXYDZCL,		--累计凝析油地质储量
+BZ		--备注
 
 		 */
 		
 		
 		/**
-		 * ���
+		 * 年度
 		 */
 		@JsonFieldName("ND")
 		private long year;
 		/**
-		 * �ۼ��͵��ʴ���
+		 * 累计油地质储量
 		 */
 		@JsonFieldName("LJYDZCL")
 		private double storage;
 		
 		/**
-		 * �ۼ�����ʴ���
+		 * 累计气地质储量
 		 */
 		@JsonFieldName("LJQDZCL")
 		private double storage1; 
 		/**
-		* �ۼ������͵��ʴ���
+		* 累计凝析油地质储量�
 		*/
 		@JsonFieldName("LJNXYDZCL")
 		private double storage2; 
 
 		/**
-		 * ��ע
+		 * 备注ע
 		 */
 		@JsonFieldName("BZ")
 		private String memo;

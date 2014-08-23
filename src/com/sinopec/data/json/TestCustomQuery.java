@@ -25,14 +25,14 @@ import com.sinopec.data.json.standardquery.DistributeRate;
 import com.sinopec.data.json.standardquery.DistributeRateResource;
 
 /**
- * �����Ʋ�ѯ
+ * ．定制查询
  * @author liuzhaodong
  *
  */
 public class TestCustomQuery extends TestQueryGuDing {
 
 	/**
-	 * 1.���
+	 * 1.盆地
 	 */
 	public void testCustomBasin() {
 		String key = "cjtx=2";
@@ -53,7 +53,7 @@ public class TestCustomQuery extends TestQueryGuDing {
 		System.out.println(instance.mChilds);
 	}
 	/**
-	 * 2)	�����
+	 * 2)	油气田：
 	 */
 	public void testCustomOilTian() {
 		String key = "mblx=1";
@@ -73,7 +73,7 @@ public class TestCustomQuery extends TestQueryGuDing {
 		System.out.println(instance.mChilds);
 	}
 	/**
-	 * 3)	����أ�
+	 * 3)	油气藏：
 	 */
 	public void testCustomOilCang() {
 		String key = "mblx=2";
