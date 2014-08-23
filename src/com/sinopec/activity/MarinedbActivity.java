@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -16,6 +15,8 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,8 +28,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnHoverListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -42,7 +41,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,9 +55,7 @@ import com.esri.android.map.ags.ArcGISFeatureLayer.Options;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 import com.esri.android.map.event.OnLongPressListener;
 import com.esri.android.map.event.OnSingleTapListener;
-import com.esri.android.map.event.OnStatusChangedListener;
 import com.esri.android.map.event.OnZoomListener;
-import com.esri.android.map.event.OnStatusChangedListener.STATUS;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
@@ -69,9 +65,7 @@ import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
-import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
-import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
@@ -83,8 +77,6 @@ import com.sinopec.data.json.Constant;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
 import com.sinopec.data.json.standardquery.DistributeJingRockYuanYan;
 import com.sinopec.data.json.standardquery.DistributeRate;
-import com.sinopec.data.json.standardquery.DistributeRateResource;
-import com.sinopec.data.json.standardquery.BasinBelonToRoot.BasinBelongTo;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
@@ -131,7 +123,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Button mBtnCancelChoose;
 	private ImageButton mBtnScaleSmall;
 	private ImageButton mBtnScaleBig;
-	private Map<String, View> menuStatus = new HashMap<String, View>();
+//	private Map<String, View> menuStatus = new HashMap<String, View>();
 	/**
 	 * 子菜单
 	 */
@@ -276,6 +268,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		};
 
 	};
+
+    private Bitmap mBitmapPaopaobg;
+    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -455,13 +450,18 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		statistics.setOnClickListener(this);
 		doc.setOnClickListener(this);
 
-		// imageAnim = (ImageView) findViewById(R.id.poiAnim);
-		// imageAnim.setVisibility(View.INVISIBLE);
+//		imageAnim = (ImageView) findViewById(R.id.poiAnim);
+//		imageAnim.setVisibility(View.INVISIBLE);
+		mBitmapPaopaobg = BitmapFactory.decodeResource(getResources(), R.drawable.paopao_bg);
+
 		callout = map.getCallout();
 		callout.setContent(popView);
 		callout.setStyle(R.layout.calloutwindow);
 		callout.setMaxWidth(SinoApplication.screenWidth - 10);
 		callout.setMaxHeight(SinoApplication.screenHeight);
+		callout.setOffset(0, -mBitmapPaopaobg.getHeight()/2);
+
+		map.setClickable(true);// 设置地图可点击
 		map.setClickable(false);// 设置地图可点击
 
 		MarinedbActivity.this.map
@@ -501,10 +501,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						}
 
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
-						Log.d("map",
-								"-----长按------Long--x:" + x + "  y: " + y
-										+ " -toMapPoint--x:" + pt.getX()
-										+ "  y: " + pt.getY());
+//						Log.d("map",
+//								"-----长按------Long--x:" + x + "  y: " + y
+//										+ " -toMapPoint--x:" + pt.getX()
+//										+ "  y: " + pt.getY());
 						x1 = pt.getX();
 						y1 = pt.getY();
 						name2 = "未知地名";
@@ -588,6 +588,50 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mEditText = (Button) findViewById(R.id.edittext_search);
 		mEditText.setOnClickListener(this);
 		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
+		mMenuViewTool.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if(drawTool.isSelectDraw){
+					Boolean[] clickTag = new Boolean[] { false, false };
+					if(mTag4OperateInLine){
+						clickTag = new Boolean[] { true, false };
+					}else if(mTag4ToolDistanceOk){
+						clickTag = new Boolean[] { true, false };
+					}else if(mTag4ToolAreaOk){
+						clickTag = new Boolean[] { false, true };
+					}
+					ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+					mGridView.setNumColumns(2);
+					setGridView(toolist, arg0);
+				}else{
+					Boolean[] clickTag = new Boolean[] { false, false };
+					String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
+					if(mTag4OperateInLine){
+						clickTag = new Boolean[] { true, false };
+					}else if(mTag4ToolDistanceOk){
+						clickTag = new Boolean[] { true, false };
+					}else if(mTag4ToolAreaOk){
+						clickTag = new Boolean[] { false, true };
+					}
+					ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, name4count, mChildMenuSplitNumber);
+					mGridView.setNumColumns(2);
+					setGridView(toolist, arg0);
+				}
+			}
+		});
+		
+		mMenuViewSearch = (MenuButton) findViewById(R.id.menuview_search);
+		mMenuViewSearch.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true };
+				ChildrenMenuDataUtil.setSearchChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+				mGridView.setNumColumns(7);
+				setGridView(toolist, arg0);
+			}
+		});
 		mMenuViewTool.setOnClickListener(this);
 
 		mMenuViewSearch = (MenuButton) findViewById(R.id.menuview_search);
@@ -1015,9 +1059,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 	}
 
-	private View view;
 	private View mLastClickedView;
-	private ArrayList<HashMap<String, Object>> mList4Menu = new ArrayList<HashMap<String, Object>>();
 	private ListView mMenuListView;
 
 	private void initPopWindowData(ArrayList<HashMap<String, Object>> list) {
@@ -1126,25 +1168,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		Log.d("sinopec", "-------点击p: " + position + "  tag: " + tag);
 		if ("toolDistance".equals(tag)) {
-			// ArrayList<HashMap<String, Object>> list = new
-			// ArrayList<HashMap<String, Object>>();
-			// String[] name = {"KM", "M"};
-			// for (int i = 0; i < name.length; i++) {
-			// HashMap<String, Object> distancMap = new HashMap<String,
-			// Object>();
-			// distancMap.put("name", name[i]);
-			// distancMap.put("tag", name[i]);
-			// list.add(distancMap);
-			// }
-			// // 创建一个PopuWidow对象
-			// LayoutInflater layoutInflater = (LayoutInflater)
-			// getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			// mBaseLayout = (ViewGroup)
-			// layoutInflater.inflate(R.layout.view_menu_popwindow, null);
-			// popupWindow = new PopupWindow(mBaseLayout, 600, 400);
-			//
-			// SinoUtil.showWindow(mContext, popupWindow, mBaseLayout,
-			// mMenuListView, mMenuAdapter, this, list);
 
 			hidePopupWindow4CountDistanceArea();
 			drawTool.calculateAreaAndLength("KM");
@@ -1263,22 +1286,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mToolBar.startAnimation(aniDown);
 		mGridViewLayout.setVisibility(View.VISIBLE);
 
-		// showAndHideGridView();
-		// if (mLastClickedView == view) {
-		// mGridViewLayout.setVisibility(View.INVISIBLE);
-		// mLastClickedView = null;
-		// Log.d(tag, "is view "+ mLastClickedView);
-		// } else {
-		// mGridViewLayout.setVisibility(View.VISIBLE);
-		// mLastClickedView = view;
-		// Log.d(tag, "not view "+ mLastClickedView);
-		// }
-
-		// if (mLastClickedView == view) {
-		// mGridViewLayout.setVisibility(View.INVISIBLE);
-		// } else {
-		// mGridViewLayout.setVisibility(View.VISIBLE);
-		// }
 	}
 
 	private void hidePopupWindow() {
@@ -1319,16 +1326,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			super(context, view);
 
 		}
-
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			// Log.d(tag, "----MapTouchListener---onTouch--- ");
-			if (mGridViewLayout.getVisibility() == View.VISIBLE)
-				mGridViewLayout.setVisibility(View.GONE);
-			return super.onTouch(v, event);
-		}
-
-		@Override
+		 @Override
+		 public boolean onTouch(View v, MotionEvent event) {
+//			 Log.d(tag, "----MapTouchListener---onTouch--- ");
+//			 if(mGridViewLayout.getVisibility() == View.VISIBLE)
+//					mGridViewLayout.setVisibility(View.GONE);
+		    return super.onTouch(v, event);
+		 }
+		 
+		 @Override
 		public boolean onDoubleTap(MotionEvent point) {
 			Log.d(tag, "----MapTouchListener---onDoubleTap--- ");
 			if (mFragmentLayout.getVisibility() == View.VISIBLE) {
@@ -1409,6 +1415,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void setData(Object data) {
+		mDrawLayer4HighLight.removeAll();
 		closeKeyboard();
 		if (data == null) {
 			return;
@@ -1429,9 +1436,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		Envelope envelope = new Envelope();
 		geometry.queryEnvelope(envelope);
 		Point point = envelope.getCenter();
-		// Log.d(tag, "-------查询出的坐标  x: "+point.getX()+"  y: "+point.getY());
-		map.zoomToScale(point, 5000000);
-
+//		Log.d(tag, "-------查询出的坐标  x: "+point.getX()+"  y: "+point.getY());
+		//正确的比例尺
+		map.setExtent(geometry, 0);
 		// 绘制高亮区域
 		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
 		Graphic resultLocation = new Graphic(geometry, resultSymbol);

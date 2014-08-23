@@ -28,9 +28,9 @@ import com.sinopec.common.OilGasData;
 @SuppressLint("NewApi")
 public class LayerDialog extends DialogFragment implements OnClickListener {
 	int resID = R.layout.layout_layer;
-	Button mBtn1 = null;
-	Button mBtn2 = null;
-	Button mBtn3 = null;
+	Button mBtnSatellite = null;
+	Button mBtnGeographic = null;
+	Button mBtnOilGas = null;
 	private ViewGroup mContaner;
 	private ListView mListView;
 	private TextView mCover;
@@ -47,10 +47,14 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		View view = inflater.inflate(resID, null);
 		layerSatellite = mapView.getLayerByURL(SinoApplication.imageUrl);
 		layerGeographic = mapView.getLayerByURL(SinoApplication.genUrl);
-//		layerName = new String[6]; 
-		mBtn1 = (Button) view.findViewById(R.id.id_btn_layer_1);
-		mBtn2 = (Button) view.findViewById(R.id.id_btn_layer_2);
-		mBtn3 = (Button) view.findViewById(R.id.id_btn_layer_3);
+		mBtnSatellite = (Button) view.findViewById(R.id.id_btn_layer_1);
+		mBtnGeographic = (Button) view.findViewById(R.id.id_btn_layer_2);
+		mBtnOilGas = (Button) view.findViewById(R.id.id_btn_layer_3);
+		
+		mBtnSatellite.setSelected(SinoApplication.mLayerDataArray[0]);
+		mBtnGeographic.setSelected(SinoApplication.mLayerDataArray[1]);
+		mBtnOilGas.setSelected(SinoApplication.mLayerDataArray[2]);
+		
 		mCover = (TextView) view.findViewById(R.id.layer_lstview_cover);
 		mCover.setOnTouchListener(new OnTouchListener() {
 			
@@ -61,11 +65,9 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		});
 		view.findViewById(R.id.id_btn_operator_1).setOnClickListener(this);
 		view.findViewById(R.id.id_btn_operator_2).setOnClickListener(this);
-		mBtn3 = (Button) view.findViewById(R.id.id_btn_layer_3);
 
 		mContaner = (ViewGroup) view
 				.findViewById(R.id.id_llaout_layer_container);
-//		mContaner.setVisibility(View.GONE);
 		mCover.setVisibility(View.VISIBLE);
 		mListView = (ListView) view.findViewById(R.id.id_lstview_layer_1);
 		mOilGasAdapter = new MyAdapter();
@@ -95,22 +97,22 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	public void onResume() {
 		super.onResume();
 //		Log.d(tag, "-----onResume: "+SinoApplication.layerName);
-		if(SinoApplication.LNsatellite.equals(SinoApplication.layerName)){
-			executeLayerSatellite();
-		}else if(SinoApplication.LNgeographic.equals(SinoApplication.layerName)){
-			executeLayerGeographic();
-		}else{
-			executeOilGas();
-		}
+//		if(SinoApplication.LNsatellite.equals(SinoApplication.layerName)){
+//			executeLayerSatellite();
+//		}else if(SinoApplication.LNgeographic.equals(SinoApplication.layerName)){
+//			executeLayerGeographic();
+//		}else{
+//			executeOilGas();
+//		}
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		mBtn1.setOnClickListener(this);
-		mBtn2.setOnClickListener(this);
-		mBtn3.setOnClickListener(this);
+		mBtnSatellite.setOnClickListener(this);
+		mBtnGeographic.setOnClickListener(this);
+		mBtnOilGas.setOnClickListener(this);
 	}
 
 	
@@ -121,36 +123,16 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		switch (arg0.getId()) {
 		case R.id.id_btn_layer_1:
 			executeLayerSatellite();
-//			mapView.removeAll();
-//			ArcGISTiledMapServiceLayer layerSatellite = new ArcGISTiledMapServiceLayer(
-//					SinoApplication.imageUrl);
-//			mapView.addLayer(layerSatellite);
-//			addDrawLayer();
-//			layerSatellite.setVisible(true);
-//			layerGeographic.setVisible(false);
 			SinoApplication.layerName = SinoApplication.LNsatellite;
 			break;
 		case R.id.id_btn_layer_2:
 			executeLayerGeographic();
-//			mapView.removeAll();
-//			ArcGISTiledMapServiceLayer layerGeographic = new ArcGISTiledMapServiceLayer(
-//					SinoApplication.genUrl);
-//			mapView.addLayer(layerGeographic);
-//			layerSatellite.setVisible(false);
-//			layerGeographic.setVisible(true);
 			SinoApplication.currentLayerUrl = SinoApplication.genUrl;
 			SinoApplication.layerName = SinoApplication.LNgeographic;
 			break;
 		case R.id.id_btn_layer_3:
 			executeOilGas();
-//			layerSatellite.setVisible(false);
-//			layerGeographic.setVisible(true);
-//			mapView.removeAll();
-//			ArcGISTiledMapServiceLayer layerOilGas = new ArcGISTiledMapServiceLayer(
-//					SinoApplication.oilUrl);
 			SinoApplication.currentLayerUrl = SinoApplication.oilUrl;
-//			mapView.addLayer(layerOilGas);
-//			addDrawLayer();
 			SinoApplication.layerName = SinoApplication.LNoilGas;
 			
 		
@@ -158,7 +140,6 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 		case R.id.id_btn_operator_1:
 			dismiss();
-			showAlert();
 			break;
 
 		case R.id.id_btn_operator_2:
@@ -169,19 +150,17 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 	}
    
-	void showAlert() {
-		// Toast.makeText(getActivity(), "功能暂时未支持", -1).show();
-	}
-
 	private void executeLayerGeographic() {
 		// executeLayer1();
 //		mBtn1.setSelected(false);
-		if(mBtn2.isSelected()){
+		if(mBtnGeographic.isSelected()){
 			layerGeographic.setVisible(false);
-			mBtn2.setSelected(false);
+			mBtnGeographic.setSelected(false);
+			SinoApplication.mLayerDataArray[1] = false;
 		}else{
 			layerGeographic.setVisible(true);
-			mBtn2.setSelected(true);
+			mBtnGeographic.setSelected(true);
+			SinoApplication.mLayerDataArray[1] = true;
 		}
 //		mBtn3.setSelected(false);
 //		dismiss();
@@ -192,30 +171,47 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 //		mContaner.setVisibility(View.VISIBLE);
 //		mBtn1.setSelected(false);
 //		mBtn2.setSelected(false);
-		if(mBtn3.isSelected()){
-			mBtn3.setSelected(false);
+		if(mBtnOilGas.isSelected()){
+			mBtnOilGas.setSelected(false);
 			mListView.setEnabled(false);
+			SinoApplication.mLayerDataArray[2] = false;
 			mCover.setVisibility(View.VISIBLE);
+			setAllInvisible(false);
 		}else{
-			mBtn3.setSelected(true);
+			mBtnOilGas.setSelected(true);
 			mListView.setEnabled(true);
 			mCover.setVisibility(View.GONE);
+			SinoApplication.mLayerDataArray[2] = true;
+			setAllInvisible(true);
 		}
 
+	}
+	
+	//设置油气专题所有图层不显示
+	private void setAllInvisible(boolean visible) {
+		for (int i = 0; i < SinoApplication.mOilGasData.size(); i++) {
+			OilGasData data = SinoApplication.mOilGasData.get(i);
+			String url = data.getUrl();
+			if(mapView.getLayerByURL(url) != null){
+				mapView.getLayerByURL(url).setVisible(visible);
+			}
+			
+			SinoApplication.mOilGasData.get(i).setVisible(visible);
+		}
+		reShow();
 	}
 
 	private void executeLayerSatellite() {
 //		dismiss();
-		showAlert();
-		if(mBtn1.isSelected()){
+		if(mBtnSatellite.isSelected()){
 			layerSatellite.setVisible(false);
-			mBtn1.setSelected(false);
+			mBtnSatellite.setSelected(false);
+			SinoApplication.mLayerDataArray[0] = false;
 		}else{
 			layerSatellite.setVisible(true);
-			mBtn1.setSelected(true);
+			mBtnSatellite.setSelected(true);
+			SinoApplication.mLayerDataArray[0] = true;
 		}
-//		mBtn2.setSelected(false);
-//		mBtn3.setSelected(false);
 	}
 
 	class MyAdapter extends BaseAdapter {

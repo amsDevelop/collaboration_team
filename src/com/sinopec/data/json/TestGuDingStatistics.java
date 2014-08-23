@@ -25,23 +25,23 @@ import com.sinopec.data.json.standardquery.DistributeRate;
 import com.sinopec.data.json.standardquery.DistributeRateResource;
 
 /**
- * �ġ��̶�ͳ��
- * 1��ȫ���������̼�����Ҳ�ϵ����������Դ���ֲ�
+ * 四、固定统计
+ * 1、全球含油气盆地碳酸盐岩层系油气储量及资源量分布
  * @author liuzhaodong
  *
  */
 public class TestGuDingStatistics extends TestQueryGuDing {
 
 	/**
-	 * 1��ȫ���������̼�����Ҳ�ϵ����������Դ���ֲ�
-	 *  lrr ��������Դ������   
-		lrr=1 ��ʾ��Դ����    
-		lrr=2 ��ʾ̽������     
-		lrr=3 ��ʾ������Դ��
+	 * 1、全球含油气盆地碳酸盐岩层系油气储量及资源量分布
+	 *  lrr 储量及资源量级别   
+		lrr=1 表示资源总量    
+		lrr=2 表示探明储量     
+		lrr=3 表示待发现资源量
 
-		yqlx �������� ��124Ϊʯ����Ȼ��
-		tsyy ̼�����ұ��룺1095216660480
-		hx  ������룺35183298347008
+		yqlx 油气类型 如124为石油天然气
+		tsyy 碳酸盐岩编码：1095216660480
+		hx  海相编码：35183298347008
 
 	 */
 	public void testStatistics() {

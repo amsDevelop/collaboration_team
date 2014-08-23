@@ -139,6 +139,7 @@
                     <Button
                         android:id="@+id/btn_map_layout"
                         style="@style/btn_toolbar_btn"
+                        android:background="@drawable/btn_layer"
                         android:drawableTop="@drawable/tc"
                         android:text="@string/btn_layout" />
 
@@ -269,6 +270,7 @@
                             iconbutton:mtext="@string/btn_mine"
                             iconbutton:relation="icon_null"
                             iconbutton:text_size="16sp" />
+>>>>>>> f065c866b8c172625f157bcc268a4b8b27c118d8
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
@@ -287,7 +289,6 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="gone" />
-
     </RelativeLayout>
 
     <RelativeLayout

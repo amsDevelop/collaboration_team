@@ -7,7 +7,7 @@ import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
 
 /**
- * 4.�ֲ�ϵȫ����̼��������Դ�ҷֲ�
+ * 4.分层系全球海相碳酸盐岩烃源岩分布
  * @author liuzhaodong
  */
 public class DistributeJingRockYuanYan extends Bean{
@@ -23,12 +23,12 @@ public class DistributeJingRockYuanYan extends Bean{
 	
 	public class DistributeChild extends Bean{
 		/**
-		 * ��Դ�������
+		 * 烃源岩区编码
 		 */
 		@JsonFieldName("TYYQBM")
 		private long codeRockJingYuan;
 		/**
-		 * ������ر���
+		 * 所属盆地编码
 		 */
 		@JsonFieldName("SSPDBM")
 		private long codeBelongToBasin;
