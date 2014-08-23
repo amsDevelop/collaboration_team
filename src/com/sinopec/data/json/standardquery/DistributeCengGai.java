@@ -7,7 +7,7 @@ import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
 
 /**
- * 6.�����͸ǲ�ֲ�
+ * 6.分类型盖层分布
  * @author liuzhaodong
  */
 public class DistributeCengGai extends Bean{
@@ -23,12 +23,12 @@ public class DistributeCengGai extends Bean{
 	
 	public class DistributeChild extends Bean{
 		/**
-		 * ��Դ�������
+		 * 烃源岩区编码
 		 */
 		@JsonFieldName("GCQBM")
 		public long codeCengGai;
 		/**
-		 * ������ر���
+		 * 所属盆地编码
 		 */
 		@JsonFieldName("SSPDBM")
 		public long codeBelongToBasin;

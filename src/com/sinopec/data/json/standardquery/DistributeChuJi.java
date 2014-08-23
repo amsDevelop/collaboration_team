@@ -7,7 +7,7 @@ import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
 
 /**
- * 5.������ȫ����̼�����Ҵ�����ֲ�
+ * 5.分类型全球海相碳酸盐岩储集层分布
  * @author liuzhaodong
  */
 public class DistributeChuJi extends Bean{
@@ -23,12 +23,12 @@ public class DistributeChuJi extends Bean{
 	
 	public class DistributeChild extends Bean{
 		/**
-		 * ��Դ�������
+		 * 烃源岩区编码
 		 */
 		@JsonFieldName("CJCQBM")
 		public long codeChuJi;
 		/**
-		 * ������ر���
+		 * 所属盆地编码
 		 */
 		@JsonFieldName("SSPDBM")
 		public long codeBelongToBasin;

@@ -3,7 +3,7 @@ package com.sinopec.data.json.basin;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 /**
- * ��ػ�����
+ * 盆地基础属性
  * @author liuzhaodong
  *
  */

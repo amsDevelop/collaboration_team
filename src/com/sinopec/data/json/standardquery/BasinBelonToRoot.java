@@ -7,8 +7,8 @@ import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
 
 /**
- * �������
- * ȫ����̼�����Һ�������طֲ�
+ * 所属盆地
+ * 全球海相碳酸盐岩含油气盆地分布
  * @author liuzhaodong
  *
  */

@@ -1,4 +1,4 @@
-﻿package com.sinopec.data.json;
+package com.sinopec.data.json;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ import com.sinopec.data.json.standardquery.DistributeRate;
 import com.sinopec.data.json.standardquery.DistributeRateResource;
 
 /**
- * ??????
+ * 固定查询
  * @author liuzhaodong
  *
  */
@@ -96,7 +96,7 @@ public class TestQueryGuDing extends AndroidTestCase {
 //	}
 
 	/**
-	 * ???????
+	 * 测试盆地
 	 */
 	public void testBasinValue() {
 		String id = "201102001130";
@@ -115,10 +115,10 @@ public class TestQueryGuDing extends AndroidTestCase {
 
 
 	/**
-	 * 1. ??????????????????????
+	 * 1. 全球海相碳酸盐岩含油气盆地分布
 	 */
 	public void testDistributeForOil() {
-		// ??????????��??????????????
+		// 沉积体系（如：海相碳酸盐岩编码）
 		String chenjitixi = "72057594037927935";
 		String url = Constant.distributeOilGas + chenjitixi;
 		slog.p("url + " + url);
@@ -143,7 +143,7 @@ public class TestQueryGuDing extends AndroidTestCase {
 	}
 
 	/**
-	 * 2.????????????????????????????????????????????
+	 * 2.全球含油气盆地碳酸盐岩层系油气储量占盆地油气总储量比例分布
 	 */
 	public void testDistributeRate() {
 		// type=72057594037927935&haixiang=72057594037927935&tansuanyanyan=72057594037927935
@@ -165,7 +165,7 @@ public class TestQueryGuDing extends AndroidTestCase {
 	}
 
 	/**
-	 * 3.?????????????????????????????????????????????????
+	 * 3.全球含油气盆地碳酸盐岩层系油气资源量占盆地油气总资源量比例分布
 	 */
 	public void testDistributeRateRockResouce() {
 		String type = "72057594037927935";
@@ -189,7 +189,7 @@ public class TestQueryGuDing extends AndroidTestCase {
 	
 	
 	/**
-	 * 4.???????????????????????
+	 * 4.分层系全球海相碳酸盐岩烃源岩分布
 	 */
 	public void testDistributeRockJingYuan() {
 		String cengXi = "72057594037927935"; 
@@ -210,7 +210,7 @@ public class TestQueryGuDing extends AndroidTestCase {
 
 
 	/**
-	 * 5.?????????????????????????
+	 * 5.分类型全球海相碳酸盐岩储集层分布
 	 */
 	public void testDistributeChuJi() {
 		String chujikongjian = "72057594037927935";
@@ -237,7 +237,7 @@ public class TestQueryGuDing extends AndroidTestCase {
 	
 	
 	/**
-	 * 5.?????????????????????????
+	 * 5.分类型全球海相碳酸盐岩储集层分布
 	 */
 	public void testDistributeCengGai() {
 		String gaiceng = "72057594037927935";

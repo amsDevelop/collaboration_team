@@ -10,7 +10,7 @@ import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
 import com.sinopec.data.json.statistics.StatisticsValue;
 
 /**
- * �塢ͳ��
+ * 五、统计
  * @author liuzhaodong
  *
  */
