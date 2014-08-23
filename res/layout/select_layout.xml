@@ -65,6 +65,12 @@
                 android:background="@color/doc_content_color"
                 android:gravity="center"
                 android:orientation="horizontal" >
+
+                <ScrollView
+                    android:id="@+id/scrollview_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="800dp"
+                    android:layout_gravity="center" />
             </LinearLayout>
         </LinearLayout>
 

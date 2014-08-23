@@ -1,10 +1,16 @@
 package com.sinopec.activity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -25,8 +31,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnHoverListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -39,9 +43,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RadioButton;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,9 +58,7 @@ import com.esri.android.map.ags.ArcGISFeatureLayer.Options;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 import com.esri.android.map.event.OnLongPressListener;
 import com.esri.android.map.event.OnSingleTapListener;
-import com.esri.android.map.event.OnStatusChangedListener;
 import com.esri.android.map.event.OnZoomListener;
-import com.esri.android.map.event.OnStatusChangedListener.STATUS;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
@@ -68,6 +68,7 @@ import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
@@ -75,9 +76,14 @@ import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.common.OilGasData;
+import com.sinopec.data.json.Constant;
+import com.sinopec.data.json.standardquery.BasinBelonToRoot;
+import com.sinopec.data.json.standardquery.DistributeJingRockYuanYan;
+import com.sinopec.data.json.standardquery.DistributeRate;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
+import com.sinopec.query.AsyncHttpQuery;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.SinoUtil;
@@ -93,7 +99,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private View popView = null;
 	Callout callout = null;
 	public static boolean isHideCallout = false;
-//	private ImageView imageAnim = null;
 	String name2 = null;
 	String Point_X = null;
 	String Point_Y = null;
@@ -120,7 +125,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Button mBtnCancelChoose;
 	private ImageButton mBtnScaleSmall;
 	private ImageButton mBtnScaleBig;
-	private Map<String, View> menuStatus = new HashMap<String, View>();
+//	private Map<String, View> menuStatus = new HashMap<String, View>();
 	/**
 	 * 子菜单
 	 */
@@ -141,22 +146,139 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MapTouchListener mapTouchListener;
 	private DrawTool drawTool;
 	private ArcGISTiledMapServiceLayer tms;
-    private ViewGroup mBaseLayout;
-    /**
-     * 左侧工具栏根布局
-     */
-    private ViewGroup mLeftBarLayout;
-    /**
-     * 搜索结果fragment依赖的布局
-     */
-    private ViewGroup mFragmentLayout;
+	private ViewGroup mBaseLayout;
+	/**
+	 * 左侧工具栏根布局
+	 */
+	private ViewGroup mLeftBarLayout;
+	private AsyncHttpQuery asyncHttpQuery;
+	/**
+	 * 搜索结果fragment依赖的布局
+	 */
+	private ViewGroup mFragmentLayout;
+	private ArrayList<HashMap<String, Object>> toolist = new ArrayList<HashMap<String, Object>>();
+	private Handler handler = new Handler() {
+
+		public void handleMessage(android.os.Message msg) {
+			StringBuilder builder;
+			switch (msg.what) {
+			case 1:
+				// String jsonStr = getJsonStr(url);
+				BasinBelonToRoot root = new BasinBelonToRoot();
+				try {
+					JSONArray jsonArray = new JSONArray((String) msg.obj);
+					for (int i = 0; i < jsonArray.length(); i++) {
+						try {
+							JsonToBeanParser.getInstance().fillBeanWithJson(
+									root.newBasinBelongTo(),
+									jsonArray.getJSONObject(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				 builder = new StringBuilder("OBJ_ID =");
+
+				for (int i = 0; i < root.mBasinBelongTo.size(); i++) {
+
+					if (i == root.mBasinBelongTo.size() - 1) {
+						builder.append(root.mBasinBelongTo.get(i)
+								.getBeLongToId());
+					} else {
+						builder.append(root.mBasinBelongTo.get(i)
+								.getBeLongToId() + "or OBJ_ID =");
+					}
+				}
+				drawTool.queryAttribute4Query(builder.toString(),
+						(getResources().getString(R.string.url_basin)) + "/0",root.mBasinBelongTo);
+				break;
+			case 2:
+				final DistributeRate rate = new DistributeRate();
+				try {
+					JSONArray jsonArray = new JSONArray((String) msg.obj);
+
+					for (int i = 0; i < jsonArray.length(); i++) {
+						try {
+							JsonToBeanParser.getInstance().fillBeanWithJson(
+									rate.newChildInstance(),
+									jsonArray.getJSONObject(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 builder = new StringBuilder("OBJ_ID =");
+				for (int i = 0; i < rate.mChilds.size(); i++) {
+
+					if (i == rate.mChilds.size() - 1) {
+						builder.append(rate.mChilds.get(i)
+								.getCodeBelongToBasin());
+					} else {
+						builder.append(rate.mChilds.get(i)
+								.getCodeBelongToBasin() + "or OBJ_ID =");
+					}
+				}
+				drawTool.queryAttribute4Query(builder.toString(),
+						(getResources().getString(R.string.url_basin)) + "/0",rate.mChilds);
+
+				break;
+			case 3:
+				final DistributeJingRockYuanYan instance = new DistributeJingRockYuanYan();
+				try {
+					JSONArray jsonArray = new JSONArray((String) msg.obj);
+					
+					for (int i = 0; i < jsonArray.length(); i++) {
+						try {
+							JsonToBeanParser.getInstance().fillBeanWithJson(
+									instance.newChildInstance(),
+									jsonArray.getJSONObject(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+					
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				 Log.v("mandy", "result: " + instance.mChilds);
+				 
+				 builder = new StringBuilder("OBJ_ID =");
+					for (int i = 0; i < instance.mChilds.size(); i++) {
+
+						if (i == instance.mChilds.size() - 1) {
+							builder.append(instance.mChilds.get(i)
+									.getCodeBelongToBasin());
+						} else {
+							builder.append(instance.mChilds.get(i)
+									.getCodeBelongToBasin() + "or OBJ_ID =");
+						}
+					}
+					drawTool.queryAttribute4Query(builder.toString(),
+							(getResources().getString(R.string.url_basin)) + "/0",instance.mChilds);
+				break;
+			default:
+				break;
+			}
+
+		};
+
+	};
+
     private Bitmap mBitmapPaopaobg;
-    private ArrayList<HashMap<String, Object>> toolist = new ArrayList<HashMap<String, Object>>();
     
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.mContext = this;
+		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		SinoApplication.getLayerIDAndKeyMap();
 		setTitle(R.string.app_name);
@@ -167,22 +289,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		setContentView(R.layout.activity_main);
 		initView();
 		map = (MapView) findViewById(R.id.map);
-//		Envelope envelope = new Envelope(new Point(-29.440589,5.065565));
-//		map.setExtent(envelope, 0);
+		// Envelope envelope = new Envelope(new Point(-29.440589,5.065565));
+		// map.setExtent(envelope, 0);
 		tms = new ArcGISTiledMapServiceLayer(
 				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
-//				oilUrl);
+		// oilUrl);
 
-		//加入6个专题图层 
+		// 加入6个专题图层
 		String[] urls = getResources().getStringArray(R.array.all_layer_urls);
 		for (int i = 0; i < urls.length; i++) {
-			ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(urls[i]);
+			ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(
+					urls[i]);
 			map.addLayer(layer);
 		}
-		//不显示卫星图
+		// 不显示卫星图
 		Layer layerSatellite = map.getLayerByURL(SinoApplication.imageUrl);
 		layerSatellite.setVisible(false);
-		
+
 		Options o = new Options();
 		o.mode = MODE.ONDEMAND;
 		o.outFields = new String[] { "FIELD_KID", "APPROXACRE", "FIELD_NAME",
@@ -192,13 +315,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				"LASTGDATE", "AVGDEPTH", "AVGDEPTHSL", "FIELD_TYPE",
 				"FIELD_KIDN" };
 		// http://10.225.14.201:6080/arcgis/rest/services/marinegeo/MapServer
-//		fLayer = new ArcGISFeatureLayer(
-//				"http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Petroleum/KSPetro/MapServer/1",
-//				o);
-//		map.addLayer(fLayer);
+		// fLayer = new ArcGISFeatureLayer(
+		// "http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Petroleum/KSPetro/MapServer/1",
+		// o);
+		// map.addLayer(fLayer);
 		mDrawLayer4HighLight = new GraphicsLayer();
 		drawLayer = new GraphicsLayer();
-		
+
 		map.addLayer(mDrawLayer4HighLight);
 		map.addLayer(drawLayer);
 		initSymbols();// 初始化符号
@@ -209,11 +332,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		drawTool = new DrawTool(map, this, callout, mContext);
 		drawTool.addEventListener(this);
 		drawTool.setDrawLayer(drawLayer, mDrawLayer4HighLight);
-		 mapTouchListener = new MapTouchListener(this, map);
-		 map.setOnTouchListener(mapTouchListener);
-		 //这个干哈用？？
-		 map.setOnZoomListener(new OnZoomListener() {
-			
+		mapTouchListener = new MapTouchListener(this, map);
+		map.setOnTouchListener(mapTouchListener);
+		// 这个干哈用？？
+		map.setOnZoomListener(new OnZoomListener() {
+
 			/**
 			 * 
 			 */
@@ -221,24 +344,22 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void preAction(float arg0, float arg1, double arg2) {
-			
-				   
+
 			}
-			
+
 			@Override
 			public void postAction(float arg0, float arg1, double arg2) {
 				// TODO Auto-generated method stub
 				Log.v("mandy", "postAction...................." + isHideCallout);
-				
+
 				if (isHideCallout) {
-					   callout.hide();
-					} else {
-						callout.show();
-					}
+					callout.hide();
+				} else {
+					callout.show();
+				}
 			}
 		});
-		 
-	
+
 		initData();
 		initAnimations();
 		searchFragment = new SearchFragment(this);
@@ -247,13 +368,34 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		SinoApplication.currentLayerUrl4Multi = getString(R.string.url_basin);
 		map.zoomTo(new Point(0,0), (float) map.getMaxResolution());
 		map.setMapBackground(Color.WHITE, Color.TRANSPARENT, 0, 0);
+		initTableKeyValue();
 	}
 
+	
+	private void initTableKeyValue() {
+		try {
+			InputStream inputStream = getAssets().open("oilstrings.xml");
+			   BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));  
+		        for (String str = br.readLine(); str != null; str = br.readLine()) {  
+		        	if(str.contains("dispaly")){
+		        		String key = str.substring(str.indexOf("<")+1, str.indexOf("dispaly"));
+		        		String value = str.substring(str.indexOf("dispaly=\"")+"dispaly=\"".length(), str.indexOf("\"/>"));
+		        		Log.d("table", "key: "+key.trim()+"  value: "+value);
+		        		SinoApplication.mNameMap.put(key.trim(), value);
+		        	}
+		        }  
+		        br.close();
+		} catch (IOException e) {
+			Log.d("table", " initTableKeyValue error:  "+e.toString());
+			e.printStackTrace();
+		}
+	}
+	
 	private void initSymbols() {
-//		lineSymbol = new SimpleLineSymbol(Color.RED, 5,
-//				SimpleLineSymbol.STYLE.DASH);
-//		markerSymbol = new SimpleMarkerSymbol(Color.BLUE, 10,
-//				SimpleMarkerSymbol.STYLE.CIRCLE);
+		// lineSymbol = new SimpleLineSymbol(Color.RED, 5,
+		// SimpleLineSymbol.STYLE.DASH);
+		// markerSymbol = new SimpleMarkerSymbol(Color.BLUE, 10,
+		// SimpleMarkerSymbol.STYLE.CIRCLE);
 		fillSymbol = new SimpleFillSymbol(Color.RED);
 		fillSymbol.setAlpha(33);
 	}
@@ -270,14 +412,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		btnLine.setOnClickListener(this);
 		btnCurScreen.setOnClickListener(this);
 	}
-	
+
 	private Animation aniIn;
 	private Animation aniOut;
 	private Animation aniUp;
 	private Animation aniDown;
+
 	private void initAnimations() {
 		aniIn = AnimationUtils.loadAnimation(mContext, R.anim.ani_leftmenu_in);
-		aniOut = AnimationUtils.loadAnimation(mContext, R.anim.ani_leftmenu_out);
+		aniOut = AnimationUtils
+				.loadAnimation(mContext, R.anim.ani_leftmenu_out);
 		aniDown = AnimationUtils.loadAnimation(mContext, R.anim.ani_menu_down);
 		aniUp = AnimationUtils.loadAnimation(mContext, R.anim.ani_menu_up);
 	}
@@ -285,35 +429,37 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	public void getAboutDisplay() {
 		DisplayMetrics metric = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metric);
-//		int width = metric.widthPixels; // 屏幕宽度（像素）
-//		int height = metric.heightPixels; // 屏幕高度（像素）
-//		SinoApplication.density = metric.density; // 屏幕密度（0.75 / 1.0 / 1.5）
-//		int densityDpi = metric.densityDpi; // 屏幕密度DPI（120 / 160 / 240）
+		// int width = metric.widthPixels; // 屏幕宽度（像素）
+		// int height = metric.heightPixels; // 屏幕高度（像素）
+		// SinoApplication.density = metric.density; // 屏幕密度（0.75 / 1.0 / 1.5）
+		// int densityDpi = metric.densityDpi; // 屏幕密度DPI（120 / 160 / 240）
 		// 此设备 width: 2560 hei: 1600 density: 2.0 densityDpi: 320
-//		Log.d("sinopec", "width: " + width + "  hei: " + height + "  density: "
-//				+ SinoApplication.density + "  densityDpi: " + densityDpi);
+		// Log.d("sinopec", "width: " + width + "  hei: " + height +
+		// "  density: "
+		// + SinoApplication.density + "  densityDpi: " + densityDpi);
 	}
-	
-	private IdentifyParameters mIdentifyParameters = new IdentifyParameters();
-	private void initSearchParams(Point pt) {
-	  //TODO:设置Identify查询参数
-	  mIdentifyParameters.setTolerance(20);
-	  mIdentifyParameters.setDPI(98);
-	  mIdentifyParameters.setLayers(new int[]{0,1,2,3,4,5,6,7}); 
-	  mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER); 
-//	  mIdentifyParameters.setLayers(new int[]{4});
-//	  mIdentifyParameters.setLayerMode(IdentifyParameters.ALL_LAYERS);
 
-	  mIdentifyParameters.setGeometry(pt);
-	  mIdentifyParameters.setSpatialReference(map.getSpatialReference());         
-	  mIdentifyParameters.setMapHeight(map.getHeight());
-	  mIdentifyParameters.setMapWidth(map.getWidth());
-	  
-	     // add the area of extent to identify parameters
-      Envelope env = new Envelope(pt);
-//      map.setExtent(new Envelope(pt), 0);
-	  map.getExtent().queryEnvelope(env);
-	  mIdentifyParameters.setMapExtent(env);
+	private IdentifyParameters mIdentifyParameters = new IdentifyParameters();
+
+	private void initSearchParams(Point pt) {
+		// TODO:设置Identify查询参数
+		mIdentifyParameters.setTolerance(20);
+		mIdentifyParameters.setDPI(98);
+		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+		mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER);
+		// mIdentifyParameters.setLayers(new int[]{4});
+		// mIdentifyParameters.setLayerMode(IdentifyParameters.ALL_LAYERS);
+
+		mIdentifyParameters.setGeometry(pt);
+		mIdentifyParameters.setSpatialReference(map.getSpatialReference());
+		mIdentifyParameters.setMapHeight(map.getHeight());
+		mIdentifyParameters.setMapWidth(map.getWidth());
+
+		// add the area of extent to identify parameters
+		Envelope env = new Envelope(pt);
+		// map.setExtent(new Envelope(pt), 0);
+		map.getExtent().queryEnvelope(env);
+		mIdentifyParameters.setMapExtent(env);
 	}
 
 	private void addPopupWindow() {
@@ -331,6 +477,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //		imageAnim = (ImageView) findViewById(R.id.poiAnim);
 //		imageAnim.setVisibility(View.INVISIBLE);
 		mBitmapPaopaobg = BitmapFactory.decodeResource(getResources(), R.drawable.paopao_bg);
+
 		callout = map.getCallout();
 		callout.setContent(popView);
 		callout.setStyle(R.layout.calloutwindow);
@@ -345,15 +492,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				.setOnSingleTapListener(new OnSingleTapListener() {// 单击事件
 					@Override
 					public void onSingleTap(float x, float y) {
-						if(mFragmentLayout.getVisibility() == View.VISIBLE){
-							//显示的时候不相应，防止穿透
+						if (mFragmentLayout.getVisibility() == View.VISIBLE) {
+							// 显示的时候不相应，防止穿透
 							return;
 						}
-						
-						if (callout.isShowing()){
+
+						if (callout.isShowing()) {
 							callout.hide();
 						}
-						//高亮消失
+						// 高亮消失
 						mDrawLayer4HighLight.removeAll();
 					}
 				});
@@ -361,29 +508,33 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		MarinedbActivity.this.map
 				.setOnLongPressListener(new OnLongPressListener() {
 					public void onLongPress(float x, float y) {
-						if (!map.isLoaded() || (mFragmentLayout.getVisibility() == View.VISIBLE)) {
+						if (!map.isLoaded()
+								|| (mFragmentLayout.getVisibility() == View.VISIBLE)) {
 							return;
 						}
 						isHideCallout = false;
-						
-						//清空之前高亮显示
+
+						// 清空之前高亮显示
 						drawLayer.removeAll();
 						mDrawLayer4HighLight.removeAll();
 						drawTool.deactivate();
-						//情况之前长按数据
-						if(callout.isShowing()){
+						// 情况之前长按数据
+						if (callout.isShowing()) {
 							callout.hide();
 							SinoApplication.identifyResult = null;
 						}
-						
+
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
-						Log.d("map", "-----长按------Long--x:"+x+"  y: "+y+" -toMapPoint--x:"+pt.getX()+"  y: "+pt.getY());
+//						Log.d("map",
+//								"-----长按------Long--x:" + x + "  y: " + y
+//										+ " -toMapPoint--x:" + pt.getX()
+//										+ "  y: " + pt.getY());
 						x1 = pt.getX();
 						y1 = pt.getY();
 						name2 = "未知地名";
 						address2 = "未知地址";
-						//TODO:找到对象的属性等数据 url
-						
+						// TODO:找到对象的属性等数据 url
+
 						try {
 							Point pxPt = MarinedbActivity.this.map
 									.toScreenPoint(new Point(x1, y1));
@@ -394,15 +545,19 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							pxy = (int) (pxPt.getY()); // 图标高度(像素)
 							anchorPt = MarinedbActivity.this.map.toMapPoint(
 									pxx, pxy);
-							
-//							imageAnim.startAnimation(poiAnimation);
-							
-							Log.d(tag, "-------长按   x: "+anchorPt.getX()+"  y: "+anchorPt.getY());
+
+							// imageAnim.startAnimation(poiAnimation);
+
+							Log.d(tag, "-------长按   x: " + anchorPt.getX()
+									+ "  y: " + anchorPt.getY());
 							initSearchParams(anchorPt);
-							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, CommonData.TypeOperateLongPress, mDrawLayer4HighLight
-									,callout);
-						    task.execute(mIdentifyParameters); 
-							
+							SearchIdentifyTask task = new SearchIdentifyTask(
+									mContext, pt, SinoApplication.oilUrl,
+									mLongTouchTitle,
+									CommonData.TypeOperateLongPress,
+									mDrawLayer4HighLight, callout);
+							task.execute(mIdentifyParameters);
+
 							if (LongPressPOI != null) {
 								MarinedbActivity.this.gLayer
 										.removeGraphic(LongPressPOI.getUid());
@@ -430,7 +585,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 * 底部五个按钮跟布局
 	 */
 	private ViewGroup mToolBar;
-	
+
 	private void initView() {
 		mListView = (ListView) findViewById(R.id.search_listview);
 		mBaseLayout = (ViewGroup) findViewById(R.id.baselayout);
@@ -438,14 +593,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mFragmentLayout = (ViewGroup) findViewById(R.id.fragmentlayout);
 		mToolBar = (ViewGroup) findViewById(R.id.menu_bar);
 
-	
 		mGridViewLayout = (RelativeLayout) findViewById(R.id.menu_children_grid);
 		mGridView = (GridView) findViewById(R.id.menu_gridview);
 		mGridView.setOnItemClickListener(this);
 		// mGridView.setStretchMode(GridView.NO_STRETCH);
 
 		initGridViewData();
-//		mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
+		// mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
 		mTVContent = (TextView) findViewById(R.id.tv_content);
 		mTVContent.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mBtnLayer = (Button) findViewById(R.id.btn_map_layout);
@@ -501,16 +655,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			}
 		});
 		mMenuViewTool.setOnClickListener(this);
-		
+
 		mMenuViewSearch = (MenuButton) findViewById(R.id.menuview_search);
 		mMenuViewSearch.setOnClickListener(this);
 
 		mMenuViewCount = (MenuButton) findViewById(R.id.menuview_count);
 		mMenuViewCount.setOnClickListener(this);
-		
+
 		mMenuViewCompare = (MenuButton) findViewById(R.id.menuview_compare);
 		mMenuViewCompare.setOnClickListener(this);
-		
+
 		mMenuViewMine = (MenuButton) findViewById(R.id.menuview_mine);
 		mMenuViewMine.setOnClickListener(this);
 
@@ -519,7 +673,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				if(mLeftBarLayout.getVisibility() == View.GONE){
+				if (mLeftBarLayout.getVisibility() == View.GONE) {
 					mLeftBarLayout.startAnimation(aniIn);
 					mLeftBarLayout.setVisibility(View.VISIBLE);
 				}
@@ -529,25 +683,24 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				btnLine.setSelected(false);
 				btnPolygon.setSelected(false);
 				btnCurScreen.setSelected(false);
-				
-				
+
 				drawLayer.removeAll();
 				mDrawLayer4HighLight.removeAll();
 				drawTool.deactivate();
 				if (callout.isShowing()) {
 					callout.hide();
 				}
-				
+
 				isHideCallout = true;
-				
-				//清空上次查询数据
+
+				// 清空上次查询数据
 				SinoApplication.mResultList4FrameSearch.clear();
 				SinoApplication.mFeatureSet4Query = null;
 				mEditText.setText(getString(R.string.search));
 				mTag4ToolDistanceOk = false;
 				mTag4ToolAreaOk = false;
-				
-				if(mToolBar.getVisibility() == View.GONE){
+
+				if (mToolBar.getVisibility() == View.GONE) {
 					mToolBar.setVisibility(View.VISIBLE);
 					mToolBar.startAnimation(aniUp);
 					mGridViewLayout.setVisibility(View.GONE);
@@ -560,31 +713,34 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBtnScaleBig = (ImageButton) findViewById(R.id.btn_scale_big);
 		mBtnScaleBig.setOnClickListener(this);
 	}
-	
-	public void hideInput(){
-		if(getCurrentFocus()!=null)
-		{
-			((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)) .hideSoftInputFromWindow(getCurrentFocus()
-					.getWindowToken(),
-					InputMethodManager.HIDE_NOT_ALWAYS); 
+
+	public void hideInput() {
+		if (getCurrentFocus() != null) {
+			((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+					.hideSoftInputFromWindow(
+							getCurrentFocus().getWindowToken(),
+							InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 	}
-	
+
 	private ArrayList<HashMap<String, Object>> mList = new ArrayList<HashMap<String, Object>>();
 	private SearchAdapter mSearchAdapter;
+
 	/**
 	 * 初始化搜索结果列表数据
 	 */
 	private void initData() {
-		if(SinoApplication.mOilGasData != null){
+		if (SinoApplication.mOilGasData != null) {
 			SinoApplication.mOilGasData.clear();
 		}
 		String[] urls = getResources().getStringArray(R.array.oilgas_url_theme);
-		String[] urls_4search = getResources().getStringArray(R.array.oilgas_url_theme_4search);
+		String[] urls_4search = getResources().getStringArray(
+				R.array.oilgas_url_theme_4search);
 		String[] ids = getResources().getStringArray(R.array.all_layer_id);
 		String[] names = getResources().getStringArray(R.array.all_layer_name);
-		String[] colors = getResources().getStringArray(R.array.all_layer_color);
-//		Log.d(tag, "- ********* --图层专题  url 数目 --main : "+urls.length);
+		String[] colors = getResources()
+				.getStringArray(R.array.all_layer_color);
+		// Log.d(tag, "- ********* --图层专题  url 数目 --main : "+urls.length);
 		for (int i = 0; i < urls.length; i++) {
 			OilGasData data = new OilGasData();
 			data.setUrl(urls[i]);
@@ -593,16 +749,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			data.setId(Integer.valueOf(ids[i]));
 			Log.v("mandy", "colors: " + colors[i]);
 			data.setColor(Color.parseColor(colors[i]));
-			if(getString(R.string.url_basin).equals(urls[i])){
+			if (getString(R.string.url_basin).equals(urls[i])) {
 				data.setChecked(true);
-			}else{
+			} else {
 				data.setChecked(false);
 			}
 			data.setVisible(true);
 			SinoApplication.mOilGasData.add(data);
-			
+
 		}
-		
+
 		mSearchAdapter = new SearchAdapter(mContext, mList);
 		mListView.setAdapter(mSearchAdapter);
 	}
@@ -619,10 +775,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		super.onPause();
 		map.pause();
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
-//		Log.d(tag, "main----------------------onResume");
+		// Log.d(tag, "main----------------------onResume");
 		map.unpause();
 		closeKeyboard();
 		new Handler().postDelayed(new Runnable() {
@@ -637,11 +794,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						+ mMenuBtnWidth + "  ly: " + mLocation4Line[1]);
 			}
 		}, 500);
-	
+
 	}
 
 	LayerDialog mLayerDialog;
-	
+
 	/**
 	 * 油气藏类型
 	 */
@@ -650,15 +807,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 * 宝藏名字
 	 */
 	private String mTopicName;
+
 	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
-//		if(mFragmentLayout.getVisibility() == View.VISIBLE){
-//			//显示的时候不相应，防止穿透
-//			return;
-//		}
+		// if(mFragmentLayout.getVisibility() == View.VISIBLE){
+		// //显示的时候不相应，防止穿透
+		// return;
+		// }
 		Boolean[] clickTag;
-		
+
 		switch (v.getId()) {
 		case R.id.property:
 			launchNewPage("属性");
@@ -670,30 +828,30 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //			Toast.makeText(mContext, "此功能暂未实现...", Toast.LENGTH_SHORT).show();
 			launchNewPage(getString(R.string.btn_introduce));
 			break;
-		case R.id.btn_map_layout: //图层
+		case R.id.btn_map_layout: // 图层
 			hideCallOut();
-			if(mLayerDialog == null){
+			if (mLayerDialog == null) {
 				mLayerDialog = new LayerDialog();
 			}
 			mLayerDialog.setMapView(map);
 			mLayerDialog.setMapServiceLayer(tms);
 			mLayerDialog.setDrawLayer(drawLayer);
 			mLayerDialog.show(getFragmentManager(), "dialog");
-			
+
 			break;
-		case R.id.tb_frame: //框选
-			 drawTool.activate(DrawTool.ENVELOPE);
-			 drawLayer.removeAll();
-			 mTag4ToolAreaOk = true;
-			 mTag4ToolDistanceOk = false;
-			 setButtonsStatus(v.getId());
+		case R.id.tb_frame: // 框选
+			drawTool.activate(DrawTool.ENVELOPE);
+			drawLayer.removeAll();
+			mTag4ToolAreaOk = true;
+			mTag4ToolDistanceOk = false;
+			setButtonsStatus(v.getId());
 			break;
 		case R.id.tb_line:
 			drawTool.activate(DrawTool.POLYLINE);
 			drawLayer.removeAll();
 			setButtonsStatus(v.getId());
-			 mTag4ToolAreaOk = false;
-			 mTag4ToolDistanceOk = true;
+			mTag4ToolAreaOk = false;
+			mTag4ToolDistanceOk = true;
 			break;
 		case R.id.tb_polygon:
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
@@ -708,17 +866,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			showWindow(btnPolygon, list, mLocation4Polygon);
 			break;
 		case R.id.tb_cur_screen:
-			 //屏幕范围查询
+			// 屏幕范围查询
 			drawTool.queryAttribute4Query(map.getExtent());
 			setButtonsStatus(v.getId());
-			 mTag4ToolAreaOk = true;
-			 mTag4ToolDistanceOk = false;
+			mTag4ToolAreaOk = true;
+			mTag4ToolDistanceOk = false;
 			break;
 		case R.id.tb_multiple:
-			//TODO:多选,进入多
+			// TODO:多选,进入多
 			SinoApplication.mResultListMulti.clear();
 			drawTool.activate(DrawTool.MULTI_POINT);
-			setButtonsStatus(v.getId());//TODO:多选,进入多
+			setButtonsStatus(v.getId());// TODO:多选,进入多
 			break;
 		case R.id.btn_scale_big:
 			map.zoomin();
@@ -729,82 +887,89 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		case R.id.edittext_search:
 			searchFragment = new SearchFragment(this);
 			mFragmentLayout.setVisibility(View.VISIBLE);
-			fragmentManager.beginTransaction().replace(R.id.fragmentlayout, searchFragment).commit();
+			fragmentManager.beginTransaction()
+					.replace(R.id.fragmentlayout, searchFragment).commit();
 			break;
 		case R.id.menuview_tool:
-			 clickTag = new Boolean[] { false, false };
-			if(mTag4OperateInLine){
+			clickTag = new Boolean[] { false, false };
+			if (mTag4OperateInLine) {
 				clickTag = new Boolean[] { true, false };
-			}else if(mTag4ToolDistanceOk){
+			} else if (mTag4ToolDistanceOk) {
 				clickTag = new Boolean[] { true, false };
-			}else if(mTag4ToolAreaOk){
+			} else if (mTag4ToolAreaOk) {
 				clickTag = new Boolean[] { false, true };
 			}
-			ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+			ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
 			mGridView.setNumColumns(2);
 			setGridView(toolist, v);
-			
+
 			break;
 		case R.id.menuview_search:
-			 clickTag = new Boolean[] { true, true, true, true, true, true, true };
-			ChildrenMenuDataUtil.setSearchChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+			clickTag = new Boolean[] { true, true, true, true, true, true, true };
+			ChildrenMenuDataUtil.setSearchChildrenMenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
 			mGridView.setNumColumns(7);
 			setGridView(toolist, v);
-			
+
 			break;
 		case R.id.menuview_compare:
-			
-			if((SinoApplication.mResultList4Compared == null || SinoApplication.mResultList4Compared.size() == 0)){
-				Toast.makeText(mContext, getString(R.string.tip_no_objects), Toast.LENGTH_SHORT).show();
-			}else{
+
+			if ((SinoApplication.mResultList4Compared == null || SinoApplication.mResultList4Compared
+					.size() == 0)) {
+				Toast.makeText(mContext, getString(R.string.tip_no_objects),
+						Toast.LENGTH_SHORT).show();
+			} else {
 				showWindow4Compared(SinoApplication.mResultList4Compared);
 			}
-			
-			if(SinoApplication.mFeatureSet4Compared == null){
-				Toast.makeText(mContext, getString(R.string.tip_no_objects), Toast.LENGTH_SHORT).show();
-			}else{
+
+			if (SinoApplication.mFeatureSet4Compared == null) {
+				Toast.makeText(mContext, getString(R.string.tip_no_objects),
+						Toast.LENGTH_SHORT).show();
+			} else {
 				showWindow4Compared4FeatureSet(SinoApplication.mFeatureSet4Compared);
 			}
 			break;
 		case R.id.menuview_count:
-			 clickTag = new Boolean[] { true, true,};
-			ChildrenMenuDataUtil.setCountChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+			clickTag = new Boolean[] { true, true, };
+			ChildrenMenuDataUtil.setCountChildrenMenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
 			mGridView.setNumColumns(2);
 			setGridView(toolist, v);
-			
+
 			break;
 		case R.id.menuview_mine:
-			clickTag = new Boolean[] { true, true, true,true, true };
-			ChildrenMenuDataUtil.setMineChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+			clickTag = new Boolean[] { true, true, true, true, true };
+			ChildrenMenuDataUtil.setMineChildrenMenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
 			mGridView.setNumColumns(5);
 			setGridView(toolist, v);
-			
+
 			break;
 		default:
 			break;
 		}
 	}
-	
+
 	private void launchNewPage(String name) {
-		
 		Intent intent = new Intent(this, SelectActivity.class);
 		intent.putExtra(CommonData.KeyTopicType, mTopicType);
 		intent.putExtra("name", name);
 		startActivity(intent);
 	}
-	
-	
+
 	/**
 	 * 是否选择了折线
 	 */
 	private boolean mTag4OperateInLine = false;
+
 	private void setButtonsStatus(int vId) {
 		mLastClickedView = null;
 		if (btnFrame.getId() == vId) {
 			mTag4OperateInLine = false;
-			if(btnFrame.isSelected()){
+			if (btnFrame.isSelected()) {
 				btnFrame.setSelected(false);
-			}else{
+			} else {
 				btnFrame.setSelected(true);
 			}
 			btnMultiple.setSelected(false);
@@ -813,9 +978,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnCurScreen.setSelected(false);
 		} else if (btnLine.getId() == vId) {
 			mTag4OperateInLine = true;
-			if(btnLine.isSelected()){
+			if (btnLine.isSelected()) {
 				btnLine.setSelected(false);
-			}else{
+			} else {
 				btnLine.setSelected(true);
 			}
 			btnMultiple.setSelected(false);
@@ -824,9 +989,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnCurScreen.setSelected(false);
 		} else if (btnPolygon.getId() == vId) {
 			mTag4OperateInLine = false;
-			if(btnPolygon.isSelected()){
+			if (btnPolygon.isSelected()) {
 				btnPolygon.setSelected(false);
-			}else{
+			} else {
 				btnPolygon.setSelected(true);
 			}
 			btnMultiple.setSelected(false);
@@ -835,9 +1000,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnCurScreen.setSelected(false);
 		} else if (btnCurScreen.getId() == vId) {
 			mTag4OperateInLine = false;
-			if(btnCurScreen.isSelected()){
+			if (btnCurScreen.isSelected()) {
 				btnCurScreen.setSelected(false);
-			}else{
+			} else {
 				btnCurScreen.setSelected(true);
 			}
 			btnMultiple.setSelected(false);
@@ -846,9 +1011,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			btnLine.setSelected(false);
 		} else if (btnMultiple.getId() == vId) {
 			mTag4OperateInLine = false;
-			if(btnMultiple.isSelected()){
+			if (btnMultiple.isSelected()) {
 				btnMultiple.setSelected(false);
-			}else{
+			} else {
 				btnMultiple.setSelected(true);
 			}
 			btnFrame.setSelected(false);
@@ -860,65 +1025,63 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		showCancelButton();
 		hideCallOut();
 	}
-	
-	//测面积可用
+
+	// 测面积可用
 	private boolean mTag4ToolAreaOk = false;
-	//测距可用
+	// 测距可用
 	private boolean mTag4ToolDistanceOk = false;
 
-	//设置底部按钮的点击效果
+	// 设置底部按钮的点击效果
 	private void setMenuButtonsStatus(int vId) {
 		if (mMenuViewTool.getId() == vId) {
 			dealClickRepeat(mMenuViewTool);
-			
+
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewCount.getId() == vId) {
 			dealClickRepeat(mMenuViewCount);
-			
+
 			mMenuViewTool.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewSearch.getId() == vId) {
 			dealClickRepeat(mMenuViewSearch);
-		
+
 			mMenuViewTool.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewCompare.getId() == vId) {
 			dealClickRepeat(mMenuViewCompare);
-		
+
 			mMenuViewTool.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		} else if (mMenuViewMine.getId() == vId) {
 			dealClickRepeat(mMenuViewMine);
-	
+
 			mMenuViewTool.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewCompare.setSelected(false);
-			
+
 		}
 		hideCallOut();
 	}
-	
+
 	private void dealClickRepeat(View view) {
-		if(view.isSelected()){
+		if (view.isSelected()) {
 			view.setSelected(false);
-		}else{
+		} else {
 			view.setSelected(true);
 		}
 	}
 
-	private View view;
 	private View mLastClickedView;
-	private ArrayList<HashMap<String, Object>> mList4Menu = new ArrayList<HashMap<String, Object>>();
 	private ListView mMenuListView;
 
 	private void initPopWindowData(ArrayList<HashMap<String, Object>> list) {
@@ -960,23 +1123,26 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 200,
 		// SinoApplication.screenHeight / 2);
 	}
-	
+
 	private void showWindow4Compared(ArrayList<IdentifyResult> list) {
 		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
+		mBaseLayout = (ViewGroup) layoutInflater.inflate(
+				R.layout.view_menu_popwindow, null);
 		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
-		
+
 		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
-//		popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
+		// popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
 	}
-	
+
 	private void showWindow4Compared4FeatureSet(FeatureSet featureset) {
 		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
+		mBaseLayout = (ViewGroup) layoutInflater.inflate(
+				R.layout.view_menu_popwindow, null);
 		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
-		
-		SinoUtil.showWindow4Compared4FeatureSet(mContext, popupWindow, mBaseLayout, featureset);
-//		popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
+
+		SinoUtil.showWindow4Compared4FeatureSet(mContext, popupWindow,
+				mBaseLayout, featureset);
+		// popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
 	}
 
 	// 关闭软键盘
@@ -986,7 +1152,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 
 	private MenuGridAdapter mAdapter;
-	
 
 	private void initGridViewData() {
 		mAdapter = new MenuGridAdapter(mContext, toolist);
@@ -1000,11 +1165,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		if (mLastClickedView == view) {
 			mGridViewLayout.setVisibility(View.INVISIBLE);
 			mLastClickedView = null;
-			Log.d(tag, "is view "+ mLastClickedView);
+			Log.d(tag, "is view " + mLastClickedView);
 		} else {
 			mGridViewLayout.setVisibility(View.VISIBLE);
 			mLastClickedView = view;
-			Log.d(tag, "not view "+ mLastClickedView);
+			Log.d(tag, "not view " + mLastClickedView);
 		}
 		// else
 		// mLastClickedView = null;
@@ -1017,37 +1182,25 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		HashMap<String, Object> map = (HashMap<String, Object>) arg0
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
-		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map.get("clicktag");
-		if(showMap != null && !showMap.get(tag)){
+		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map
+				.get("clicktag");
+		if (showMap != null && !showMap.get(tag)) {
 			return;
 		}
-		
+
 		Log.d("sinopec", "-------点击p: " + position + "  tag: " + tag);
 		if ("toolDistance".equals(tag)) {
-//			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-//			String[] name = {"KM", "M"};
-//			for (int i = 0; i < name.length; i++) {
-//				HashMap<String, Object> distancMap = new HashMap<String, Object>();
-//				distancMap.put("name", name[i]);
-//				distancMap.put("tag", name[i]);
-//				list.add(distancMap);
-//			}
-//			// 创建一个PopuWidow对象
-//			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//			mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
-//			popupWindow = new PopupWindow(mBaseLayout, 600, 400);
-//			
-//			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
+
 			hidePopupWindow4CountDistanceArea();
 			drawTool.calculateAreaAndLength("KM");
 		} else if ("toolArea".equals(tag)) {
-			//调用drawTool里面 的一个变量
+			// 调用drawTool里面 的一个变量
 			drawTool.calculateAreaAndLength("");
 		} else if ("定制查询".equals(tag)) {
-			//TODO:
+			// TODO:
 			ConditionQuery query = new ConditionQuery();
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
-			
+
 		} else if ("mineLogin".equals(tag)) {
 			Intent intent = new Intent(mContext, LoginActivity.class);
 			startActivity(intent);
@@ -1070,8 +1223,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 多边形任意点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
-			 mTag4ToolAreaOk = true;
-			 mTag4ToolDistanceOk = false;
+			mTag4ToolAreaOk = true;
+			mTag4ToolDistanceOk = false;
 		} else if ("points".equals(tag)) {
 
 			drawTool.activate(DrawTool.POLYGON);
@@ -1079,35 +1232,42 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 多边形点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
-			 mTag4ToolAreaOk = true;
-			 mTag4ToolDistanceOk = false;
+			mTag4ToolAreaOk = true;
+			mTag4ToolDistanceOk = false;
 		} else if ("cycle".equals(tag)) {
 			drawTool.activate(DrawTool.CIRCLE);
 			drawLayer.removeAll();
 			// 多边形任意点绘制
 			hidePopupWindow();
 			setButtonsStatus(btnPolygon.getId());
-			 mTag4ToolAreaOk = true;
-			 mTag4ToolDistanceOk = false;
+			mTag4ToolAreaOk = true;
+			mTag4ToolDistanceOk = false;
 		} else if ("CountChildrenMenuOne".equals(tag)) {
-			//TODO:统计二级菜单
-			Boolean[] clickTag = new Boolean[] { true, true,true, true };
-			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(toolist, clickTag, mChildMenuSplitNumber);
+			// TODO:统计二级菜单
+			Boolean[] clickTag = new Boolean[] { true, true, true, true };
+			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(toolist,
+					clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(4);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 		} else if ("CountChildrenMenuTwo".equals(tag)) {
-			Boolean[] clickTag = new Boolean[] { true, true,true, true, true, true, true, true, true, true, true, };
-			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,
+					true, true, true, true, true, true, };
+			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuData(toolist,
+					clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 		} else if ("碳酸盐岩烃源分布".equals(tag)) {
-			Boolean[] clickTag = new Boolean[] { true, true,true, true, true, true, true, true, true, true,};
-			ChildrenMenuDataUtil.setSearchChildren4MenuData(toolist, clickTag, mChildMenuSplitNumber);
+			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,
+					true, true, true, true, true, };
+			ChildrenMenuDataUtil.setSearchChildren4MenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
 			mGridView.setNumColumns(10);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 		} else if ("分类型盖层分布".equals(tag)) {
-			Boolean[] clickTag = new Boolean[] { true, true,true };
-			ChildrenMenuDataUtil.setSearchChildren6MenuData(toolist, clickTag, mChildMenuSplitNumber);
+
+			Boolean[] clickTag = new Boolean[] { true, true, true };
+			ChildrenMenuDataUtil.setSearchChildren6MenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
 			mGridView.setNumColumns(3);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 		} else if ("碳酸盐岩储层分布".equals(tag)) {
@@ -1115,71 +1275,77 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			ChildrenMenuDataUtil.setSearchChildren5MenuData(toolist, clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(6);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
-		}
 		
-		//三级子菜单都需要在这里处理
-		if(!"CountChildrenMenuOne".equals(tag) && !"CountChildrenMenuTwo".equals(tag) && !"toolDistance".equals(tag)
-				&& !"碳酸盐岩烃源分布".equals(tag) && !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag) &&
-				!"碳酸盐岩储层分布".equals(tag)){
+		} else if ("海相碳酸盐岩盆地".equals(tag)) {
+			String chenjitixi = "72057594037927935";
+			String url = Constant.distributeOilGas + chenjitixi;
+			asyncHttpQuery.execute(1, url);
+		} else if ("碳酸盐岩储量比例".equals(tag)) {
+			String type = "72057594037927935";
+			String haixiang = "72057594037927935";
+			String tansuanyanyan = "72057594037927935";
+			String url = Constant.distributeRate + "type=" + type
+					+ "&haixiang=" + haixiang + "&tansuanyanyan="
+					+ tansuanyanyan;
+			asyncHttpQuery.execute(2, url);
+		} else if ("碳酸盐岩资源比例".equals(tag)) {
+			
+			String type = "72057594037927935";
+			String tansuanyanyan = "72057594037927935";
+			String url = Constant.baseURL + "peprisapi/fixquery3.html?type=" + type + 
+					"&tansuanyanyan=" + tansuanyanyan;
+			asyncHttpQuery.execute(3, url);
+			
+		}
+		// 三级子菜单都需要在这里处理
+		if (!"CountChildrenMenuOne".equals(tag)
+				&& !"CountChildrenMenuTwo".equals(tag)
+				&& !"toolDistance".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)
+				&& !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)) {
 			hideCallOut();
 		}
 	}
-	
-	private void setGridView4LevelTwoChildrenMenu(ArrayList<HashMap<String, Object>> list, View view) {
-//		setMenuButtonsStatus(view.getId());
+
+	private void setGridView4LevelTwoChildrenMenu(
+			ArrayList<HashMap<String, Object>> list, View view) {
+		// setMenuButtonsStatus(view.getId());
 		mAdapter.notifyDataSetChanged();
 		mToolBar.setVisibility(View.GONE);
 		mToolBar.startAnimation(aniDown);
 		mGridViewLayout.setVisibility(View.VISIBLE);
-		
-		// showAndHideGridView();
-//		if (mLastClickedView == view) {
-//			mGridViewLayout.setVisibility(View.INVISIBLE);
-//			mLastClickedView = null;
-//			Log.d(tag, "is view "+ mLastClickedView);
-//		} else {
-//			mGridViewLayout.setVisibility(View.VISIBLE);
-//			mLastClickedView = view;
-//			Log.d(tag, "not view "+ mLastClickedView);
-//		}
-		
-//		if (mLastClickedView == view) {
-//			mGridViewLayout.setVisibility(View.INVISIBLE);
-//		} else {
-//			mGridViewLayout.setVisibility(View.VISIBLE);
-//		}
+
 	}
 
 	private void hidePopupWindow() {
-		if (popupWindow != null){
+		if (popupWindow != null) {
 			popupWindow.dismiss();
 		}
-		
+
 		if (mGridViewLayout.getVisibility() == View.VISIBLE) {
 			mGridViewLayout.setVisibility(View.INVISIBLE);
 		}
-		
+
 		mMenuViewTool.setSelected(false);
 		mMenuViewSearch.setSelected(false);
 		mMenuViewCount.setSelected(false);
 		mMenuViewCompare.setSelected(false);
 		mMenuViewMine.setSelected(false);
 	}
-	
+
 	private void hidePopupWindow4CountDistanceArea() {
-		if((!mTag4ToolDistanceOk && !mTag4ToolAreaOk)){
-			//都不可用的时候
-			if (popupWindow != null){
+		if ((!mTag4ToolDistanceOk && !mTag4ToolAreaOk)) {
+			// 都不可用的时候
+			if (popupWindow != null) {
 				popupWindow.dismiss();
 			}
-		}else{
-			if(mTag4ToolDistanceOk || mTag4ToolAreaOk ){
-				
-			}else{
-				
+		} else {
+			if (mTag4ToolDistanceOk || mTag4ToolAreaOk) {
+
+			} else {
+
 			}
 		}
-		
+
 	}
 
 	class MapTouchListener extends MapOnTouchListener {
@@ -1198,20 +1364,21 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		 
 		 @Override
 		public boolean onDoubleTap(MotionEvent point) {
-			 Log.d(tag, "----MapTouchListener---onDoubleTap--- ");
-			if(mFragmentLayout.getVisibility() == View.VISIBLE){
-				//显示的时候不相应，防止穿透
+			Log.d(tag, "----MapTouchListener---onDoubleTap--- ");
+			if (mFragmentLayout.getVisibility() == View.VISIBLE) {
+				// 显示的时候不相应，防止穿透
 				return false;
 			}
 			return super.onDoubleTap(point);
 		}
-		 
-		 @Override
+
+		@Override
 		public boolean onDragPointerUp(MotionEvent from, MotionEvent to) {
 			return super.onDragPointerUp(from, to);
 		}
 
 	}
+
 	private void exitDialog() {
 		final AlertDialog dlg = new AlertDialog.Builder(this).create();
 		dlg.setTitle("是否退出?");
@@ -1253,14 +1420,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void onBackPressed() {
 		// super.onBackPressed();
-		if(mFragmentLayout.getVisibility() == View.VISIBLE){
+		if (mFragmentLayout.getVisibility() == View.VISIBLE) {
 			mFragmentLayout.setVisibility(View.GONE);
-		}else{
+		} else {
 			exitDialog();
 		}
 	}
 
-	
 	@Override
 	public void handleDrawEvent(DrawEvent event) {
 		this.drawLayer.addGraphic(event.getDrawGraphic());
@@ -1270,53 +1436,55 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	public void clear() {
 		drawLayer.removeAll();
 	}
-	
+
 	private SearchFragment searchFragment;
 	private FragmentManager fragmentManager;
 	private HashMap<String, Object> mHashMap4Property = new HashMap<String, Object>();
-	
+
 	@Override
 	public void setData(Object data) {
 		mDrawLayer4HighLight.removeAll();
 		closeKeyboard();
-		if(data == null){
+		if (data == null) {
 			return;
 		}
-		FindResult result = (FindResult)data; 
-		
+		FindResult result = (FindResult) data;
+
 		Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
-		Log.d("data", "setData4Frame  获得图层 id : "+result.getLayerId()+" name: "+result.getLayerName());
+		Log.d("data", "setData4Frame  获得图层 id : " + result.getLayerId()
+				+ " name: " + result.getLayerName());
 		for (Entry<String, Object> ent : ents) {
-			Log.d("data", "模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
+			Log.d("data",
+					"模糊查询  key: " + ent.getKey() + "  val: " + ent.getValue());
 		}
-		
+
 		SinoApplication.findResult = result;
 		Geometry geometry = result.getGeometry();
-		
-        
+
 		Envelope envelope = new Envelope();
 		geometry.queryEnvelope(envelope);
 		Point point = envelope.getCenter();
 //		Log.d(tag, "-------查询出的坐标  x: "+point.getX()+"  y: "+point.getY());
 		//正确的比例尺
 		map.setExtent(geometry, 0);
-
-		//绘制高亮区域
+		// 绘制高亮区域
 		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
 		Graphic resultLocation = new Graphic(geometry, resultSymbol);
 		mDrawLayer4HighLight.addGraphic(resultLocation);
-		
+
 		mTopicType = result.getLayerName();
 		mTopicName = result.getValue();
 		mHashMap4Property = (HashMap<String, Object>) result.getAttributes();
 		if (callout.isShowing()) {
 			callout.hide();
 		}
-		Log.d(tag, "-------------main---------setData: "+result.getLayerName());
-		if(!"chinapoi".equals(result.getLayerName()) && !"国家".equals(result.getLayerName())){
+		Log.d(tag,
+				"-------------main---------setData: " + result.getLayerName());
+		if (!"chinapoi".equals(result.getLayerName())
+				&& !"国家".equals(result.getLayerName())) {
 			callout.show(point);
 			mLongTouchTitle.setText(result.getValue());
-	//		statistics.setText(result.getValue());
+			// statistics.setText(result.getValue());
 		}
 
 		hideInput();
@@ -1324,21 +1492,21 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		searchFragment = null;
 		mFragmentLayout.setVisibility(View.GONE);
 	}
-	
+
 	/**
 	 * 因此蓝色球体
 	 */
 	private void hideCallOut() {
-		if(callout != null){
+		if (callout != null) {
 			if (callout.isShowing()) {
 				callout.hide();
 			}
 		}
 
 		mDrawLayer4HighLight.removeAll();
-		if(mGridViewLayout.getVisibility() == View.VISIBLE){
+		if (mGridViewLayout.getVisibility() == View.VISIBLE) {
 			mGridViewLayout.setVisibility(View.GONE);
-			//底下四个按钮置为常态
+			// 底下四个按钮置为常态
 			mMenuViewTool.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
@@ -1346,27 +1514,30 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mMenuViewMine.setSelected(false);
 		}
 	}
-	
-	//框选查询返回的数据
+
+	// 框选查询返回的数据
 	@Override
 	public void setSearchData(ArrayList<IdentifyResult> list) {
-		//搜索按钮显示提示（点击查看详情）
-		if(list != null){
+		// 搜索按钮显示提示（点击查看详情）
+		if (list != null) {
 			SinoApplication.mResultList4FrameSearch = list;
 			int size = list.size();
-			if(size == 0){
+			if (size == 0) {
 				SinoApplication.mLayerName = "";
-				Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();
-			}else{
+				Toast.makeText(mContext, getString(R.string.search_no_result),
+						Toast.LENGTH_LONG).show();
+			} else {
 				SinoApplication.mLayerName = list.get(0).getLayerName();
-				mEditText.setText("在 ["+list.get(0).getLayerName()+"] 图层查询到 "+size+" 个 结果，点击进入详情页面。");
+				mEditText.setText("在 [" + list.get(0).getLayerName()
+						+ "] 图层查询到 " + size + " 个 结果，点击进入详情页面。");
 				mLeftBarLayout.startAnimation(aniOut);
 				mLeftBarLayout.setVisibility(View.GONE);
 				SinoApplication.mResultList4Compared = list;
 			}
-		}else{
+		} else {
 			SinoApplication.mLayerName = "";
-			Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();
+			Toast.makeText(mContext, getString(R.string.search_no_result),
+					Toast.LENGTH_LONG).show();
 		}
 		//
 	}
@@ -1374,36 +1545,38 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void setData4Frame(Object data) {
 		drawLayer.removeAll();
-		IdentifyResult result = (IdentifyResult)data; 
+		IdentifyResult result = (IdentifyResult) data;
 		SinoApplication.identifyResult = result;
 		Geometry geometry = result.getGeometry();
-		
-        
+
 		Envelope envelope = new Envelope();
 		geometry.queryEnvelope(envelope);
 		Point point = envelope.getCenter();
 		map.zoomToScale(point, 5000000);
 
-		//绘制高亮区域
+		// 绘制高亮区域
 		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
 		Graphic resultLocation = new Graphic(geometry, resultSymbol);
 		mDrawLayer4HighLight.addGraphic(resultLocation);
-		
+
 		mTopicType = result.getLayerName();
-//		mTopicName = getIdentifyResultName(result);
+		// mTopicName = getIdentifyResultName(result);
 		mHashMap4Property = (HashMap<String, Object>) result.getAttributes();
 		if (callout.isShowing()) {
 			callout.hide();
 		}
 		callout.show(point);
 		Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
-		Log.d("data", "setData4Frame  获得图层 id : "+result.getLayerId()+" name: "+result.getLayerName());
+		Log.d("data", "setData4Frame  获得图层 id : " + result.getLayerId()
+				+ " name: " + result.getLayerName());
 		for (Entry<String, Object> ent : ents) {
-			Log.d("data", "井  key: "+ent.getKey()+"  val: "+ent.getValue());
+			Log.d("data",
+					"井  key: " + ent.getKey() + "  val: " + ent.getValue());
 		}
-		
-		mLongTouchTitle.setText(SinoApplication.getIdentifyResultNameByType(result, result.getLayerName()));
-//		statistics.setText(result.getValue());
+
+		mLongTouchTitle.setText(SinoApplication.getIdentifyResultNameByType(
+				result, result.getLayerName()));
+		// statistics.setText(result.getValue());
 
 		hideInput();
 		fragmentManager.beginTransaction().remove(searchFragment).commit();
@@ -1413,70 +1586,74 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void setSearchData4Query(FeatureSet results) {
-		if(results != null){
+		if (results != null) {
 			SinoApplication.mFeatureSet4Query = results;
-//			SinoApplication.mResultList4FrameSearch = list;
+			// SinoApplication.mResultList4FrameSearch = list;
 			int size = results.getGraphics().length;
-			if(size == 0){
+			if (size == 0) {
 				SinoApplication.mLayerName = "";
-				Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();
-			}else{
-//				SinoApplication.mLayerName = list.get(0).getLayerName();
-				mEditText.setText("在 ["+SinoApplication.mLayerName+"] 图层查询到 "+size+" 个 结果，点击进入详情页面。");
+				Toast.makeText(mContext, getString(R.string.search_no_result),
+						Toast.LENGTH_LONG).show();
+			} else {
+				// SinoApplication.mLayerName = list.get(0).getLayerName();
+				mEditText.setText("在 [" + SinoApplication.mLayerName
+						+ "] 图层查询到 " + size + " 个 结果，点击进入详情页面。");
 				mLeftBarLayout.startAnimation(aniOut);
 				mLeftBarLayout.setVisibility(View.GONE);
 			}
-		}else{
+		} else {
 			SinoApplication.mLayerName = "";
-			Toast.makeText(mContext, getString(R.string.search_no_result) , Toast.LENGTH_LONG).show();
+			Toast.makeText(mContext, getString(R.string.search_no_result),
+					Toast.LENGTH_LONG).show();
 		}
 	}
 
 	@Override
 	public void setData4Query(Object data) {
-		Graphic graphic = (Graphic)data; 
-//		FindResult result = (FindResult)data; 
-		
+		Graphic graphic = (Graphic) data;
+		// FindResult result = (FindResult)data;
+
 		Set<Entry<String, Object>> ents = graphic.getAttributes().entrySet();
 		for (Entry<String, Object> ent : ents) {
-			Log.d("data", "框选查询 setData4Query  key: "+ent.getKey()+"  val: "+ent.getValue());
+			Log.d("data", "框选查询 setData4Query  key: " + ent.getKey()
+					+ "  val: " + ent.getValue());
 		}
-		
-//		SinoApplication.findResult = result;
+
+		// SinoApplication.findResult = result;
 		Geometry geometry = graphic.getGeometry();
-		
-        
+
 		Envelope envelope = new Envelope();
 		geometry.queryEnvelope(envelope);
 		Point point = envelope.getCenter();
 		map.zoomToScale(point, 5000000);
 
-		//绘制高亮区域
+		// 绘制高亮区域
 		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
 		Graphic resultLocation = new Graphic(geometry, resultSymbol);
 		mDrawLayer4HighLight.addGraphic(resultLocation);
-		
+
 		mTopicType = SinoApplication.mLayerName;
-//		mTopicName = result.getValue();
+		// mTopicName = result.getValue();
 		mHashMap4Property = (HashMap<String, Object>) graphic.getAttributes();
 		if (callout.isShowing()) {
 			callout.hide();
 		}
-		Log.d(tag, "-------------setData4Query---------setData: "+SinoApplication.mLayerName);
+		Log.d(tag, "-------------setData4Query---------setData: "
+				+ SinoApplication.mLayerName);
 		callout.show(point);
-		mLongTouchTitle.setText((String) graphic.getAttributes().get("OBJ_NAME_C"));
-	//		statistics.setText(result.getValue());
+		mLongTouchTitle.setText((String) graphic.getAttributes().get(
+				"OBJ_NAME_C"));
+		// statistics.setText(result.getValue());
 
 		hideInput();
 		fragmentManager.beginTransaction().remove(searchFragment).commit();
 		searchFragment = null;
 		mFragmentLayout.setVisibility(View.GONE);
-		
+
 	}
 
 	@Override
 	public void setData4LongPressed(Object data) {
-		
 	}
 
 	@Override

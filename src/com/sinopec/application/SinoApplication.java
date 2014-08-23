@@ -187,4 +187,5 @@ public class SinoApplication extends Application {
 		mapLayerIDAndKey.put("油藏点", "名称");
 	}
 	
+	public static HashMap<String, String> mNameMap = new HashMap<String, String>();
 }

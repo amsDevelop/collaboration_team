@@ -2,6 +2,9 @@ package com.sinopec.util;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sinopec.application.SinoApplication;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -107,6 +110,10 @@ public class SimpleTableView extends TableLayout
 		if("class java.lang.String".equals(classname)){
 			TextView tView=new TextView(getContext());
 			tView.setText((String) obj);
+			tView.setTextColor(Color.BLACK);
+			tView.setTextSize(30);
+			tView.setWidth(SinoApplication.screenWidth / 6);
+			tView.setHeight(100);
 			rView=tView;
 		}else if("class android.graphics.Bitmap".equals(classname)){
 			ImageView iView=new ImageView(getContext());

@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +52,7 @@ public class SelectActivity extends Activity {
 	private List<String> rightList = new ArrayList<String>();
 	private ImageButton mBtnBack;
 	private ViewGroup mContentLayout;
-	
+	private ScrollView mContent;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class SelectActivity extends Activity {
 		leftLayout = (LinearLayout) findViewById(R.id.leftLayout);
 		list = (ListView) findViewById(R.id.listView);
 		titleName = (TextView) findViewById(R.id.titleName);
-
+		mContent = (ScrollView) findViewById(R.id.scrollview_content);
 		adapter = new MyListAdapter(this, rightList);
 		list.setAdapter(adapter);
 
@@ -274,6 +275,7 @@ public class SelectActivity extends Activity {
 			valList.add((String) ent.getValue());
 			stv1.AddRow(new String[]{ent.getKey(),(String) ent.getValue()});
 		}
+		
 //		stv1.AddRow(new Object[]{"1",BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)});
 //		stv1.AddRow(new String[]{"12","1"});
 //		stv1.AddRow(new String[]{"12222","1"});
@@ -282,7 +284,9 @@ public class SelectActivity extends Activity {
 		LayoutParams lp= new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT); 
 		lp.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);		
 		stv1.setLayoutParams(lp);
-		mContentLayout.addView(stv1);
+		mContent.addView(stv1);
+//		mContentLayout.addView(mContent);
+//		mContentLayout.addView(stv1);
 	}
 	
 	private void getFindResultData(StringBuilder sb) {

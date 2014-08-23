@@ -1,6 +1,7 @@
 package com.sinopec.drawtool;
 
 import java.math.BigDecimal;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
+import com.sinopec.data.json.standardquery.DistributeRate.RateForOilAndBasin;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.task.SearchIdentifyTask.OnFinishListener;
 import com.sinopec.task.SearchQueryTask;
@@ -733,6 +735,85 @@ public class DrawTool extends Subject {
 
 	}
 	
+	
+	public void queryAttribute4Query(String objId, String layerUrl, final ArrayList resultList) {
+//		Envelope m_WorldEnvelope = new Envelope();
+//		m_WorldEnvelope = mapView.getMapBoundaryExtent();
+		Query query = new Query();
+//		query.setGeometry(geometry);
+//		query.setReturnGeometry(true);
+		query.setOutFields(new String[]{"OBJ_NAME_C"});
+		//SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
+		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
+//		Log.d("searchtask", "queryAttribute4Query......SpatialReference: " + query.getSpatialRelationship());
+		query.setOutSpatialReference(mapView.getSpatialReference());
+		query.setWhere(objId);
+		
+		Log.v("mandy", "objId: " + objId);
+		
+		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
+				layerUrl,
+				CommonData.TypeOperateFrameChoos, mProgressDialog);
+		task.execute(query);
+
+		task.setQueryFinishListener(new OnQueryFinishListener() {
+
+			@Override
+			public void onFinish(FeatureSet results) {
+				SinoApplication.mFeatureSet4Query = results;
+				
+				Graphic[] graphics = results.getGraphics();
+				// 把之前高亮显示结果清除
+				mDrawLayer4HighLight.removeAll();
+				if(graphics != null){
+					Log.d("test", "模糊查询  结果个数 : "+graphics.length+" "+results.getObjectIdFieldName());
+//					for (Entry<String, Object> ent : results.getFieldAliases().entrySet()) {
+//						Log.d("test", "00模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
+//					}
+					
+					for (int i = 0; i < graphics.length; i++) {
+						int rate = 0;
+						if (resultList.get(i) instanceof RateForOilAndBasin) {
+							rate = ((RateForOilAndBasin)resultList.get(i)).getStorage2() / ((RateForOilAndBasin)resultList.get(i)).getAllStorage() *100;
+							if (rate > 75) {
+								drawHighLight4Query(graphics[i], Color.RED);
+							} else if(rate > 50) {
+								drawHighLight4Query(graphics[i], android.R.color.holo_orange_dark);
+								
+							} else if (rate > 25) {
+								
+								drawHighLight4Query(graphics[i], Color.YELLOW);
+							} else {
+								drawHighLight4Query(graphics[i], android.R.color.holo_orange_light);
+							}
+						} else {
+							
+							drawHighLight4Query(graphics[i],Color.YELLOW);
+							
+						}
+						
+//						Graphic graphic = graphics[i];
+//						Log.d("test", "模糊查询  getAttributes 个数 : "+graphic.getAttributes().entrySet().size());
+//						for (Entry<String, Object> ent : graphic.getAttributes().entrySet()) {
+//							Log.d("test", "模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
+//						}
+	//					 String name = (String) result.getAttributes().get("NAME_CN");
+	//					 sb.append("名字： "+name + " ; ");
+						
+					}
+					mProgressDialog.dismiss();
+//					deactivate();
+//					mCallback.setSearchData4Query(results);
+					// Toast.makeText(mapView.getContext(), sb.toString() ,
+					// Toast.LENGTH_LONG).show();
+				}
+			}
+
+		});
+
+	}
+	
+	
 	//多选单点的时候
 	public void queryAttribute4OnlyOnePonit(Geometry geometry) {
 		IdentifyParameters mIdentifyParameters = new IdentifyParameters();
@@ -822,6 +903,35 @@ public class DrawTool extends Subject {
 			// add graphic to location layer
 			Log.d("map", " drawHighLight ....uid: "+resultLocation.getUid());
 			mDrawLayer4HighLight.addGraphic(resultLocation);
+			
+//			Envelope envelope new Envelope();
+//			mapView.centerAt(new Point(resultLocGeom.q.queryEnvelope(envelope)), true);
+			// create text symbol for return address
+		}
+	}
+	
+	/**
+	 * 绘制高亮区域
+	 * @param result
+	 */
+	private void drawHighLight4Query(Graphic result, int color) {
+		if(result != null){
+			Geometry resultLocGeom = result.getGeometry();
+			// create marker symbol to represent location
+			SimpleFillSymbol resultSymbol = new SimpleFillSymbol(color);
+			// create graphic object for resulting location
+			Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+			// add graphic to location layer
+			Log.d("map", " drawHighLight ....uid: "+resultLocation.getUid());
+			mDrawLayer4HighLight.addGraphic(resultLocation);
+			
+			
+			Envelope envelope = new Envelope();
+			resultLocGeom.queryEnvelope(envelope);
+			Point point = envelope.getCenter();
+//			mapView.
+			mapView.centerAt(point, true);
+//			mapView.zoomToScale(point, -100);
 			// create text symbol for return address
 		}
 	}
