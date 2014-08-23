@@ -144,6 +144,34 @@ public class SinoApplication extends Application {
 		return name;
 	}
 	
+	public static IdentifyResult filterLongPressResults(IdentifyResult[] results) {
+		IdentifyResult result = null;
+		for (int i = 0; i < results.length; i++) {
+			IdentifyResult temp = results[i];
+			if(temp != null){
+				if(temp.getLayerName().equals(SinoApplication.mLayerName)){
+					result = temp;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
+	public static IdentifyResult filterLongPressResults(ArrayList<IdentifyResult> results) {
+		IdentifyResult result = null;
+		for (int i = 0; i < results.size(); i++) {
+			IdentifyResult temp = results.get(i);
+			if(temp != null){
+				if(temp.getLayerName().equals(SinoApplication.mLayerName)){
+					result = temp;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * 获得图层id和查询结果map中，包含中午名称的key 对应关系的map
 	 */

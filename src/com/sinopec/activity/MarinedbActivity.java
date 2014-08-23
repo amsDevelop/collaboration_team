@@ -92,7 +92,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	// 泡泡变量
 	private View popView = null;
 	Callout callout = null;
-	private boolean isHideCallout = false;
+	public static boolean isHideCallout = false;
 //	private ImageView imageAnim = null;
 	String name2 = null;
 	String Point_X = null;
@@ -412,9 +412,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							e.printStackTrace();
 						}
 						callout.setCoordinates(anchorPt);
-						if (!callout.isShowing()) {
-							callout.show();
-						}
+//						if (!callout.isShowing()) {
+//							callout.show();
+//						}
 					}
 
 				});

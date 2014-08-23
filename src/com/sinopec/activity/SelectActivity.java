@@ -147,7 +147,7 @@ public class SelectActivity extends Activity {
 			dataName = intent.getStringExtra("name");
 			mTopicType = SinoApplication.identifyResult.getLayerName();
 			Map<String, Object> attributes = SinoApplication.identifyResult.getAttributes();
-			String name = (String) attributes.get("NAME_CN");
+			String name = (String) attributes.get("OBJ_NAME_C");
 			titleName.setText(name);
 		}else{
 			if (intent != null) {
@@ -156,7 +156,7 @@ public class SelectActivity extends Activity {
 				titleName.setText(intent.getStringExtra(CommonData.KeyTopicName));
 			}	
 		}
-		Log.d("map", "-------mType: " + mTopicType);
+		Log.d("data", "-------mType: " + mTopicType);
 		if (CommonData.TypeProperty.equals(dataName)) {
 			list = initChildMenuData4Property();
 		} else if (CommonData.TypeCount.equals(dataName)) {
@@ -176,7 +176,8 @@ public class SelectActivity extends Activity {
 					" 含油气盆地烃源条件", "含油气盆地储集条件", " 含油气盆地盖层条件", "含油气盆地圈闭条件",
 					"含油气盆地保存条件", " 含油气盆地配置条件", };
 
-		} else if (CommonData.TopicOilGasField.equals(mTopicType)) {
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType)) {
 			titils = new String[] { "油气田基础属性", "油气田储量产量", "油气田源储盖条件",
 					"油气田原油性质", "油气田天然气性质", "油气田水性质"  };
 		} else if (CommonData.TopicOilGasMine.equals(mTopicType)) {
@@ -200,7 +201,8 @@ public class SelectActivity extends Activity {
 					"历年累计二维地震长度", "历年累计三维地震块数", "历年累计三维地震面积", "历年累计勘探投资",
 					"历年累计发现石油地质储量", "历年累计发现天然气地质储量", "历年累计发现凝析油地质储量"};
 			
-		} else if (CommonData.TopicOilGasField.equals(mTopicType)) {
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType)) {
 			titils = new String[] { "历年累计发现石油地质储量", "历年累计发现石油可采储量", "历年累计发现石油产量",
 					"历年累计发现天然气地质储量", "历年累计发现天然气可采储量", "历年累计发现天然气产量",
 					"历年累计发现凝析油地质储量", "历年累计发现凝析油可采储量", "历年累计发现凝析油产量"};
@@ -224,7 +226,8 @@ public class SelectActivity extends Activity {
 					"圈闭与油气藏", "勘探情况", "平面构造图", "年代划分表",
 					"地理位置图"};
 			
-		} else if (CommonData.TopicOilGasField.equals(mTopicType) || CommonData.TopicOilGasMine.equals(mTopicType)) {
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType) || CommonData.TopicOilGasMine.equals(mTopicType)) {
 			titils = new String[] { "油气田概述", "构造特征", "沉积与储层特征",
 					"流体性质", "储量情况", "平面构造图",
 					"剖面图", "综合柱状图", "地理位置图", "地层简表"};

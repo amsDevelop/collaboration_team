@@ -19,6 +19,7 @@ import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.identify.IdentifyTask;
+import com.sinopec.activity.MarinedbActivity;
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
@@ -47,6 +48,7 @@ public class SearchIdentifyTask extends
 		this.mTitle = title;
 		this.OperateType = operateType;
 		this.mCallout = callout;
+//		this.isHideCallout = ishidecallout;
 		this.mDrawLayer4HighLight = drawLayer;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
@@ -102,9 +104,10 @@ public class SearchIdentifyTask extends
 		if(results.length > 0){
 			if(CommonData.TypeOperateLongPress.equals(OperateType)){
 				Log.d("searchtask", "SearchIdentifyTask  onPostExecute......长按查询结果个数................" + results.length);
-				IdentifyResult result = filterLongPressResults(results);
+				IdentifyResult result = SinoApplication.filterLongPressResults(results);
 				if(result == null){
 					Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+					dealNoResult();
 				}else{
 					if (!mCallout.isShowing()){
 						mCallout.show();
@@ -141,11 +144,7 @@ public class SearchIdentifyTask extends
 			}
 		}else{
 			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
-//			if(mCallout != null){
-//				if (mCallout.isShowing()) {
-//					mCallout.hide();
-//				}
-//			}
+			dealNoResult();
 			return;
 		}
 		
@@ -170,18 +169,13 @@ public class SearchIdentifyTask extends
 		mProgressDialog.show();
 	}
 	
-	private IdentifyResult filterLongPressResults(IdentifyResult[] results) {
-		IdentifyResult result = null;
-		for (int i = 0; i < results.length; i++) {
-			IdentifyResult temp = results[i];
-			if(temp != null){
-				if(temp.getLayerName().equals(SinoApplication.mLayerName)){
-					result = temp;
-					break;
-				}
+	private void dealNoResult() {
+		if(mCallout != null){
+			if (mCallout.isShowing()) {
+				mCallout.hide();
 			}
 		}
-		return result;
+		MarinedbActivity.isHideCallout = true;
 	}
 
 }

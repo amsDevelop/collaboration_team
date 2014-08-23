@@ -40,6 +40,7 @@ import com.esri.core.tasks.SpatialRelationship;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.query.Query;
+import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
@@ -85,8 +86,10 @@ public class DrawTool extends Subject {
 
 	private InterfaceDataCallBack mCallback;
 	private ProgressDialog mProgressDialog;
+	private Context mContext;
 	public DrawTool(MapView mapView, InterfaceDataCallBack callback, Callout callout, Context context) {
 		mProgressDialog = new ProgressDialog(context);
+		this.mContext = context;
 		this.mapView = mapView;
 		this.mCallback = callback;
 		this.tempLayer = new GraphicsLayer();
@@ -759,7 +762,15 @@ public class DrawTool extends Subject {
 				for (int i = 0; i < resultList.size(); i++) {
 					IdentifyResult result = resultList.get(i);
 //					drawHighLight(result);
-					objectIsChecked(result);
+					if(result != null){
+						if(result.getLayerName().equals(SinoApplication.mLayerName)){
+							objectIsChecked(result);
+						}else{
+							Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+						}
+					}else{
+						Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+					}
 				}
 //				deactivate();
 				SinoApplication.mResultList4Compared = SinoApplication.mResultListMulti;
