@@ -8,6 +8,7 @@
        android:layout_width="500dip"  
        android:layout_height="60dp"  
        android:paddingLeft="10dp"  
+       android:background="@drawable/selector_doc_item"
        android:textColor="@android:color/background_dark"
        android:gravity="center_vertical"  
        />  

@@ -265,5 +265,10 @@
     <color name="blue_light_press">#ecf6ff</color>
 
     <!-- 亮灰色 -->
+    <color name="gray_doc_item_normal">#efefef</color>
+    <color name="gray_doc_item_pressed">#565f63</color>
+    <color name="doc_listview_divider">#c5c5c5</color>
+    <color name="doc_vertical_divider">#a7a7a7</color>
+    <color name="doc_content_color">#f0f0f0</color>
 
 </resources>

@@ -202,7 +202,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		addPopupWindow();
 		getAboutDisplay();
 		initLayout();
-		drawTool = new DrawTool(map, this, callout);
+		drawTool = new DrawTool(map, this, callout, mContext);
 		drawTool.addEventListener(this);
 		drawTool.setDrawLayer(drawLayer, mDrawLayer4HighLight);
 		 mapTouchListener = new MapTouchListener(this, map);
@@ -357,10 +357,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						}
 						isHideCallout = false;
 						
-						//TODO:清空之前高亮显示
+						//清空之前高亮显示
 						drawLayer.removeAll();
 						mDrawLayer4HighLight.removeAll();
 						drawTool.deactivate();
+						//情况之前长按数据
+						if(callout.isShowing()){
+							callout.hide();
+							SinoApplication.identifyResult = null;
+						}
 						
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
 						Log.d("map", "-----长按------Long--x:"+x+"  y: "+y+" -toMapPoint--x:"+pt.getX()+"  y: "+pt.getY());
@@ -385,7 +390,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							
 							Log.d(tag, "-------长按   x: "+anchorPt.getX()+"  y: "+anchorPt.getY());
 							initSearchParams(anchorPt);
-							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, CommonData.TypeOperateLongPress, mDrawLayer4HighLight);
+							SearchIdentifyTask task = new SearchIdentifyTask(mContext, pt, SinoApplication.oilUrl, mLongTouchTitle, CommonData.TypeOperateLongPress, mDrawLayer4HighLight
+									,callout);
 						    task.execute(mIdentifyParameters); 
 							
 							if (LongPressPOI != null) {
@@ -396,12 +402,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						
 						callout.setCoordinates(anchorPt);
 						if (!callout.isShowing()) {
 							callout.show();
 						}
 					}
+
 				});
 	}
 
@@ -487,6 +493,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				SinoApplication.mResultList4FrameSearch.clear();
 				SinoApplication.mFeatureSet4Query = null;
 				mEditText.setText(getString(R.string.search));
+				mTag4ToolDistanceOk = false;
+				mTag4ToolAreaOk = false;
 				
 				if(mToolBar.getVisibility() == View.GONE){
 					mToolBar.setVisibility(View.VISIBLE);
@@ -501,49 +509,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBtnScaleBig = (ImageButton) findViewById(R.id.btn_scale_big);
 		mBtnScaleBig.setOnClickListener(this);
 	}
-	
-//	public class MenuTouchListener implements OnTouchListener {
-//
-//		@Override
-//		public boolean onTouch(View v, MotionEvent event) {
-//		
-//		if (event.getAction() == MotionEvent.ACTION_DOWN) {	
-//			switch (v.getId()) {
-//			case R.id.menuview_tool:
-//				setMenuStatus("tool",v);
-//				break;
-//			case R.id.menuview_search:
-//				setMenuStatus("search",v);
-//				break;
-//			case R.id.menuview_count:
-//				setMenuStatus("count",v);
-//		         break;
-//			case R.id.menuview_compare:
-//				setMenuStatus("compare",v);
-//				break;
-//			case R.id.menuview_mine:
-//				setMenuStatus("mine",v);
-//				break;
-//			default:
-//				break;
-//			} 
-//		}
-//		  hideCallOut();
-//			return false;
-//		}
-//
-//	
-//	}
-	
-//	private void setMenuStatus(String key,View v) {
-//		for (View selected:menuStatus.values()) {
-//			
-//			  selected.setSelected(false);
-//		}
-//	 	 v.setSelected(true);
-//		 menuStatus.put(key, v);
-//	}
-
 	
 	public void hideInput(){
 		if(getCurrentFocus()!=null)
@@ -736,10 +701,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			
 			break;
 		case R.id.menuview_compare:
-			if(SinoApplication.mResultList4Compared == null || SinoApplication.mResultList4Compared.size() == 0){
+			
+			if((SinoApplication.mResultList4Compared == null || SinoApplication.mResultList4Compared.size() == 0)){
 				Toast.makeText(mContext, getString(R.string.tip_no_objects), Toast.LENGTH_SHORT).show();
 			}else{
 				showWindow4Compared(SinoApplication.mResultList4Compared);
+			}
+			
+			if(SinoApplication.mFeatureSet4Compared == null){
+				Toast.makeText(mContext, getString(R.string.tip_no_objects), Toast.LENGTH_SHORT).show();
+			}else{
+				showWindow4Compared4FeatureSet(SinoApplication.mFeatureSet4Compared);
 			}
 			break;
 		case R.id.menuview_count:
@@ -943,6 +915,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
 		
 		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
+//		popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
+	}
+	
+	private void showWindow4Compared4FeatureSet(FeatureSet featureset) {
+		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mBaseLayout = (ViewGroup) layoutInflater.inflate(R.layout.view_menu_popwindow, null);
+		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
+		
+		SinoUtil.showWindow4Compared4FeatureSet(mContext, popupWindow, mBaseLayout, featureset);
 //		popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
 	}
 
@@ -1431,6 +1412,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		fragmentManager.beginTransaction().remove(searchFragment).commit();
 		searchFragment = null;
 		mFragmentLayout.setVisibility(View.GONE);
+		
+	}
+
+	@Override
+	public void setData4LongPressed(Object data) {
+		// TODO Auto-generated method stub
 		
 	}
 }

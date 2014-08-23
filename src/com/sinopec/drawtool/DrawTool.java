@@ -3,13 +3,12 @@ package com.sinopec.drawtool;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.esri.android.map.Callout;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.MapOnTouchListener;
 import com.esri.android.map.MapView;
-import com.esri.core.geometry.AreaUnit;
 import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.GeometryEngine;
@@ -30,7 +28,6 @@ import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polygon;
 import com.esri.core.geometry.Polyline;
 import com.esri.core.geometry.SpatialReference;
-import com.esri.core.geometry.Transformation2D;
 import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.FillSymbol;
@@ -87,10 +84,11 @@ public class DrawTool extends Subject {
 	public static final int MULTI_POINT = 9;
 
 	private InterfaceDataCallBack mCallback;
-	public DrawTool(MapView mapView, InterfaceDataCallBack callback, Callout callout) {
+	private ProgressDialog mProgressDialog;
+	public DrawTool(MapView mapView, InterfaceDataCallBack callback, Callout callout, Context context) {
+		mProgressDialog = new ProgressDialog(context);
 		this.mapView = mapView;
 		this.mCallback = callback;
-		this.mCallout = callout;
 		this.tempLayer = new GraphicsLayer();
 //		this.tempLayer.set
 		this.mapView.addLayer(this.tempLayer);
@@ -214,7 +212,6 @@ public class DrawTool extends Subject {
 		this.activate(type);
 	}
 
-	private Callout mCallout;
 	class DrawTouchListener extends MapOnTouchListener {
 
 		private Point startPoint;
@@ -352,11 +349,9 @@ public class DrawTool extends Subject {
 				Point point = mapView.toMapPoint(to.getX(), to.getY());
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
-					
 					SpatialReference sr = mapView.getSpatialReference();
 					SpatialReference webMercator = SpatialReference.create(102100);
 					Envelope newPoly = (Envelope) GeometryEngine.project(envelope, sr,webMercator);	
-					
 					String sArea = getAreaString(newPoly.calculateArea2D());
 					Toast.makeText(mapView.getContext(), sArea+"", Toast.LENGTH_SHORT).show();
 					
@@ -697,7 +692,7 @@ public class DrawTool extends Subject {
 //		query.setWhere("NAME_CN='���ľ���' or NAME_CN='��������'");
 		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
 				SinoApplication.currentLayerUrl,
-				CommonData.TypeOperateFrameChoos);
+				CommonData.TypeOperateFrameChoos, mProgressDialog);
 		task.execute(query);
 
 		task.setQueryFinishListener(new OnQueryFinishListener() {
@@ -723,6 +718,7 @@ public class DrawTool extends Subject {
 	//					 sb.append("名字： "+name + " ; ");
 						drawHighLight4Query(graphic);
 					}
+					mProgressDialog.dismiss();
 					deactivate();
 					mCallback.setSearchData4Query(results);
 					// Toast.makeText(mapView.getContext(), sb.toString() ,
