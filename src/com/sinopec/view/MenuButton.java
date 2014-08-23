@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.RadioButton;
 
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
@@ -43,6 +44,7 @@ public class MenuButton extends Button {
 		mTextSize = a.getDimensionPixelSize(R.styleable.iconbutton_text_size, 12);
 		mHasIcon = a.getBoolean(R.styleable.iconbutton_hasicon, true);
 		
+//		setButtonDrawable(android.R.color.transparent);
 		bitmap = BitmapFactory.decodeResource(context.getResources(), mIconId);
 		
 		mRealWidth = SinoApplication.screenWidth / 5;

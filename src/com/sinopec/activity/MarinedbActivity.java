@@ -12,6 +12,8 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +41,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -149,7 +152,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
      * 搜索结果fragment依赖的布局
      */
     private ViewGroup mFragmentLayout;
-    
+    private Bitmap mBitmapPaopaobg;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -300,11 +303,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 //		imageAnim = (ImageView) findViewById(R.id.poiAnim);
 //		imageAnim.setVisibility(View.INVISIBLE);
+		mBitmapPaopaobg = BitmapFactory.decodeResource(getResources(), R.drawable.paopao_bg);
 		callout = map.getCallout();
 		callout.setContent(popView);
 		callout.setStyle(R.layout.calloutwindow);
 		callout.setMaxWidth(SinoApplication.screenWidth - 10);
 		callout.setMaxHeight(SinoApplication.screenHeight);
+		callout.setOffset(0, -mBitmapPaopaobg.getHeight()/2);
 
 		map.setClickable(true);// 设置地图可点击
 
@@ -437,17 +442,32 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View arg0) {
-				Boolean[] clickTag = new Boolean[] { false, false };
-				if(mTag4OperateInLine){
-					clickTag = new Boolean[] { true, false };
-				}else if(mTag4ToolDistanceOk){
-					clickTag = new Boolean[] { true, false };
-				}else if(mTag4ToolAreaOk){
-					clickTag = new Boolean[] { false, true };
+				if(drawTool.isSelectDraw){
+					Boolean[] clickTag = new Boolean[] { false, false };
+					if(mTag4OperateInLine){
+						clickTag = new Boolean[] { true, false };
+					}else if(mTag4ToolDistanceOk){
+						clickTag = new Boolean[] { true, false };
+					}else if(mTag4ToolAreaOk){
+						clickTag = new Boolean[] { false, true };
+					}
+					ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
+					mGridView.setNumColumns(2);
+					setGridView(list, arg0);
+				}else{
+					Boolean[] clickTag = new Boolean[] { false, false };
+					String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
+					if(mTag4OperateInLine){
+						clickTag = new Boolean[] { true, false };
+					}else if(mTag4ToolDistanceOk){
+						clickTag = new Boolean[] { true, false };
+					}else if(mTag4ToolAreaOk){
+						clickTag = new Boolean[] { false, true };
+					}
+					ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, name4count, mChildMenuSplitNumber);
+					mGridView.setNumColumns(2);
+					setGridView(list, arg0);
 				}
-				ChildrenMenuDataUtil.setToolChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
-				mGridView.setNumColumns(2);
-				setGridView(list, arg0);
 			}
 		});
 		
@@ -456,8 +476,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			
 			@Override
 			public void onClick(View arg0) {
-				Log.d(tag, "--------mMenuViewSearch");
-				//TODO:
 				Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true };
 				ChildrenMenuDataUtil.setSearchChildrenMenuData(list, clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(7);
@@ -1021,7 +1039,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 //			popupWindow = new PopupWindow(mBaseLayout, 600, 400);
 //			
 //			SinoUtil.showWindow(mContext, popupWindow, mBaseLayout, mMenuListView, mMenuAdapter, this, list);
-			
 			hidePopupWindow4CountDistanceArea();
 			drawTool.calculateAreaAndLength("KM");
 		} else if ("toolArea".equals(tag)) {
@@ -1169,8 +1186,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		 @Override
 		 public boolean onTouch(View v, MotionEvent event) {
 //			 Log.d(tag, "----MapTouchListener---onTouch--- ");
-			 if(mGridViewLayout.getVisibility() == View.VISIBLE)
-					mGridViewLayout.setVisibility(View.GONE);
+//			 if(mGridViewLayout.getVisibility() == View.VISIBLE)
+//					mGridViewLayout.setVisibility(View.GONE);
 		    return super.onTouch(v, event);
 		 }
 		 
@@ -1274,6 +1291,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	
 	@Override
 	public void setData(Object data) {
+		mDrawLayer4HighLight.removeAll();
 		closeKeyboard();
 		if(data == null){
 			return;
@@ -1294,7 +1312,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		geometry.queryEnvelope(envelope);
 		Point point = envelope.getCenter();
 //		Log.d(tag, "-------查询出的坐标  x: "+point.getX()+"  y: "+point.getY());
-		map.zoomToScale(point, 5000000);
+		//正确的比例尺
+		map.setExtent(geometry, 0);
 
 		//绘制高亮区域
 		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
