@@ -6,7 +6,7 @@ package com.sinopec.common;
 public class CommonData {
 	public static String TypeCount = "统计";
 	public static String TypeProperty = "属性";
-	public static String TypeDocument = "文档";
+	public static String TypeIntroduce = "简介";
 	public static String KeyType = "KeyType";
 	
 	public static String TopicBasin = "盆地";

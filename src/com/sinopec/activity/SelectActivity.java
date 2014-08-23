@@ -43,7 +43,7 @@ public class SelectActivity extends Activity {
 	private ListView list;
 	private TextView titleName;
 	/**
-	 * 属性 or 文档 or 统计
+	 * 属性 or 简介 or 统计
 	 */
 	private String dataName;
 	private MyExpandableListAdapter myExpanListAdapter;
@@ -161,8 +161,8 @@ public class SelectActivity extends Activity {
 			list = initChildMenuData4Property();
 		} else if (CommonData.TypeCount.equals(dataName)) {
 			list = initChildMenuData4Count();
-		} else if (CommonData.TypeDocument.equals(dataName)) {
-			list = initChildMenuData4Document();
+		} else if (CommonData.TypeIntroduce.equals(dataName)) {
+			list = initChildMenuData4Introduce();
 		}
 		initData(list);
 	}
@@ -215,11 +215,27 @@ public class SelectActivity extends Activity {
 		return list;
 	}
 	
-	private ArrayList<String> initChildMenuData4Document() {
+	private ArrayList<String> initChildMenuData4Introduce() {
 		ArrayList<String> list = new ArrayList<String>();
-//		for (int i = 0; i < titils.length; i++) {
-//			list.add(titils[i]);
-//		}
+		String[] titils = null;
+
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			titils = new String[] { "盆地概况", "区域构造", " 含油气层系",
+					"圈闭与油气藏", "勘探情况", "平面构造图", "年代划分表",
+					"地理位置图"};
+			
+		} else if (CommonData.TopicOilGasField.equals(mTopicType) || CommonData.TopicOilGasMine.equals(mTopicType)) {
+			titils = new String[] { "油气田概述", "构造特征", "沉积与储层特征",
+					"流体性质", "储量情况", "平面构造图",
+					"剖面图", "综合柱状图", "地理位置图", "地层简表"};
+		} 
+		for (int i = 0; i < titils.length; i++) {
+			list.add(titils[i]);
+		}
+		
+		for (int i = 0; i < titils.length; i++) {
+			list.add(titils[i]);
+		}
 		return list;
 	}
 

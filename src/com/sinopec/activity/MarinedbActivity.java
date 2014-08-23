@@ -246,6 +246,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		SinoApplication.currentLayerUrl = getString(R.string.url_basin_4search);
 		SinoApplication.currentLayerUrl4Multi = getString(R.string.url_basin);
 		map.zoomTo(new Point(0,0), (float) map.getMaxResolution());
+		map.setMapBackground(Color.WHITE, Color.TRANSPARENT, 0, 0);
 	}
 
 	private void initSymbols() {
@@ -425,14 +426,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MenuButton mMenuViewTool;
 	private MenuButton mMenuViewSearch;
 	private ListView mListView;
-	private ViewGroup mSearchViewGroup;
 	/**
 	 * 底部五个按钮跟布局
 	 */
 	private ViewGroup mToolBar;
 	
 	private void initView() {
-		mSearchViewGroup = (ViewGroup) findViewById(R.id.search_listview_layout);
 		mListView = (ListView) findViewById(R.id.search_listview);
 		mBaseLayout = (ViewGroup) findViewById(R.id.baselayout);
 		mLeftBarLayout = (ViewGroup) findViewById(R.id.tool_bar);
@@ -668,7 +667,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			launchNewPage("统计");
 			break;
 		case R.id.doc:
-			Toast.makeText(mContext, "此功能暂未实现...", Toast.LENGTH_SHORT).show();
+//			Toast.makeText(mContext, "此功能暂未实现...", Toast.LENGTH_SHORT).show();
+			launchNewPage(getString(R.string.btn_introduce));
 			break;
 		case R.id.btn_map_layout: //图层
 			hideCallOut();
@@ -785,7 +785,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 	}
 	
-	private void launchNewPage (String name) {
+	private void launchNewPage(String name) {
 		
 		Intent intent = new Intent(this, SelectActivity.class);
 		intent.putExtra(CommonData.KeyTopicType, mTopicType);
@@ -1110,11 +1110,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			ChildrenMenuDataUtil.setSearchChildren6MenuData(toolist, clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(3);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
+		} else if ("碳酸盐岩储层分布".equals(tag)) {
+			Boolean[] clickTag = new Boolean[] { true, true,true,true, true,true };
+			ChildrenMenuDataUtil.setSearchChildren5MenuData(toolist, clickTag, mChildMenuSplitNumber);
+			mGridView.setNumColumns(6);
+			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 		}
 		
 		//三级子菜单都需要在这里处理
 		if(!"CountChildrenMenuOne".equals(tag) && !"CountChildrenMenuTwo".equals(tag) && !"toolDistance".equals(tag)
-				&& !"碳酸盐岩烃源分布".equals(tag) && !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)){
+				&& !"碳酸盐岩烃源分布".equals(tag) && !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag) &&
+				!"碳酸盐岩储层分布".equals(tag)){
 			hideCallOut();
 		}
 	}
@@ -1470,7 +1476,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void setData4LongPressed(Object data) {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void returnNoResult() {
+		if(callout != null){
+			if (callout.isShowing()) {
+				callout.hide();
+			}
+		}
 	}
 }

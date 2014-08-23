@@ -1,17 +1,13 @@
 package com.sinopec.task;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.esri.android.map.Callout;
@@ -145,6 +141,11 @@ public class SearchIdentifyTask extends
 			}
 		}else{
 			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+//			if(mCallout != null){
+//				if (mCallout.isShowing()) {
+//					mCallout.hide();
+//				}
+//			}
 			return;
 		}
 		
