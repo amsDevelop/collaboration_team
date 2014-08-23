@@ -39,6 +39,10 @@ public class DistributeRateResource extends Bean{
 		 */
 		@JsonFieldName("SSPDBM")
 		private long codeBelongToBasin;
+		
+		public long getCodeBelongToBasin() {
+			return codeBelongToBasin;
+		}
 
 		@Override
 		public String toString() {

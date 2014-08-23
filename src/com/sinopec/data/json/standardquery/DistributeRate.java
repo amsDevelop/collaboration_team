@@ -40,6 +40,22 @@ public class DistributeRate extends Bean{
 		@JsonFieldName("SSPDBM")
 		private long codeBelongToBasin;
 
+		public int getAllStorage() {
+			return allStorage;
+		}
+
+		public int getStorage2() {
+			return storage2;
+		}
+
+
+
+		public long getCodeBelongToBasin() {
+			return codeBelongToBasin;
+		}
+
+
+
 		@Override
 		public String toString() {
 			return "RateForOilAndBasin [allStorage=" + allStorage + ", storage2=" + storage2 + ", codeBelongToBasin=" + codeBelongToBasin + "]";
