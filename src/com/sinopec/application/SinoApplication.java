@@ -77,6 +77,10 @@ public class SinoApplication extends Application {
 	 */
 	public static ArrayList<OilGasData> mOilGasData = new ArrayList<OilGasData>();
 	/**
+	 * 纪录图层设置顶部三个图层的选中情况
+	 */
+	public static Boolean[] mLayerDataArray = {false, true, true};
+	/**
 	 * 纪录框选查询结果
 	 */
 	public static ArrayList<IdentifyResult> mResultList4FrameSearch = new ArrayList<IdentifyResult>();

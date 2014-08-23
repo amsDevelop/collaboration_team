@@ -40,6 +40,27 @@ public class ChildrenMenuDataUtil {
 
 	}
 	
+	public static void setToolChildrenMenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, String[] name4count, int splitNumber) {
+//		String[] name4count = new String[] { "测距", "测面积"};
+		Integer[] icon4count = { R.drawable.icon_count_distance,
+				R.drawable.icon_count_area};
+		String[] tag = new String[] { "toolDistance", "toolArea"};
+		list.clear();
+		for (int i = 0; i < name4count.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("name", name4count[i]);
+			map.put("icon", icon4count[i]);
+			map.put("tag", tag[i]);
+			
+			HashMap<String, Boolean> showMap = new HashMap<String, Boolean>();
+			showMap.put(tag[i], clickTag[i]);
+			map.put("clicktag", showMap);
+			map.put("split", splitNumber);
+			list.add(map);
+		}
+
+	}
+	
 	public static void setSearchChildrenMenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
 		String[] name4count = new String[] { "海相碳酸盐岩盆地", "碳酸盐岩储量比例", 
 				"碳酸盐岩资源比例", "碳酸盐岩烃源分布",

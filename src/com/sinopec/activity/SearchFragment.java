@@ -94,6 +94,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onClick(View arg0) {
 				getActivity().onBackPressed();
+				mInterfaceDataCallBack.setData(null);
 			}
 		});
 		mEditText = (ClearableEditText) view.findViewById(R.id.edittext_search);
