@@ -30,8 +30,6 @@ public class BasinBelonToRoot extends Bean{
 		public long getBeLongToId() {
 			return beLongToId;
 		}
-		
-		
 	}
 	
 }
