@@ -102,6 +102,10 @@ public class SinoApplication extends Application {
 	 */
 	public static FeatureSet mFeatureSet4Compared = null;
 	/**
+	 * 对比数目
+	 */
+	public static int mComparedNumber = 3;
+	/**
 	 * 获得IdentifyResult中地理元素的名字
 	 * @param result
 	 * @return

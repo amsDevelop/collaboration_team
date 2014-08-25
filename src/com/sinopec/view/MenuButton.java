@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.RadioButton;
 
@@ -50,6 +51,19 @@ public class MenuButton extends Button {
 		mRealWidth = SinoApplication.screenWidth / 5;
 		setWidth(mRealWidth);
 		setFocusableInTouchMode(false);
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+//		if(event.getAction() == MotionEvent.ACTION_DOWN){
+//			if(isSelected()){
+//				setSelected(false);
+//			}else{
+//				setSelected(true);
+//			}
+//		}
+		
+		return super.onTouchEvent(event);
 	}
 
 	private Paint mPaint = new Paint();

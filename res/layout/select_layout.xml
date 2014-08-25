@@ -70,7 +70,9 @@
                     android:id="@+id/scrollview_content"
                     android:layout_width="fill_parent"
                     android:layout_height="800dp"
-                    android:layout_gravity="center" />
+                    android:background="@color/yellow"
+                    android:layout_gravity="center"
+                    android:gravity="center" />
             </LinearLayout>
         </LinearLayout>
 

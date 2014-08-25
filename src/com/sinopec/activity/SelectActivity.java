@@ -1,6 +1,9 @@
 package com.sinopec.activity;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -8,8 +11,9 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -29,9 +33,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.esri.core.tasks.ags.find.FindResult;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
+import com.sinopec.data.json.Constant;
+import com.sinopec.query.AsyncHttpQuery;
+import com.sinopec.util.JsonParse;
 import com.sinopec.util.SimpleTableView;
 import com.sinopec.view.MyExpandableListAdapter;
 import com.sinopec.view.MyListAdapter;
@@ -53,11 +59,14 @@ public class SelectActivity extends Activity {
 	private ImageButton mBtnBack;
 	private ViewGroup mContentLayout;
 	private ScrollView mContent;
+	private AsyncHttpQuery asyncHttpQuery;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.select_layout);
+		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		mContentLayout = (ViewGroup) findViewById(R.id.content);
 		mBtnBack = (ImageButton) findViewById(R.id.btn_login_back);
 		mBtnBack.setOnClickListener(new OnClickListener() {
@@ -135,12 +144,61 @@ public class SelectActivity extends Activity {
 				return false;
 			}
 		});
-
+		
 	}
+	
+	private Handler handler = new Handler() {
+
+		public void handleMessage(android.os.Message msg) {
+			StringBuilder builder;
+			switch (msg.what) {
+			case 1:
+				dealJson((String)msg.obj);
+			}
+		}
+	};
 
 	private String mTopicType;
+	private void getJson(String string) {
+		String chenjitixi = "72057594037927935";
+//		String url = Constant.distributeOilGas + chenjitixi;
+		String url = "http://10.225.14.204:8080/peprisapi/oilGasFieldAttribute.html?dzdybm=201102001063";
+		asyncHttpQuery.execute(1, url);
+	}
+	
+	private void dealJson(String result){
+		JsonParse jsonParse = new JsonParse();
+		
+		try {
+//		  List<HashMap<String,HashMap<String,String>>>	list = jsonParse.parseItemsJson(new JsonReader(new StringReader((String) msg.obj)));
+		  List<HashMap<String,HashMap<String,String>>>	list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
+		  Log.d("json", "key and value: " + list.size());
+//			Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
+//			for (Entry<String, Object> ent : ents) {
+//				Log.d("data",
+//						"模糊查询  key: " + ent.getKey() + "  val: " + ent.getValue());
+//			}
+//		  for (HashMap<String, HashMap<String, String>> hashMap : list) {
+//			  
+//			  for (Map.Entry<String, HashMap<String, String>> hashMaps : hashMap.entrySet()) {
+//				     Log.d("json", "key and value: " + hashMaps.getKey() + ": " + hashMaps.getValue());
+//				    for (Map.Entry<String, String>  hashMap3 : hashMaps.getValue().entrySet()) {
+//				    	 Log.d("json", "other key and value: " + hashMap3.getKey() + ": " + hashMap3.getValue());
+//					}
+//			}
+//		}
+		  
+		  
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+			
+//		}
+//	}).start();
+	}
 
 	private void getData() {
+		getJson("");
 		Intent intent = getIntent();
 		ArrayList<String> list = new ArrayList<String>();
 		if(SinoApplication.identifyResult != null){

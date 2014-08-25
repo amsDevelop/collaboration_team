@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -25,6 +27,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,6 +42,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -86,6 +90,7 @@ import com.sinopec.drawtool.DrawTool;
 import com.sinopec.query.AsyncHttpQuery;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
+import com.sinopec.util.JsonParse;
 import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
@@ -263,6 +268,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					drawTool.queryAttribute4Query(builder.toString(),
 							(getResources().getString(R.string.url_basin)) + "/0",instance.mChilds);
 				break;
+			case 4:
+				dealJson((String)msg.obj);
 			default:
 				break;
 			}
@@ -369,8 +376,43 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		map.zoomTo(new Point(0,0), (float) map.getMaxResolution());
 		map.setMapBackground(Color.WHITE, Color.TRANSPARENT, 0, 0);
 		initTableKeyValue();
+//		getJson();
 	}
 
+	private void getJson() {
+		String url = "http://10.225.14.204:8080/peprisapi/oilGasFieldAttribute.html?dzdybm=201102001063";
+		asyncHttpQuery.execute(4, url);
+	}
+	
+	private void dealJson(String result){
+		JsonParse jsonParse = new JsonParse();
+		
+		try {
+		  List<HashMap<String,HashMap<String,String>>>	list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
+		  Log.d("json", "key and value: " + list.size());
+//			Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
+//			for (Entry<String, Object> ent : ents) {
+//				Log.d("data",
+//						"模糊查询  key: " + ent.getKey() + "  val: " + ent.getValue());
+//			}
+//		  for (HashMap<String, HashMap<String, String>> hashMap : list) {
+//			  
+//			  for (Map.Entry<String, HashMap<String, String>> hashMaps : hashMap.entrySet()) {
+//				     Log.d("json", "key and value: " + hashMaps.getKey() + ": " + hashMaps.getValue());
+//				    for (Map.Entry<String, String>  hashMap3 : hashMaps.getValue().entrySet()) {
+//				    	 Log.d("json", "other key and value: " + hashMap3.getKey() + ": " + hashMap3.getValue());
+//					}
+//			}
+//		}
+		  
+		  
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+			
+//		}
+//	}).start();
+	}
 	
 	private void initTableKeyValue() {
 		try {
@@ -580,6 +622,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private MenuButton mMenuViewMine;
 	private MenuButton mMenuViewTool;
 	private MenuButton mMenuViewSearch;
+//	private MenuButton mMenuViewCompare;
+//	private MenuButton mMenuViewCount;
+//	private MenuButton mMenuViewMine;
+//	private MenuButton mMenuViewTool;
+//	private MenuButton mMenuViewSearch;
 	private ListView mListView;
 	/**
 	 * 底部五个按钮跟布局
@@ -610,38 +657,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mEditText = (Button) findViewById(R.id.edittext_search);
 		mEditText.setOnClickListener(this);
 		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
-		mMenuViewTool.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				if(drawTool.isSelectDraw){
-					Boolean[] clickTag = new Boolean[] { false, false };
-					if(mTag4OperateInLine){
-						clickTag = new Boolean[] { true, false };
-					}else if(mTag4ToolDistanceOk){
-						clickTag = new Boolean[] { true, false };
-					}else if(mTag4ToolAreaOk){
-						clickTag = new Boolean[] { false, true };
-					}
-					ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
-					mGridView.setNumColumns(2);
-					setGridView(toolist, arg0);
-				}else{
-					Boolean[] clickTag = new Boolean[] { false, false };
-					String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
-					if(mTag4OperateInLine){
-						clickTag = new Boolean[] { true, false };
-					}else if(mTag4ToolDistanceOk){
-						clickTag = new Boolean[] { true, false };
-					}else if(mTag4ToolAreaOk){
-						clickTag = new Boolean[] { false, true };
-					}
-					ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, name4count, mChildMenuSplitNumber);
-					mGridView.setNumColumns(2);
-					setGridView(toolist, arg0);
-				}
-			}
-		});
 		
 		mMenuViewSearch = (MenuButton) findViewById(R.id.menuview_search);
 		mMenuViewSearch.setOnClickListener(new OnClickListener() {
@@ -705,6 +720,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					mToolBar.startAnimation(aniUp);
 					mGridViewLayout.setVisibility(View.GONE);
 				}
+				SinoApplication.mResultList4Compared.clear();
+				SinoApplication.mFeatureSet4Compared = null;
+				SinoApplication.findResult = null;
 			}
 		});
 
@@ -807,7 +825,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 * 宝藏名字
 	 */
 	private String mTopicName;
-
+	private Boolean[] clickTag;
 	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
@@ -815,7 +833,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// //显示的时候不相应，防止穿透
 		// return;
 		// }
-		Boolean[] clickTag;
+		
 
 		switch (v.getId()) {
 		case R.id.property:
@@ -891,18 +909,32 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					.replace(R.id.fragmentlayout, searchFragment).commit();
 			break;
 		case R.id.menuview_tool:
-			clickTag = new Boolean[] { false, false };
-			if (mTag4OperateInLine) {
-				clickTag = new Boolean[] { true, false };
-			} else if (mTag4ToolDistanceOk) {
-				clickTag = new Boolean[] { true, false };
-			} else if (mTag4ToolAreaOk) {
-				clickTag = new Boolean[] { false, true };
+			if(drawTool.isSelectDraw){
+				clickTag = new Boolean[] { false, false };
+				if(mTag4OperateInLine){
+					clickTag = new Boolean[] { true, false };
+				}else if(mTag4ToolDistanceOk){
+					clickTag = new Boolean[] { true, false };
+				}else if(mTag4ToolAreaOk){
+					clickTag = new Boolean[] { false, true };
+				}
+				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+				mGridView.setNumColumns(2);
+				setGridView(toolist, v);
+			}else{
+				clickTag = new Boolean[] { false, false };
+				String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
+				if(mTag4OperateInLine){
+					clickTag = new Boolean[] { true, false };
+				}else if(mTag4ToolDistanceOk){
+					clickTag = new Boolean[] { true, false };
+				}else if(mTag4ToolAreaOk){
+					clickTag = new Boolean[] { false, true };
+				}
+				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, name4count, mChildMenuSplitNumber);
+				mGridView.setNumColumns(2);
+				setGridView(toolist, v);
 			}
-			ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag,
-					mChildMenuSplitNumber);
-			mGridView.setNumColumns(2);
-			setGridView(toolist, v);
 
 			break;
 		case R.id.menuview_search:
@@ -1032,10 +1064,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private boolean mTag4ToolDistanceOk = false;
 
 	// 设置底部按钮的点击效果
-	private void setMenuButtonsStatus(int vId) {
+	private void setBottomMenuBarButtonsStatus(int vId) {
 		if (mMenuViewTool.getId() == vId) {
-			dealClickRepeat(mMenuViewTool);
+			boolean tag = true;
+			for (int i = 0; i < clickTag.length; i++) {
+				if(!clickTag[i]){
+					tag = false;
+					break;
+				}
+			}
+			if(tag){
+				dealClickRepeat(mMenuViewTool);
+			}
 
+//			mMenuViewCount.setChecked(false);
+//			mMenuViewSearch.setChecked(false);
+//			mMenuViewCompare.setChecked(false);
+//			mMenuViewMine.setChecked(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
@@ -1043,6 +1088,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if (mMenuViewCount.getId() == vId) {
 			dealClickRepeat(mMenuViewCount);
 
+//			mMenuViewTool.setChecked(false);
+//			mMenuViewSearch.setChecked(false);
+//			mMenuViewCompare.setChecked(false);
+//			mMenuViewMine.setChecked(false);
 			mMenuViewTool.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
@@ -1070,10 +1119,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mMenuViewCompare.setSelected(false);
 
 		}
-		hideCallOut();
+		hideCallOut4BottomMenuBar();
 	}
 
-	private void dealClickRepeat(View view) {
+	private void dealClickRepeat(MenuButton view) {
+//		if (view.isChecked()) {
+//			view.setChecked(false);
+//		} else {
+//			view.setChecked(true);
+//		}
 		if (view.isSelected()) {
 			view.setSelected(false);
 		} else {
@@ -1129,7 +1183,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBaseLayout = (ViewGroup) layoutInflater.inflate(
 				R.layout.view_menu_popwindow, null);
 		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
-
+		
 		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
 		// popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
 	}
@@ -1159,7 +1213,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 
 	private void setGridView(ArrayList<HashMap<String, Object>> list, View view) {
-		setMenuButtonsStatus(view.getId());
+		setBottomMenuBarButtonsStatus(view.getId());
 		mAdapter.notifyDataSetChanged();
 		// showAndHideGridView();
 		if (mLastClickedView == view) {
@@ -1178,7 +1232,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 			long arg3) {
+//		if (!"toolDistance".equals(tag) && !"toolArea".equals(tag)){
 		mLastClickedView = null;
+//		}
 		HashMap<String, Object> map = (HashMap<String, Object>) arg0
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
@@ -1493,9 +1549,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mFragmentLayout.setVisibility(View.GONE);
 	}
 
-	/**
-	 * 因此蓝色球体
-	 */
 	private void hideCallOut() {
 		if (callout != null) {
 			if (callout.isShowing()) {
@@ -1512,6 +1565,19 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
+		}
+	}
+	
+	private void hideCallOut4BottomMenuBar() {
+		if (callout != null) {
+			if (callout.isShowing()) {
+				callout.hide();
+			}
+		}
+		
+		mDrawLayer4HighLight.removeAll();
+		if (mGridViewLayout.getVisibility() == View.VISIBLE) {
+			mGridViewLayout.setVisibility(View.GONE);
 		}
 	}
 

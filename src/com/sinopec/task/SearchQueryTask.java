@@ -81,20 +81,21 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 	
 	@Override
 	protected FeatureSet doInBackground(Query... params) {
-		FeatureSet mResult = null;
+		FeatureSet result = null;
 		if (params != null && params.length > 0) {
 			Query mParams = params[0];
 			//Log.d(tag, "------doInBackground  --000000000000 ");
 			try {
-				mResult = m_qTask.execute(mParams);
-				//Log.d(tag, "------doInBackground: "+mResult.getDisplayFieldName());
+				Log.d("task", "--before--SearchQueryTask--doInBackground -------------");
+				result = m_qTask.execute(mParams);
+				Log.d("task", "--after--SearchQueryTask--doInBackground -------------");
 			} catch (Exception e) {
 				//Log.d(tag, "------doInBackground  err: "+e.toString());
 				e.printStackTrace();
 			}
 
 		}
-		return mResult;
+		return result;
 	}
 	
 	protected void onPreExecute() {
@@ -120,9 +121,11 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 //			}else 
 			if(graphics == null){
 				Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+				mProgressDialog.dismiss();
 			}else{
 				if(graphics.length == 0){
 					Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
+					mProgressDialog.dismiss();
 				}else{
 					finishListener.onFinish(results);
 				}
