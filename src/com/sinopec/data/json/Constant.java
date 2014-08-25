@@ -27,7 +27,12 @@ public interface Constant extends com.lenovo.nova.util.Constant{
 	String distributeRate = baseURL + 
 			"peprisapi/fixquery2.html?";
 	
-	
+	/**
+	 * 4.分层系全球海相碳酸盐岩烃源岩分布
+	 */
+	//type=72057594037927935&haixiang=72057594037927935&tansuanyanyan=72057594037927935 
+	String distributeHydrocSource = baseURL + 
+			"peprisapi/fixquery4.html?cengxi=";
 	
 	
 	

@@ -10,5 +10,5 @@ import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
 public class BasinBaseAttributeRoot extends Bean{
 	@JsonFieldName("油气田基础属性")
 	@ListSaveType(vlaue = BasinBaseAttributeValue.class)
-	private List<BasinBaseAttributeValue> list = new ArrayList<BasinBaseAttributeValue>();
+	public List<BasinBaseAttributeValue> list = new ArrayList<BasinBaseAttributeValue>();
 }
