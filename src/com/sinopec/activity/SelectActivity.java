@@ -154,26 +154,48 @@ public class SelectActivity extends Activity {
 			switch (msg.what) {
 			case 1:
 				dealJson((String)msg.obj);
+				break;
+			case 2:
+				dealJson((String)msg.obj);
+				break;
 			}
 		}
 	};
 
 	private String mTopicType;
-	private void getJson(String string) {
-		String chenjitixi = "72057594037927935";
-//		String url = Constant.distributeOilGas + chenjitixi;
-		String url = "http://10.225.14.204:8080/peprisapi/oilGasFieldAttribute.html?dzdybm=201102001063";
-		asyncHttpQuery.execute(1, url);
+	private void getJson(String id) {
+//		String chenjitixi = "72057594037927935";
+		String url = Constant.urlAttributeOilGas + id;
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			url = Constant.urlAttributeBasin + id;
+			asyncHttpQuery.execute(1, url);
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType)) {
+			url = Constant.urlAttributeOilGas + id;
+			asyncHttpQuery.execute(2, url);
+		}
 	}
 	
 	private void dealJson(String result){
+		Log.d("json", "-------result: " + result);
 		JsonParse jsonParse = new JsonParse();
 		
 		try {
-		  List<HashMap<String, HashMap<String, Object>>> list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
-		  Log.d("json", "key and value: " + list.size());
-//			Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
-//			for (Entry<String, Object> ent : ents) {
+//		  List<HashMap<String, HashMap<String, Object>>> list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
+		  HashMap<String, HashMap<String, Object>> map = jsonParse.parseItemJson(new JsonReader(new StringReader(result)));
+//		  Log.d("json", "key and value: " + list.size());
+//		  for (int i = 0; i < list.size(); i++) {
+//			  HashMap<String, HashMap<String, Object>> map = list.get(i); 
+//		  }
+		  
+		  String item = "油气田基础属性";
+		  if("油气田基础属性".equals(item)){
+			  
+		  }
+		  Set<Entry<String, HashMap<String, Object>>> entrySet = map.entrySet();
+		  for (Entry<String, HashMap<String, Object>> entry : entrySet) {
+			  Log.d("json", "-------result: " + entry.getKey());
+		  }
 //				Log.d("data",
 //						"模糊查询  key: " + ent.getKey() + "  val: " + ent.getValue());
 //			}
@@ -195,8 +217,8 @@ public class SelectActivity extends Activity {
 //		}
 	}
 
+	private String mID = "";
 	private void getData() {
-		getJson("");
 		Intent intent = getIntent();
 		ArrayList<String> list = new ArrayList<String>();
 		if(SinoApplication.identifyResult != null){
@@ -206,6 +228,9 @@ public class SelectActivity extends Activity {
 			Map<String, Object> attributes = SinoApplication.identifyResult.getAttributes();
 			String name = (String) attributes.get("OBJ_NAME_C");
 			titleName.setText(name);
+			mID = (String) SinoApplication.identifyResult.getAttributes().get("OBJ_ID");
+
+			Log.d("json", "-------mID: " + mID);
 		}else{
 			if (intent != null) {
 				dataName = intent.getStringExtra("name");
@@ -222,6 +247,7 @@ public class SelectActivity extends Activity {
 			list = initChildMenuData4Introduce();
 		}
 		initData(list);
+		getJson(mID);
 	}
 	
 	private ArrayList<String> initChildMenuData4Property() {
