@@ -161,6 +161,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 */
 	private ViewGroup mLeftBarLayout;
 	private AsyncHttpQuery asyncHttpQuery;
+	private String urlBasionQuery;
+	
 	/**
 	 * 搜索结果fragment依赖的布局
 	 */
@@ -169,7 +171,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Handler handler = new Handler() {
 
 		public void handleMessage(final android.os.Message msg) {
-			StringBuilder builder;
+			Long[] array;
 			switch (msg.what) {
 			case 1:
 				// String jsonStr = getJsonStr(url);
@@ -188,20 +190,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				builder = new StringBuilder("OBJ_ID =");
-
-				for (int i = 0; i < root.mBasinBelongTo.size(); i++) {
-
-					if (i == root.mBasinBelongTo.size() - 1) {
-						builder.append(root.mBasinBelongTo.get(i)
-								.getBeLongToId());
-					} else {
-						builder.append(root.mBasinBelongTo.get(i)
-								.getBeLongToId() + "or OBJ_ID =");
-					}
+				 array = new Long[root.mBasinBelongTo.size()];
+			    for (int i = 0; i < root.mBasinBelongTo.size(); i++) {
+			    	array[i] = root.mBasinBelongTo.get(i).getBeLongToId();
 				}
-				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",
+			     String where =  whereSelect(array);
+			
+				drawTool.queryAttribute4Query(where,
+						urlBasionQuery,
 						root.mBasinBelongTo);
 				break;
 			case 2:
@@ -222,19 +218,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				builder = new StringBuilder("OBJ_ID =");
-				for (int i = 0; i < rate.mChilds.size(); i++) {
-
-					if (i == rate.mChilds.size() - 1) {
-						builder.append(rate.mChilds.get(i)
-								.getCodeBelongToBasin());
-					} else {
-						builder.append(rate.mChilds.get(i)
-								.getCodeBelongToBasin() + "or OBJ_ID =");
-					}
+				
+				 array = new Long[rate.mChilds.size()];
+			    for (int i = 0; i < rate.mChilds.size(); i++) {
+			    	array[i] = rate.mChilds.get(i).getCodeBelongToBasin();
 				}
-				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",
+				
+				drawTool.queryAttribute4Query(whereSelect(array),
+						urlBasionQuery,
 						rate.mChilds);
 
 				break;
@@ -256,19 +247,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				builder = new StringBuilder("OBJ_ID =");
-				for (int i = 0; i < instance.mChilds.size(); i++) {
-
-					if (i == instance.mChilds.size() - 1) {
-						builder.append(instance.mChilds.get(i)
-								.getCodeBelongToBasin());
-					} else {
-						builder.append(instance.mChilds.get(i)
-								.getCodeBelongToBasin() + "or OBJ_ID =");
+				
+				 array = new Long[instance.mChilds.size()];
+				    for (int i = 0; i < instance.mChilds.size(); i++) {
+				    	array[i] = instance.mChilds.get(i).getCodeBelongToBasin();
 					}
-				}
-				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",
+				drawTool.queryAttribute4Query(whereSelect(array),
+						urlBasionQuery,
 						instance.mChilds);
 
 				break;
@@ -290,19 +275,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				builder = new StringBuilder("OBJ_ID =");
-				for (int i = 0; i < rockYuanYan.mChilds.size(); i++) {
-
-					if (i == rockYuanYan.mChilds.size() - 1) {
-						builder.append(rockYuanYan.mChilds.get(i)
-								.getCodeBelongToBasin());
-					} else {
-						builder.append(rockYuanYan.mChilds.get(i)
-								.getCodeBelongToBasin() + "or OBJ_ID =");
+				 array = new Long[rockYuanYan.mChilds.size()];
+				    for (int i = 0; i < rockYuanYan.mChilds.size(); i++) {
+				    	array[i] = rockYuanYan.mChilds.get(i).getCodeBelongToBasin();
 					}
-				}
-				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",
+				drawTool.queryAttribute4Query(whereSelect(array),
+						urlBasionQuery,
 						rockYuanYan.mChilds);
 				break;
 				
@@ -324,19 +302,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				builder = new StringBuilder("OBJ_ID =");
-				for (int i = 0; i < chuJi.mChilds.size(); i++) {
-
-					if (i == chuJi.mChilds.size() - 1) {
-						builder.append(chuJi.mChilds.get(i)
-								.getCodeBelongToBasin());
-					} else {
-						builder.append(chuJi.mChilds.get(i)
-								.getCodeBelongToBasin() + "or OBJ_ID =");
+				 array = new Long[chuJi.mChilds.size()];
+				    for (int i = 0; i < chuJi.mChilds.size(); i++) {
+				    	array[i] = chuJi.mChilds.get(i).getCodeBelongToBasin();
 					}
-				}
-				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",
+				drawTool.queryAttribute4Query(whereSelect(array),
+						urlBasionQuery,
 						chuJi.mChilds);
 				break;
 				
@@ -358,19 +329,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				builder = new StringBuilder("OBJ_ID =");
-				for (int i = 0; i < cengGai.mChilds.size(); i++) {
-
-					if (i == cengGai.mChilds.size() - 1) {
-						builder.append(cengGai.mChilds.get(i)
-								.getCodeBelongToBasin());
-					} else {
-						builder.append(cengGai.mChilds.get(i)
-								.getCodeBelongToBasin() + "or OBJ_ID =");
+				 array = new Long[cengGai.mChilds.size()];
+				    for (int i = 0; i < cengGai.mChilds.size(); i++) {
+				    	array[i] = cengGai.mChilds.get(i).getCodeBelongToBasin();
 					}
-				}
-				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",
+				drawTool.queryAttribute4Query(whereSelect(array),
+						urlBasionQuery,
 						cengGai.mChilds);
 				break;
 				
@@ -389,6 +353,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		this.mContext = this;
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
+		urlBasionQuery = getResources().getString(R.string.url_basin) + "/0";
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		SinoApplication.getLayerIDAndKeyMap();
 		setTitle(R.string.app_name);
@@ -500,7 +466,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		btnLine.setOnClickListener(this);
 		btnCurScreen.setOnClickListener(this);
 	}
+    
+	private String whereSelect (Long[] objArray) {
+		
+		StringBuilder builder = new StringBuilder("OBJ_ID =");
 
+		for (int i = 0; i < objArray.length; i++) {
+
+			if (i == objArray.length - 1) {
+				builder.append(objArray[i]);
+			} else {
+				builder.append(objArray[i] + "or OBJ_ID =");
+			}
+		}
+		return builder.toString();
+	}
+	
+	
 	private Animation aniIn;
 	private Animation aniOut;
 	private Animation aniUp;
