@@ -26,6 +26,10 @@ public class BasinBelonToRoot extends Bean{
 	public class BasinBelongTo extends Bean{
 		@JsonFieldName("SSPDBM")
 		private long beLongToId;
+
+		public long getBeLongToId() {
+			return beLongToId;
+		}
 	}
 	
 }

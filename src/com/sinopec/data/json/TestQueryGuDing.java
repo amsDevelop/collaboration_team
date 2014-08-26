@@ -16,6 +16,7 @@ import com.lenovo.nova.util.network.NetworkManager;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
+import com.sinopec.data.json.basin.BasinBaseAttributeRoot;
 import com.sinopec.data.json.basin.BasinBaseValueRoot;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
 import com.sinopec.data.json.standardquery.DistributeCengGai;
@@ -108,10 +109,36 @@ public class TestQueryGuDing extends AndroidTestCase {
 			BasinBaseValueRoot root = new BasinBaseValueRoot();
 	
 			JsonToBeanParser.getInstance().fillBeanWithJson(root, jsonObj);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	}
+	
+	/**
+	 * 测试油气田
+	 */
+	public void testBasinAttValue() {
+		
+		
+		String id = "201102001130";
+		String URL = Constant.basinURL + id;
+		slog.p("URL is " + URL);
+		URL = "http://10.225.14.204:8080/peprisapi/oilGasFieldAttribute.html?dzdybm=201102001063";
+		JSONObject jsonObj = null;
+		jsonObj = getJson(URL);
+		try {
+			BasinBaseAttributeRoot root = new BasinBaseAttributeRoot();
+	
+			JsonToBeanParser.getInstance().fillBeanWithJson(root, jsonObj);
+			
+			System.out.println("#################" + root.list.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 
 
 	/**
