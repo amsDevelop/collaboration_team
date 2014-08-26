@@ -21,19 +21,28 @@ import android.widget.Spinner;
 
 import com.lenovo.nova.util.BaseDialogFragment;
 import com.lenovo.nova.util.Constant;
+import com.lenovo.nova.util.MyLog;
 import com.lenovo.nova.util.slog;
 import com.lenovo.nova.util.parse.XmlParser;
 import com.sinopec.activity.GeologyBean.Bean;
+import com.sinopec.activity.GeologyBean.FValues;
 import com.sinopec.activity.GeologyBean.GeoCondition;
 import com.sinopec.activity.GeologyBean.GeoObject;
+import com.sinopec.activity.GeologyBean.SValues;
 import com.sinopec.activity.GeologyBean.Values;
 
 public class ConditionQuery extends BaseDialogFragment implements
 		OnClickListener {
 	GeologyBean bean = null;
 	GeoObject geoobj = null;
+	/**
+	 * 条件
+	 */
 	GeoCondition condition = null;
 	ViewGroup mContainer;
+	private Values mValues;
+	private FValues mFvalue;
+	private SValues svalue;
 	private static final String TAG = "ConditionQuery";
 
 	@Override
@@ -42,76 +51,132 @@ public class ConditionQuery extends BaseDialogFragment implements
 		init();
 	}
 
-	private void parser(XmlResourceParser xrp, String name) {
+	
+	private void parser(XmlParser xmlParser, XmlResourceParser xrp, String name,boolean start) {
+		if(name == null){
+			return;
+		}
+		
 		if (name.equals("PropertySearch")) {
-			bean = new GeologyBean();
+			if(start){
+				bean = new GeologyBean();
+			}
 		}
 		if (name.equals("GeoObject")) {
-			int count = xrp.getAttributeCount();
-			if (count < 2) {
-				slog.e(TAG, "attribute count error below 2 " + count);
-			}
-			try {
-				String id = xrp.getAttributeValue(0);
-				String attName = xrp.getAttributeValue(1);
-				if (bean != null) {
-					geoobj = bean.createOneGeoObj(id, attName);
-				} else {
-					slog.e(TAG, "W : bean is null ");
+			if(start){
+				int count = xrp.getAttributeCount();
+				if (count < 2) {
+					MyLog.e(TAG, "attribute count error below 2 " + count);
 				}
-			} catch (Exception e) {
-				slog.e(TAG, "E : " + e);
-				e.printStackTrace();
+				try {
+					String id = xrp.getAttributeValue(0);
+					if(id.equals("11")){
+						System.out.println("11");
+					}
+					String attName = xrp.getAttributeValue(1);
+					if (bean != null) {
+						geoobj = bean.createOneGeoObj(id, attName);
+					} else {
+						MyLog.e(TAG, "W : bean is null ");
+					}
+				} catch (Exception e) {
+					MyLog.e(TAG, "E : " + e);
+					e.printStackTrace();
+				}
 			}
 		}
 		if (name.equals("GeoCondition")) {
-			int count = xrp.getAttributeCount();
-			if (count < 3) {
-				slog.e(TAG, "attribute count error below 3 " + count);
-			}
-
-			try {
-				String id = xrp.getAttributeValue(0);
-				String attName = xrp.getAttributeValue(1);
-				String state = xrp.getAttributeValue(2);
-				if (geoobj != null) {
-					condition = geoobj
-							.createOneConditionObj(id, attName, state);
-				} else {
-					slog.e(TAG, "W : geoobj is null ");
+			if(start){
+				int count = xrp.getAttributeCount();
+				if (count < 3) {
+					MyLog.e(TAG, "attribute count error below 3 " + count);
 				}
-			} catch (Exception e) {
-				slog.e(TAG, "E : " + e);
-				e.printStackTrace();
+				
+				try {
+					String id = xrp.getAttributeValue(0);
+					String attName = xrp.getAttributeValue(1);
+					String state = xrp.getAttributeValue(2);
+					if (geoobj != null) {
+						condition = geoobj
+								.createOneConditionObj(id, attName, state);
+					} else {
+						MyLog.e(TAG, "W : geoobj is null ");
+					}
+				} catch (Exception e) {
+					MyLog.e(TAG, "E : " + e);
+					e.printStackTrace();
+				}
+				
 			}
 		}
-		if (isValue(name) || isFvalue(name) || isSvalue(name) || isTvalue(name)) {
-			int count = xrp.getAttributeCount();
-			if (count < 2) {
-				slog.e(TAG, "attribute count error below 2 " + count);
+		if(isValue(name)){
+			if(start){
+				try {
+					int count = xrp.getAttributeCount();
+					if (count < 2) {
+						MyLog.e(TAG, "attribute count error below 2 " + count  + xmlParser.debugAttributeValue(xrp));
+					}
+					String id = xrp.getAttributeValue(0);
+					String attName = xrp.getAttributeValue(1);
+					if (condition != null) {
+						mValues = condition.createOneVaueObj(id, attName);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}else{
+				mValues = null;
 			}
-			try {
+		}
+		
+		if(isFvalue(name)){
+			if(start){
+				int count = xrp.getAttributeCount();
+				if (count < 2) {
+					MyLog.e(TAG, "attribute count error below 2 " + count);
+				}
 				String id = xrp.getAttributeValue(0);
 				String attName = xrp.getAttributeValue(1);
-				if (condition != null) {
-					if (isValue(name)) {
-						condition.createOneVaueObj(id, attName);
-					}
-					if (isFvalue(name)) {
-						condition.createFValue(id, attName);
-					}
-					if (isSvalue(name)) {
-						condition.createSValue(id, attName);
-					}
-					if (isTvalue(name)) {
-						condition.createTValue(id, attName);
-					}
-				} else {
-					slog.e(TAG, "W : condition is null ");
+				if(mValues != null){
+					mFvalue =	mValues.createFValue(id, attName);
+				}else if(condition != null){
+					slog.p(TAG,"mValues is null , use condition " + condition.name + "　" + 
+							attName);
+					mFvalue = condition.createFVaueObj(id, attName);
 				}
-			} catch (Exception e) {
-				slog.e(TAG, "E : " + e);
-				e.printStackTrace();
+			}
+		}
+		
+		if(isSvalue(name)){
+			if(start){
+				int count = xrp.getAttributeCount();
+				if (count < 2) {
+					MyLog.e(TAG, "attribute count error below 2 " + count);
+				}
+				String id = xrp.getAttributeValue(0);
+				String attName = xrp.getAttributeValue(1);
+				
+				if(mFvalue != null){
+					svalue = mFvalue.createSValue(id, attName);
+				}
+			}else{
+				svalue = null;
+			}
+		}
+		if(isTvalue(name)){
+			if(start){
+				int count = xrp.getAttributeCount();
+				if (count < 2) {
+					MyLog.e(TAG, "attribute count error below 2 " + count);
+				}
+				String id = xrp.getAttributeValue(0);
+				String attName = xrp.getAttributeValue(1);
+				
+				if(svalue != null){
+					svalue.createSValue(id, attName);
+				}else{
+					MyLog.e(TAG,"error svalue is null " + name);
+				}
 			}
 		}
 	}
@@ -362,11 +427,15 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 			// TODO Auto-generated method stub
 			
-			XmlParser parser = new XmlParser(arg0[0]) {
+			final XmlParser parser = new XmlParser(arg0[0]) {
 				@Override
 				protected void onExecueStartTagEvent(XmlResourceParser parser,
 						String name) {
-					ConditionQuery.this.parser(parser, name);
+					ConditionQuery.this.parser(this,parser, name,true);
+				}
+				@Override
+				protected void onExecuteEndTagEvent(XmlResourceParser parser, String name) {
+					ConditionQuery.this.parser(this,parser, name,false);
 				}
 			};
 			parser.parser();
@@ -378,6 +447,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			addItem();
+			System.out.println(bean);
 		}
 	}
 	

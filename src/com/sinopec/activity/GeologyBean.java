@@ -39,7 +39,13 @@ public class GeologyBean {
 		String name;
 		String state;
 		ArrayList<Values> values = new ArrayList<Values>();
-
+		public FValues createFVaueObj(String id, String name) {
+			FValues obj = new FValues();
+			obj.id = id;
+			obj.name = name;
+			values.add(obj);
+			return obj;
+		}
 		public Values createOneVaueObj(String id, String name) {
 			Values obj = new Values();
 			obj.id = id;
@@ -48,53 +54,75 @@ public class GeologyBean {
 			return obj;
 		}
 
-		public Values createFValue(String id2, String attName) {
+		@Override
+		public String getName() {
+			return name;
+		}
+
+		
+	}
+
+	class Values implements Bean {
+		private String id;
+		private String name;
+		ArrayList<FValues> mFvalue = new ArrayList<GeologyBean.FValues>();
+		@Override
+		public String getName() {
+			return name;
+		}
+		
+		public FValues createFValue(String id, String name) {
 			FValues obj = new FValues();
 			obj.id = id;
 			obj.name = name;
-			values.add(obj);
+			mFvalue.add(obj);
 			return obj;
 		}
+	}
 
-		public Values createSValue(String id2, String attName) {
+	class FValues extends Values  implements Bean{
+		String id;
+		String name;
+		ArrayList<SValues> values = new ArrayList<GeologyBean.SValues>();
+		@Override
+		public String getName() {
+			return name;
+		}
+		
+		public SValues createSValue(String id, String name) {
 			SValues obj = new SValues();
 			obj.id = id;
 			obj.name = name;
 			values.add(obj);
 			return obj;
 		}
+	}
 
-		public Values createTValue(String id2, String attName) {
+	class SValues  implements Bean{
+		ArrayList<TValues> values = new ArrayList<GeologyBean.TValues>();
+		String id;
+		String name;
+		@Override
+		public String getName() {
+			return name;
+		}
+		public TValues createSValue(String id, String name) {
 			TValues obj = new TValues();
 			obj.id = id;
 			obj.name = name;
 			values.add(obj);
 			return obj;
 		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
+		
 	}
 
-	class Values implements Bean {
+	class TValues  implements Bean{
 		String id;
 		String name;
-
 		@Override
 		public String getName() {
 			return name;
 		}
-	}
-
-	class FValues extends Values {
-	}
-
-	class SValues extends Values {
-	}
-
-	class TValues extends Values {
 	}
 
 	@Override
