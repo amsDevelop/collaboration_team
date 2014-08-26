@@ -1,6 +1,7 @@
 package com.sinopec.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GeologyBean {
 	ArrayList<GeoObject> geoObjects = new ArrayList<GeoObject>();
@@ -32,6 +33,11 @@ public class GeologyBean {
 		public String getName() {
 			return name;
 		}
+
+		@Override
+		public List getContainer() {
+			return conditions;
+		}
 	}
 
 	class GeoCondition implements Bean {
@@ -59,7 +65,10 @@ public class GeologyBean {
 			return name;
 		}
 
-		
+		@Override
+		public List getContainer() {
+			return values;
+		}
 	}
 
 	class Values implements Bean {
@@ -77,6 +86,10 @@ public class GeologyBean {
 			obj.name = name;
 			mFvalue.add(obj);
 			return obj;
+		}
+		@Override
+		public List getContainer() {
+			return mFvalue;
 		}
 	}
 
@@ -96,6 +109,10 @@ public class GeologyBean {
 			values.add(obj);
 			return obj;
 		}
+		@Override
+		public List getContainer() {
+			return values;
+		}
 	}
 
 	class SValues  implements Bean{
@@ -113,7 +130,10 @@ public class GeologyBean {
 			values.add(obj);
 			return obj;
 		}
-		
+		@Override
+		public List getContainer() {
+			return values;
+		}
 	}
 
 	class TValues  implements Bean{
@@ -122,6 +142,10 @@ public class GeologyBean {
 		@Override
 		public String getName() {
 			return name;
+		}
+		@Override
+		public List getContainer() {
+			return null;
 		}
 	}
 
@@ -132,5 +156,6 @@ public class GeologyBean {
 
 	interface Bean {
 		String getName();
+		List getContainer();
 	}
 }

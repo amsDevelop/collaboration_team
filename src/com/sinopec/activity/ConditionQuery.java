@@ -1,6 +1,7 @@
 package com.sinopec.activity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.content.Context;
@@ -351,8 +352,12 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 			ArrayList<Values> arrsys = bean.geoObjects.get(geologyIndex).conditions
 					.get(conditionIndex).values;
-			ArrayList<String> str = createArrayList(arrsys);
-
+//			ArrayList<String> str = createArrayList(arrsys);
+			
+			ArrayList<String> str = new ArrayList<String>();
+			
+			getAllChildStr(arrsys,str);
+			
 			if (adapterConditionValue != null) {
 				adapterConditionValue.clear();
 				adapterConditionValue.addAll(str);
@@ -363,6 +368,19 @@ public class ConditionQuery extends BaseDialogFragment implements
 				mSpinnerConditionValue.setAdapter(adapterConditionValue);
 			}
 
+		}
+
+		private List getAllChildStr(List arrsys,ArrayList<String> childList) {
+			if(arrsys != null){
+				for(int i = 0; i < arrsys.size(); i++){
+					Bean ben = (Bean) arrsys.get(i);
+					String name = ben.getName();
+					List<Bean> list = ben.getContainer();
+					childList.add(name);
+					getAllChildStr(list, childList);
+				}
+			}
+			return childList;
 		}
 
 		private ArrayList<String> createArrayList(List<?> list) {
@@ -421,11 +439,8 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 	
 	class ParserTask extends AsyncTask<XmlResourceParser,Void,Void> {
-
 		@Override
 		protected Void doInBackground(XmlResourceParser... arg0) {
-
-			// TODO Auto-generated method stub
 			
 			final XmlParser parser = new XmlParser(arg0[0]) {
 				@Override
