@@ -1,16 +1,9 @@
 package com.sinopec.util;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.json.JSONObject;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import android.text.TextUtils;
 import android.util.JsonReader;
@@ -27,15 +20,19 @@ public class JsonParse {
      * @return List<ItemProperty>
      * @throws IOException
      */
-    public List<HashMap<String,HashMap<String,String>>> parseItemsJson(JsonReader reader) throws IOException {
-        List<HashMap<String,HashMap<String,String>>> lists = new ArrayList<HashMap<String,HashMap<String,String>>>();
+    public List<HashMap<String,HashMap<String,Object>>> parseItemsJson(JsonReader reader) throws IOException {
+        List<HashMap<String,HashMap<String,Object>>> lists = new ArrayList<HashMap<String,HashMap<String,Object>>>();
         
         reader.beginArray();
         
+        
         while (reader.hasNext()) {
-//        	Log.v("mandy", "list: " + reader.nextName());
+//        	Log.v('mandy', 'list: ' + reader.nextName());
+         	Log.v("mandy", "list: while....");
             lists.add(parseItemJson(reader));
+         
         }
+    	Log.v("mandy", "list: while....finish...");
         reader.endArray();
         return lists;
     }
@@ -47,64 +44,59 @@ public class JsonParse {
      * @return ItemProperty
      * @throws IOException
      */
-    public HashMap<String,HashMap<String,String>> parseItemJson(JsonReader reader) throws IOException {
-    	HashMap<String,HashMap<String,String>> item = new HashMap<String,HashMap<String,String>>();
+    public HashMap<String,HashMap<String,Object>> parseItemJson(JsonReader reader) throws IOException {
+    	HashMap<String,HashMap<String,Object>> item = new HashMap<String,HashMap<String,Object>>();
         reader.beginObject();
 
         while (reader.hasNext()) {
             String name  = 	reader.nextName();
-        	 if(name.equalsIgnoreCase("油气田基础属性")) {
-        		 
+//        	 if(name.equalsIgnoreCase("娌规皵鐢版簮鍌ㄧ洊鏉′欢")) {
+//        		   Log.v("mandy", "list: " + name);
+//           	    Log.v('mandy', 'list: ' + value);	
         		item.put(name, parseItemOtherJson(reader)) ;
-        	 } else {
-        		 
-        		 reader.skipValue();
-        	 }
-        	
+//        	 } else {
+//        		 
+//        		 reader.skipValue();
+//        	 }
+//        	
         }
         reader.endObject();
         return item;
     }
-    
-    
-    public HashMap<String,HashMap<String,String>> parseJson(String json) throws IOException {
-    	Gson gson = new Gson();
-//    	Type collectionType = new TypeToken<List<PersonBean>>(){}.getType();
-//    	List<PersonBean> details = gson.fromJson(json, collectionType);
-    	HashMap<String,HashMap<String,String>> item = new HashMap<String,HashMap<String,String>>();
-    	return item;
-    }
-    
-//    reader.beginObject();  
-//	  while(reader.hasNext()){  
-//		  HashMap<String,String> hashMap = new HashMap<String, String>();
-//	      String tagName= reader.nextName();  
-//	      hashMap.put(tagName, reader.nextString());
-//	   }  
-//	    reader.endObject();  
-    private String tag = "json";
-    public HashMap<String,String> parseItemOtherJson(JsonReader reader) throws IOException {
-    	HashMap<String,String> item = new HashMap<String,String>();
+        
+    public HashMap<String,Object> parseItemOtherJson(JsonReader reader) throws IOException {
+    	HashMap<String,Object> item = new HashMap<String,Object>();
         reader.beginObject(); 
 
         while (reader.hasNext()) {
-        	 String value = "";
-        	 String key = "";
         	    try {
+        	    String name = reader.nextName();
+        	    if (name.equals("FXSJ") || name.equals("CCTCRQ")) {
+        	    	  HashMap<String, String> hashMap = new HashMap<String, String>();   
+        	    	  reader.beginObject(); 
+        	    	  while (reader.hasNext()) {
+        	    		  hashMap.put(reader.nextName(), reader.nextString());
+        	    	  }
+        	    	  reader.endObject();
+        	    	  
+        	    	item.put(name, hashMap);
+        	    	 
+        	    } else if (name.equals("GTQTYYCJTX") || name.equals("CCCJTX")){
         	    	
-        	     key = reader.nextName();
-        	     value = reader.nextString();
-        	     Log.d(tag, "0000   键: " + key+" 值: "+value);
-        	     if("FXSJ".equals(key) || "CCTCRQ".equals(key)){
-        	    	  Log.d(tag, "键: " + key+" 值: "+value);
-        	     }
-        	     
-        	     item.put(key,value);
+        	    	  item.put(name, "null");
+        	    	
+        	    } else {
+        	    	String value = reader.nextString();
+               	    item.put(name, value);
+        	    }
+        	    
+        	 
 				} catch (Exception e) {
-					Log.e(tag, " 解析json 错误 "+e.toString());
-					item.put(key,"");
-					continue;
+					reader.skipValue();
 				}
+        	
+        	
+        	  
         }
         reader.endObject();
         return item;

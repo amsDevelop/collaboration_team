@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<actionkey xmlns:android="http://schemas.android.com/apk/res/android" >
+    <Basin name="盆地">
+        <Table name="含油气盆地基础属性">
+            <GZDYZWMC dispaly="中文名称"/>
+            <GZDYYWMC dispaly="英文名称"/>
+            <PDLXBM	  dispaly="盆地类型"/>
+            <JDLXBM   dispaly="基底类型"/>
+            <CJLXBM   dispaly="沉降类型"/>
+            <DCZYCX	  dispaly="地层主要层系"/>
+            <PDMJ     dispaly="盆地面积"/>
+            <PJCJHD	  dispaly="平均沉积厚度"/>
+            <ZDCJHD	  dispaly="最大沉积厚度"/>
+            <CJTX	  dispaly="沉积体系"/>
+            <GZYDCS	  dispaly="构造运动次数"/>
+            <CJXHS 	  dispaly="沉积旋回数"/>
+            <GDWTD 	  dispaly="古地温梯度"/>
+            <DBRL 	  dispaly="底部热流"/>
+            <BZ		  dispaly="备注"/>                                                
+        </Table>
+        
+        <Table name="含油气盆地勘探成果">
+            <ND		  	dispaly="年度"/>
+            <XZYDZCL  	dispaly="新增油地质储量"/>
+            <QXZDZCL 	dispaly="气新增地质储量"/>
+            <XZYKCCL 	dispaly="新增油可采储量"/>
+            <XZNXYDZCL 	dispaly="新增凝析油地质储量"/>
+            <XZNXYKCCL 	dispaly="新增凝析油可采储量"/>
+            <LJNXYKCCL 	dispaly="累计凝析油可采储量"/>
+            <LJNXYDZCL 	dispaly="累计凝析油地质储量"/>
+            <XZQKCCL 	dispaly="新增气可采储量"/>
+            <LJYDZCL 	dispaly="累计油地质储量"/>
+            <LJQDZCL 	dispaly="累计气地质储量"/>
+            <LJYKCCL 	dispaly="累计油可采储量"/>
+            <LJQKCCL 	dispaly="累计气可采储量"/>
+            <BZ		  dispaly="备注"/>               
+        </Table>
+        
+        <Table name="含油气盆地整体资源">
+            <ZYXLBM	 	dispaly="资源类型"/>
+            <ZYL		dispaly="资源量"/>
+            <CL		 	dispaly="储量"/>
+            <TMCL	 	dispaly="探明储量"/>
+            <JSKCCL	 	dispaly="技术可采储量"/>
+            <JJKCCL	 	dispaly="经济可采储量"/>
+            <CCL		dispaly="采出量"/>
+            <ZDZYL	 	dispaly="最大资源量"/>
+            <ZXZYL	 	dispaly="最小资源量"/>
+            <JLDW	 	dispaly="计量单位"/>
+            <BZ		  dispaly="备注"/>               
+        </Table>
+        
+        <Table name="含油气盆地烃源条件">
+            <ZYTYYCW	dispaly="主要烃源岩层位"/>
+            <TYYCJTX	dispaly="烃源岩沉积体系"/>
+            <ZYTYYCJX	dispaly="主要烃源岩沉积相"/>
+            <ZYTYYYX	dispaly="主要烃源岩岩性"/>
+            <YYCXSNB	dispaly="源岩层系砂泥比"/>
+            <ZYTYYNL	dispaly="主要烃源岩年龄"/>
+            <YXTYYMJ	dispaly="有效烃源岩面积"/>
+            <YXTYYHD	dispaly="有效烃源岩厚度"/>
+            <TYYZDMS	dispaly="烃源岩最大埋深"/>
+            <YYYJZLX	dispaly="源岩有机质类型"/>
+            <YYYJTHL	dispaly="源岩有机碳含量"/>
+            <LFLQAHL	dispaly="氯仿沥青A含量"/>
+            <TYYCSDRO	dispaly="烃源岩成熟度Ro"/>
+            <STQD		dispaly="生烃强度"/>
+            <SYQD		dispaly="生油强度"/>
+            <SQQD		dispaly="生气强度"/>
+            <ZSTL		dispaly="总生烃量"/>
+            <ZSYL		dispaly="总生油量"/>
+            <ZSQL		dispaly="总生气量"/>
+            <PTQD		dispaly="排烃强度"/>            
+            <PYQD		dispaly="排油强度"/>
+            <PQQD		dispaly="排气强度"/>
+            <ZPTL		dispaly="总排烃量"/>
+            <ZPYL		dispaly="总排油量"/>
+            <ZPQL		dispaly="总排气量"/>                
+            <BZ		  dispaly="备注"/>                
+        </Table>
+        
+        <Table name="含油气盆地储集条件">
+            <ZYCCCW	    dispaly="主要储层层位"/>
+            <CCCJTX		dispaly="储层沉积体系"/>
+            <CCZYCJX	dispaly="储层主要沉积相"/>
+            <CCZYYX		dispaly="储层主要岩性"/>
+            <CCPJNL		dispaly="储层平均年龄"/> 
+            <CCZYCYJD	dispaly="储层主要成岩阶段"/>            
+            <CCSYBFB	dispaly="储层砂岩百分比"/>
+            <CCFBMJ		dispaly="储层分布面积"/>
+            <CCPJHD		dispaly="储层平均厚度"/>
+            <CCLJHD		dispaly="储层累积厚度"/>
+            <CCPJDCHD	dispaly="储层平均单层厚度"/>
+            <CCPJMS		dispaly="储层平均埋深"/>
+            <CCZDMS		dispaly="储层最大埋深"/>                           
+            <BZ		 	dispaly="备注"/>    
+        </Table>        
+        
+        <Table name="含油气盆地盖层条件">
+            <ZYQYGCCW		dispaly="区域盖层层位"/> 
+            <QYGCCJTX		dispaly="区域盖层沉积体系"/>            
+            <QYGCZYCJX		dispaly="区域盖层主要沉积相"/>
+            <QYGCZYYX		dispaly="区域盖层主要岩性"/>
+            <QYGCZYLX		dispaly="区域盖层类型"/>
+            <QYGCZYNL		dispaly="区域盖层年龄"/>
+            <QYGCZYMS		dispaly="区域盖层埋深"/>
+            <QYGCZYMJ		dispaly="区域盖层面积"/>
+            <QYGCZYPJHD		dispaly="区域盖层平均厚度"/>                           
+            <BZ		 		dispaly="备注"/>                
+        </Table>
+        
+        <Table name="含油气盆地圈闭条件">
+            <ZYQBLX		dispaly="主要圈闭类型"/>
+            <CYQBLX		dispaly="次要圈闭类型"/>
+            <PJQBFD		dispaly="平均圈闭幅度"/>
+            <PJQBMJ		dispaly="平均圈闭面积"/>
+            <YZQBGS		dispaly="已知圈闭个数"/>
+            <YZQBZMJ	dispaly="已知圈闭总面积"/>
+            <ZDPBMJ		dispaly="最大圈闭面积"/>                           
+            <BZ		 	dispaly="备注"/>                    
+        </Table>
+        
+        <Table name="含油气盆地保存条件">
+            <DCBSZHD		dispaly="地层剥蚀总厚度"/>
+            <DCPHCD		dispaly="断层破坏程度"/>
+            <GCBBSMJ	dispaly="盖层被剥蚀面积"/>
+            <GCBBSHD		dispaly="盖层被剥蚀厚度"/>                           
+            <BZ		 	dispaly="备注"/> 
+        </Table>
+        
+        <Table name="含油气盆地配置条件">
+            <CCQC		dispaly="成藏期次"/>
+            <SCGZHS		dispaly="生储盖组合数"/>
+            <SCPZMS		dispaly="生储配置模式"/>
+            <PJYYJL		dispaly="平均运移距离"/>
+            <ZYGZYDSD	dispaly="主要构造运动时代"/>
+            <ZYQBXCSD	dispaly="主要圈闭形成时代 "/>     
+            <ZYSTGFSD	dispaly="主要生烃高峰时代"/>            
+            <ZYPTGFSD	dispaly="主要排烃高峰时代"/>
+            <ZYQBXCSJ	dispaly="主要圈闭形成时间"/>
+            <ZYGZYDSJ	dispaly="主要构造运动时间"/>
+            <ZYSTGFSJ	dispaly="主要生烃高峰时间"/>
+            <ZYPTGFSJ	dispaly="主要排烃高峰时间"/>                
+            <BZ		  dispaly="备注"/>                           
+        </Table>        
+    </Basin>    
+	
+    <OilGasField name="油气田">
+        <Table name="油气田基础属性">
+            <MBZWMC	dispaly="中文名称"/>
+            <MBYWMC	dispaly="英文名称"/>
+            <MBLX	dispaly="类型"/>
+            <MJ		dispaly="面积"/>
+            <BHGD	dispaly="闭合高度"/>    
+            <GDMS	dispaly="高点埋深"/>
+            <DCCW	dispaly="地层层位"/>
+            <QBLX	dispaly="圈闭类型"/>
+            <XCSQ	dispaly="形成时期"/>
+            <XCNL	dispaly="形成年龄"/>      
+            <DCSSX	dispaly="地层水水型"/>
+            <DCSKHD	dispaly="地层水矿化度"/>
+            <KKCD	dispaly="可靠程度"/>
+            <HBSS		dispaly="海拔水深"/>
+            <DBTJ		dispaly="地表条件"/>
+            <FXSJ		dispaly="发现时间"/>
+            <YQLX		dispaly="油气类型"/>
+            <FXJLL		dispaly="发现井流量"/>
+            <CCTCRQ		dispaly="初次投产日期"/>
+            <KTJS		dispaly="勘探井数"/> 
+            <PJJS		dispaly="评价井数"/>
+            <SCJS		dispaly="生产井数"/>
+            <ZSJS		dispaly="注水井数"/>
+            <SSPDBM		dispaly="所属盆地"/>
+            <GZBW		dispaly="构造部位"/>                
+            <BZ		 	dispaly="备注"/>               
+        </Table>
+        
+        <Table name="油气田储量产量">
+            <ND		dispaly="年度"/>
+            <ZYXLBM		dispaly="资源类型"/>
+            <TMCL		dispaly="探明储量"/>
+            <KZCL		dispaly="控制储量"/> 
+            <YCCL		dispaly="预测储量"/>
+            <DZCL		dispaly="地质储量"/>
+            <JSKCCL		dispaly="技术可采储量"/>
+            <JJKCCL		dispaly="经济可采储量"/>
+            <LJCL		dispaly="累积产量"/>                
+            <BZ		 	dispaly="备注"/>    
+        </Table>
+        
+        <Table name="油气田源储盖条件">
+            <ZYYYCW		dispaly="主要源岩层位"/>
+            <GTQTYYCJTX		dispaly="供烃区烃源岩沉积体系"/>
+            <GTQZYYYCJX		dispaly="供烃区主要源岩沉积相"/>
+            <GTQZYTYYYX		dispaly="供烃区主要烃源岩岩性"/>
+            <GTQYYCXSNB		dispaly="供烃区源岩层系砂泥比"/>             
+            <GTQZYTYYNL		dispaly="供烃区主要烃源岩年龄"/>
+            <GTQYXTYYMJ		dispaly="供烃区有效烃源岩面积"/>
+            <GTQYXTYYHD		dispaly="供烃区有效烃源岩厚度"/>
+            <GTQTYYZDMS		dispaly="供烃区烃源岩最大埋深"/>
+            <GTQYYYJZLX		dispaly="供烃区源岩有机质类型"/>                                     
+            <GTQYYYJTHL		dispaly="供烃区源岩有机碳含量"/>
+            <GTQLFLQAHL		dispaly="供烃区氯仿沥青A含量"/>
+            <GTQTYYCSDRO		dispaly="供烃区烃源岩成熟度Ro"/>
+            <ZYSTGFSD		dispaly="主要生烃高峰时代"/>
+            <ZYPTGFSD		dispaly="主要排烃高峰时代"/>                         
+            <ZYSTGFSJ		dispaly="主要生烃高峰时间"/>
+            <ZYPTGFSJ		dispaly="主要排烃高峰时间"/>
+            <GTQSTQD		dispaly="供烃区生烃强度"/>
+            <GTQSYQD		dispaly="供烃区生油强度"/>
+            <GTQSQQD		dispaly="供烃区生气强度"/>                     
+            <GTQZSTL		dispaly="供烃区总生烃量"/>
+            <GTQZSYL		dispaly="供烃区总生油量"/>
+            <GTQZSQL		dispaly="供烃区总生气量"/>
+            <GTQPTQD		dispaly="供烃区排烃强度"/>
+            <GTQPYQD		dispaly="供烃区排油强度"/>  
+            <GTQPQQD		dispaly="供烃区排气强度"/>
+            <GTQZPTL		dispaly="供烃区总排烃量"/>
+            <GTQZPYL		dispaly="供烃区总排油量"/>
+            <GTQZPQL		dispaly="供烃区总排气量"/>
+            <SDTLX		dispaly="输导体类型"/>              
+            <YYFS		dispaly="运移方式"/>
+            <YYJL		dispaly="运移距离"/>
+            <GTLXLX		dispaly="供烃流线类型"/>
+            <GHGLX		dispaly="干酪根类型"/> 
+            
+            <CCCW		dispaly="储层层位"/>              
+            <CCCJTX		dispaly="储层沉积体系"/>
+            <CCCJX		dispaly="储层沉积相"/>
+            <CCYX		dispaly="储层岩性"/>
+            <CCNL		dispaly="储层年龄"/>                                     
+            <CCCYJD		dispaly="储层成岩阶段"/>              
+            <CCGZ		dispaly="储层构造"/>
+            <CCMJ		dispaly="储层面积"/>
+            <CCPJHD		dispaly="储层平均厚度"/>
+            <CCLJHD		dispaly="储层累积厚度"/>                            
+            <CCPJDCHD		dispaly="储层平均单层厚度"/>              
+            <CCPJMS		dispaly="储层平均埋深"/>
+            <CCZDMS		dispaly="储层最大埋深"/>
+            <CCKXKXD		dispaly="储层孔隙孔隙度"/>
+            <CCLFKXD		dispaly="储层裂缝孔隙度"/>                
+            <CCSTL		dispaly="储层渗透率"/>
+            <CCHDBJ		dispaly="储层喉道半径"/>
+            <CJKJLX		dispaly="储集空间类型"/>
+            <CCKFJG		dispaly="储层孔缝结构"/>             
+            
+            <DCCW		dispaly="盖层层位"/>                
+            <GCCJTX		dispaly="盖层沉积体系"/>
+            <GCZYCJX		dispaly="盖层主要沉积相"/>
+            <GCZYYX		dispaly="盖层主要岩性"/>
+            <GCLX		dispaly="盖层类型"/>                          
+            <GCNL		dispaly="盖层年龄"/>                
+            <GCMS		dispaly="盖层埋深"/>
+            <GCFGL		dispaly="盖层覆盖率"/>
+            <GCPJHD		dispaly="盖层平均厚度"/>
+            <PTYL		dispaly="排替压力"/>                
+            <STL		dispaly="渗透率"/>
+            <DCPHD		dispaly="断层破坏程度"/> 
+                        
+            <BZ		 	dispaly="备注"/>            
+        </Table>
+        
+        <Table name="油气田原油性质">
+            <ZXYYBZ		dispaly="最小原油比重"/>
+            <PJYYBZ		dispaly="平均原油比重"/>
+            <ZDYYBZ		dispaly="最大原油比重"/>                
+            <ZXYDYYND		dispaly="最小运动原油粘度"/>
+            <PJYDYYND		dispaly="平均运动原油粘度"/>             
+            <ZDYDYYND		dispaly="最大运动原油粘度"/>
+            <ZXDLYYND		dispaly="最小动力原油粘度"/>
+            <PJDLYYND		dispaly="平均动力原油粘度"/>                
+            <ZDDLYYND		dispaly="最大动力原油粘度"/>
+            <ZXNGD		dispaly="最小凝固点"/>              
+            <PJNGD		dispaly="平均凝固点"/>
+            <ZDNGD		dispaly="最大凝固点"/>
+            <ZXHL		dispaly="最小含蜡"/>                
+            <PJHL		dispaly="平均含蜡"/>
+            <ZDHL		dispaly="最大含蜡"/>               
+            <ZXHLIU		dispaly="最小含硫"/>
+            <PJHLIU		dispaly="平均含硫"/>
+            <ZDHLIU		dispaly="最大含硫"/>                
+            <ZXHS		dispaly="最小含水"/>
+            <PJHS		dispaly="平均含水"/>              
+            <ZDHS		dispaly="最大含水"/>                          
+            <BZ		 	dispaly="备注"/>            
+        </Table>
+        
+        <Table name="油气田天然气性质">
+            <ZXTRQBZ	dispaly="最小天然气比重"/>
+            <PJTRQBZ	dispaly="平均天然气比重"/>                
+            <ZDTRQBZ	dispaly="最大天然气比重"/>
+            <ZXJWHL		dispaly="最小甲烷含量"/>              
+            <PJJWHL		dispaly="平均甲烷含量"/>         
+            <ZDJWHL		dispaly="最大甲烷含量"/>
+            <ZXYWHL		dispaly="最小乙烷含量"/>                
+            <PJYWHL		dispaly="平均乙烷含量"/>
+            <ZDYWHL		dispaly="最大乙烷含量"/>              
+            <ZXBWHL		dispaly="最小丙烷含量"/>                 
+            <PJBWHL		dispaly="平均丙烷含量"/>
+            <ZDBWHL		dispaly="最大丙烷含量"/>                
+            <ZXDWHL		dispaly="最小丁烷含量"/>
+            <PJDWHL		dispaly="平均丁烷含量"/>              
+            <ZDDWHL		dispaly="最大丁烷含量"/>  
+            <ZXEYHTHL	dispaly="最小二氧化碳含量"/>
+            <PJEYHTHL	dispaly="平均二氧化碳含量"/>                
+            <ZDEYHTHL	dispaly="最大二氧化碳含量"/>
+            <ZXLHQHL	dispaly="最小硫化氢含量"/>              
+            <PJLHQHL	dispaly="平均硫化氢含量"/>                  
+            <ZDLHQHL	dispaly="最大硫化氢含量"/>
+            <ZXDHL		dispaly="最小氮含量"/>                
+            <PJDHL		dispaly="平均氮含量"/>
+            <ZDDHL		dispaly="最大氮含量"/>              
+            <ZXYHL		dispaly="最小氧含量"/>  
+            <PJYHL		dispaly="平均氧含量"/>              
+            <ZDYHL		dispaly="最大氧含量"/>                                                
+            <BZ		 	dispaly="备注"/>
+        </Table>
+        
+        <Table name="油气田水性质"> 
+<!--             DM08 -->
+            <SX		dispaly="水型"/>
+            <ZXKHD		dispaly="最小矿化度"/>              
+            <PJKHD		dispaly="平均矿化度"/>  
+            <ZDKHD		dispaly="最大矿化度"/>              
+            <ZXNAK		dispaly="最小钠钾离子浓度和"/>
+            <PJNAK		dispaly="平均钠钾离子浓度和"/>
+            <ZDNAK		dispaly="最大钠钾离子浓度和"/>              
+            <ZXCA		dispaly="最小钙离子浓度"/>  
+            <PJCA		dispaly="平均钙离子浓度"/>              
+            <ZDCA		dispaly="最大钙离子浓度"/>            
+            <ZXMG		dispaly="最小镁离子浓度"/>
+            <PJMG		dispaly="平均镁离子浓度"/>              
+            <ZDMG		dispaly="最大镁离子浓度"/>  
+            <ZXSO		dispaly="最小硫酸根浓度"/>              
+            <PJSO		dispaly="平均硫酸根浓度"/>                        
+            <ZDSO		dispaly="最大硫酸根浓度"/>
+            <ZXHCO		dispaly="最小碳酸根浓度(含碳酸氢根)"/>              
+            <PJHCO		dispaly="平均碳酸根浓度(含碳酸氢根)"/>  
+            <ZDHCO		dispaly="最大碳酸根浓度(含碳酸氢根)"/>              
+            <SLSX		dispaly="苏林水型"/>              
+            <SHXLZFL		dispaly="水化学离子分类"/>                          
+            <BZ		 	dispaly="备注"/>            
+        </Table>        
+    </OilGasField>
+</actionkey>

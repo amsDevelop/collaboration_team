@@ -170,8 +170,7 @@ public class SelectActivity extends Activity {
 		JsonParse jsonParse = new JsonParse();
 		
 		try {
-//		  List<HashMap<String,HashMap<String,String>>>	list = jsonParse.parseItemsJson(new JsonReader(new StringReader((String) msg.obj)));
-		  List<HashMap<String,HashMap<String,String>>>	list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
+		  List<HashMap<String, HashMap<String, Object>>> list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
 		  Log.d("json", "key and value: " + list.size());
 //			Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
 //			for (Entry<String, Object> ent : ents) {
@@ -194,7 +193,6 @@ public class SelectActivity extends Activity {
 		}	
 			
 //		}
-//	}).start();
 	}
 
 	private void getData() {

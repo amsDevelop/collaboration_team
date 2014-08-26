@@ -1,6 +1,7 @@
 package com.sinopec.activity;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,6 +9,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -20,6 +22,7 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -42,7 +45,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -82,8 +84,11 @@ import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.common.OilGasData;
 import com.sinopec.data.json.Constant;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
+import com.sinopec.data.json.standardquery.DistributeCengGai;
+import com.sinopec.data.json.standardquery.DistributeChuJi;
 import com.sinopec.data.json.standardquery.DistributeJingRockYuanYan;
 import com.sinopec.data.json.standardquery.DistributeRate;
+import com.sinopec.data.json.standardquery.DistributeRateResource;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
@@ -130,7 +135,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private Button mBtnCancelChoose;
 	private ImageButton mBtnScaleSmall;
 	private ImageButton mBtnScaleBig;
-//	private Map<String, View> menuStatus = new HashMap<String, View>();
+	// private Map<String, View> menuStatus = new HashMap<String, View>();
 	/**
 	 * 子菜单
 	 */
@@ -164,7 +169,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private ArrayList<HashMap<String, Object>> toolist = new ArrayList<HashMap<String, Object>>();
 	private Handler handler = new Handler() {
 
-		public void handleMessage(android.os.Message msg) {
+		public void handleMessage(final android.os.Message msg) {
 			StringBuilder builder;
 			switch (msg.what) {
 			case 1:
@@ -184,7 +189,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				 builder = new StringBuilder("OBJ_ID =");
+				builder = new StringBuilder("OBJ_ID =");
 
 				for (int i = 0; i < root.mBasinBelongTo.size(); i++) {
 
@@ -197,7 +202,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					}
 				}
 				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",root.mBasinBelongTo);
+						(getResources().getString(R.string.url_basin)) + "/0",
+						root.mBasinBelongTo);
 				break;
 			case 2:
 				final DistributeRate rate = new DistributeRate();
@@ -217,7 +223,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				 builder = new StringBuilder("OBJ_ID =");
+				builder = new StringBuilder("OBJ_ID =");
 				for (int i = 0; i < rate.mChilds.size(); i++) {
 
 					if (i == rate.mChilds.size() - 1) {
@@ -229,14 +235,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					}
 				}
 				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",rate.mChilds);
+						(getResources().getString(R.string.url_basin)) + "/0",
+						rate.mChilds);
 
 				break;
 			case 3:
-				final DistributeJingRockYuanYan instance = new DistributeJingRockYuanYan();
+				final DistributeRateResource instance = new DistributeRateResource();
 				try {
 					JSONArray jsonArray = new JSONArray((String) msg.obj);
-					
+
 					for (int i = 0; i < jsonArray.length(); i++) {
 						try {
 							JsonToBeanParser.getInstance().fillBeanWithJson(
@@ -246,30 +253,127 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							e.printStackTrace();
 						}
 					}
-					
+
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				 Log.v("mandy", "result: " + instance.mChilds);
-				 
-				 builder = new StringBuilder("OBJ_ID =");
-					for (int i = 0; i < instance.mChilds.size(); i++) {
+				builder = new StringBuilder("OBJ_ID =");
+				for (int i = 0; i < instance.mChilds.size(); i++) {
 
-						if (i == instance.mChilds.size() - 1) {
-							builder.append(instance.mChilds.get(i)
-									.getCodeBelongToBasin());
-						} else {
-							builder.append(instance.mChilds.get(i)
-									.getCodeBelongToBasin() + "or OBJ_ID =");
-						}
+					if (i == instance.mChilds.size() - 1) {
+						builder.append(instance.mChilds.get(i)
+								.getCodeBelongToBasin());
+					} else {
+						builder.append(instance.mChilds.get(i)
+								.getCodeBelongToBasin() + "or OBJ_ID =");
 					}
-					drawTool.queryAttribute4Query(builder.toString(),
-							(getResources().getString(R.string.url_basin)) + "/0",instance.mChilds);
+				}
+				drawTool.queryAttribute4Query(builder.toString(),
+						(getResources().getString(R.string.url_basin)) + "/0",
+						instance.mChilds);
+
 				break;
 			case 4:
-				dealJson((String)msg.obj);
+				final DistributeJingRockYuanYan rockYuanYan = new DistributeJingRockYuanYan();
+				try {
+					JSONArray jsonArray = new JSONArray((String) msg.obj);
+
+					for (int i = 0; i < jsonArray.length(); i++) {
+						try {
+							JsonToBeanParser.getInstance().fillBeanWithJson(
+									rockYuanYan.newChildInstance(),
+									jsonArray.getJSONObject(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				builder = new StringBuilder("OBJ_ID =");
+				for (int i = 0; i < rockYuanYan.mChilds.size(); i++) {
+
+					if (i == rockYuanYan.mChilds.size() - 1) {
+						builder.append(rockYuanYan.mChilds.get(i)
+								.getCodeBelongToBasin());
+					} else {
+						builder.append(rockYuanYan.mChilds.get(i)
+								.getCodeBelongToBasin() + "or OBJ_ID =");
+					}
+				}
+				drawTool.queryAttribute4Query(builder.toString(),
+						(getResources().getString(R.string.url_basin)) + "/0",
+						rockYuanYan.mChilds);
+				break;
+				
+			case 5: 
+				final DistributeChuJi chuJi = new DistributeChuJi();
+				try {
+					JSONArray jsonArray = new JSONArray((String) msg.obj);
+
+					for (int i = 0; i < jsonArray.length(); i++) {
+						try {
+							JsonToBeanParser.getInstance().fillBeanWithJson(
+									chuJi.newChildInstance(),
+									jsonArray.getJSONObject(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				builder = new StringBuilder("OBJ_ID =");
+				for (int i = 0; i < chuJi.mChilds.size(); i++) {
+
+					if (i == chuJi.mChilds.size() - 1) {
+						builder.append(chuJi.mChilds.get(i)
+								.getCodeBelongToBasin());
+					} else {
+						builder.append(chuJi.mChilds.get(i)
+								.getCodeBelongToBasin() + "or OBJ_ID =");
+					}
+				}
+				drawTool.queryAttribute4Query(builder.toString(),
+						(getResources().getString(R.string.url_basin)) + "/0",
+						chuJi.mChilds);
+				break;
+				
+			case 6:
+				final DistributeCengGai cengGai = new DistributeCengGai();
+				try {
+					JSONArray jsonArray = new JSONArray((String) msg.obj);
+
+					for (int i = 0; i < jsonArray.length(); i++) {
+						try {
+							JsonToBeanParser.getInstance().fillBeanWithJson(
+									cengGai.newChildInstance(),
+									jsonArray.getJSONObject(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				builder = new StringBuilder("OBJ_ID =");
+				for (int i = 0; i < cengGai.mChilds.size(); i++) {
+
+					if (i == cengGai.mChilds.size() - 1) {
+						builder.append(cengGai.mChilds.get(i)
+								.getCodeBelongToBasin());
+					} else {
+						builder.append(cengGai.mChilds.get(i)
+								.getCodeBelongToBasin() + "or OBJ_ID =");
+					}
+				}
+				drawTool.queryAttribute4Query(builder.toString(),
+						(getResources().getString(R.string.url_basin)) + "/0",
+						cengGai.mChilds);
+				break;
 			default:
 				break;
 			}
@@ -278,8 +382,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	};
 
-    private Bitmap mBitmapPaopaobg;
-    
+	private Bitmap mBitmapPaopaobg;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -384,36 +487,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		asyncHttpQuery.execute(4, url);
 	}
 	
-	private void dealJson(String result){
-		JsonParse jsonParse = new JsonParse();
-		
-		try {
-		  List<HashMap<String,HashMap<String,String>>>	list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
-		  Log.d("json", "key and value: " + list.size());
-//			Set<Entry<String, Object>> ents = result.getAttributes().entrySet();
-//			for (Entry<String, Object> ent : ents) {
-//				Log.d("data",
-//						"模糊查询  key: " + ent.getKey() + "  val: " + ent.getValue());
-//			}
-//		  for (HashMap<String, HashMap<String, String>> hashMap : list) {
-//			  
-//			  for (Map.Entry<String, HashMap<String, String>> hashMaps : hashMap.entrySet()) {
-//				     Log.d("json", "key and value: " + hashMaps.getKey() + ": " + hashMaps.getValue());
-//				    for (Map.Entry<String, String>  hashMap3 : hashMaps.getValue().entrySet()) {
-//				    	 Log.d("json", "other key and value: " + hashMap3.getKey() + ": " + hashMap3.getValue());
-//					}
-//			}
-//		}
-		  
-		  
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
-			
-//		}
-//	}).start();
-	}
-	
 	private void initTableKeyValue() {
 		try {
 			InputStream inputStream = getAssets().open("oilstrings.xml");
@@ -516,16 +589,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		statistics.setOnClickListener(this);
 		doc.setOnClickListener(this);
 
-//		imageAnim = (ImageView) findViewById(R.id.poiAnim);
-//		imageAnim.setVisibility(View.INVISIBLE);
-		mBitmapPaopaobg = BitmapFactory.decodeResource(getResources(), R.drawable.paopao_bg);
+		// imageAnim = (ImageView) findViewById(R.id.poiAnim);
+		// imageAnim.setVisibility(View.INVISIBLE);
+		mBitmapPaopaobg = BitmapFactory.decodeResource(getResources(),
+				R.drawable.paopao_bg);
 
 		callout = map.getCallout();
 		callout.setContent(popView);
 		callout.setStyle(R.layout.calloutwindow);
 		callout.setMaxWidth(SinoApplication.screenWidth - 10);
 		callout.setMaxHeight(SinoApplication.screenHeight);
-		callout.setOffset(0, -mBitmapPaopaobg.getHeight()/2);
+		callout.setOffset(0, -mBitmapPaopaobg.getHeight() / 2);
 
 		map.setClickable(true);// 设置地图可点击
 		map.setClickable(false);// 设置地图可点击
@@ -567,10 +641,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						}
 
 						Point pt = MarinedbActivity.this.map.toMapPoint(x, y);
-//						Log.d("map",
-//								"-----长按------Long--x:" + x + "  y: " + y
-//										+ " -toMapPoint--x:" + pt.getX()
-//										+ "  y: " + pt.getY());
+						// Log.d("map",
+						// "-----长按------Long--x:" + x + "  y: " + y
+						// + " -toMapPoint--x:" + pt.getX()
+						// + "  y: " + pt.getY());
 						x1 = pt.getX();
 						y1 = pt.getY();
 						name2 = "未知地名";
@@ -657,14 +731,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mEditText = (Button) findViewById(R.id.edittext_search);
 		mEditText.setOnClickListener(this);
 		mMenuViewTool = (MenuButton) findViewById(R.id.menuview_tool);
-		
 		mMenuViewSearch = (MenuButton) findViewById(R.id.menuview_search);
 		mMenuViewSearch.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
-				Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true };
-				ChildrenMenuDataUtil.setSearchChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+				Boolean[] clickTag = new Boolean[] { true, true, true, true,
+						true, true, true };
+				ChildrenMenuDataUtil.setSearchChildrenMenuData(toolist,
+						clickTag, mChildMenuSplitNumber);
 				mGridView.setNumColumns(7);
 				setGridView(toolist, arg0);
 			}
@@ -1319,6 +1394,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(10);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
+			
+			String cengxi = "72057594037927935";
+			String url = Constant.distributeHydrocSource + cengxi;
+			asyncHttpQuery.execute(4, url);
+
 		} else if ("分类型盖层分布".equals(tag)) {
 
 			Boolean[] clickTag = new Boolean[] { true, true, true };
@@ -1332,6 +1412,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mGridView.setNumColumns(6);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 		
+//			gaiceng=72057594037927935
+//			String gaiceng = "72057594037927935";
+//			
+//			String url = Constant.baseURL + "peprisapi/fixquery6.html?gaiceng="
+//					+ gaiceng;
+//			asyncHttpQuery.execute(6, url);
+			
+			
 		} else if ("海相碳酸盐岩盆地".equals(tag)) {
 			String chenjitixi = "72057594037927935";
 			String url = Constant.distributeOilGas + chenjitixi;
@@ -1345,12 +1433,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					+ tansuanyanyan;
 			asyncHttpQuery.execute(2, url);
 		} else if ("碳酸盐岩资源比例".equals(tag)) {
-			
+
 			String type = "72057594037927935";
 			String tansuanyanyan = "72057594037927935";
-			String url = Constant.baseURL + "peprisapi/fixquery3.html?type=" + type + 
-					"&tansuanyanyan=" + tansuanyanyan;
+			String url = Constant.baseURL + "peprisapi/fixquery3.html?type="
+					+ type + "&tansuanyanyan=" + tansuanyanyan;
 			asyncHttpQuery.execute(3, url);
+
+		} else if ("碳酸盐岩储层分布".equals(tag)) {
+//			http://<host>:<port>/peprisapi/fixquery5.html?
+//				chujikongjian=72057594037927935&chenjixiang=72057594037927935&tansuanyanyan=72057594037927935
+			String chujikongjian = "72057594037927935";
+			String chenjixiang ="72057594037927935";
+			String tansuanyanyan = "72057594037927935";
+			
+			String url = Constant.baseURL + "peprisapi/fixquery5.html?chujikongjian="
+					+ chujikongjian +  "&chenjixiang="+ chenjixiang  +"&tansuanyanyan=" + tansuanyanyan;
+			asyncHttpQuery.execute(5, url);
 			
 		}
 		// 三级子菜单都需要在这里处理
@@ -1360,6 +1459,83 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				&& !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)) {
 			hideCallOut();
 		}
+	}
+
+	private void testParseJson() {
+
+		// 由于是内网在家里访问不了所以现在把json放到文件中进行解析
+		AssetManager assetManager = getAssets();
+		InputStream inputStream = null;
+		try {
+			inputStream = assetManager.open("json.txt");
+		} catch (IOException e) {
+			Log.e("tag", e.getMessage());
+		}
+		String s = readTextFile(inputStream);
+
+		//
+		JsonParse jsonParse = new JsonParse();
+
+		try {
+			List<HashMap<String, HashMap<String, Object>>> list = jsonParse
+					.parseItemsJson(new JsonReader(new StringReader(s)));
+
+			Log.v("mandy", "共有多少条数据: " + list.size());
+
+			for (HashMap<String, HashMap<String, Object>> hashMap : list) {
+
+				for (Map.Entry<String, HashMap<String, Object>> hashMaps : hashMap
+						.entrySet()) {
+
+					Log.v("mandy", "parent key and value: " + hashMaps.getKey()
+							+ ": " + hashMaps.getValue());
+
+					for (Map.Entry<String, Object> hashMap3 : hashMaps
+							.getValue().entrySet()) {
+
+						Log.v("mandy",
+								"child key and value: " + hashMap3.getKey()
+										+ ": " + hashMap3.getValue());
+
+					}
+
+				}
+				//
+			}
+			//
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private String readTextFile(InputStream inputStream) {
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		byte buf[] = new byte[1024];
+
+		int len;
+
+		try {
+
+			while ((len = inputStream.read(buf)) != -1) {
+
+				outputStream.write(buf, 0, len);
+
+			}
+
+			outputStream.close();
+
+			inputStream.close();
+
+		} catch (IOException e) {
+
+		}
+
+		return outputStream.toString();
+
 	}
 
 	private void setGridView4LevelTwoChildrenMenu(
@@ -1410,15 +1586,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			super(context, view);
 
 		}
-		 @Override
-		 public boolean onTouch(View v, MotionEvent event) {
-//			 Log.d(tag, "----MapTouchListener---onTouch--- ");
-//			 if(mGridViewLayout.getVisibility() == View.VISIBLE)
-//					mGridViewLayout.setVisibility(View.GONE);
-		    return super.onTouch(v, event);
-		 }
-		 
-		 @Override
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			// Log.d(tag, "----MapTouchListener---onTouch--- ");
+			// if(mGridViewLayout.getVisibility() == View.VISIBLE)
+			// mGridViewLayout.setVisibility(View.GONE);
+			return super.onTouch(v, event);
+		}
+
+		@Override
 		public boolean onDoubleTap(MotionEvent point) {
 			Log.d(tag, "----MapTouchListener---onDoubleTap--- ");
 			if (mFragmentLayout.getVisibility() == View.VISIBLE) {
@@ -1520,8 +1697,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		Envelope envelope = new Envelope();
 		geometry.queryEnvelope(envelope);
 		Point point = envelope.getCenter();
-//		Log.d(tag, "-------查询出的坐标  x: "+point.getX()+"  y: "+point.getY());
-		//正确的比例尺
+		// Log.d(tag, "-------查询出的坐标  x: "+point.getX()+"  y: "+point.getY());
+		// 正确的比例尺
 		map.setExtent(geometry, 0);
 		// 绘制高亮区域
 		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);

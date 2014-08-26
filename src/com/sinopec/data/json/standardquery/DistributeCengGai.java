@@ -32,6 +32,15 @@ public class DistributeCengGai extends Bean{
 		 */
 		@JsonFieldName("SSPDBM")
 		public long codeBelongToBasin;
+		
+		
+		
+		public long getCodeBelongToBasin() {
+			return codeBelongToBasin;
+		}
+
+
+
 		@Override
 		public String toString() {
 			return "DistributeChild [codeCengGai=" + codeCengGai + ", codeBelongToBasin=" + codeBelongToBasin + "]";

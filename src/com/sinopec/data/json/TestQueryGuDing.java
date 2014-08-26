@@ -110,7 +110,6 @@ public class TestQueryGuDing extends AndroidTestCase {
 	
 			JsonToBeanParser.getInstance().fillBeanWithJson(root, jsonObj);
 			
-			System.out.println("#################" + root.list.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -134,7 +133,7 @@ public class TestQueryGuDing extends AndroidTestCase {
 	
 			JsonToBeanParser.getInstance().fillBeanWithJson(root, jsonObj);
 			
-			
+			System.out.println("#################" + root.list.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
