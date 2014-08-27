@@ -239,37 +239,39 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 				break;
 			case 3:
-				final DistributeRateResource instance = new DistributeRateResource();
-				try {
-					JSONArray jsonArray = new JSONArray((String) msg.obj);
-
-					for (int i = 0; i < jsonArray.length(); i++) {
-						try {
-							JsonToBeanParser.getInstance().fillBeanWithJson(
-									instance.newChildInstance(),
-									jsonArray.getJSONObject(i));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				builder = new StringBuilder("OBJ_ID =");
-				for (int i = 0; i < instance.mChilds.size(); i++) {
-
-					if (i == instance.mChilds.size() - 1) {
-						builder.append(instance.mChilds.get(i)
-								.getCodeBelongToBasin());
-					} else {
-						builder.append(instance.mChilds.get(i)
-								.getCodeBelongToBasin() + "or OBJ_ID =");
-					}
-				}
-				drawTool.queryAttribute4Query(builder.toString(),
-						(getResources().getString(R.string.url_basin)) + "/0",
-						instance.mChilds);
+//				final DistributeRateResource instance = new DistributeRateResource();
+//				try {
+//					JSONArray jsonArray = new JSONArray((String) msg.obj);
+//
+//					for (int i = 0; i < jsonArray.length(); i++) {
+//						try {
+//							JsonToBeanParser.getInstance().fillBeanWithJson(
+//									instance.newChildInstance(),
+//									jsonArray.getJSONObject(i));
+//						} catch (JSONException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//				builder = new StringBuilder("OBJ_ID =");
+//				for (int i = 0; i < instance.mChilds.size(); i++) {
+//
+//					if (i == instance.mChilds.size() - 1) {
+//						builder.append(instance.mChilds.get(i)
+//								.getCodeBelongToBasin());
+//					} else {
+//						builder.append(instance.mChilds.get(i)
+//								.getCodeBelongToBasin() + "or OBJ_ID =");
+//					}
+//				}
+//				drawTool.queryAttribute4Query(builder.toString(),
+//						(getResources().getString(R.string.url_basin)) + "/0",
+//						instance.mChilds);
+				
+				testParseJson((String) msg.obj);
 
 				break;
 			case 4:
@@ -1397,7 +1399,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			String tansuanyanyan = "72057594037927935";
 			String url = Constant.baseURL + "peprisapi/fixquery3.html?type="
 					+ type + "&tansuanyanyan=" + tansuanyanyan;
-			asyncHttpQuery.execute(3, url);
+			asyncHttpQuery.execute(3, "http://202.204.193.201:8080/peprisapi/basinAttribute.html?basinId=201102001130");
 
 		} else if ("碳酸盐岩储层分布".equals(tag)) {
 //			http://<host>:<port>/peprisapi/fixquery5.html?
@@ -1420,42 +1422,51 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 	}
 
-	private void testParseJson() {
+	private void testParseJson(String ss) {
 
-		// 由于是内网在家里访问不了所以现在把json放到文件中进行解析
-		AssetManager assetManager = getAssets();
-		InputStream inputStream = null;
-		try {
-			inputStream = assetManager.open("json.txt");
-		} catch (IOException e) {
-			Log.e("tag", e.getMessage());
-		}
-		String s = readTextFile(inputStream);
+//		// 由于是内网在家里访问不了所以现在把json放到文件中进行解析
+//		AssetManager assetManager = getAssets();
+//		InputStream inputStream = null;
+//		try {
+//			inputStream = assetManager.open("json1");
+//		} catch (IOException e) {
+//			Log.e("tag", e.getMessage());
+//		}
+//		String s = readTextFile(inputStream);
 
 		//
 		JsonParse jsonParse = new JsonParse();
 
 		try {
-			List<HashMap<String, HashMap<String, Object>>> list = jsonParse
-					.parseItemsJson(new JsonReader(new StringReader(s)));
+			List<HashMap<String, Object>> list = jsonParse
+					.parseItemsJson(new JsonReader(new StringReader(ss)));
 
 			Log.v("mandy", "共有多少条数据: " + list.size());
 
-			for (HashMap<String, HashMap<String, Object>> hashMap : list) {
+			for (HashMap<String, Object> hashMap : list) {
 
-				for (Map.Entry<String, HashMap<String, Object>> hashMaps : hashMap
+				for (Entry<String, Object> hashMaps : hashMap
 						.entrySet()) {
 
 					Log.v("mandy", "parent key and value: " + hashMaps.getKey()
 							+ ": " + hashMaps.getValue());
+					
+					if (hashMaps.getValue() instanceof HashMap) {
 
-					for (Map.Entry<String, Object> hashMap3 : hashMaps
-							.getValue().entrySet()) {
+					for (Map.Entry<String, Object> hashMap3 : ((HashMap<String, Object>) hashMaps
+							.getValue()).entrySet()) {
 
 						Log.v("mandy",
 								"child key and value: " + hashMap3.getKey()
 										+ ": " + hashMap3.getValue());
 
+					}
+					} else { //否则就是list
+						
+//						for (int i = 0; i < (ArrayList)hashMaps.size(); i++) {
+//							
+//						}
+						
 					}
 
 				}

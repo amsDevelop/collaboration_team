@@ -20,8 +20,8 @@ public class JsonParse {
      * @return List<ItemProperty>
      * @throws IOException
      */
-    public List<HashMap<String,HashMap<String,Object>>> parseItemsJson(JsonReader reader) throws IOException {
-        List<HashMap<String,HashMap<String,Object>>> lists = new ArrayList<HashMap<String,HashMap<String,Object>>>();
+    public List<HashMap<String,Object>> parseItemsJson(JsonReader reader) throws IOException {
+        List<HashMap<String,Object>> lists = new ArrayList<HashMap<String,Object>>();
         
         reader.beginArray();
         
@@ -34,7 +34,7 @@ public class JsonParse {
         }
     	Log.v("mandy", "list: while....finish...");
         reader.endArray();
-        return lists;
+        return (List<HashMap<String, Object>>) lists;
     }
 
     /**
@@ -44,20 +44,31 @@ public class JsonParse {
      * @return ItemProperty
      * @throws IOException
      */
-    public HashMap<String,HashMap<String,Object>> parseItemJson(JsonReader reader) throws IOException {
-    	HashMap<String,HashMap<String,Object>> item = new HashMap<String,HashMap<String,Object>>();
+    public HashMap<String,Object> parseItemJson(JsonReader reader) throws IOException {
+    	HashMap<String,Object> item = new HashMap<String,Object>();
         reader.beginObject();
 
         while (reader.hasNext()) {
-            String name  = 	reader.nextName();
-//        	 if(name.equalsIgnoreCase("油气田源储盖条件")) {
-//        		   Log.v("mandy", "list: " + name);
-//           	    Log.v('mandy', 'list: ' + value);	
-        		item.put(name, parseItemOtherJson(reader)) ;
-//        	 } else {
-//        		 
+            try {
+				String name  = 	reader.nextName();
+				 if(name.equalsIgnoreCase("油气田储量产量")) {
+					  reader.beginArray();
+					  
+					  List<Object> list = new ArrayList<Object>();
+//        		  HashMap<String,Object> list = new HashMap<String,Object>(); 
+					  while (reader.hasNext()) {
+						  list.add(parseItemOtherJson(reader)); 
+					  }
+					   reader.endArray();
+				 item.put(name, list);
+				 } else {
+					item.put(name, parseItemOtherJson(reader));
 //        		 reader.skipValue();
-//        	 }
+				 }
+			} catch (Exception e) {
+				 reader.skipValue();
+				e.printStackTrace();
+			}
 //        	
         }
         reader.endObject();
@@ -89,8 +100,7 @@ public class JsonParse {
         	    	String value = reader.nextString();
                	    item.put(name, value);
         	    }
-        	    
-        	 
+
 				} catch (Exception e) {
 					reader.skipValue();
 				}
