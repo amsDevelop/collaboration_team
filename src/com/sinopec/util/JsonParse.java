@@ -49,22 +49,26 @@ public class JsonParse {
         reader.beginObject();
 
         while (reader.hasNext()) {
-            String name  = 	reader.nextName();
-        	 if(name.equalsIgnoreCase("油气田储量产量")) {
-        		  reader.beginArray();
-        		  
-        		  List<Object> list = new ArrayList<Object>();
+            try {
+				String name  = 	reader.nextName();
+				 if(name.equalsIgnoreCase("油气田储量产量")) {
+					  reader.beginArray();
+					  
+					  List<Object> list = new ArrayList<Object>();
 //        		  HashMap<String,Object> list = new HashMap<String,Object>(); 
-        		  while (reader.hasNext()) {
-        			  list.add(parseItemOtherJson(reader)); 
-        		  }
-        		   reader.endArray();
-             item.put(name, list);
-        	 } else {
-        		item.put(name, parseItemOtherJson(reader));
+					  while (reader.hasNext()) {
+						  list.add(parseItemOtherJson(reader)); 
+					  }
+					   reader.endArray();
+				 item.put(name, list);
+				 } else {
+					item.put(name, parseItemOtherJson(reader));
 //        		 reader.skipValue();
-        	 }
-//        	
+				 }
+			} catch (Exception e) {
+				 reader.skipValue();
+				e.printStackTrace();
+			}
         }
         reader.endObject();
         return item;
@@ -95,8 +99,7 @@ public class JsonParse {
         	    	String value = reader.nextString();
                	    item.put(name, value);
         	    }
-        	    
-        	 
+
 				} catch (Exception e) {
 					reader.skipValue();
 				}
