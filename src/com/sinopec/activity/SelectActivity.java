@@ -171,31 +171,67 @@ public class SelectActivity extends Activity {
 			asyncHttpQuery.execute(1, url);
 		} else if (CommonData.TopicOilField.equals(mTopicType) ||
 				CommonData.TopicGasField.equals(mTopicType)) {
-			url = Constant.urlAttributeOilGas + id;
+//			url = Constant.urlAttributeOilGas + id;
+			url = Constant.urlAttributeOilGas + "201102001063";
 			asyncHttpQuery.execute(2, url);
 		}
 	}
 	
 	private void dealJson(String result){
-		Log.d("json", "-------result: " + result);
+//		Log.d("json", "-------result: " + result);
 		JsonParse jsonParse = new JsonParse();
-		
 		try {
+			List<HashMap<String, Object>> list = jsonParse
+					.parseItemsJson(new JsonReader(new StringReader(result)));
+			Log.d("json", "共有多少条数据: " + list.size());
+
+			for (HashMap<String, Object> hashMap : list) {
+
+				for (Entry<String, Object> hashMaps : hashMap
+						.entrySet()) {
+
+					Log.d("json", "parent key and value: " + hashMaps.getKey()
+							+ ": " + hashMaps.getValue());
+					
+					if (hashMaps instanceof HashMap) {
+
+					for (Map.Entry<String, Object> hashMap3 : ((HashMap<String, Object>) hashMaps
+							.getValue()).entrySet()) {
+
+						Log.d("json",
+								"child key and value: " + hashMap3.getKey()
+										+ ": " + hashMap3.getValue());
+
+					}
+					} else { //否则就是list
+						
+//						for (int i = 0; i < (ArrayList)hashMaps.size(); i++) {
+//							
+//						}
+						
+					}
+
+				}
+				//
+			}
+		} catch (Exception e) {
+			Log.e("json", "----属性解析 error: "+e.toString());
+		}
 //		  List<HashMap<String, HashMap<String, Object>>> list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
-		  HashMap<String, HashMap<String, Object>> map = jsonParse.parseItemJson(new JsonReader(new StringReader(result)));
+//		  HashMap<String, HashMap<String, Object>> map = jsonParse.parseItemJson(new JsonReader(new StringReader(result)));
 //		  Log.d("json", "key and value: " + list.size());
 //		  for (int i = 0; i < list.size(); i++) {
 //			  HashMap<String, HashMap<String, Object>> map = list.get(i); 
 //		  }
 		  
-		  String item = "油气田基础属性";
-		  if("油气田基础属性".equals(item)){
-			  
-		  }
-		  Set<Entry<String, HashMap<String, Object>>> entrySet = map.entrySet();
-		  for (Entry<String, HashMap<String, Object>> entry : entrySet) {
-			  Log.d("json", "-------result: " + entry.getKey());
-		  }
+//		  String item = "油气田基础属性";
+//		  if("油气田基础属性".equals(item)){
+//			  
+//		  }
+//		  Set<Entry<String, HashMap<String, Object>>> entrySet = map.entrySet();
+//		  for (Entry<String, HashMap<String, Object>> entry : entrySet) {
+//			  Log.d("json", "-------result: " + entry.getKey());
+//		  }
 //				Log.d("data",
 //						"模糊查询  key: " + ent.getKey() + "  val: " + ent.getValue());
 //			}
@@ -207,13 +243,6 @@ public class SelectActivity extends Activity {
 //				    	 Log.d("json", "other key and value: " + hashMap3.getKey() + ": " + hashMap3.getValue());
 //					}
 //			}
-//		}
-		  
-		  
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
-			
 //		}
 	}
 

@@ -1459,26 +1459,35 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		JsonParse jsonParse = new JsonParse();
 
 		try {
-			List<HashMap<String, HashMap<String, Object>>> list = jsonParse
+			List<HashMap<String, Object>> list = jsonParse
 					.parseItemsJson(new JsonReader(new StringReader(s)));
 
 			Log.v("mandy", "共有多少条数据: " + list.size());
 
-			for (HashMap<String, HashMap<String, Object>> hashMap : list) {
+			for (HashMap<String, Object> hashMap : list) {
 
-				for (Map.Entry<String, HashMap<String, Object>> hashMaps : hashMap
+				for (Entry<String, Object> hashMaps : hashMap
 						.entrySet()) {
 
 					Log.v("mandy", "parent key and value: " + hashMaps.getKey()
 							+ ": " + hashMaps.getValue());
+					
+					if (hashMaps instanceof HashMap) {
 
-					for (Map.Entry<String, Object> hashMap3 : hashMaps
-							.getValue().entrySet()) {
+					for (Map.Entry<String, Object> hashMap3 : ((HashMap<String, Object>) hashMaps
+							.getValue()).entrySet()) {
 
 						Log.v("mandy",
 								"child key and value: " + hashMap3.getKey()
 										+ ": " + hashMap3.getValue());
 
+					}
+					} else { //否则就是list
+						
+//						for (int i = 0; i < (ArrayList)hashMaps.size(); i++) {
+//							
+//						}
+						
 					}
 
 				}
@@ -1490,6 +1499,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 	private String readTextFile(InputStream inputStream) {
