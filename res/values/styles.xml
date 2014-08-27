@@ -130,7 +130,7 @@
          <item name="android:background">@drawable/selector_btn_toolbar</item> 
          <item name="android:textSize">15sp</item> 
          <item name="android:gravity">center</item> 
-         <item name="android:textColor">@color/black</item> 
+         <item name="android:textColor">@android:color/black</item> 
     </style>
     
     <style name="scenic_util_base_layout" >
@@ -140,15 +140,20 @@
     <style name="spinner_item_tag" >
          <item name="android:textSize">18sp</item> 
          <item name="android:gravity">center</item> 
-         <item name="android:textColor">@color/black</item> 
+         <item name="android:textColor">@android:color/black</item> 
     </style>
     <style name="spinner_title_tag" >
          <item name="android:textSize">18sp</item> 
          <item name="android:gravity">center</item> 
-         <item name="android:textColor">@color/black</item> 
+         <item name="android:textColor">@android:color/black</item> 
     </style>
     
     <style name="spinner_tag" >
          <item name="android:background">@drawable/png_spiner_extend</item> 
     </style>
+    <style name="spinner_style">
+        <item name="android:dropDownVerticalOffset">5dp</item>
+        <item name="android:background">@drawable/five</item>
+        <item name="android:popupBackground">@drawable/spinner_item</item>
+      </style>
 </resources>
