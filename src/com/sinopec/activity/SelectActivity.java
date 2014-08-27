@@ -119,24 +119,13 @@ public class SelectActivity extends Activity {
 						+ childs.get(groupPosition).get(childPosition);
 //				titleName.setText(tileName);
 				String groupName = childs.get(groupPosition).get(childPosition);
-				Log.v("map", "groupPosition: " + groupName);
-				if(groupName.contains("基础属性")){
-					StringBuilder sb = new StringBuilder();
-					if(SinoApplication.findResult != null){
-//						getFindResultData(sb);
-						addBasePropertyTable(SinoApplication.findResult.getAttributes().entrySet());
-					}else if(SinoApplication.identifyResult != null){
-						addBasePropertyTable(SinoApplication.identifyResult.getAttributes().entrySet());
-//						getIdentifyResultData(sb);
-//						showBaseProperty(sb.toString());
-					}
-					
-				}else{
-					for (int i = 0; i < 20; i++) {
-						rightList.add(childs.get(groupPosition).get(childPosition)
-								+ "(" + i + ")");
-					}
-				}
+				Log.v("data", "groupPosition: " + groupName);
+				showItemTable(groupName);
+//					if(SinoApplication.findResult != null){
+//						addBasePropertyTable(SinoApplication.findResult.getAttributes().entrySet());
+//					}else if(SinoApplication.identifyResult != null){
+//						addBasePropertyTable(SinoApplication.identifyResult.getAttributes().entrySet());
+//					}
 
 
 				adapter.notifyDataSetChanged();
@@ -172,51 +161,60 @@ public class SelectActivity extends Activity {
 		} else if (CommonData.TopicOilField.equals(mTopicType) ||
 				CommonData.TopicGasField.equals(mTopicType)) {
 			url = Constant.urlAttributeOilGas + id;
+//			url = Constant.urlAttributeOilGas + "201102001063";
 			asyncHttpQuery.execute(2, url);
 		}
 	}
 	
+	private List<HashMap<String, Object>> mDataList  = new ArrayList<HashMap<String,Object>>();
 	private void dealJson(String result){
-		Log.d("json", "-------result: " + result);
+		mDataList.clear();
+//		Log.d("json", "-------result: " + result);
 		JsonParse jsonParse = new JsonParse();
-		
 		try {
-//		  List<HashMap<String, HashMap<String, Object>>> list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
-		  HashMap<String, HashMap<String, Object>> map = jsonParse.parseItemJson(new JsonReader(new StringReader(result)));
-//		  Log.d("json", "key and value: " + list.size());
-//		  for (int i = 0; i < list.size(); i++) {
-//			  HashMap<String, HashMap<String, Object>> map = list.get(i); 
-//		  }
-		  
-		  String item = "油气田基础属性";
-		  if("油气田基础属性".equals(item)){
-			  
-		  }
-		  Set<Entry<String, HashMap<String, Object>>> entrySet = map.entrySet();
-		  for (Entry<String, HashMap<String, Object>> entry : entrySet) {
-			  Log.d("json", "-------result: " + entry.getKey());
-		  }
-//				Log.d("data",
-//						"模糊查询  key: " + ent.getKey() + "  val: " + ent.getValue());
-//			}
-//		  for (HashMap<String, HashMap<String, String>> hashMap : list) {
-//			  
-//			  for (Map.Entry<String, HashMap<String, String>> hashMaps : hashMap.entrySet()) {
-//				     Log.d("json", "key and value: " + hashMaps.getKey() + ": " + hashMaps.getValue());
-//				    for (Map.Entry<String, String>  hashMap3 : hashMaps.getValue().entrySet()) {
-//				    	 Log.d("json", "other key and value: " + hashMap3.getKey() + ": " + hashMap3.getValue());
-//					}
-//			}
-//		}
-		  
-		  
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+			mDataList = jsonParse
+					.parseItemsJson(new JsonReader(new StringReader(result)));
 			
-//		}
+		} catch (Exception e) {
+			Log.e("json", "-dealJson---属性解析 error: "+e.toString());
+		}
 	}
 
+	private void showItemTable(String type) {
+		HashMap<String, Object> result = getItemData(type);
+		if(result != null){
+			addBasePropertyTable(result.entrySet());
+//			for (Map.Entry<String, Object> hashMap : result.entrySet()) {
+//				Log.d("json", "showItemTable child key: "+hashMap.getKey()+" value: " + hashMap.getValue());
+//			}
+		}
+	}
+	
+	private HashMap<String, Object> getItemData(String key) {
+		HashMap<String, Object> result = null;
+		try {
+			for (HashMap<String, Object> hashMap : mDataList) {
+
+				for (Entry<String, Object> hashMaps : hashMap
+						.entrySet()) {
+//					Log.d("json", "0000 getItemData parent key: "+hashMaps.getKey()+" value: " + hashMaps.getValue());
+					Log.d("json", "0000 getItemData parent key: "+hashMaps.getKey()+" 传进的："+key);
+					if (hashMaps.getValue() instanceof HashMap) {
+						if(hashMaps.getKey().equals(key)){
+							result = (HashMap<String, Object>) hashMaps.getValue();
+							Log.d("json", "11111 getItemData parent key: "+hashMaps.getKey()+" value: " + hashMaps.getValue());
+							break;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.e("json", "----属性解析 error: "+e.toString());
+		}
+		
+		return result;
+	}
+	
 	private String mID = "";
 	private void getData() {
 		Intent intent = getIntent();
@@ -333,29 +331,13 @@ public class SelectActivity extends Activity {
 
 		myExpanListAdapter = new MyExpandableListAdapter(this, groups, childs);
 		expandableListView.setAdapter(myExpanListAdapter);
-
-	}
-	
-	private TextView mTVBaseProperty;
-	private void showBaseProperty(String content) {
-		mContentLayout.removeAllViews();
-		if(mTVBaseProperty == null){
-			mTVBaseProperty = new TextView(this);
-		}
-		mTVBaseProperty.setText(content);
-		mTVBaseProperty.setGravity(Gravity.CENTER);
-		mContentLayout.addView(mTVBaseProperty);
-		
 	}
 	
 	private void addBasePropertyTable(Set<Entry<String, Object>> ents) {
-		SimpleTableView stv1=new SimpleTableView(this);
-		ArrayList<String> keyList = new ArrayList<String>();
-		ArrayList<String> valList = new ArrayList<String>();
+		mContent.removeAllViews();
+		SimpleTableView stv1 =new SimpleTableView(this);
 		for (Entry<String, Object> ent : ents) {
-			keyList.add(ent.getKey());
-			valList.add((String) ent.getValue());
-			stv1.AddRow(new String[]{ent.getKey(),(String) ent.getValue()});
+			stv1.AddRow(new String[]{SinoApplication.mNameMap.get(ent.getKey()),dealValue(ent.getValue())});
 		}
 		
 //		stv1.AddRow(new Object[]{"1",BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)});
@@ -367,8 +349,22 @@ public class SelectActivity extends Activity {
 		lp.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);		
 		stv1.setLayoutParams(lp);
 		mContent.addView(stv1);
-//		mContentLayout.addView(mContent);
-//		mContentLayout.addView(stv1);
+	}
+	
+	private String dealValue(Object object) {
+		String value = "";
+		if (object instanceof HashMap) { 
+			HashMap<String, Object> map = (HashMap<String, Object>) object;
+			StringBuffer sb = new StringBuffer();
+			for (Entry<String, Object> ent : map.entrySet()) {
+//				keyList.add(ent.getKey());
+				sb.append(ent.getKey()+": "+(String) ent.getValue()+" , ");
+			}
+			value = sb.toString();
+		}else{
+			value = (String) object;
+		}
+		return value;
 	}
 	
 	private void getFindResultData(StringBuilder sb) {

@@ -230,7 +230,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				break;
 			case 3:
 
-				testParseJson((String) msg.obj);
+//				testParseJson((String) msg.obj);
 				final DistributeRateResource instance = new DistributeRateResource();
 				try {
 					JSONArray jsonArray = new JSONArray((String) msg.obj);
@@ -1318,7 +1318,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
 		} else if ("mineLogin".equals(tag)) {
-			Intent intent = new Intent(mContext, LoginActivity.class);
+//			Intent intent = new Intent(mContext, LoginActivity.class);
+//			startActivity(intent);
+			Intent intent = new Intent(this, SelectActivity.class);
+			intent.putExtra(CommonData.KeyTopicType, "气田");
+			intent.putExtra("name", "属性");
 			startActivity(intent);
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();
@@ -1504,6 +1508,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 	private String readTextFile(InputStream inputStream) {

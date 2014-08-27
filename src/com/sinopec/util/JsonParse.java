@@ -69,7 +69,6 @@ public class JsonParse {
 				 reader.skipValue();
 				e.printStackTrace();
 			}
-//        	
         }
         reader.endObject();
         return item;
