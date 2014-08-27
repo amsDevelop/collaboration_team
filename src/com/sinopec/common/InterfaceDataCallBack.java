@@ -33,5 +33,8 @@ public interface InterfaceDataCallBack {
 	 * @param data
 	 */
 	public void setData4Frame(Object data);
-	
+	/**
+	 * 返回null的结果，做某些界面处理
+	 */
+	public void returnNoResult();
 }

@@ -241,6 +241,33 @@ public class ChildrenMenuDataUtil {
 	}
 	
 	/**
+	 * 碳酸盐岩烃源分布 子菜单“储存空间类型”(查询菜单第五项)
+	 * 包括滩坝型、生物礁型、前斜坡/碎屑型、白垩岩/白垩质陆架型、白云岩化灰泥石灰岩型、裂缝/喀斯特型
+	 */
+	public static void setSearchChildren5MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
+		String[] name4count = new String[] { "滩坝型", "生物礁型" , "前斜坡/碎屑型",
+				"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
+				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
+		String[] tag = new String[] { "滩坝型", "生物礁型" , "前斜坡/碎屑型",
+				"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+		list.clear();
+		for (int i = 0; i < name4count.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("name", name4count[i]);
+			map.put("icon", icon4count[i]);
+			map.put("tag", tag[i]);
+			
+			HashMap<String, Boolean> showMap = new HashMap<String, Boolean>();
+			showMap.put(tag[i], clickTag[i]);
+			map.put("clicktag", showMap);
+			map.put("split", splitNumber);
+			list.add(map);
+		}
+		
+	}
+	
+	/**
 	 * 分类型钙层分布子菜单(查询菜单第六项)
 	 */
 	public static void setSearchChildren6MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {

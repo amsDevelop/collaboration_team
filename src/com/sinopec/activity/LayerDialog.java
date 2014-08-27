@@ -63,15 +63,20 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				return true;
 			}
 		});
+		
 		view.findViewById(R.id.id_btn_operator_1).setOnClickListener(this);
 		view.findViewById(R.id.id_btn_operator_2).setOnClickListener(this);
 
 		mContaner = (ViewGroup) view
 				.findViewById(R.id.id_llaout_layer_container);
-		mCover.setVisibility(View.VISIBLE);
 		mListView = (ListView) view.findViewById(R.id.id_lstview_layer_1);
 		mOilGasAdapter = new MyAdapter();
 		mListView.setAdapter(mOilGasAdapter);
+		if(mBtnOilGas.isSelected()){
+			mCover.setVisibility(View.GONE);
+		}else{
+			mCover.setVisibility(View.VISIBLE);
+		}
 		return view;
 	}
 	

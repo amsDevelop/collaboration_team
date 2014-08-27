@@ -12,7 +12,7 @@
         android:layout_x="50dp"
         android:layout_y="174dp"
         android:background="@drawable/selector_paopao_document_bg"
-        android:text="@string/btn_document" />
+        android:text="@string/btn_introduce" />
 
     <Button
         android:id="@+id/property"

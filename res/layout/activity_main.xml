@@ -229,48 +229,53 @@
                         android:background="@drawable/toolbottom_bg"
                         android:orientation="horizontal" >
 
-                        <com.sinopec.view.MenuButton
-                            android:id="@+id/menuview_tool"
-                            style="@style/btn_menuview_btn"
-                            iconbutton:icon="@drawable/menu_tool"
-                            iconbutton:mtext="@string/btn_tool"
-                            iconbutton:relation="icon_right"
-                            android:focusableInTouchMode="true"
-                            iconbutton:text_size="16sp" />
+                        <RadioGroup
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
 
-                        <com.sinopec.view.MenuButton
-                            android:id="@+id/menuview_search"
-                            style="@style/btn_menuview_btn"
-                            iconbutton:icon="@drawable/menu_mine"
-                            iconbutton:mtext="@string/btn_search"
-                            iconbutton:relation="icon_right"
-                            android:focusableInTouchMode="true"
-                            iconbutton:text_size="16sp" />
+                            <com.sinopec.view.MenuButton
+                                android:id="@+id/menuview_tool"
+                                style="@style/btn_menuview_btn"
+                                android:focusableInTouchMode="true"
+                                iconbutton:icon="@drawable/menu_tool"
+                                iconbutton:mtext="@string/btn_tool"
+                                iconbutton:relation="icon_right"
+                                iconbutton:text_size="16sp" />
 
-                        <com.sinopec.view.MenuButton
-                            android:id="@+id/menuview_count"
-                            style="@style/btn_menuview_btn"
-                            iconbutton:icon="@drawable/menu_count"
-                            iconbutton:mtext="@string/btn_count"
-                            iconbutton:relation="icon_right"
-                            iconbutton:text_size="16sp" />
+                            <com.sinopec.view.MenuButton
+                                android:id="@+id/menuview_search"
+                                style="@style/btn_menuview_btn"
+                                android:focusableInTouchMode="true"
+                                iconbutton:icon="@drawable/menu_search"
+                                iconbutton:mtext="@string/btn_search"
+                                iconbutton:relation="icon_right"
+                                iconbutton:text_size="16sp" />
 
-                        <com.sinopec.view.MenuButton
-                            android:id="@+id/menuview_compare"
-                            style="@style/btn_menuview_btn"
-                            iconbutton:icon="@drawable/menu_compare"
-                            iconbutton:mtext="@string/btn_compare"
-                            iconbutton:relation="icon_right"
-                            iconbutton:text_size="16sp" />
+                            <com.sinopec.view.MenuButton
+                                android:id="@+id/menuview_count"
+                                style="@style/btn_menuview_btn"
+                                iconbutton:icon="@drawable/menu_count"
+                                iconbutton:mtext="@string/btn_count"
+                                iconbutton:relation="icon_right"
+                                iconbutton:text_size="16sp" />
 
-                        <com.sinopec.view.MenuButton
-                            android:id="@+id/menuview_mine"
-                            style="@style/btn_menuview_btn"
-                            iconbutton:icon="@drawable/menu_mine"
-                            iconbutton:mtext="@string/btn_mine"
-                            iconbutton:relation="icon_null"
-                            iconbutton:text_size="16sp" />
->>>>>>> f065c866b8c172625f157bcc268a4b8b27c118d8
+                            <com.sinopec.view.MenuButton
+                                android:id="@+id/menuview_compare"
+                                style="@style/btn_menuview_btn"
+                                iconbutton:icon="@drawable/menu_compare"
+                                iconbutton:mtext="@string/btn_compare"
+                                iconbutton:relation="icon_right"
+                                iconbutton:text_size="16sp" />
+
+                            <com.sinopec.view.MenuButton
+                                android:id="@+id/menuview_mine"
+                                style="@style/btn_menuview_btn"
+                                iconbutton:icon="@drawable/menu_mine"
+                                iconbutton:mtext="@string/btn_mine"
+                                iconbutton:relation="icon_null"
+                                iconbutton:text_size="16sp" />
+                        </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>

@@ -20,6 +20,7 @@
     <string name="btn_confirm">确认</string>
     <string name="btn_document">文档</string>
     <string name="btn_attribute">属性</string>
+    <string name="btn_introduce">简介</string>
 
     
     <string name="btn_tool_title">工具子菜单项</string>

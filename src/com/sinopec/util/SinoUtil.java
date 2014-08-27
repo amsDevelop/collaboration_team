@@ -79,7 +79,11 @@ public class SinoUtil {
 		baseLayout.addView(layoutFirst);
 		//第二列开始 是数据
 		//取名字
-		for (int i = 0; i < list.size(); i++) {
+		int number = list.size();
+		if(number >= SinoApplication.mComparedNumber){
+			number = SinoApplication.mComparedNumber;
+		}
+		for (int i = 0; i < number; i++) {
 			LinearLayout layoutContent = new LinearLayout(context);
 			layoutContent.setOrientation(LinearLayout.VERTICAL);
 			String name = SinoApplication.getIdentifyResultName(list.get(i), list.get(i).getLayerName());

@@ -1,6 +1,9 @@
 package com.sinopec.activity;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -8,8 +11,9 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -25,12 +29,15 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.esri.core.tasks.ags.find.FindResult;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
+import com.sinopec.data.json.Constant;
+import com.sinopec.query.AsyncHttpQuery;
+import com.sinopec.util.JsonParse;
 import com.sinopec.util.SimpleTableView;
 import com.sinopec.view.MyExpandableListAdapter;
 import com.sinopec.view.MyListAdapter;
@@ -43,7 +50,7 @@ public class SelectActivity extends Activity {
 	private ListView list;
 	private TextView titleName;
 	/**
-	 * 属性 or 文档 or 统计
+	 * 属性 or 简介 or 统计
 	 */
 	private String dataName;
 	private MyExpandableListAdapter myExpanListAdapter;
@@ -51,12 +58,15 @@ public class SelectActivity extends Activity {
 	private List<String> rightList = new ArrayList<String>();
 	private ImageButton mBtnBack;
 	private ViewGroup mContentLayout;
+	private ScrollView mContent;
+	private AsyncHttpQuery asyncHttpQuery;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.select_layout);
+		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		mContentLayout = (ViewGroup) findViewById(R.id.content);
 		mBtnBack = (ImageButton) findViewById(R.id.btn_login_back);
 		mBtnBack.setOnClickListener(new OnClickListener() {
@@ -70,7 +80,7 @@ public class SelectActivity extends Activity {
 		leftLayout = (LinearLayout) findViewById(R.id.leftLayout);
 		list = (ListView) findViewById(R.id.listView);
 		titleName = (TextView) findViewById(R.id.titleName);
-
+		mContent = (ScrollView) findViewById(R.id.scrollview_content);
 		adapter = new MyListAdapter(this, rightList);
 		list.setAdapter(adapter);
 
@@ -134,11 +144,80 @@ public class SelectActivity extends Activity {
 				return false;
 			}
 		});
-
+		
 	}
+	
+	private Handler handler = new Handler() {
+
+		public void handleMessage(android.os.Message msg) {
+			StringBuilder builder;
+			switch (msg.what) {
+			case 1:
+				dealJson((String)msg.obj);
+				break;
+			case 2:
+				dealJson((String)msg.obj);
+				break;
+			}
+		}
+	};
 
 	private String mTopicType;
+	private void getJson(String id) {
+//		String chenjitixi = "72057594037927935";
+		String url = Constant.urlAttributeOilGas + id;
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			url = Constant.urlAttributeBasin + id;
+			asyncHttpQuery.execute(1, url);
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType)) {
+			url = Constant.urlAttributeOilGas + id;
+			asyncHttpQuery.execute(2, url);
+		}
+	}
+	
+	private void dealJson(String result){
+		Log.d("json", "-------result: " + result);
+		JsonParse jsonParse = new JsonParse();
+		
+		try {
+//		  List<HashMap<String, HashMap<String, Object>>> list = jsonParse.parseItemsJson(new JsonReader(new StringReader(result)));
+		  HashMap<String, HashMap<String, Object>> map = jsonParse.parseItemJson(new JsonReader(new StringReader(result)));
+//		  Log.d("json", "key and value: " + list.size());
+//		  for (int i = 0; i < list.size(); i++) {
+//			  HashMap<String, HashMap<String, Object>> map = list.get(i); 
+//		  }
+		  
+		  String item = "油气田基础属性";
+		  if("油气田基础属性".equals(item)){
+			  
+		  }
+		  Set<Entry<String, HashMap<String, Object>>> entrySet = map.entrySet();
+		  for (Entry<String, HashMap<String, Object>> entry : entrySet) {
+			  Log.d("json", "-------result: " + entry.getKey());
+		  }
+//				Log.d("data",
+//						"模糊查询  key: " + ent.getKey() + "  val: " + ent.getValue());
+//			}
+//		  for (HashMap<String, HashMap<String, String>> hashMap : list) {
+//			  
+//			  for (Map.Entry<String, HashMap<String, String>> hashMaps : hashMap.entrySet()) {
+//				     Log.d("json", "key and value: " + hashMaps.getKey() + ": " + hashMaps.getValue());
+//				    for (Map.Entry<String, String>  hashMap3 : hashMaps.getValue().entrySet()) {
+//				    	 Log.d("json", "other key and value: " + hashMap3.getKey() + ": " + hashMap3.getValue());
+//					}
+//			}
+//		}
+		  
+		  
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+			
+//		}
+	}
 
+	private String mID = "";
 	private void getData() {
 		Intent intent = getIntent();
 		ArrayList<String> list = new ArrayList<String>();
@@ -147,8 +226,11 @@ public class SelectActivity extends Activity {
 			dataName = intent.getStringExtra("name");
 			mTopicType = SinoApplication.identifyResult.getLayerName();
 			Map<String, Object> attributes = SinoApplication.identifyResult.getAttributes();
-			String name = (String) attributes.get("NAME_CN");
+			String name = (String) attributes.get("OBJ_NAME_C");
 			titleName.setText(name);
+			mID = (String) SinoApplication.identifyResult.getAttributes().get("OBJ_ID");
+
+			Log.d("json", "-------mID: " + mID);
 		}else{
 			if (intent != null) {
 				dataName = intent.getStringExtra("name");
@@ -156,15 +238,16 @@ public class SelectActivity extends Activity {
 				titleName.setText(intent.getStringExtra(CommonData.KeyTopicName));
 			}	
 		}
-		Log.d("map", "-------mType: " + mTopicType);
+		Log.d("data", "-------mType: " + mTopicType);
 		if (CommonData.TypeProperty.equals(dataName)) {
 			list = initChildMenuData4Property();
 		} else if (CommonData.TypeCount.equals(dataName)) {
 			list = initChildMenuData4Count();
-		} else if (CommonData.TypeDocument.equals(dataName)) {
-			list = initChildMenuData4Document();
+		} else if (CommonData.TypeIntroduce.equals(dataName)) {
+			list = initChildMenuData4Introduce();
 		}
 		initData(list);
+		getJson(mID);
 	}
 	
 	private ArrayList<String> initChildMenuData4Property() {
@@ -176,7 +259,8 @@ public class SelectActivity extends Activity {
 					" 含油气盆地烃源条件", "含油气盆地储集条件", " 含油气盆地盖层条件", "含油气盆地圈闭条件",
 					"含油气盆地保存条件", " 含油气盆地配置条件", };
 
-		} else if (CommonData.TopicOilGasField.equals(mTopicType)) {
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType)) {
 			titils = new String[] { "油气田基础属性", "油气田储量产量", "油气田源储盖条件",
 					"油气田原油性质", "油气田天然气性质", "油气田水性质"  };
 		} else if (CommonData.TopicOilGasMine.equals(mTopicType)) {
@@ -200,7 +284,8 @@ public class SelectActivity extends Activity {
 					"历年累计二维地震长度", "历年累计三维地震块数", "历年累计三维地震面积", "历年累计勘探投资",
 					"历年累计发现石油地质储量", "历年累计发现天然气地质储量", "历年累计发现凝析油地质储量"};
 			
-		} else if (CommonData.TopicOilGasField.equals(mTopicType)) {
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType)) {
 			titils = new String[] { "历年累计发现石油地质储量", "历年累计发现石油可采储量", "历年累计发现石油产量",
 					"历年累计发现天然气地质储量", "历年累计发现天然气可采储量", "历年累计发现天然气产量",
 					"历年累计发现凝析油地质储量", "历年累计发现凝析油可采储量", "历年累计发现凝析油产量"};
@@ -215,11 +300,28 @@ public class SelectActivity extends Activity {
 		return list;
 	}
 	
-	private ArrayList<String> initChildMenuData4Document() {
+	private ArrayList<String> initChildMenuData4Introduce() {
 		ArrayList<String> list = new ArrayList<String>();
-//		for (int i = 0; i < titils.length; i++) {
-//			list.add(titils[i]);
-//		}
+		String[] titils = null;
+
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			titils = new String[] { "盆地概况", "区域构造", " 含油气层系",
+					"圈闭与油气藏", "勘探情况", "平面构造图", "年代划分表",
+					"地理位置图"};
+			
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType) || CommonData.TopicOilGasMine.equals(mTopicType)) {
+			titils = new String[] { "油气田概述", "构造特征", "沉积与储层特征",
+					"流体性质", "储量情况", "平面构造图",
+					"剖面图", "综合柱状图", "地理位置图", "地层简表"};
+		} 
+		for (int i = 0; i < titils.length; i++) {
+			list.add(titils[i]);
+		}
+		
+		for (int i = 0; i < titils.length; i++) {
+			list.add(titils[i]);
+		}
 		return list;
 	}
 
@@ -255,6 +357,7 @@ public class SelectActivity extends Activity {
 			valList.add((String) ent.getValue());
 			stv1.AddRow(new String[]{ent.getKey(),(String) ent.getValue()});
 		}
+		
 //		stv1.AddRow(new Object[]{"1",BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)});
 //		stv1.AddRow(new String[]{"12","1"});
 //		stv1.AddRow(new String[]{"12222","1"});
@@ -263,7 +366,9 @@ public class SelectActivity extends Activity {
 		LayoutParams lp= new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT); 
 		lp.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);		
 		stv1.setLayoutParams(lp);
-		mContentLayout.addView(stv1);
+		mContent.addView(stv1);
+//		mContentLayout.addView(mContent);
+//		mContentLayout.addView(stv1);
 	}
 	
 	private void getFindResultData(StringBuilder sb) {

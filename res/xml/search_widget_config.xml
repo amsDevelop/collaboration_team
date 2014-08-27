@@ -77,7 +77,7 @@
 			<value id="" name="自定义" values="200 300" />
 		  </GeoCondition>
 		</GeoObject>
-		<GeoObject id="" name="油气田">
+		<GeoObject id="11" name="油气田">
 	      <GeoCondition id="" name="沉积相" state="tree">
 			<fvalue id="" name="陆相" >
 			  <svalue id="" name=""/>

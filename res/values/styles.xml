@@ -137,4 +137,18 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+    <style name="spinner_item_tag" >
+         <item name="android:textSize">18sp</item> 
+         <item name="android:gravity">center</item> 
+         <item name="android:textColor">@color/black</item> 
+    </style>
+    <style name="spinner_title_tag" >
+         <item name="android:textSize">18sp</item> 
+         <item name="android:gravity">center</item> 
+         <item name="android:textColor">@color/black</item> 
+    </style>
+    
+    <style name="spinner_tag" >
+         <item name="android:background">@drawable/png_spiner_extend</item> 
+    </style>
 </resources>

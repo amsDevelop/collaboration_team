@@ -2,6 +2,9 @@ package com.sinopec.util;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sinopec.application.SinoApplication;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,12 +35,15 @@ public class SimpleTableView extends TableLayout
 	public int getM_ColumnN() {
 		return m_ColumnN;
 	}	
+	
+	private LayoutParams mLayoutParams;
 	public SimpleTableView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		m_Rows=new ArrayList<TableRow>();
 		m_Views=new ArrayList<List<View>>();
 		this.setWillNotDraw(false);
+		mLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 	}
 	public SimpleTableView(Context context,int n) {//指定列的数目
 		super(context);
@@ -107,6 +113,12 @@ public class SimpleTableView extends TableLayout
 		if("class java.lang.String".equals(classname)){
 			TextView tView=new TextView(getContext());
 			tView.setText((String) obj);
+			tView.setTextColor(Color.BLACK);
+			tView.setTextSize(30);
+			tView.setSingleLine(false);
+			tView.setWidth(SinoApplication.screenWidth / 6);
+//			tView.setLayoutParams(mLayoutParams);
+			tView.setHeight(100);
 			rView=tView;
 		}else if("class android.graphics.Bitmap".equals(classname)){
 			ImageView iView=new ImageView(getContext());
