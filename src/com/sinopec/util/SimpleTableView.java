@@ -39,6 +39,7 @@ public class SimpleTableView extends TableLayout
 	private LayoutParams mLayoutParams;
 	public SimpleTableView(Context context) {
 		super(context);
+		// TODO Auto-generated constructor stub
 		m_Rows=new ArrayList<TableRow>();
 		m_Views=new ArrayList<List<View>>();
 		this.setWillNotDraw(false);
@@ -46,6 +47,7 @@ public class SimpleTableView extends TableLayout
 	}
 	public SimpleTableView(Context context,int n) {//指定列的数目
 		super(context);
+		// TODO Auto-generated constructor stub
 		m_Rows=new ArrayList<TableRow>();
 		m_Views=new ArrayList<List<View>>();
 		if(n>0) m_ColumnN=n;
@@ -112,9 +114,9 @@ public class SimpleTableView extends TableLayout
 			TextView tView=new TextView(getContext());
 			tView.setText((String) obj);
 			tView.setTextColor(Color.BLACK);
-			tView.setTextSize(25);
+			tView.setTextSize(30);
 			tView.setSingleLine(false);
-//			tView.setWidth(SinoApplication.screenWidth / 3 * 2);
+			tView.setWidth(SinoApplication.screenWidth / 6);
 //			tView.setLayoutParams(mLayoutParams);
 			tView.setHeight(100);
 			rView=tView;

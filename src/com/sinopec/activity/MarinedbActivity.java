@@ -969,26 +969,35 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.menuview_tool:
 			if(drawTool.isSelectDraw){
-				clickTag = new Boolean[] { false, false };
+//				clickTag = new Boolean[] { false, false };
+				clickTag = new Boolean[] { true, true };
+				String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
 				if(mTag4OperateInLine){
-					clickTag = new Boolean[] { true, false };
+//					clickTag = new Boolean[] { true, false };
+					name4count = new String[] { "测距", "测面积(请先选择范围)"};
 				}else if(mTag4ToolDistanceOk){
-					clickTag = new Boolean[] { true, false };
+//					clickTag = new Boolean[] { true, false };
+					name4count = new String[] { "测距", "测面积(请先选择范围)"};
 				}else if(mTag4ToolAreaOk){
-					clickTag = new Boolean[] { false, true };
+//					clickTag = new Boolean[] { false, true };
+					name4count = new String[] { "测距(请先绘制一条线)", "测面积"};
 				}
-				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, mChildMenuSplitNumber);
+				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, name4count, mChildMenuSplitNumber);
 				mGridView.setNumColumns(2);
 				setGridView(toolist, v);
 			}else{
-				clickTag = new Boolean[] { false, false };
+//				clickTag = new Boolean[] { false, false };
+				clickTag = new Boolean[] { true, true };
 				String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
 				if(mTag4OperateInLine){
-					clickTag = new Boolean[] { true, false };
+//					clickTag = new Boolean[] { true, false };
+					name4count = new String[] { "测距", "测面积(请先选择范围)"};
 				}else if(mTag4ToolDistanceOk){
-					clickTag = new Boolean[] { true, false };
+//					clickTag = new Boolean[] { true, false };
+					name4count = new String[] { "测距", "测面积(请先选择范围)"};
 				}else if(mTag4ToolAreaOk){
-					clickTag = new Boolean[] { false, true };
+//					clickTag = new Boolean[] { false, true };
+					name4count = new String[] { "测距(请先绘制一条线)", "测面积"};
 				}
 				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, name4count, mChildMenuSplitNumber);
 				mGridView.setNumColumns(2);
@@ -1125,21 +1134,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	// 设置底部按钮的点击效果
 	private void setBottomMenuBarButtonsStatus(int vId) {
 		if (mMenuViewTool.getId() == vId) {
-			boolean tag = true;
-			for (int i = 0; i < clickTag.length; i++) {
-				if(!clickTag[i]){
-					tag = false;
-					break;
-				}
-			}
-			if(tag){
+//			boolean tag = true;
+//			for (int i = 0; i < clickTag.length; i++) {
+//				if(!clickTag[i]){
+//					tag = false;
+//					break;
+//				}
+//			}
+//			if(tag){
 				dealClickRepeat(mMenuViewTool);
-			}
+//			}
 
-//			mMenuViewCount.setChecked(false);
-//			mMenuViewSearch.setChecked(false);
-//			mMenuViewCompare.setChecked(false);
-//			mMenuViewMine.setChecked(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
@@ -1147,10 +1152,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if (mMenuViewCount.getId() == vId) {
 			dealClickRepeat(mMenuViewCount);
 
-//			mMenuViewTool.setChecked(false);
-//			mMenuViewSearch.setChecked(false);
-//			mMenuViewCompare.setChecked(false);
-//			mMenuViewMine.setChecked(false);
 			mMenuViewTool.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
@@ -1310,7 +1311,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawTool.calculateAreaAndLength("KM");
 		} else if ("toolArea".equals(tag)) {
 			// 调用drawTool里面 的一个变量
-			drawTool.calculateAreaAndLength("");
+//			drawTool.calculateAreaAndLength("");
 		} else if ("定制查询".equals(tag)) {
 			// TODO:
 			ConditionQuery query = new ConditionQuery();

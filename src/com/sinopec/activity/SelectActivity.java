@@ -160,8 +160,8 @@ public class SelectActivity extends Activity {
 			asyncHttpQuery.execute(1, url);
 		} else if (CommonData.TopicOilField.equals(mTopicType) ||
 				CommonData.TopicGasField.equals(mTopicType)) {
-			url = Constant.urlAttributeOilGas + id;
-//			url = Constant.urlAttributeOilGas + "201102001063";
+//			url = Constant.urlAttributeOilGas + id;
+			url = Constant.urlAttributeOilGas + "201102001063";
 			asyncHttpQuery.execute(2, url);
 		}
 	}
