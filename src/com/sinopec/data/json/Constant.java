@@ -42,11 +42,23 @@ public interface Constant extends com.lenovo.nova.util.Constant{
 			"peprisapi/basinAttribute.html?basinId=";
 	
 	/**
-	 * 油气田属性查询（对应接口文档一.2）
+	 * 盆地简介（对应接口文档六.1）
 	 */
 	//type=72057594037927935&haixiang=72057594037927935&tansuanyanyan=72057594037927935 
+	String urlIntroduceBasin = baseURL + 
+			"peprisapi/docInfoQuery.html?type=1&dzdxbm=";
+	
+	/**
+	 * 油气田属性查询（对应接口文档一.2）
+	 */
 	String urlAttributeOilGas = baseURL + 
 			"peprisapi/oilGasFieldAttribute.html?dzdybm=";
+	
+	/**
+	 * 油气田简介（对应接口文档六.2）
+	 */
+	String urlIntroduceOilGas = baseURL + 
+			"peprisapi/docInfoOilQuery.html?type=1&dzdxbm=";
 	
 	
 	

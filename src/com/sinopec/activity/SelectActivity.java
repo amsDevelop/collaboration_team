@@ -147,14 +147,23 @@ public class SelectActivity extends Activity {
 			case 2:
 				dealJson((String)msg.obj);
 				break;
+				
+			case IntroduceBasin:
+			case IntroduceOilGas:
+				dealJson4Introduce((String)msg.obj);
+				break;
 			}
 		}
 	};
 
+	private final int IntroduceBasin = 3;
+	private final int IntroduceOilGas = 4;
+	
+	
 	private String mTopicType;
-	private void getJson(String id) {
+	private void getJson4Attribute(String id) {
 //		String chenjitixi = "72057594037927935";
-		String url = Constant.urlAttributeOilGas + id;
+		String url = "";
 		if (CommonData.TopicBasin.equals(mTopicType)) {
 			url = Constant.urlAttributeBasin + id;
 			asyncHttpQuery.execute(1, url);
@@ -166,8 +175,35 @@ public class SelectActivity extends Activity {
 		}
 	}
 	
+	private void getJson4Introduce(String id) {
+//		String chenjitixi = "72057594037927935";
+		String url = "";
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			url = Constant.urlIntroduceBasin + id;
+			asyncHttpQuery.execute(IntroduceBasin, url);
+		} else if (CommonData.TopicOilField.equals(mTopicType) ||
+				CommonData.TopicGasField.equals(mTopicType)) {
+			url = Constant.urlIntroduceOilGas + id;
+//			url = Constant.urlAttributeOilGas + "201102001063";
+			asyncHttpQuery.execute(IntroduceOilGas, url);
+		}
+	}
+	
 	private List<HashMap<String, Object>> mDataList  = new ArrayList<HashMap<String,Object>>();
 	private void dealJson(String result){
+		mDataList.clear();
+//		Log.d("json", "-------result: " + result);
+		JsonParse jsonParse = new JsonParse();
+		try {
+			mDataList = jsonParse
+					.parseItemsJson(new JsonReader(new StringReader(result)));
+			
+		} catch (Exception e) {
+			Log.e("json", "-dealJson---属性解析 error: "+e.toString());
+		}
+	}
+	
+	private void dealJson4Introduce(String result){
 		mDataList.clear();
 //		Log.d("json", "-------result: " + result);
 		JsonParse jsonParse = new JsonParse();
@@ -187,6 +223,10 @@ public class SelectActivity extends Activity {
 //			for (Map.Entry<String, Object> hashMap : result.entrySet()) {
 //				Log.d("json", "showItemTable child key: "+hashMap.getKey()+" value: " + hashMap.getValue());
 //			}
+		}else{
+			mContent.removeAllViews();
+			Toast.makeText(SelectActivity.this, getString(R.string.search_no_data),
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -239,13 +279,14 @@ public class SelectActivity extends Activity {
 		Log.d("data", "-------mType: " + mTopicType);
 		if (CommonData.TypeProperty.equals(dataName)) {
 			list = initChildMenuData4Property();
+			getJson4Attribute(mID);
 		} else if (CommonData.TypeCount.equals(dataName)) {
 			list = initChildMenuData4Count();
 		} else if (CommonData.TypeIntroduce.equals(dataName)) {
 			list = initChildMenuData4Introduce();
+			getJson4Introduce(mID);
 		}
 		initData(list);
-		getJson(mID);
 	}
 	
 	private ArrayList<String> initChildMenuData4Property() {

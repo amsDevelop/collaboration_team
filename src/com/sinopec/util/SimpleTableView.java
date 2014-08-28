@@ -104,6 +104,7 @@ public class SimpleTableView extends TableLayout
 		}	
 	}
 	
+	private final int padding = 8;
 	protected View CreateCellView(Object obj)//根据obj的类型创建一个VIEW并返回之，如果无法识别Object的类型返回null
 	{
 		View rView=null;
@@ -116,6 +117,8 @@ public class SimpleTableView extends TableLayout
 			tView.setTextColor(Color.BLACK);
 			tView.setTextSize(25);
 			tView.setSingleLine(false);
+			
+			tView.setPadding(padding, padding, 0, padding);
 //			tView.setWidth(SinoApplication.screenWidth / 6);
 //			tView.setLayoutParams(mLayoutParams);
 			tView.setHeight(100);
