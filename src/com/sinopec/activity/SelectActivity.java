@@ -187,6 +187,10 @@ public class SelectActivity extends Activity {
 //			for (Map.Entry<String, Object> hashMap : result.entrySet()) {
 //				Log.d("json", "showItemTable child key: "+hashMap.getKey()+" value: " + hashMap.getValue());
 //			}
+		}else{
+			mContent.removeAllViews();
+			Toast.makeText(SelectActivity.this, getString(R.string.search_no_data),
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 	

@@ -967,34 +967,34 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.menuview_tool:
 			if(drawTool.isSelectDraw){
-//				clickTag = new Boolean[] { false, false };
-				clickTag = new Boolean[] { true, true };
+				clickTag = new Boolean[] { false, false };
+//				clickTag = new Boolean[] { true, true };
 				String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
 				if(mTag4OperateInLine){
-//					clickTag = new Boolean[] { true, false };
+					clickTag = new Boolean[] { true, false };
 					name4count = new String[] { "测距", "测面积(请先选择范围)"};
 				}else if(mTag4ToolDistanceOk){
-//					clickTag = new Boolean[] { true, false };
+					clickTag = new Boolean[] { true, false };
 					name4count = new String[] { "测距", "测面积(请先选择范围)"};
 				}else if(mTag4ToolAreaOk){
-//					clickTag = new Boolean[] { false, true };
+					clickTag = new Boolean[] { false, true };
 					name4count = new String[] { "测距(请先绘制一条线)", "测面积"};
 				}
 				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, name4count, mChildMenuSplitNumber);
 				mGridView.setNumColumns(2);
 				setGridView(toolist, v);
 			}else{
-//				clickTag = new Boolean[] { false, false };
-				clickTag = new Boolean[] { true, true };
+				clickTag = new Boolean[] { false, false };
+//				clickTag = new Boolean[] { true, true };
 				String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
 				if(mTag4OperateInLine){
-//					clickTag = new Boolean[] { true, false };
+					clickTag = new Boolean[] { true, false };
 					name4count = new String[] { "测距", "测面积(请先选择范围)"};
 				}else if(mTag4ToolDistanceOk){
-//					clickTag = new Boolean[] { true, false };
+					clickTag = new Boolean[] { true, false };
 					name4count = new String[] { "测距", "测面积(请先选择范围)"};
 				}else if(mTag4ToolAreaOk){
-//					clickTag = new Boolean[] { false, true };
+					clickTag = new Boolean[] { false, true };
 					name4count = new String[] { "测距(请先绘制一条线)", "测面积"};
 				}
 				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag,
@@ -1133,13 +1133,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	// 设置底部按钮的点击效果
 	private void setBottomMenuBarButtonsStatus(int vId) {
 		if (mMenuViewTool.getId() == vId) {
-//			boolean tag = true;
-//			for (int i = 0; i < clickTag.length; i++) {
-//				if(!clickTag[i]){
-//					tag = false;
-//					break;
-//				}
-//			}
+			dealClickRepeat(mMenuViewTool);
+			
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
@@ -1287,12 +1282,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 			long arg3) {
-		// if (!"toolDistance".equals(tag) && !"toolArea".equals(tag)){
-		mLastClickedView = null;
-		// }
+		
 		HashMap<String, Object> map = (HashMap<String, Object>) arg0
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
+		if((!mTag4OperateInLine && !mTag4ToolDistanceOk&& !mTag4ToolAreaOk) ||
+			("toolDistance".equals(tag) || "toolArea".equals(tag))){
+		}else{
+			mLastClickedView = null;
+		}
 		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map
 				.get("clicktag");
 		if (showMap != null && !showMap.get(tag)) {
@@ -1439,11 +1437,32 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		}
 		// 三级子菜单都需要在这里处理
+//		if (!"CountChildrenMenuOne".equals(tag)
+//				&& !"CountChildrenMenuTwo".equals(tag)
+//				&& !"toolDistance".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)
+//				&& !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)) {
+//			hideCallOut();
+//		}
 		if (!"CountChildrenMenuOne".equals(tag)
 				&& !"CountChildrenMenuTwo".equals(tag)
-				&& !"toolDistance".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)
-				&& !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)) {
+				&& !"toolDistance".equals(tag) && !"toolArea".equals(tag)
+				&& !"分类型盖层分布".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)) {
 			hideCallOut();
+		}
+		
+		if("toolDistance".equals(tag) || "toolArea".equals(tag)){
+			if (callout != null) {
+				if (callout.isShowing()) {
+					callout.hide();
+				}
+			}
+
+			mDrawLayer4HighLight.removeAll();
+//				mMenuViewTool.setSelected(false);
+			mMenuViewCount.setSelected(false);
+			mMenuViewSearch.setSelected(false);
+			mMenuViewCompare.setSelected(false);
+			mMenuViewMine.setSelected(false);
 		}
 	}
 
