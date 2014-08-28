@@ -18,9 +18,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.esri.core.map.Graphic;
@@ -38,9 +40,12 @@ import com.sinopec.view.MenuButtonNoIcon;
 public class SearchFragment extends Fragment implements OnClickListener {
 	private String tag= "SearchFragment";
 	private ListView mListView;
+	private ListView mLvHistory;
+	private Button mBtnClear;
 	private Context mContext;
 	private MenuButtonNoIcon mConfirm;
 	private ViewGroup mViewGroup;
+	private ViewGroup mViewGroupHistory;
 	private ClearableEditText mEditText;
 	
 	@Override
@@ -48,6 +53,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		this.mContext = getActivity();
 		Log.d(tag, "----------------------onCreate");
+		SinoApplication.mSearchHistory.add("四川");
 	}
 	
 	private InterfaceDataCallBack mInterfaceDataCallBack;
@@ -87,6 +93,17 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		mConfirm = (MenuButtonNoIcon) view.findViewById(R.id.btn_search_confirm);
 		mConfirm.setOnClickListener(this);
 		mListView = (ListView) view.findViewById(R.id.search_listview);
+		mLvHistory = (ListView) view.findViewById(R.id.search_history_listview);
+		mBtnClear = (Button) view.findViewById(R.id.search_history_clear);
+		mBtnClear.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				SinoApplication.mSearchHistory.clear();
+				mViewGroupHistory.setVisibility(View.GONE);
+			}
+		});
+		mViewGroupHistory = (ViewGroup) view.findViewById(R.id.search_history_layout);
 		mViewGroup = (ViewGroup) view.findViewById(R.id.search_listview_layout);
 		mBtnBack = (ImageButton) view.findViewById(R.id.btn_login_back);
 		mBtnBack.setOnClickListener(new OnClickListener() {
@@ -120,9 +137,11 @@ public class SearchFragment extends Fragment implements OnClickListener {
 						mList.clear();
 						mAdapter.notifyDataSetChanged();
 						mViewGroup.setVisibility(View.GONE);
+						mLvHistory.setVisibility(View.GONE);
 					}
 				}else{
 //					search(arg0.toString());
+					setSearchHistory();
 				}
 				
 			}
@@ -152,6 +171,17 @@ public class SearchFragment extends Fragment implements OnClickListener {
 					}
 				}
 
+			}
+		});
+		
+		mLvHistory.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				HashMap<String, Object> map = (HashMap<String, Object>) arg0.getAdapter().getItem(position);
+				String key = (String) map.get("name");
+				search(key);
 			}
 		});
 		
@@ -203,6 +233,26 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		}
 
 	}
+	
+	private void setSearchHistory() {
+		mViewGroupHistory.setVisibility(View.VISIBLE);
+	       ArrayList<HashMap<String, Object>> arrayList = new ArrayList<HashMap<String,Object>>();  
+	       int size = 10;
+	       if(SinoApplication.mSearchHistory.size() > 10){
+	    	   size = 10;
+	       }else{
+	    	   size = SinoApplication.mSearchHistory.size();
+	       }
+	        for(int i = 0;i < size; i++){  
+	            HashMap<String, Object> tempHashMap = new HashMap<String, Object>();  
+	            tempHashMap.put("name", SinoApplication.mSearchHistory.get(i));  
+	            arrayList.add(tempHashMap);  
+	              
+	        }  
+		SimpleAdapter adapter = new SimpleAdapter(mContext, arrayList, R.layout.item_history,  
+                new String[]{"name"}, new int[]{R.id.item_history_name});  
+        mLvHistory.setAdapter(adapter);  
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -219,9 +269,23 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	}
 	
 	private void search(String key) {
+		filterSearchHistory(key);
 		SearchFindTask task = new SearchFindTask(mInterfaceDataCallBack, mContext, mListView, mList,  mViewGroup, mAdapter,
 				getString(R.string.url_marine_oil));
 		task.execute(key);
+		mViewGroupHistory.setVisibility(View.GONE);
+	}
+	
+	private void filterSearchHistory(String key) {
+		boolean hasKey = false;
+		for (int i = 0; i < SinoApplication.mSearchHistory.size(); i++) {
+			if(key.equals(SinoApplication.mSearchHistory.get(i))){
+				hasKey = true;
+			}
+		}
 		
+		if(!hasKey){
+			SinoApplication.mSearchHistory.add(key);
+		}
 	}
 }

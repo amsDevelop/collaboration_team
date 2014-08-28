@@ -105,6 +105,11 @@ public class SinoApplication extends Application {
 	 * 对比数目
 	 */
 	public static int mComparedNumber = 3;
+	
+	/**
+	 * 纪录模糊查询历史记录
+	 */
+	public static ArrayList<String> mSearchHistory = new ArrayList<String>();
 	/**
 	 * 获得IdentifyResult中地理元素的名字
 	 * @param result

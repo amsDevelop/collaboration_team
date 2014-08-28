@@ -8,6 +8,8 @@
     <Spinner
         android:id="@+id/id_spner_first"
         android:layout_width="120dp"
+        style="@style/spinner_style"
+        android:dropDownWidth = "120dp"
         android:layout_height="wrap_content" />
 
     <TextView
@@ -19,8 +21,10 @@
     <Spinner
         android:id="@+id/id_spner_geology"
         android:layout_width="150dp"
-        android:background="@drawable/spinner_item"
-        android:layout_height="wrap_content" />
+        style="@style/spinner_style"
+        android:dropDownWidth = "150dp"
+        android:layout_height="wrap_content"
+        />
 
     <TextView
         style="@style/spinner_title_tag"
@@ -31,6 +35,7 @@
     <Spinner
         android:id="@+id/id_spner_condition"
         android:layout_width="180dp"
+        style="@style/spinner_style"
         android:layout_height="wrap_content" />
 
     <TextView
@@ -42,13 +47,14 @@
     <Spinner
         android:id="@+id/id_spner_condition_value"
         android:layout_width="180dp"
+          android:dropDownWidth = "180dp"
+        style="@style/spinner_style"
         android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/id_spner_condition_custom_value1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/max_and_min"
         style="@style/spinner_title_tag"
         android:hint="最小值"
         android:layout_marginLeft="5dp"
@@ -61,7 +67,6 @@
         style="@style/spinner_title_tag"
         android:hint="最大值"
         android:layout_marginLeft="5dp"
-        android:background="@drawable/max_and_min"
         android:visibility="gone" />
 
 </LinearLayout>

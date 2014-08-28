@@ -114,9 +114,9 @@ public class SimpleTableView extends TableLayout
 			TextView tView=new TextView(getContext());
 			tView.setText((String) obj);
 			tView.setTextColor(Color.BLACK);
-			tView.setTextSize(30);
+			tView.setTextSize(25);
 			tView.setSingleLine(false);
-			tView.setWidth(SinoApplication.screenWidth / 6);
+//			tView.setWidth(SinoApplication.screenWidth / 6);
 //			tView.setLayoutParams(mLayoutParams);
 			tView.setHeight(100);
 			rView=tView;

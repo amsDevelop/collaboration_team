@@ -961,16 +961,17 @@ public class DrawTool extends Subject {
 	
 	private void objectIsChecked(IdentifyResult result) {
 		boolean isCheck = false;
-		for (int i = 0; i < SinoApplication.mResultList4Compared.size(); i++) {
-			IdentifyResult temp = SinoApplication.mResultList4Compared.get(i);
-			
-			if(result.getValue().toString().equals(temp.getValue().toString())){
-				SinoApplication.mResultList4Compared.remove(i);
+		String resultName = (String) result.getAttributes().get("OBJ_NAME_C");
+		for (int i = 0; i < SinoApplication.mResultListMulti.size(); i++) {
+			IdentifyResult temp = SinoApplication.mResultListMulti.get(i);
+			String tempName = (String) temp.getAttributes().get("OBJ_NAME_C");
+			if(resultName.equals(tempName)){
+				SinoApplication.mResultListMulti.remove(i);
 				isCheck = true;
 				break;
 			}
 		}
-		Log.d("map", " 是否选中.... : "+isCheck+" size: "+SinoApplication.mResultList4Compared.size());
+		Log.d("map", " 是否选中.... : "+isCheck+" size: "+SinoApplication.mResultListMulti.size());
 		if(isCheck){
 			removeHighLight(result);
 		}else{
