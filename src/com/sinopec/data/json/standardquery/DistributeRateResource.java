@@ -21,19 +21,28 @@ public class DistributeRateResource extends Bean{
 		return instance;
 	}
 	
+
 	public class DistributeChild extends Bean{
 		/**
 		 * 盆地总资源量
 		 */
 		@JsonFieldName("ZCLZYL")
-		private int allResCount;
+		private double allResCount;
 		
 		/**
 		 *  碳酸盐岩资源量
 		 */
 		@JsonFieldName("TSYZYL")
-		private int rockResCount;
+		private double rockResCount;
 		
+		public double getAllResCount() {
+			return allResCount;
+		}
+
+		public double getRockResCount() {
+			return rockResCount;
+		}
+
 		/**
 		 * 所属盆地编码
 		 */

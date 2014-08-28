@@ -229,8 +229,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 				break;
 			case 3:
-
-//				testParseJson((String) msg.obj);
 				final DistributeRateResource instance = new DistributeRateResource();
 				try {
 					JSONArray jsonArray = new JSONArray((String) msg.obj);
@@ -244,7 +242,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							e.printStackTrace();
 						}
 					}
-
+			     Log.v("mandy", "instance: json  " + (String) msg.obj);
+                 Log.v("mandy", "instance: " + instance.mChilds.get(1).toString());
+					
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -1425,6 +1425,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			String url = Constant.distributeRate + "type=" + type
 					+ "&haixiang=" + haixiang + "&tansuanyanyan="
 					+ tansuanyanyan;
+			Log.v("mandy", "url: " + url); 
+			
 			asyncHttpQuery.execute(2, url);
 		} else if ("碳酸盐岩资源比例".equals(tag)) {
 
@@ -1435,7 +1437,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			asyncHttpQuery
 					.execute(
 							3,
-							"http://202.204.193.201:8080/peprisapi/basinAttribute.html?basinId=201102001130");
+							url);
 
 		}
 		// 三级子菜单都需要在这里处理
