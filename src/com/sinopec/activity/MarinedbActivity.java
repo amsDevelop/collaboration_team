@@ -927,8 +927,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			setButtonsStatus(v.getId());
 			break;
 		case R.id.tb_line:
-			drawTool.activate(DrawTool.POLYLINE);
 			drawLayer.removeAll();
+			drawTool.deactivate();
+			drawTool.activate(DrawTool.POLYLINE);
 			setButtonsStatus(v.getId());
 			mTag4ToolAreaOk = false;
 			mTag4ToolDistanceOk = true;
@@ -1325,7 +1326,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawTool.calculateAreaAndLength("KM");
 		} else if ("toolArea".equals(tag)) {
 			// 调用drawTool里面 的一个变量
-			// drawTool.calculateAreaAndLength("");
+			 drawTool.calculateAreaAndLength("");
 		} else if ("定制查询".equals(tag)) {
 			// TODO:
 			ConditionQuery query = new ConditionQuery();
