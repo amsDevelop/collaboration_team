@@ -53,7 +53,8 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		this.mContext = getActivity();
 		Log.d(tag, "----------------------onCreate");
-		SinoApplication.mSearchHistory.add("四川");
+		SinoApplication.identifyResult = null;
+//		SinoApplication.mSearchHistory.add("四川");
 	}
 	
 	private InterfaceDataCallBack mInterfaceDataCallBack;
@@ -280,6 +281,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		boolean hasKey = false;
 		for (int i = 0; i < SinoApplication.mSearchHistory.size(); i++) {
 			if(key.equals(SinoApplication.mSearchHistory.get(i))){
+				SinoApplication.mSearchHistory.remove(i);
 				hasKey = true;
 			}
 		}

@@ -14,9 +14,18 @@ public class RelativeUnicode {
 	public static final String baiyaxi = "492581209243648"; //白垩系
 	public static final String gujinxi = "492581209243648"; //古近系
 	public static final String xinjinxi = "558446353793941504"; //新近系
+	public static final String aotaoxi = "1966080"; //奥陶系
+	public static final String hanwuxi = "122880"; //寒武系
 	public static final String youtian = "4092"; //油田
 	public static final String qitian = "4096"; //气田
 	public static final String youqitian = "4294967295"; //油气田
+	public static final String niyangaiceng = "1"; //泥岩盖层
+	public static final String gaoyanyangaiceng = "2"; //膏盐岩盖层
+	public static final String tansuanyanyangaiceng = "4"; //碳酸盐岩盖层
+	public static final String zhimiyangaiceng = "8"; //其它致密岩盖层
+	public static final String teshugaiceng = "128"; //特殊盖层
+	
+	
 	
 	
 }

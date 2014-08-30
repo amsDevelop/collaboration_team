@@ -8,7 +8,6 @@
        android:layout_width="500dip"  
        android:layout_height="60dp"  
        android:paddingLeft="10dp"  
-       android:background="@drawable/selector_doc_item"
        android:textColor="@android:color/background_dark"
        android:gravity="center_vertical"  
        />  
@@ -16,6 +15,7 @@
           android:layout_width="fill_parent"
           android:layout_height="2dip"
           android:src="@android:color/darker_gray"
+          android:visibility="gone"
           />
 
 </LinearLayout>

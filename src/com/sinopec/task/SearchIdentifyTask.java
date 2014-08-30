@@ -79,6 +79,10 @@ public class SearchIdentifyTask extends
 		IdentifyResult[] mResult = null;
 		if (params != null && params.length > 0) {
 			IdentifyParameters mParams = params[0];
+			int[] layers = mParams.getLayers();
+			for (int i = 0; i < layers.length; i++) {
+				Log.d(tag, "doInBackground....................id.." + layers[i]);
+			}
 			try {
 				mResult = mIdentifyTask.execute(mParams);
 				// mResult = mIdentifyTask.execute();
