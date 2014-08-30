@@ -79,6 +79,8 @@ import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.lenovo.nova.util.parse.Bean;
+import com.lenovo.nova.util.parse.DBParserUtil;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
@@ -89,6 +91,7 @@ import com.sinopec.chart.PieChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.common.OilGasData;
+import com.sinopec.data.json.ConfigBean;
 import com.sinopec.data.json.Constant;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
 import com.sinopec.data.json.standardquery.DistributeCengGai;
@@ -355,6 +358,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		try {
+			DBParserUtil dbUitl = new DBParserUtil(this){
+				@Override
+				protected Class onGetBeanForCreateTable() {
+					return ConfigBean.class;
+				}
+			};
+			List<Bean> list  = new ArrayList<Bean>();
+			dbUitl.getBeanListFromDB(ConfigBean.class, list, 0, 2);
+			if(list.size() > 0){
+				Constant.baseIP = ((ConfigBean)list.get(0)).getIP();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		this.mContext = this;
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		urlBasionQuery = getResources().getString(R.string.url_basin) + "/0";
@@ -954,8 +974,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			setButtonsStatus(v.getId());
 			break;
 		case R.id.tb_line:
-			drawTool.activate(DrawTool.POLYLINE);
 			drawLayer.removeAll();
+			drawTool.deactivate();
+			drawTool.activate(DrawTool.POLYLINE);
 			setButtonsStatus(v.getId());
 			mTag4ToolAreaOk = false;
 			mTag4ToolDistanceOk = true;
@@ -1352,7 +1373,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawTool.calculateAreaAndLength("KM");
 		} else if ("toolArea".equals(tag)) {
 			// 调用drawTool里面 的一个变量
-			// drawTool.calculateAreaAndLength("");
+			 drawTool.calculateAreaAndLength("");
 		} else if ("定制查询".equals(tag)) {
 			ConditionQuery query = new ConditionQuery();
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
@@ -1552,7 +1573,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			
 		} else if ("新近系s".equals(tag)) {
 			drawBarChart();
-			
 		} else if ("前寒武系".equals(tag)) {
 			
 			queryQingyuan(RelativeUnicode.qianhaiwuxi);
@@ -1610,7 +1630,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			String gaiceng = "72057594037927935";
 			queryGaiceng(RelativeUnicode.teshugaiceng);
 			
-		} 
+		}else if ("mineManager".equals(tag)) {
+			SetIpDialog query = new SetIpDialog();
+			query.show(getFragmentManager(), SetIpDialog.class.getName());
+		}
 		// 三级子菜单都需要在这里处理
 		// if (!"CountChildrenMenuOne".equals(tag)
 		// && !"CountChildrenMenuTwo".equals(tag)

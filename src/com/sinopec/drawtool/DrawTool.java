@@ -70,6 +70,7 @@ public class DrawTool extends Subject {
 	private Envelope envelope;
 	private Polyline polyline;
 	private Polygon polygon;
+	private MultiPath poly;
 	private DrawTouchListener drawListener;
 	private MapOnTouchListener defaultListener;
 	private Graphic drawGraphic;
@@ -229,7 +230,6 @@ public class DrawTool extends Subject {
 		private Point ptPrevious = null;// 上一个点
 		private ArrayList<Point> points = null;// 记录全部点
 		private Polygon tempPolygon = null;// 记录绘制过程中的多边形
-		MultiPath poly;
 		private int uid = -1;
 
 		public DrawTouchListener(Context context, MapView view) {
@@ -364,16 +364,12 @@ public class DrawTool extends Subject {
 				Point point = mapView.toMapPoint(to.getX(), to.getY());
 				switch (drawType) {
 				case DrawTool.ENVELOPE:
-					SpatialReference sr = mapView.getSpatialReference();
-					SpatialReference webMercator = SpatialReference
-							.create(102100);
-					Envelope newPoly = (Envelope) GeometryEngine.project(
-							envelope, sr, webMercator);
-					String sArea = getAreaString(newPoly.calculateArea2D());
-//					Toast.makeText(mapView.getContext(), sArea + "",
-//							Toast.LENGTH_SHORT).show();
-
+					
 					queryAttribute4Query(envelope);
+					
+//					String sArea = getAreaString(traslationSpatial(envelope).calculateArea2D());
+//					Toast.makeText(mapView.getContext(), sArea + "",s
+//							Toast.LENGTH_SHORT).show();
 
 					break;
 				case DrawTool.FREEHAND_POLYGON:
@@ -389,7 +385,7 @@ public class DrawTool extends Subject {
 					queryAttribute4Query(poly);
 					break;
 				}
-				sendDrawEndEvent();
+//				sendDrawEndEvent();
 				this.startPoint = null;
 				uid = -1;
 				return true;
@@ -494,8 +490,7 @@ public class DrawTool extends Subject {
 
 		public boolean onDoubleTap(MotionEvent event) {
 
-			if (drawType == DrawTool.POLYGON
-					|| drawType == DrawTool.ANY_POLYGON) {
+			if (drawType == DrawTool.POLYGON) {
 				Polygon polygon = new Polygon();
 
 				Point startPoint = null;
@@ -556,6 +551,7 @@ public class DrawTool extends Subject {
 	}
 
 	public void calculateAreaAndLength(String tag) {
+		
 		// drawLayer.removeAll();
 		if (DrawTool.POLYLINE == drawType) {
 			Polyline polyline = new Polyline();
@@ -598,8 +594,7 @@ public class DrawTool extends Subject {
 
 			Toast.makeText(mapView.getContext(), "总长度： " + length,
 					Toast.LENGTH_SHORT).show();
-		} else if (drawType == DrawTool.POLYGON
-				|| drawType == DrawTool.ANY_POLYGON) {
+		} else if (drawType == DrawTool.POLYGON) {
 			Polygon polygon = new Polygon();
 
 			Point startPoint = null;
@@ -618,9 +613,8 @@ public class DrawTool extends Subject {
 
 			Graphic g = new Graphic(polygon, fillSymbol);
 			drawLayer.addGraphic(g);
-
 			// 计算总面积
-			String sArea = getAreaString(polygon.calculateArea2D());
+			String sArea = getAreaString(traslationSpatial(polygon).calculateArea2D());
 			// GeometryEngine.geodesicLength(polygon,
 			// mapView.getSpatialReference(),
 			// new LinearUnit(LinearUnit.Code.KILOMETER));
@@ -630,10 +624,24 @@ public class DrawTool extends Subject {
 					Toast.LENGTH_SHORT).show();
 		} else if (drawType == DrawTool.ENVELOPE) {
 
-			String sArea = getAreaString(envelope.calculateArea2D());
+			String sArea = getAreaString(traslationSpatial(envelope).calculateArea2D());
 
 			Toast.makeText(mapView.getContext(), "总面积： " + sArea,
 					Toast.LENGTH_SHORT).show();
+		} else if (drawType == DrawTool.CIRCLE ) {
+			
+			String sArea = getAreaString(traslationSpatial(polygon).calculateArea2D());
+
+			Toast.makeText(mapView.getContext(), "总面积： " + sArea,
+					Toast.LENGTH_SHORT).show();
+			
+		} else if (drawType == DrawTool.ANY_POLYGON) {
+			
+			String sArea = getAreaString(traslationSpatial(poly).calculateArea2D());
+
+			Toast.makeText(mapView.getContext(), "总面积： " + sArea,
+					Toast.LENGTH_SHORT).show();
+			
 		}
 
 		// 其他清理工作
@@ -643,7 +651,25 @@ public class DrawTool extends Subject {
 		// drawListener.points.clear();
 		// drawListener.tempPolygon = null;
 	}
-
+    private Geometry traslationSpatial (Geometry geometry) {
+    	
+    	SpatialReference sr = mapView.getSpatialReference();
+		SpatialReference webMercator = SpatialReference
+				.create(102100);
+//		Polygon polygon = null;
+		if (geometry instanceof Polygon) {
+			Polygon newPoly = (Polygon) GeometryEngine.project(
+					geometry, sr, webMercator);
+			return newPoly;
+		} else {
+			
+			Envelope newPoly = (Envelope) GeometryEngine.project(
+					geometry, sr, webMercator);
+			return newPoly;
+		}
+		
+    	
+    }
 	private String getAreaString(double dValue) {
 		long area = Math.abs(Math.round(dValue));
 		String sArea = "";
@@ -754,7 +780,7 @@ public class DrawTool extends Subject {
 						drawHighLight4Query(graphic);
 					}
 					mProgressDialog.dismiss();
-					deactivate();
+//					deactivate();
 					mCallback.setSearchData4Query(results);
 					// Toast.makeText(mapView.getContext(), sb.toString() ,
 					// Toast.LENGTH_LONG).show();
