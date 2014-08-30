@@ -22,10 +22,10 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
@@ -71,6 +71,7 @@ import com.esri.core.geometry.Point;
 import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
 import com.esri.core.symbol.MarkerSymbol;
+import com.esri.core.symbol.PictureMarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
@@ -81,6 +82,8 @@ import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.chart.BarChart3;
+import com.sinopec.chart.PieChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.common.OilGasData;
@@ -245,9 +248,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							e.printStackTrace();
 						}
 					}
-			     Log.v("mandy", "instance: json  " + (String) msg.obj);
-                 Log.v("mandy", "instance: " + instance.mChilds.get(1).toString());
-					
+					Log.v("mandy", "instance: json  " + (String) msg.obj);
+					Log.v("mandy", "instance: "
+							+ instance.mChilds.get(1).toString());
+
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -888,10 +892,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View v) {
-		 if(mFragmentLayout.getVisibility() == View.VISIBLE){
-		 //显示的时候不相应，防止穿透
-		 return;
-		 }
+		if (mFragmentLayout.getVisibility() == View.VISIBLE) {
+			// 显示的时候不相应，防止穿透
+			return;
+		}
 
 		switch (v.getId()) {
 		case R.id.property:
@@ -968,36 +972,39 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					.replace(R.id.fragmentlayout, searchFragment).commit();
 			break;
 		case R.id.menuview_tool:
-			if(drawTool.isSelectDraw){
+			if (drawTool.isSelectDraw) {
 				clickTag = new Boolean[] { false, false };
-//				clickTag = new Boolean[] { true, true };
-				String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
-				if(mTag4OperateInLine){
+				// clickTag = new Boolean[] { true, true };
+				String[] name4count = new String[] { "测距(请先绘制一条线)",
+						"测面积(请先选择范围)" };
+				if (mTag4OperateInLine) {
 					clickTag = new Boolean[] { true, false };
-					name4count = new String[] { "测距", "测面积(请先选择范围)"};
-				}else if(mTag4ToolDistanceOk){
+					name4count = new String[] { "测距", "测面积(请先选择范围)" };
+				} else if (mTag4ToolDistanceOk) {
 					clickTag = new Boolean[] { true, false };
-					name4count = new String[] { "测距", "测面积(请先选择范围)"};
-				}else if(mTag4ToolAreaOk){
+					name4count = new String[] { "测距", "测面积(请先选择范围)" };
+				} else if (mTag4ToolAreaOk) {
 					clickTag = new Boolean[] { false, true };
-					name4count = new String[] { "测距(请先绘制一条线)", "测面积"};
+					name4count = new String[] { "测距(请先绘制一条线)", "测面积" };
 				}
-				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag, name4count, mChildMenuSplitNumber);
+				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag,
+						name4count, mChildMenuSplitNumber);
 				mGridView.setNumColumns(2);
 				setGridView(toolist, v);
-			}else{
+			} else {
 				clickTag = new Boolean[] { false, false };
-//				clickTag = new Boolean[] { true, true };
-				String[] name4count = new String[] { "测距(请先绘制一条线)", "测面积(请先选择范围)"};
-				if(mTag4OperateInLine){
+				// clickTag = new Boolean[] { true, true };
+				String[] name4count = new String[] { "测距(请先绘制一条线)",
+						"测面积(请先选择范围)" };
+				if (mTag4OperateInLine) {
 					clickTag = new Boolean[] { true, false };
-					name4count = new String[] { "测距", "测面积(请先选择范围)"};
-				}else if(mTag4ToolDistanceOk){
+					name4count = new String[] { "测距", "测面积(请先选择范围)" };
+				} else if (mTag4ToolDistanceOk) {
 					clickTag = new Boolean[] { true, false };
-					name4count = new String[] { "测距", "测面积(请先选择范围)"};
-				}else if(mTag4ToolAreaOk){
+					name4count = new String[] { "测距", "测面积(请先选择范围)" };
+				} else if (mTag4ToolAreaOk) {
 					clickTag = new Boolean[] { false, true };
-					name4count = new String[] { "测距(请先绘制一条线)", "测面积"};
+					name4count = new String[] { "测距(请先绘制一条线)", "测面积" };
 				}
 				ChildrenMenuDataUtil.setToolChildrenMenuData(toolist, clickTag,
 						name4count, mChildMenuSplitNumber);
@@ -1031,12 +1038,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				showWindow4Compared4FeatureSet(SinoApplication.mFeatureSet4Compared);
 			}
 			break;
-		case R.id.menuview_count:
+		case R.id.menuview_count: // 统计点击事件
+
 			clickTag = new Boolean[] { true, true, };
 			ChildrenMenuDataUtil.setCountChildrenMenuData(toolist, clickTag,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(2);
 			setGridView(toolist, v);
+			// 先查出海相碳酸盐岩盆地
+			String chenjitixi = "72057594037927935";
+			String url = Constant.distributeOilGas + chenjitixi;
+			asyncHttpQuery.execute(1, url);
 
 			break;
 		case R.id.menuview_mine:
@@ -1136,7 +1148,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private void setBottomMenuBarButtonsStatus(int vId) {
 		if (mMenuViewTool.getId() == vId) {
 			dealClickRepeat(mMenuViewTool);
-			
+
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
@@ -1277,6 +1289,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mLastClickedView = view;
 			Log.d(tag, "not view " + mLastClickedView);
 		}
+
 		// else
 		// mLastClickedView = null;
 	}
@@ -1284,13 +1297,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 			long arg3) {
-		
+
 		HashMap<String, Object> map = (HashMap<String, Object>) arg0
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
-		if((!mTag4OperateInLine && !mTag4ToolDistanceOk&& !mTag4ToolAreaOk) ||
-			("toolDistance".equals(tag) || "toolArea".equals(tag))){
-		}else{
+		if ((!mTag4OperateInLine && !mTag4ToolDistanceOk && !mTag4ToolAreaOk)
+				|| ("toolDistance".equals(tag) || "toolArea".equals(tag))) {
+		} else {
 			mLastClickedView = null;
 		}
 		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map
@@ -1306,7 +1319,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawTool.calculateAreaAndLength("KM");
 		} else if ("toolArea".equals(tag)) {
 			// 调用drawTool里面 的一个变量
-//			drawTool.calculateAreaAndLength("");
+			// drawTool.calculateAreaAndLength("");
 		} else if ("定制查询".equals(tag)) {
 			// TODO:
 			ConditionQuery query = new ConditionQuery();
@@ -1357,20 +1370,26 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			setButtonsStatus(btnPolygon.getId());
 			mTag4ToolAreaOk = true;
 			mTag4ToolDistanceOk = false;
-		} else if ("CountChildrenMenuOne".equals(tag)) {
+		} else if ("CountChildrenMenuOne".equals(tag)) { // 碳酸盐岩储量及资源量分布
 			// TODO:统计二级菜单
 			Boolean[] clickTag = new Boolean[] { true, true, true, true };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(toolist,
 					clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(4);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
-		} else if ("CountChildrenMenuTwo".equals(tag)) {
+
+//			drawBarChart();
+
+		} else if ("CountChildrenMenuTwo".equals(tag)) { // 分层系碳酸盐岩储量及资源量分布
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,
 					true, true, true, true, true, true, };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuData(toolist,
 					clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
+
+//			 drawBarChart();
+
 		} else if ("碳酸盐岩烃源分布".equals(tag)) {
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true,
 					true, true, true, true, true, };
@@ -1418,6 +1437,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			String chenjitixi = "72057594037927935";
 			String url = Constant.distributeOilGas + chenjitixi;
 			asyncHttpQuery.execute(1, url);
+
 		} else if ("碳酸盐岩储量比例".equals(tag)) {
 			String type = "72057594037927935";
 			String haixiang = "72057594037927935";
@@ -1425,8 +1445,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			String url = Constant.distributeRate + "type=" + type
 					+ "&haixiang=" + haixiang + "&tansuanyanyan="
 					+ tansuanyanyan;
-			Log.v("mandy", "url: " + url); 
-			
+
 			asyncHttpQuery.execute(2, url);
 
 			Boolean[] clickTag = new Boolean[] { true, true, true };
@@ -1441,38 +1460,85 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			String tansuanyanyan = "72057594037927935";
 			String url = Constant.baseURL + "peprisapi/fixquery3.html?type="
 					+ type + "&tansuanyanyan=" + tansuanyanyan;
-			asyncHttpQuery
-					.execute(
-							3,
-							url);
 			
 			Boolean[] clickTag = new Boolean[] { true, true, true };
 			ChildrenMenuDataUtil.setSearchLevel33ChildrenMenuOneData(toolist, clickTag,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(3);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
-
+			asyncHttpQuery.execute(3, url);
 		} else if ("石油2".equals(tag)) {
 		} else if ("天然气2".equals(tag)) {
 		} else if ("石油天然气2".equals(tag)) {
 		} else if ("石油3".equals(tag)) {
 		} else if ("天然气3".equals(tag)) {
 		} else if ("石油天然气3".equals(tag)) {
+		} else if ("储量及资源量级别".equals(tag)) {
+			drawBarChart();
 			
+		} else if ("资源总量".equals(tag)) {
+			drawBarChart();
+			
+		} else if ("探明储量".equals(tag)) {
+			drawBarChart();
+			
+		} else if ("待发现资源量".equals(tag)) { 
+			drawBarChart();
+			
+		} else if ("前寒武系s".equals(tag)) {
+			drawBarChart();  
+			
+		} else if ("寒武系s".equals(tag)) {
+			drawBarChart();
+			
+		}else if ("至留系s".equals(tag)) {
+			drawBarChart();
+			
+		}else if ("泥盆系s".equals(tag)) {
+			drawBarChart();
+			
+		} else if ("二叠系s".equals(tag)) {
+			drawBarChart();
+			
+		}else if ("奥陶系s".equals(tag)) {
+			drawBarChart();
+			
+		}else if ("侏罗系s".equals(tag)) {
+			drawBarChart();
+			
+		}else if ("白垩系s".equals(tag)) {
+			drawBarChart();
+			
+		}else if ("石灰系s".equals(tag)) {
+			drawBarChart();
+			
+		}else if ("古近系s".equals(tag)) {
+			drawBarChart();
+			
+		} else if ("新近系s".equals(tag)) {
+			drawBarChart();
 		}
 		// 三级子菜单都需要在这里处理
-//		if (!"CountChildrenMenuOne".equals(tag)
-//				&& !"CountChildrenMenuTwo".equals(tag)
-//				&& !"toolDistance".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)
-//				&& !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)) {
-//			hideCallOut();
-//		}
+		// if (!"CountChildrenMenuOne".equals(tag)
+		// && !"CountChildrenMenuTwo".equals(tag)
+		// && !"toolDistance".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)
+		// && !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)) {
+		// hideCallOut();
+		// }
 		if (!"CountChildrenMenuOne".equals(tag)
 				&& !"CountChildrenMenuTwo".equals(tag)
 				&& !"toolDistance".equals(tag) && !"toolArea".equals(tag)
 				&& !"分类型盖层分布".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)
 				&& !"碳酸盐岩储量比例".equals(tag) && !"碳酸盐岩资源比例".equals(tag)
-				) {
+				&& !"储量及资源量级别".equals(tag) && !"资源总量".equals(tag)
+				&& !"探明储量".equals(tag) && !"待发现资源量".equals(tag)
+				&& !"前寒武系s".equals(tag) && !"寒武系s".equals(tag)
+				&& !"至留系s".equals(tag) && !"泥盆系s".equals(tag)
+				&& !"二叠系s".equals(tag) && !"奥陶系s".equals(tag)
+				&& !"侏罗系s".equals(tag) && !"白垩系s".equals(tag)
+				&& !"石灰系s".equals(tag) && !"古近系s".equals(tag)
+				&& !"新近系s".equals(tag)
+				&& !"分类型盖层分布".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)) {
 			hideCallOut();
 		}else{
 			mMenuViewCount.setSelected(false);
@@ -1480,8 +1546,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		}
-		
-		if("toolDistance".equals(tag) || "toolArea".equals(tag)){
+
+		if ("toolDistance".equals(tag) || "toolArea".equals(tag)) {
 			if (callout != null) {
 				if (callout.isShowing()) {
 					callout.hide();
@@ -1489,11 +1555,55 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			}
 
 			mDrawLayer4HighLight.removeAll();
-//				mMenuViewTool.setSelected(false);
+			// mMenuViewTool.setSelected(false);
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
+		}
+	}
+
+	private void drawPinChart() {
+		Graphic[] graphics = drawTool.getQueryGraphics();
+		if (graphics == null) {
+			return;
+		}
+		for (int i = 0; i < graphics.length; i++) {
+			Envelope envelope = new Envelope();
+			graphics[i].getGeometry().queryEnvelope(envelope);
+			PieChart3 p3 = new PieChart3(200, 400, 500, 300);
+			Bitmap bitmap = p3.GetBarChartBitmap(this);
+			// gView.setBackgroundColor(Color.TRANSPARENT);
+			PictureMarkerSymbol Symbol = new PictureMarkerSymbol(
+					new BitmapDrawable(bitmap));
+
+			Graphic graphic = new Graphic(envelope.getCenter(), Symbol);
+
+			// Graphic graphic = new Graphic(new Point(0,0),Symbol);
+			drawLayer.addGraphic(graphic);
+		}
+	}
+
+	private void drawBarChart() {
+		Graphic[] graphics = drawTool.getQueryGraphics();
+		if (graphics == null) {
+			return;
+		}
+		drawLayer.removeAll();
+		for (int i = 0; i < graphics.length; i++) {
+
+			Envelope envelope = new Envelope();
+			graphics[i].getGeometry().queryEnvelope(envelope);
+			BarChart3 b3 = new BarChart3(200, 400, 600, 100, 200);
+
+			Bitmap bi = b3.GetBarChartBitmap(this);
+			PictureMarkerSymbol Symbol = new PictureMarkerSymbol(
+					new BitmapDrawable(bi));
+
+			Graphic graphic = new Graphic(envelope.getCenter(), Symbol);
+			// Graphic graphic = new Graphic(new Point(0,0),Symbol);
+			drawLayer.addGraphic(graphic);
+
 		}
 	}
 

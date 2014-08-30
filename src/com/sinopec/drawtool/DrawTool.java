@@ -9,7 +9,9 @@ import java.util.Map.Entry;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +36,7 @@ import com.esri.core.map.Graphic;
 import com.esri.core.symbol.FillSymbol;
 import com.esri.core.symbol.LineSymbol;
 import com.esri.core.symbol.MarkerSymbol;
+import com.esri.core.symbol.PictureMarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
@@ -43,6 +46,7 @@ import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.query.Query;
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.chart.BarChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.data.json.standardquery.DistributeRate.RateForOilAndBasin;
@@ -763,6 +767,8 @@ public class DrawTool extends Subject {
 
 	public void queryAttribute4Query(String objId, String layerUrl,
 			final ArrayList resultList) {
+		
+	
 		// Envelope m_WorldEnvelope = new Envelope();
 		// m_WorldEnvelope = mapView.getMapBoundaryExtent();
 		Query query = new Query();
@@ -789,6 +795,10 @@ public class DrawTool extends Subject {
 				SinoApplication.mFeatureSet4Query = results;
 
 				Graphic[] graphics = results.getGraphics();
+				
+				DrawTool.this.graphics = graphics;
+//				Graphic
+				
 				// 把之前高亮显示结果清除
 				mDrawLayer4HighLight.removeAll();
 				if (graphics != null) {
@@ -845,21 +855,11 @@ public class DrawTool extends Subject {
 							
 							drawHighLight4Query(graphics[i], Color.YELLOW);
 							
-						}
-
-						// Graphic graphic = graphics[i];
-						// Log.d("test",
-						// "模糊查询  getAttributes 个数 : "+graphic.getAttributes().entrySet().size());
-						// for (Entry<String, Object> ent :
-						// graphic.getAttributes().entrySet()) {
-						// Log.d("test",
-						// "模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
-						// }
-						// String name = (String)
-						// result.getAttributes().get("NAME_CN");
-						// sb.append("名字： "+name + " ; ");
+						}	
 
 					}
+					
+					zoomExtent(graphics);
 					mProgressDialog.dismiss();
 					// deactivate();
 					// mCallback.setSearchData4Query(results);
@@ -871,13 +871,52 @@ public class DrawTool extends Subject {
 		});
 
 	}
+	double minx = -1;
+	double miny = -1;
+	double maxx = -1;
+	double maxy = -1;
+	double lastMinx = -1;
+	double lastMiny = -1;
+	
+	double lastMaxx = -1;
+	double lastMaxy = -1;
+	public void zoomExtent (Graphic[] graphics) {
+		Envelope envelopes = new Envelope();
+		graphics[0].getGeometry().queryEnvelope(envelopes);
+		lastMinx = envelopes.getXMin();
+		lastMiny = envelopes.getYMin();
+		
+		for (int j = 0; j < graphics.length; j++) {
+			Envelope envelope = new Envelope();
+			graphics[j].getGeometry().queryEnvelope(envelope);
+			minx = Math.min(lastMinx, envelope.getXMin());
+			lastMinx = minx;
+			
+			miny = Math.min(lastMiny, envelope.getYMin());
+			lastMiny = miny;
+			
+			maxx = Math.max(lastMaxx, envelope.getXMax());
+			lastMaxx = maxx;
+			
+			maxy = Math.max(lastMaxy, envelope.getYMax());
+			lastMaxy = maxy;
+			
+		}
+		Envelope envelope = new Envelope();
+		envelope.setYMin(miny);
+		envelope.setXMin(minx);
+		envelope.setYMax(maxy);
+		envelope.setXMax(maxx);
+		mapView.setExtent(envelope);
+		
+	}
 
 	// 多选单点的时候
 	public void queryAttribute4OnlyOnePonit(Geometry geometry) {
 		IdentifyParameters mIdentifyParameters = new IdentifyParameters();
 		mIdentifyParameters.setTolerance(20);
 		mIdentifyParameters.setDPI(98);
-		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7,8,9,10});
 		mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER);
 
 		mIdentifyParameters.setGeometry(geometry);
@@ -942,18 +981,7 @@ public class DrawTool extends Subject {
 			// add graphic to location layer
 			Log.d("map", " drawHighLight ....uid: " + resultLocation.getUid());
 			mDrawLayer4HighLight.addGraphic(resultLocation);
-			// create text symbol for return address
-			// TextSymbol resultAddress = new TextSymbol(12,
-			// result.getAddress(), Color.BLACK);
-			// // create offset for text
-			// resultAddress.setOffsetX(10);
-			// resultAddress.setOffsetY(50);
-			// create a graphic object for address text
-			// Graphic resultText = new Graphic(resultLocGeom, resultAddress);
-			// add address text graphic to location graphics layer
-			// drawLayer.addGraphic(resultText);
-			// zoom to geocode result
-			// map.zoomToResolution(result.getLocation(), 2);
+			
 		}
 	}
 
@@ -996,11 +1024,13 @@ public class DrawTool extends Subject {
 			Log.d("map", " drawHighLight ....uid: " + resultLocation.getUid());
 			mDrawLayer4HighLight.addGraphic(resultLocation);
 
-			Envelope envelope = new Envelope();
-			resultLocGeom.queryEnvelope(envelope);
-			Point point = envelope.getCenter();
-			// mapView.
-			mapView.centerAt(point, true);
+//			Envelope envelope = new Envelope();
+//			resultLocGeom.queryEnvelope(envelope);
+//			Point point = envelope.getCenter();
+//			// mapView.
+//			mapView.centerAt(point, true);
+//			
+//			mapView.setExtent(geometry);
 			// mapView.zoomToScale(point, -100);
 			// create text symbol for return address
 		}
@@ -1052,5 +1082,11 @@ public class DrawTool extends Subject {
 			drawHighLight4Multi(result);
 		}
 	}
+  private Graphic[] graphics = null; 
+  public Graphic[] getQueryGraphics () {
+	  
+	   return graphics;
+  }	
+
 
 }
