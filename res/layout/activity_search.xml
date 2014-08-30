@@ -48,7 +48,7 @@
 
                 <com.sinopec.view.ClearableEditText
                     android:id="@+id/edittext_search"
-                    android:layout_width="300dp"
+                    android:layout_width="1100dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/searchbtn"
                     android:hint="搜索"

@@ -198,6 +198,14 @@ public class SinoApplication extends Application {
 	
 	public static HashMap<String, String> mNameMap = new HashMap<String, String>();
 	/**
+	 * 简介的对应关系（拼音为key，中文为值）
+	 */
+	public static HashMap<String, String> mNameMap4Introduce = new HashMap<String, String>();
+	/**
+	 * 简介的对应关系（中文为key，拼音为值）
+	 */
+	public static HashMap<String, String> mMap4Introduce = new HashMap<String, String>();
+	/**
 	 * 宝藏名字
 	 */
 	public static String mTopicName;

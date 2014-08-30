@@ -449,12 +449,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		map.zoomTo(new Point(0, 0), (float) map.getMaxResolution());
 		map.setMapBackground(Color.WHITE, Color.TRANSPARENT, 0, 0);
 		initTableKeyValue();
+		initTableKeyValue4Introduce();
 		// getJson();
-	}
-
-	private void getJson() {
-		String url = "http://10.225.14.204:8080/peprisapi/oilGasFieldAttribute.html?dzdybm=201102001063";
-		asyncHttpQuery.execute(4, url);
 	}
 
 	private void initTableKeyValue() {
@@ -468,13 +464,42 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							str.indexOf("dispaly"));
 					String value = str.substring(str.indexOf("dispaly=\"")
 							+ "dispaly=\"".length(), str.indexOf("\"/>"));
-					Log.d("table", "key: " + key.trim() + "  value: " + value);
+//					Log.d("table", "key: " + key.trim() + "  value: " + value);
 					SinoApplication.mNameMap.put(key.trim(), value);
 				}
 			}
 			br.close();
 		} catch (IOException e) {
 			Log.d("table", " initTableKeyValue error:  " + e.toString());
+			e.printStackTrace();
+		}
+	}
+	
+	private void initTableKeyValue4Introduce() {
+		try {
+			InputStream inputStream = getAssets().open("introduce_config.xml");
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					inputStream));
+			for (String str = br.readLine(); str != null; str = br.readLine()) {
+				if (str.contains("field=")) {
+					try {
+						String key = str.substring(str.indexOf("field=\"") + "field=\"".length(),
+								str.indexOf("\" />"));
+						String value = str.substring(str.indexOf("name=\"")
+								+ "name=\"".length(), str.indexOf("\" tablename="));
+						
+						Log.d("table", "key: " + key.trim() + "  value: " + value);
+						SinoApplication.mMap4Introduce.put(value, key.trim());
+						SinoApplication.mNameMap4Introduce.put(key.trim(), value);
+						
+					} catch (Exception e) {
+						Log.d("table", str+" ----for  error:  " + e.toString());
+					}
+				}
+			}
+			br.close();
+		} catch (IOException e) {
+			Log.d("table", " initTableKeyValue4Introduce error:  " + e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -1326,12 +1351,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
 		} else if ("mineLogin".equals(tag)) {
-//			Intent intent = new Intent(mContext, LoginActivity.class);
-//			startActivity(intent);
-			Intent intent = new Intent(this, SelectActivity.class);
-			intent.putExtra(CommonData.KeyTopicType, "盆地");
-			intent.putExtra("name", "简介");
+			Intent intent = new Intent(mContext, LoginActivity.class);
 			startActivity(intent);
+//			Intent intent = new Intent(this, SelectActivity.class);
+//			intent.putExtra(CommonData.KeyTopicType, "盆地");
+//			intent.putExtra("name", "简介");
+//			startActivity(intent);
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();
 		} else if ("mineLogout".equals(tag)) {
