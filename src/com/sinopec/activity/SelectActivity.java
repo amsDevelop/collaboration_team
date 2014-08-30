@@ -334,7 +334,13 @@ public class SelectActivity extends Activity {
 			}
 			titleName.setText(SinoApplication.mTopicName);
 		}
+		
+		if(TextUtils.isEmpty(mID)){
+			mID = (String) SinoApplication.findResult.getAttributes().get(
+					"OBJ_ID");
+		}
 		Log.d("data", "-------mType: " + mTopicType);
+		
 		if (CommonData.TypeProperty.equals(dataName)) {
 			list = initChildMenuData4Property();
 			getJson4Attribute(mID);
