@@ -2,6 +2,8 @@ package com.sinopec.data.json;
 
 import org.json.JSONArray;
 
+import android.content.Context;
+
 import com.lenovo.nova.util.slog;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
@@ -14,6 +16,11 @@ import com.sinopec.data.json.standardquery.DistributeCengGai;
  * @author liuzhaodong
  */
 public class TestAttributeQuery extends TestQueryGuDing {
+
+	public TestAttributeQuery(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * 1.盆地

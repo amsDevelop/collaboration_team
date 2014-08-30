@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.lenovo.nova.util.BaseDialogFragment;
 import com.lenovo.nova.util.Constant;
@@ -31,6 +35,10 @@ import com.sinopec.activity.GeologyBean.GeoCondition;
 import com.sinopec.activity.GeologyBean.GeoObject;
 import com.sinopec.activity.GeologyBean.SValues;
 import com.sinopec.activity.GeologyBean.Values;
+import com.sinopec.data.json.TestCustomQuery;
+import com.sinopec.data.json.basin.BasinDistributionID;
+import com.sinopec.drawtool.DrawTool;
+import com.sinopec.util.RelativeUnicode;
 
 public class ConditionQuery extends BaseDialogFragment implements
 		OnClickListener {
@@ -46,6 +54,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 	private SValues svalue;
 	private static final String TAG = "ConditionQuery";
 
+	private static final String AND = "并且";
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -182,6 +191,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		}
 	}
 	ParserTask task ;
+	private MarinedbActivity mActivity;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -192,6 +202,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 				.setOnClickListener(this);
 		view.findViewById(R.id.id_btn_condition_query_subtraction)
 				.setOnClickListener(this);
+		view.findViewById(R.id.id_btn_condition_query_confirm).setOnClickListener(this);
 		slog.p("ConditionQuery  onCreateView");
 		return view;
 	}
@@ -208,6 +219,8 @@ public class ConditionQuery extends BaseDialogFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		mActivity = (MarinedbActivity) getActivity();
+		mInstances.clear();
 	}
 
 	@Override
@@ -226,8 +239,186 @@ public class ConditionQuery extends BaseDialogFragment implements
 		case R.id.id_btn_condition_query_subtraction:
 			removeItem();
 			break;
+		case R.id.id_btn_condition_query_confirm:
+			//confirm 
+			destoryDialogAndCreateQueryUrl();
+			break;
 		}
 	}
+
+	private void destoryDialogAndCreateQueryUrl() {
+		StringBuilder sb = new StringBuilder();
+		String geologyObject = "";
+		for(int i = 0; i < mContainer.getChildCount(); i++){
+			QueryItem item = (QueryItem) mContainer.getChildAt(i);
+			String orAnd = item.getSpinnerValue(0);
+			geologyObject = item.getSpinnerValue(1);
+			String condition = item.getSpinnerValue(2);
+			String conditionValue = item.getSpinnerValue(3);
+			double max = item.getMaxValue();
+			double min = item.getMinValue();
+
+			if(conditionValue.equals("特大型")){
+				min = 1500;
+			}else if(conditionValue.equals("超大型")){
+				max = 1500;
+				min = 500;
+			}else if(conditionValue.equals("大型")){
+				max = 500;
+				min = 100;
+			}else if(conditionValue.equals("中型")){
+				max = 100;
+				min = 10;
+			}else if(conditionValue.equals("小型")){
+				max = 10;
+			}else if(conditionValue.equals("自定义")){
+				
+			}
+			
+			String str = getURLPartByValues(orAnd,geologyObject,
+					condition,
+					conditionValue,
+					max,
+					min
+					);
+			if(str.endsWith("&")){
+				str = str.substring(0,str.length() - 1);
+			}
+			sb.append(str);
+		}
+		
+		String key = sb.toString();
+		if(key.startsWith("&")){
+			key = key.substring(1);
+		}
+		
+		
+		slog.p(TAG, "destoryDialogAndCreateQueryUrl URL is " + key);
+		if(geologyObject.equals("盆地")){
+			executeNetworkForBasin(key);
+		}
+		if(geologyObject.equals("油气田")){
+			executeNetworkForOil(key);
+		}
+		if(geologyObject.equals("油气藏")){
+			executeNetworkForYouQi(key);
+		}
+	}
+
+
+	private void executeNetworkForYouQi(final String key) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+			   final ArrayList<BasinDistributionID.DistributeChild> list = 
+					   new TestCustomQuery(mActivity).testCustomOilCang(key);
+			   draw(list);
+			}
+		}).start();
+	
+	}
+
+
+	private void executeNetworkForOil(final String key) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+			   final ArrayList<BasinDistributionID.DistributeChild> list = 
+					   new TestCustomQuery(mActivity).testCustomOilTian(key);
+			   draw(list);
+			}
+		}).start();
+	}
+
+
+	private void draw(final ArrayList list){
+		   final DrawTool tool =  mActivity.getDrawTool();
+		  
+		   Long objArray[] = new Long[list.size()];
+		   for(int i = 0; i < list.size(); i++){
+			   objArray[i] = ((BasinDistributionID.DistributeChild)list.get(i)).basionId;
+		   }
+		   final String objId = mActivity.whereSelect(objArray);
+		   slog.p(TAG,"executeNetworkForBasin objId " + objId);
+		   
+		   final String layerUrl = getString(R.string.url_basin) + "/0";
+		   slog.p(TAG,"executeNetworkForBasin layerUrl " + layerUrl);
+		   mActivity.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if(list == null || list.size() < 1){
+					
+					Toast.makeText(getActivity(), "没有数据", -1).show();
+					return ;
+				}
+				tool.queryAttribute4Query(objId, layerUrl , list);
+				dismiss();
+			}
+		});
+	}
+	private void executeNetworkForBasin(final String key) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+			   final ArrayList<BasinDistributionID.DistributeChild> list = 
+					   new TestCustomQuery(getActivity()).testCustomBasin(key);
+			   draw(list);
+			}
+		}).start();
+	}
+
+
+	private String getURLPartByValues(String orAnd, String geologyObject, 
+			String condition, String conditionValue,double max ,double min) {
+		slog.p(TAG, "getURLPartByValues orAnd " +
+			orAnd + "  orAnd " + geologyObject + 
+			" condition "  +condition + " conditionValue " + conditionValue +
+			"max " + max +" min " + min
+			);
+		
+			StringBuilder sb = new StringBuilder();
+			 if(orAnd.equals(AND)){
+				 //多条加入的
+				 sb.append("&"); 
+			 }
+			//判断有没有最大值
+			if(max >0 || min > 0){
+				if(max > 0){
+					//add max
+					String conditionCode = getEncodeByMap(condition+"最大值");
+					sb.append(conditionCode+"="+max);
+					 sb.append("&"); 
+				}
+				
+				if(min > 0){
+					//add min
+					String conditionCode = getEncodeByMap(condition+"最小值");
+					sb.append(conditionCode+"="+min);
+					sb.append("&");
+				}
+			}else{
+				 //建立key value
+				String conditionCode = getEncodeByMap(condition);
+				String conditionValueCode = getEncodeByMap(conditionValue);
+				sb.append(conditionCode+"="+conditionValueCode);
+			}
+			slog.p(TAG, "getURLPartByValues url part is " + sb.toString());
+			
+		return sb.toString();
+	}
+
+
+	private String getEncodeByMap(String condition) {
+		String conditionCode;
+		conditionCode = RelativeUnicode.mEnCode.get(condition);
+		if(conditionCode == null){
+			MyLog.e("Errror can not find " + condition + " in mEncode" );
+			return null;
+		}
+		return conditionCode;
+	}
+
 
 	private boolean isTvalue(String name) {
 		return name.equals("tvalue");
@@ -247,12 +438,16 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 	private void removeItem() {
 		if (mContainer.getChildCount() > 0) {
-			mContainer.removeViewAt(mContainer.getChildCount() - 1);
+			int id = mContainer.getChildCount() - 1;
+			mInstances.remove(id);
+			mContainer.removeViewAt(id);
 		}
 	}
 
 	private void addItem() {
-		mContainer.addView(createItem());
+		QueryItem view  = createItem();
+		mInstances.add(view);
+		mContainer.addView(view);
 	}
 
 	private QueryItem createItem() {
@@ -268,6 +463,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 	
 	
+	private final static ArrayList<QueryItem> mInstances = new ArrayList<ConditionQuery.QueryItem>();
 	class QueryItem extends LinearLayout implements OnItemSelectedListener {
 
 		Spinner mSpinnerFisrt;
@@ -305,12 +501,51 @@ public class ConditionQuery extends BaseDialogFragment implements
 			mSpinnerConditionValue.setOnItemSelectedListener(this);
 		}
 
+		public double getMaxValue(){
+			return getEditValue(mETValue2);
+		}
+		public double getMinValue(){
+			return getEditValue(mETValue1);
+		}
+		private double getEditValue(EditText etvalue){
+			try {
+				if(etvalue.getVisibility() == View.VISIBLE){
+					double value = Double.parseDouble(etvalue.getText().toString());
+					return value;
+				}
+			} catch (Exception e) {
+				slog.e(TAG,"getMaxValue error mETValue1.getText() " + etvalue.getText());
+				e.printStackTrace();
+			}
+			return -1;
+		}
+		
+		public String getSpinnerValue(int index){
+			String value = null;
+			slog.p(TAG, "getFirstSpinnerValue index is " + index );
+			switch(index){
+			case 0:
+				value = (String)mSpinnerFisrt.getSelectedItem();
+				break;
+			case 1:
+				value = (String)mSpinnerGeology.getSelectedItem();
+				break;
+			case 2:
+				value = (String)mSpinnerCondition.getSelectedItem();
+				break;
+			case 3:
+				value = (String)mSpinnerConditionValue.getSelectedItem();
+				break;
+			}
+			slog.p(TAG, "getFirstSpinnerValue value is " + value );
+			return value;
+		}
+		
 		private void initFirstValue(Context context) {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
-					getAdapterLayoutID(), new String[] { "或者",
-							"并且" });
+					getAdapterLayoutID(), new String[] {
+				AND , "或者"});
 			mSpinnerFisrt.setAdapter(adapter);
-
 		}
 
 		private void initSpinnerGeologyValue(Context context) {
@@ -401,6 +636,9 @@ public class ConditionQuery extends BaseDialogFragment implements
 			if (parent == mSpinnerGeology) {
 				geologyIndex = position;
 				initConditions(getActivity());
+				initConditions(getActivity());
+				initConditiontValue(getActivity());
+				changeAllGeology();
 			}
 			if (parent == mSpinnerCondition) {
 				conditionIndex = position;
@@ -409,7 +647,6 @@ public class ConditionQuery extends BaseDialogFragment implements
 			}
 			if (parent == mSpinnerConditionValue) {
 				conditionValueIndex = position;
-
 			}
 			String selectItem = null;
 			try {
@@ -428,6 +665,10 @@ public class ConditionQuery extends BaseDialogFragment implements
 					mETValue2.setVisibility(View.GONE);
 				}
 			}
+		}
+
+		private void changeAllGeology() {
+//			for(int i = 0; i  )
 		}
 
 		@Override

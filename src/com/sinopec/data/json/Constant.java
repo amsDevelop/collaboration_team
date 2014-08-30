@@ -2,8 +2,9 @@ package com.sinopec.data.json;
 
 public interface Constant extends com.lenovo.nova.util.Constant{
 
-//	String 	baseURL = "http://202.204.193.201:8080/";
-	String 	baseURL = "http://10.225.14.204:8080/";
+	String 	baseURL = "http://202.204.193.201:8080/";
+	String 	insideNetURL = "http://10.225.14.204:8080/";
+
 	/**
 	 * 盆地
 	 */
@@ -25,7 +26,7 @@ public interface Constant extends com.lenovo.nova.util.Constant{
 	 * 2.全球含油气盆地碳酸盐岩层系油气储量占盆地油气总储量比例分布
 	 */
 	//type=72057594037927935&haixiang=72057594037927935&tansuanyanyan=72057594037927935 
-	String distributeRate = baseURL + 
+	String distributeRate = insideNetURL + 
 			"peprisapi/fixquery2.html?";
 	
 	/**

@@ -111,6 +111,14 @@
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:orientation="horizontal" >
+                            
+                           <ImageButton
+                                android:id="@+id/btn_restore_map"
+                                android:layout_width="66dp"
+                                android:layout_height="43dp"
+                                android:background="@drawable/fullscreen" 
+                                android:alpha="0.7"
+                                />
 
                             <ImageButton
                                 android:id="@+id/btn_scale_small"

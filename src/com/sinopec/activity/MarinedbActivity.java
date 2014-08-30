@@ -101,6 +101,7 @@ import com.sinopec.query.AsyncHttpQuery;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.JsonParse;
+import com.sinopec.util.RelativeUnicode;
 import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
@@ -248,9 +249,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							e.printStackTrace();
 						}
 					}
-					Log.v("mandy", "instance: json  " + (String) msg.obj);
-					Log.v("mandy", "instance: "
-							+ instance.mChilds.get(1).toString());
 
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -526,7 +524,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		btnCurScreen.setOnClickListener(this);
 	}
 
-	private String whereSelect(Long[] objArray) {
+	public String whereSelect(Long[] objArray) {
 
 		StringBuilder builder = new StringBuilder("OBJ_ID =");
 
@@ -820,6 +818,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mBtnScaleSmall.setOnClickListener(this);
 		mBtnScaleBig = (ImageButton) findViewById(R.id.btn_scale_big);
 		mBtnScaleBig.setOnClickListener(this);
+		findViewById(R.id.btn_restore_map).setOnClickListener(this);
 	}
 
 	public void hideInput() {
@@ -1070,10 +1069,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(2);
 			setGridView(toolist, v);
-			// 先查出海相碳酸盐岩盆地
-			String chenjitixi = "72057594037927935";
-			String url = Constant.distributeOilGas + chenjitixi;
-			asyncHttpQuery.execute(1, url);
+			AllBasin();
 
 			break;
 		case R.id.menuview_mine:
@@ -1083,6 +1079,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mGridView.setNumColumns(5);
 			setGridView(toolist, v);
 
+			break;
+		case R.id.btn_restore_map:
+			
+			Envelope envelope = new Envelope();
+			envelope.setXMin(-180);
+			envelope.setYMin(-89.99999999999994);
+			envelope.setXMax(180.0000000000001);
+			envelope.setYMax(87.93330000000003);
+			map.setExtent(envelope);
+			
 			break;
 		default:
 			break;
@@ -1413,8 +1419,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
-//			 drawBarChart();
-
 		} else if ("碳酸盐岩烃源分布".equals(tag)) {
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true,
 					true, true, true, true, true, };
@@ -1422,10 +1426,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(12);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
-
-			String cengxi = "72057594037927935";
-			String url = Constant.distributeHydrocSource + cengxi;
-			asyncHttpQuery.execute(4, url);
+               
+			  AllBasin();
 
 		} else if ("分类型盖层分布".equals(tag)) {
 
@@ -1435,10 +1437,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mGridView.setNumColumns(5);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
-			String gaiceng = "72057594037927935";
-			String url = Constant.baseURL + "peprisapi/fixquery6.html?gaiceng="
-					+ gaiceng;
-			asyncHttpQuery.execute(6, url);
+			 AllBasin();
 
 		} else if ("碳酸盐岩储层分布".equals(tag)) {
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,
@@ -1448,30 +1447,22 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mGridView.setNumColumns(6);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
-			String chujikongjian = "72057594037927935";
-			String chenjixiang = "72057594037927935";
-			String tansuanyanyan = "72057594037927935";
-
-			String url = Constant.baseURL
-					+ "peprisapi/fixquery5.html?chujikongjian=" + chujikongjian
-					+ "&chenjixiang=" + chenjixiang + "&tansuanyanyan="
-					+ tansuanyanyan;
-			asyncHttpQuery.execute(5, url);
+//			String chujikongjian = "72057594037927935";
+//			String chenjixiang = "72057594037927935";
+//			String tansuanyanyan = "72057594037927935";
+//
+//			String url = Constant.baseURL
+//					+ "peprisapi/fixquery5.html?chujikongjian=" + chujikongjian
+//					+ "&chenjixiang=" + chenjixiang + "&tansuanyanyan="
+//					+ tansuanyanyan;
+//			asyncHttpQuery.execute(5, url);
+			 AllBasin();
+			
 
 		} else if ("海相碳酸盐岩盆地".equals(tag)) {
-			String chenjitixi = "72057594037927935";
-			String url = Constant.distributeOilGas + chenjitixi;
-			asyncHttpQuery.execute(1, url);
+			AllBasin();
 
 		} else if ("碳酸盐岩储量比例".equals(tag)) {
-			String type = "72057594037927935";
-			String haixiang = "72057594037927935";
-			String tansuanyanyan = "72057594037927935";
-			String url = Constant.distributeRate + "type=" + type
-					+ "&haixiang=" + haixiang + "&tansuanyanyan="
-					+ tansuanyanyan;
-
-			asyncHttpQuery.execute(2, url);
 
 			Boolean[] clickTag = new Boolean[] { true, true, true };
 			ChildrenMenuDataUtil.setSearchLevel23ChildrenMenuOneData(toolist, clickTag,
@@ -1480,24 +1471,42 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
 		} else if ("碳酸盐岩资源比例".equals(tag)) {
-
-			String type = "72057594037927935";
-			String tansuanyanyan = "72057594037927935";
-			String url = Constant.baseURL + "peprisapi/fixquery3.html?type="
-					+ type + "&tansuanyanyan=" + tansuanyanyan;
-			
 			Boolean[] clickTag = new Boolean[] { true, true, true };
 			ChildrenMenuDataUtil.setSearchLevel33ChildrenMenuOneData(toolist, clickTag,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(3);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
-			asyncHttpQuery.execute(3, url);
+		
 		} else if ("石油2".equals(tag)) {
+			
+			String type = "72057594037927935";
+			queryYanyanchuLiang(type);
+			
 		} else if ("天然气2".equals(tag)) {
+			
+			String type = "72057594037927935";
+			queryYanyanchuLiang(type);
+			
 		} else if ("石油天然气2".equals(tag)) {
+			
+			String type = "72057594037927935";
+			queryYanyanchuLiang(type);
+			
 		} else if ("石油3".equals(tag)) {
+			
+			String type = "72057594037927935";
+			queryYanyanZiyuan(type);
+			
 		} else if ("天然气3".equals(tag)) {
+			
+			String type = "72057594037927935";
+			queryYanyanZiyuan(type);
+			
 		} else if ("石油天然气3".equals(tag)) {
+			
+			String type = "72057594037927935";
+			queryYanyanZiyuan(type);
+			
 		} else if ("储量及资源量级别".equals(tag)) {
 			drawBarChart();
 			
@@ -1534,7 +1543,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}else if ("白垩系s".equals(tag)) {
 			drawBarChart();
 			
-		}else if ("石灰系s".equals(tag)) {
+		}else if ("石炭系s".equals(tag)) {
 			drawBarChart();
 			
 		}else if ("古近系s".equals(tag)) {
@@ -1542,7 +1551,65 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			
 		} else if ("新近系s".equals(tag)) {
 			drawBarChart();
-		}
+			
+		} else if ("前寒武系".equals(tag)) {
+			
+			queryQingyuan(RelativeUnicode.qianhaiwuxi);
+			
+		}else if ("志留系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.zhiliuxi);
+			
+		}else if ("泥盆系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.nipenxi);
+			
+		}else if ("石炭系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.shitanxi);
+			
+		}else if ("二叠系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.erdiexi);
+			
+		}else if ("三叠系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.sandiexi);
+			
+		}else if ("侏罗系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.zhuluoxi);
+			
+		}else if ("白垩系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.baiyaxi);
+			
+		}else if ("古近系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.gujinxi);
+			
+		}else if ("新近系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.xinjinxi);
+			
+		}else if ("寒武系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.hanwuxi);
+			
+		}else if ("奥陶系".equals(tag)) {
+			queryQingyuan(RelativeUnicode.aotaoxi);
+			
+		}else if ("泥岩盖层".equals(tag)) {
+			String gaiceng = "72057594037927935";
+			queryGaiceng(RelativeUnicode.niyangaiceng);
+
+		} else if ("膏盐岩盖层".equals(tag)) {
+			String gaiceng = "72057594037927935";
+			queryGaiceng(RelativeUnicode.gaoyanyangaiceng);
+			
+		} else if ("碳酸盐岩盖层".equals(tag)) {
+			String gaiceng = "72057594037927935";
+			queryGaiceng(RelativeUnicode.tansuanyanyangaiceng);
+			
+		} else if ("其它致密岩盖层".equals(tag)) {
+			String gaiceng = "72057594037927935";
+			queryGaiceng(RelativeUnicode.zhimiyangaiceng);
+			
+		} else if ("特殊盖层".equals(tag)) {
+			String gaiceng = "72057594037927935";
+			queryGaiceng(RelativeUnicode.teshugaiceng);
+			
+		} 
 		// 三级子菜单都需要在这里处理
 		// if (!"CountChildrenMenuOne".equals(tag)
 		// && !"CountChildrenMenuTwo".equals(tag)
@@ -1561,10 +1628,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				&& !"至留系s".equals(tag) && !"泥盆系s".equals(tag)
 				&& !"二叠系s".equals(tag) && !"奥陶系s".equals(tag)
 				&& !"侏罗系s".equals(tag) && !"白垩系s".equals(tag)
-				&& !"石灰系s".equals(tag) && !"古近系s".equals(tag)
-				&& !"新近系s".equals(tag)
+				&& !"石炭系s".equals(tag) && !"古近系s".equals(tag)
+				&& !"新近系s".equals(tag)&& !"前寒武系".equals(tag)
+				&& !"志留系".equals(tag)&& !"二叠系".equals(tag)
+				&& !"三叠系".equals(tag)&& !"侏罗系".equals(tag)
+				&& !"白垩系".equals(tag)&& !"古近系".equals(tag)
+				&& !"新近系".equals(tag)&& !"寒武系".equals(tag)
+				&& !"奥陶系".equals(tag)&& !"石油2".equals(tag)
+				&& !"石油3".equals(tag)&& !"天然气2".equals(tag)
+				&& !"天然气3".equals(tag)&& !"石炭系".equals(tag)
+				&& !"泥盆系".equals(tag)&&!"泥岩盖层".equals(tag)
+				&& !"膏盐岩盖层".equals(tag)&&!"碳酸盐岩盖层".equals(tag)
+				&& !"其它致密岩盖层".equals(tag)&&!"特殊盖层".equals(tag)
+				&& !"石油天然气2".equals(tag)
+				&& !"石油天然气3".equals(tag)&& !"".equals(tag)
 				&& !"分类型盖层分布".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)) {
 			hideCallOut();
+			
 		}else{
 			mMenuViewCount.setSelected(false);
 			mMenuViewSearch.setSelected(false);
@@ -1588,6 +1668,48 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 	}
 
+	private void AllBasin() {
+		String chenjitixi = "72057594037927935";
+		String url = Constant.distributeOilGas + chenjitixi;
+		asyncHttpQuery.execute(1, url);
+	}
+
+	private void queryQingyuan (String cengxi) { 
+
+		String url = Constant.distributeHydrocSource + cengxi;
+		asyncHttpQuery.execute(4, url);
+		
+	}
+	
+	private void queryYanyanchuLiang (String type) {
+		
+//		String type = "72057594037927935";
+		String haixiang = "72057594037927935";
+		String tansuanyanyan = "72057594037927935";
+		String url = Constant.distributeRate + "type=" + type
+				+ "&haixiang=" + haixiang + "&tansuanyanyan="
+				+ tansuanyanyan;
+
+		asyncHttpQuery.execute(2, url);
+		
+	}
+	private void queryYanyanZiyuan (String type) {
+		
+//		String type = "72057594037927935";
+		String tansuanyanyan = "72057594037927935";
+		String url = Constant.baseURL + "peprisapi/fixquery3.html?type="
+				+ type + "&tansuanyanyan=" + tansuanyanyan;
+		asyncHttpQuery.execute(3, url);
+	}
+	
+	private void queryGaiceng (String gaiceng) {
+//		String gaiceng = "72057594037927935";
+		String url = Constant.baseURL + "peprisapi/fixquery6.html?gaiceng="
+				+ gaiceng;
+		asyncHttpQuery.execute(6, url);
+		
+	}
+	
 	private void drawPinChart() {
 		Graphic[] graphics = drawTool.getQueryGraphics();
 		if (graphics == null) {
@@ -2102,5 +2224,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				callout.hide();
 			}
 		}
+	}
+	
+	public DrawTool getDrawTool(){
+		return drawTool;
 	}
 }

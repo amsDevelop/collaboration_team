@@ -76,4 +76,15 @@
     <string name="url_marine_image">http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer</string>
     <!-- 不显示，也不添加到mapview,搜索用-->
     <string name="url_marine_oil">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer</string>
+    <!-- 烃源岩 -->
+   <string name="url_source_rock"> http://10.200.250.110:6080/arcgis/rest/services/source_rock/MapServer</string>
+   <!-- 盖层 -->
+    <string name="url_cover"> http://10.200.250.110:6080/arcgis/rest/services/cover/MapServer</string>
+   <!-- 储集层 --> 
+   <string name="url_reservoir"> http://10.200.250.110:6080/arcgis/rest/services/reservoir/MapServer</string>
+    
+
+   
+    
+    
 </resources>

@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.test.AndroidTestCase;
 
 import com.lenovo.nova.util.slog;
@@ -30,16 +31,20 @@ import com.sinopec.data.json.standardquery.DistributeRateResource;
  * @author liuzhaodong
  *
  */
-public class TestQueryGuDing extends AndroidTestCase {
+public class TestQueryGuDing {
 	String defaultID = "201102001130";
 
+	public Context mContext;
+	public TestQueryGuDing(Context context) {
+		// TODO Auto-generated constructor stub
+		mContext = context;
+	}
 	protected JSONArray getJsonArray(String url) {
 		String str = getJsonStr(url);
 		JSONArray array = null;
 		try {
 			array = new JSONArray(str);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return array;
@@ -62,7 +67,9 @@ public class TestQueryGuDing extends AndroidTestCase {
 		HttpResponse response = manager.getResponse(manager.getConnType(), false, URL, null, null);
 		String jsonStr = null;
 		try {
-			jsonStr = EntityUtils.toString(response.getEntity());
+			if(response != null){
+				jsonStr = EntityUtils.toString(response.getEntity());
+			}
 			slog.p("jsonStr " + jsonStr);
 
 		} catch (ParseException e) {
