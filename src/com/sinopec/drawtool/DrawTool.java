@@ -366,8 +366,8 @@ public class DrawTool extends Subject {
 					Envelope newPoly = (Envelope) GeometryEngine.project(
 							envelope, sr, webMercator);
 					String sArea = getAreaString(newPoly.calculateArea2D());
-					Toast.makeText(mapView.getContext(), sArea + "",
-							Toast.LENGTH_SHORT).show();
+//					Toast.makeText(mapView.getContext(), sArea + "",
+//							Toast.LENGTH_SHORT).show();
 
 					queryAttribute4Query(envelope);
 

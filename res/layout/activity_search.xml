@@ -18,23 +18,6 @@
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
-        <ImageButton
-            android:id="@+id/btn_login_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_btn_back"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/search_layername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:visibility="gone" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,10 +30,27 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
+                <ImageButton
+                    android:id="@+id/btn_login_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_back" />
+
+                <TextView
+                    android:id="@+id/search_layername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
                 <com.sinopec.view.ClearableEditText
                     android:id="@+id/edittext_search"
-                    android:layout_width="100dp"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/searchbtn"
                     android:hint="搜索"
                     android:singleLine="true"
                     android:textColor="@color/black"

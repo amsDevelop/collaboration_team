@@ -70,7 +70,9 @@ import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
 import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
+import com.esri.core.symbol.MarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
+import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
@@ -173,6 +175,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		public void handleMessage(final android.os.Message msg) {
 			Long[] array;
+			mLastClickedView = null;
 			switch (msg.what) {
 			case 1:
 				// String jsonStr = getJsonStr(url);
@@ -541,7 +544,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// TODO:设置Identify查询参数
 		mIdentifyParameters.setTolerance(20);
 		mIdentifyParameters.setDPI(98);
-		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 		mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER);
 		// mIdentifyParameters.setLayers(new int[]{4});
 		// mIdentifyParameters.setLayerMode(IdentifyParameters.ALL_LAYERS);
@@ -649,7 +652,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 									+ "  y: " + anchorPt.getY());
 							initSearchParams(anchorPt);
 							SearchIdentifyTask task = new SearchIdentifyTask(
-									mContext, pt, SinoApplication.oilUrl,
+//									mContext, pt, SinoApplication.oilUrl,
+									mContext, pt, SinoApplication.currentLayerUrl4Multi,
 									mLongTouchTitle,
 									CommonData.TypeOperateLongPress,
 									mDrawLayer4HighLight, callout);
@@ -775,6 +779,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					mToolBar.setVisibility(View.VISIBLE);
 					mToolBar.startAnimation(aniUp);
 					mGridViewLayout.setVisibility(View.GONE);
+					mLastClickedView = null;
 				}
 				SinoApplication.mResultList4Compared.clear();
 				SinoApplication.mFeatureSet4Compared = null;
@@ -877,10 +882,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 * 油气藏类型
 	 */
 	private String mTopicType;
-	/**
-	 * 宝藏名字
-	 */
-	private String mTopicName;
+
 	private Boolean[] clickTag;
 
 	@SuppressLint("NewApi")
@@ -1311,12 +1313,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
 		} else if ("mineLogin".equals(tag)) {
-			Intent intent = new Intent(mContext, LoginActivity.class);
-			startActivity(intent);
-//			Intent intent = new Intent(this, SelectActivity.class);
-//			intent.putExtra(CommonData.KeyTopicType, "气田");
-//			intent.putExtra("name", "属性");
+//			Intent intent = new Intent(mContext, LoginActivity.class);
 //			startActivity(intent);
+			Intent intent = new Intent(this, SelectActivity.class);
+			intent.putExtra(CommonData.KeyTopicType, "盆地");
+			intent.putExtra("name", "简介");
+			startActivity(intent);
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();
 		} else if ("mineLogout".equals(tag)) {
@@ -1370,11 +1372,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 		} else if ("碳酸盐岩烃源分布".equals(tag)) {
-			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,
+			Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true,
 					true, true, true, true, true, };
 			ChildrenMenuDataUtil.setSearchChildren4MenuData(toolist, clickTag,
 					mChildMenuSplitNumber);
-			mGridView.setNumColumns(10);
+			mGridView.setNumColumns(12);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
 			String cengxi = "72057594037927935";
@@ -1383,10 +1385,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		} else if ("分类型盖层分布".equals(tag)) {
 
-			Boolean[] clickTag = new Boolean[] { true, true, true };
+			Boolean[] clickTag = new Boolean[] { true, true, true, true, true  };
 			ChildrenMenuDataUtil.setSearchChildren6MenuData(toolist, clickTag,
 					mChildMenuSplitNumber);
-			mGridView.setNumColumns(3);
+			mGridView.setNumColumns(5);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
 			String gaiceng = "72057594037927935";
@@ -1426,6 +1428,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			Log.v("mandy", "url: " + url); 
 			
 			asyncHttpQuery.execute(2, url);
+
+			Boolean[] clickTag = new Boolean[] { true, true, true };
+			ChildrenMenuDataUtil.setSearchLevel23ChildrenMenuOneData(toolist, clickTag,
+					mChildMenuSplitNumber);
+			mGridView.setNumColumns(3);
+			setGridView4LevelTwoChildrenMenu(toolist, arg0);
+
 		} else if ("碳酸盐岩资源比例".equals(tag)) {
 
 			String type = "72057594037927935";
@@ -1436,7 +1445,20 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					.execute(
 							3,
 							url);
+			
+			Boolean[] clickTag = new Boolean[] { true, true, true };
+			ChildrenMenuDataUtil.setSearchLevel33ChildrenMenuOneData(toolist, clickTag,
+					mChildMenuSplitNumber);
+			mGridView.setNumColumns(3);
+			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
+		} else if ("石油2".equals(tag)) {
+		} else if ("天然气2".equals(tag)) {
+		} else if ("石油天然气2".equals(tag)) {
+		} else if ("石油3".equals(tag)) {
+		} else if ("天然气3".equals(tag)) {
+		} else if ("石油天然气3".equals(tag)) {
+			
 		}
 		// 三级子菜单都需要在这里处理
 //		if (!"CountChildrenMenuOne".equals(tag)
@@ -1448,8 +1470,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		if (!"CountChildrenMenuOne".equals(tag)
 				&& !"CountChildrenMenuTwo".equals(tag)
 				&& !"toolDistance".equals(tag) && !"toolArea".equals(tag)
-				&& !"分类型盖层分布".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)) {
+				&& !"分类型盖层分布".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)
+				&& !"碳酸盐岩储量比例".equals(tag) && !"碳酸盐岩资源比例".equals(tag)
+				) {
 			hideCallOut();
+		}else{
+			mMenuViewCount.setSelected(false);
+			mMenuViewSearch.setSelected(false);
+			mMenuViewCompare.setSelected(false);
+			mMenuViewMine.setSelected(false);
 		}
 		
 		if("toolDistance".equals(tag) || "toolArea".equals(tag)){
@@ -1718,16 +1747,29 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// 正确的比例尺
 		map.setExtent(geometry, 0);
 		// 绘制高亮区域
-		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
-		Graphic resultLocation = new Graphic(geometry, resultSymbol);
-		mDrawLayer4HighLight.addGraphic(resultLocation);
+//		SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+//		Graphic resultLocation = new Graphic(geometry, resultSymbol);
+//		mDrawLayer4HighLight.addGraphic(resultLocation);
 
 		mTopicType = result.getLayerName();
-		mTopicName = result.getValue();
+		SinoApplication.mTopicName = result.getValue();
 		mHashMap4Property = (HashMap<String, Object>) result.getAttributes();
 		if (callout.isShowing()) {
 			callout.hide();
 		}
+		
+		if("chinapoi".equals(result.getLayerName())){
+			MarkerSymbol markerSymbol = new SimpleMarkerSymbol(Color.BLUE, 30,
+					SimpleMarkerSymbol.STYLE.CROSS);
+			Graphic resultLocation = new Graphic(geometry, markerSymbol);
+			mDrawLayer4HighLight.addGraphic(resultLocation);
+		}else{
+			SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
+			Graphic resultLocation = new Graphic(geometry, resultSymbol);
+			mDrawLayer4HighLight.addGraphic(resultLocation);
+			
+		}
+		
 		Log.d(tag,
 				"-------------main---------setData: " + result.getLayerName());
 		if (!"chinapoi".equals(result.getLayerName())
@@ -1901,8 +1943,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		Log.d(tag, "-------------setData4Query---------setData: "
 				+ SinoApplication.mLayerName);
 		callout.show(point);
-		mLongTouchTitle.setText((String) graphic.getAttributes().get(
-				"OBJ_NAME_C"));
+		String title = (String) graphic.getAttributes().get(
+				"OBJ_NAME_C");
+		SinoApplication.mTopicName = title;
+		mLongTouchTitle.setText(title);
 		// statistics.setText(result.getValue());
 
 		hideInput();

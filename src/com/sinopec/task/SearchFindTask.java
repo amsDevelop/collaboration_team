@@ -61,7 +61,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	protected List<FindResult> doInBackground(String... params) {
 		List<FindResult> mResult = null;
 		if (params != null && params.length > 0) {
-			int[] layerIDs = new int[] { 0,1,2,3,4,5,6,7 };
+			int[] layerIDs = new int[] { 0,1,2,3,4,5,6,7,8,9,10 };
 			FindParameters mParams = new FindParameters(params[0], layerIDs);
 
 			try {

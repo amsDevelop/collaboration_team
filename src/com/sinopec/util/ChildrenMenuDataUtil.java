@@ -187,6 +187,50 @@ public class ChildrenMenuDataUtil {
 	}
 	
 	
+	//"碳酸盐岩储量比例" 三级菜单
+	public static void setSearchLevel23ChildrenMenuOneData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
+		String[] name4count = new String[] { "石油", "天然气","石油天然气"  };
+		Integer[] icon4count = { R.drawable.icon_rang_oilgas,
+				R.drawable.icon_rang_oilgas, R.drawable.icon_range_volume};
+		
+		String[] tag = new String[] { "石油2", "天然气2","石油天然气2"  };
+		list.clear();
+		for (int i = 0; i < name4count.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("name", name4count[i]);
+			map.put("icon", icon4count[i]);
+			map.put("tag", tag[i]);
+			
+			HashMap<String, Boolean> showMap = new HashMap<String, Boolean>();
+			showMap.put(tag[i], clickTag[i]);
+			map.put("clicktag", showMap);
+			map.put("split", splitNumber);
+			list.add(map);
+		}
+	}
+	
+	//"碳酸盐岩资源比例"三级菜单
+	public static void setSearchLevel33ChildrenMenuOneData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
+		String[] name4count = new String[] { "石油", "天然气","石油天然气"  };
+		Integer[] icon4count = { R.drawable.icon_rang_oilgas,
+				R.drawable.icon_rang_oilgas, R.drawable.icon_range_volume};
+		
+		String[] tag = new String[] { "石油3", "天然气3","石油天然气3"  };
+		list.clear();
+		for (int i = 0; i < name4count.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("name", name4count[i]);
+			map.put("icon", icon4count[i]);
+			map.put("tag", tag[i]);
+			
+			HashMap<String, Boolean> showMap = new HashMap<String, Boolean>();
+			showMap.put(tag[i], clickTag[i]);
+			map.put("clicktag", showMap);
+			map.put("split", splitNumber);
+			list.add(map);
+		}
+	}
+	
 	//全球含油气盆地碳酸盐岩层系油气储量及资源量分布
 	public static void setCountLevelTwoChildrenMenuOneData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
 		String[] name4count = new String[] { "储量及资源量级别", "资源总量", "探明储量","待发现资源量"  };
@@ -215,13 +259,13 @@ public class ChildrenMenuDataUtil {
 	 * 碳酸盐岩烃源分布 子菜单(查询菜单第四项)
 	 */
 	public static void setSearchChildren4MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-		String[] name4count = new String[] { "古生界和前寒武系", "至留系" , "泥盆系",
+		String[] name4count = new String[] { "前寒武系","寒武系","奥陶系", "至留系" , "泥盆系",
 				"石灰系", "二叠系" , "三叠系",
 				"侏罗系", "白垩系" , "古近系", "新近系"};
-		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
+		Integer[] icon4count = {  R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,R.drawable.icon_rang_oilgas,};
-		String[] tag = new String[] { "古生界和前寒武系", "至留系" , "泥盆系",
+		String[] tag = new String[] { "前寒武系","寒武系","奥陶系", "至留系" , "泥盆系",
 				"石灰系", "二叠系" , "三叠系",
 				"侏罗系", "白垩系" , "古近系", "新近系"};
 		list.clear();
@@ -271,9 +315,10 @@ public class ChildrenMenuDataUtil {
 	 * 分类型钙层分布子菜单(查询菜单第六项)
 	 */
 	public static void setSearchChildren6MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-		String[] name4count = new String[] { "蒸发岩盖层", "混合型盖层" , "非蒸发岩盖层"};
-		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
-		String[] tag = new String[] { "蒸发岩盖层", "混合型盖层" , "非蒸发岩盖层"};
+		String[] name4count = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
+				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
+		String[] tag = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
