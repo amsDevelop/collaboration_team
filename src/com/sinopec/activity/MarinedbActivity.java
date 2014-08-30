@@ -21,6 +21,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -1352,7 +1354,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 调用drawTool里面 的一个变量
 			// drawTool.calculateAreaAndLength("");
 		} else if ("定制查询".equals(tag)) {
-			// TODO:
 			ConditionQuery query = new ConditionQuery();
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
@@ -1361,7 +1362,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			startActivity(intent);
 //			Intent intent = new Intent(this, SelectActivity.class);
 //			intent.putExtra(CommonData.KeyTopicType, "盆地");
-//			intent.putExtra("name", "简介");
+//			intent.putExtra("name", "统计");
 //			startActivity(intent);
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();

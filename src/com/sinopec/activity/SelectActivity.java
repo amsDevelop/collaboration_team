@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sinopec.application.SinoApplication;
+import com.sinopec.chart.PolygonLineChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.data.json.Constant;
 import com.sinopec.query.AsyncHttpQuery;
@@ -118,6 +120,7 @@ public class SelectActivity extends Activity {
 		});
 
 		getData();
+//		showView();
 	}
 
 	private Handler handler = new Handler() {
@@ -219,6 +222,18 @@ public class SelectActivity extends Activity {
 				getItemData4Introduce(type);
 			}
 		}
+	}
+	
+	private void showView(){
+		mContentLayout.removeAllViews();
+//		polygonLineChart3 = new PolygonLineChart3();
+//		new LinearLayout.LayoutParams(SinoApplication.screenWidth / 2, SinoApplication.screenHeight - 300, Gravity.CENTER);
+		mContentLayout.addView(new PolygonLineChart3().getBarChartView(mContext), new LinearLayout.LayoutParams(SinoApplication.screenWidth / 2, SinoApplication.screenHeight - 300, Gravity.CENTER));
+//		TextView tView = new TextView(this);
+//		tView.setText("厚厚的方会计师的返回");
+//		tView.setTextColor(Color.BLACK);
+//		tView.setTextSize(25);
+//		mContent.addView(tView);
 	}
 
 	private void dealNoResult() {
@@ -325,6 +340,7 @@ public class SelectActivity extends Activity {
 			getJson4Attribute(mID);
 		} else if (CommonData.TypeCount.equals(dataName)) {
 			list = initChildMenuData4Count();
+			showView();
 		} else if (CommonData.TypeIntroduce.equals(dataName)) {
 			list = initChildMenuData4Introduce();
 			getJson4Introduce(mID);

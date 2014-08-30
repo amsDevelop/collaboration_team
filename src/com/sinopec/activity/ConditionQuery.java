@@ -55,6 +55,10 @@ public class ConditionQuery extends BaseDialogFragment implements
 	private static final String TAG = "ConditionQuery";
 
 	private static final String AND = "并且";
+	private View mLastClickedView;
+//	public ConditionQuery(View view){
+//		this.mLastClickedView = view;
+//	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
