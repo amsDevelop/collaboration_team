@@ -5,7 +5,7 @@ public class Constant implements com.lenovo.nova.util.Constant{
 	public static String baseIP = "202.204.193.201";
 	
 	public static String 	baseURL = "http://"+baseIP+":8080/";
-//	String 	baseURL = "http://10.225.14.204:8080/";
+
 	/**
 	 * 盆地
 	 */
