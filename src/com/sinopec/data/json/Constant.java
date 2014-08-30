@@ -3,6 +3,7 @@ package com.sinopec.data.json;
 public interface Constant extends com.lenovo.nova.util.Constant{
 
 	String 	baseURL = "http://202.204.193.201:8080/";
+//	String 	baseURL = "http://10.225.14.204:8080/";
 	/**
 	 * 盆地
 	 */

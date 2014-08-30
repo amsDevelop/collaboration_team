@@ -197,4 +197,8 @@ public class SinoApplication extends Application {
 	}
 	
 	public static HashMap<String, String> mNameMap = new HashMap<String, String>();
+	/**
+	 * 宝藏名字
+	 */
+	public static String mTopicName;
 }
