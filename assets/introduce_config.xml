@@ -1,64 +1,21 @@
-<?xml version="1.0" ?>
-<configuration>
-	<ConcernPropertyConfig>
-		<GeoObject id="" name="盆地">
-		  <Property id="" name="属性" >
-			<value id="" name="含油气盆地基础属性" tablename="盆地级地质单元基础属性描述数据表"  table="DP01"/>
-			<value id="" name="含油气盆地勘探成果" tablename="地质单元勘探成果数据表" table="DK02"/>
-			<value id="" name="含油气盆地整体资源" tablename="地质单元整体资源信息数据表" table="DZ01"/>
-			<value id="" name="含油气盆地烃源条件" tablename="盆地级地质单元整体烃源条件描述数据表" table="DP02"/>
-			<value id="" name="含油气盆地储集条件" tablename="盆地级地质单元整体储集条件描述数据表" table="DP03"/>
-			<value id="" name="含油气盆地盖层条件" tablename="盆地级地质单元整体盖层条件描述数据表" table="DP04"/>
-			<value id="" name="含油气盆地圈闭条件" tablename="盆地级地质单元整体圈闭条件描述数据表" table="DP05"/>
-			<value id="" name="含油气盆地保存条件" tablename="盆地级地质单元整体保存条件描述数据表" table="DP06"/>
-			<value id="" name="含油气盆地配置条件" tablename="盆地级地质单元整体配置条件描述数据表" table="DP07"/>
-		  </Property>
-		  <Statistics id="" name="统计" >
-			<value id="" name="历年累计发现石油地质储量" tablename="地质单元勘探成果数据表" table="DK02"/>
-			<value id="" name="历年累计发现天然气地质储量" tablename="地质单元勘探成果数据表" table="DK02"/>
-			<value id="" name="历年累计发现凝析油地质储量" tablename="地质单元勘探成果数据表" table="DK02"/>
-		  </Statistics>
-		  <Doucument id="" name="文档" >
-			<value id="" name="盆地概况" tablename="盆地级地质单元描述信息表" table="DP08"  field="PDGK"/>
-			<value id="" name="区域构造" tablename="盆地级地质单元描述信息表" table="DP08"  field="QYGZ" />
-			<value id="" name="含油气层系" tablename="盆地级地质单元描述信息表" table="DP08"  field="HYQCX" />
-			<value id="" name="圈闭与油气藏" tablename="盆地级地质单元描述信息表" table="DP08"  field="QBYYQC" />
-			<value id="" name="勘探情况" tablename="盆地级地质单元描述信息表" table="DP08"  field="KTQK" />
-			<value id="" name="平面构造图" tablename="盆地级地质单元描述信息表" table="DP08"  field="PMGZT" />
-			<value id="" name="年代划分表" tablename="盆地级地质单元描述信息表" table="DP08"  field="NDHFB" />
-			<value id="" name="地理位置图" tablename="盆地级地质单元描述信息表" table="DP08"  field="DLWZT" />
-			<value id="" name="其他" tablename="盆地级地质单元描述信息表" table="DP08"  field="QT" />
-		  </Doucument>
-		</GeoObject>
-		
-		<GeoObject id="" name="油气田">
-		  <Property id="" name="属性" >
-			<value id="" name="油气田基础属性" tablename="目标级地质单元基础属性描述数据表" table="DM01"/>
-			<value id="" name="油气田储量产量" tablename="目标级地质单元储量产量信息数据表" table="DM02"/>
-			<value id="" name="油气田烃源条件" tablename="目标级地质单元烃源条件描述数据表" table="DM03"/>
-			<value id="" name="油气田储集条件" tablename="目标级地质单元储集条件描述数据表" table="DM04"/>
-			<value id="" name="油气田盖层条件" tablename="目标级地质单元盖层条件描述数据表" table="DM05"/>
-			<value id="" name="油气田原油性质" tablename="目标级地质单元原油性质统计汇总表" table="DM06"/>
-			<value id="" name="油气田天然气性质" tablename="目标级地质单元天然气性质统计汇总表" table="DM07"/>
-			<value id="" name="油气田水性质" tablename="目标级地质单元水性质统计汇总表" table="DM08"/>
-		  </Property>
-		  <Statistics id="" name="统计" >
-			<value id="" name="历年累计发现石油地质储量" tablename="目标级地质单元储量产量信息数据表" table="DM02"/>
-		  </Statistics>
-		  <Doucument id="" name="文档" >
-			<value id="" name="油气田概述" tablename="目标级地质单元描述信息表" table="DM09"  field="YQTGS" />
-			<value id="" name="构造特征" tablename="目标级地质单元描述信息表" table="DM09"  field="GZTZ" />
-			<value id="" name="沉积与储层特征" tablename="目标级地质单元描述信息表" table="DM09"  field="CJYCCTZ" />
-			<value id="" name="流体性质" tablename="目标级地质单元描述信息表" table="DM09"  field="LTXZ" />
-			<value id="" name="储量情况" tablename="目标级地质单元描述信息表" table="DM09"  field="CLQK" />
-			<value id="" name="平面构造图" tablename="目标级地质单元描述信息表" table="DM09"  field="PMGZT" />
-			<value id="" name="剖面图" tablename="目标级地质单元描述信息表" table="DM09"  field="PMT" />
-			<value id="" name="综合柱状图" tablename="目标级地质单元描述信息表" table="DM09"  field="ZHZKT" />
-			<value id="" name="地理位置图" tablename="目标级地质单元描述信息表" table="DM09"  field="DLWZT" />
-			<value id="" name="地层简表" tablename="目标级地质单元描述信息表" table="DM09"  field="DCJB" />
-			<value id="" name="其他" tablename="目标级地质单元描述信息表" table="DM09"  field="QT" />
-		  </Doucument>
-		</GeoObject>
-	</ConcernPropertyConfig>
-</configuration>
+<value id="" name="盆地概况" tablename="盆地级地质单元描述信息表" table="DP08"  field="PDGK" />
+<value id="" name="区域构造" tablename="盆地级地质单元描述信息表" table="DP08"  field="QYGZ" />
+<value id="" name="含油气层系" tablename="盆地级地质单元描述信息表" table="DP08"  field="HYQCX" />
+<value id="" name="圈闭与油气藏" tablename="盆地级地质单元描述信息表" table="DP08"  field="QBYYQC" />
+<value id="" name="勘探情况" tablename="盆地级地质单元描述信息表" table="DP08"  field="KTQK" />
+<value id="" name="平面构造图" tablename="盆地级地质单元描述信息表" table="DP08"  field="PMGZT" />
+<value id="" name="年代划分表" tablename="盆地级地质单元描述信息表" table="DP08"  field="NDHFB" />
+<value id="" name="地理位置图" tablename="盆地级地质单元描述信息表" table="DP08"  field="DLWZT" />
+<value id="" name="其他" tablename="盆地级地质单元描述信息表" table="DP08"  field="QT" />
+<value id="" name="油气田概述" tablename="目标级地质单元描述信息表" table="DM09"  field="YQTGS" />
+<value id="" name="构造特征" tablename="目标级地质单元描述信息表" table="DM09"  field="GZTZ" />
+<value id="" name="沉积与储层特征" tablename="目标级地质单元描述信息表" table="DM09"  field="CJYCCTZ" />
+<value id="" name="流体性质" tablename="目标级地质单元描述信息表" table="DM09"  field="LTXZ" />
+<value id="" name="储量情况" tablename="目标级地质单元描述信息表" table="DM09"  field="CLQK" />
+<value id="" name="平面构造图" tablename="目标级地质单元描述信息表" table="DM09"  field="PMGZT" />
+<value id="" name="剖面图" tablename="目标级地质单元描述信息表" table="DM09"  field="PMT" />
+<value id="" name="综合柱状图" tablename="目标级地质单元描述信息表" table="DM09"  field="ZHZKT" />
+<value id="" name="地理位置图" tablename="目标级地质单元描述信息表" table="DM09"  field="DLWZT" />
+<value id="" name="地层简表" tablename="目标级地质单元描述信息表" table="DM09"  field="DCJB" />
+<value id="" name="其他" tablename="目标级地质单元描述信息表" table="DM09"  field="QT" />
 

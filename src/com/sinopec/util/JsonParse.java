@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.text.TextUtils;
 import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 
 
@@ -32,7 +33,7 @@ public class JsonParse {
             lists.add(parseItemJson(reader));
          
         }
-    	Log.v("mandy", "list: while....finish...");
+    	Log.v("mandy", "list: while....finish..." + lists.size());
         reader.endArray();
         return (List<HashMap<String, Object>>) lists;
     }
@@ -51,6 +52,8 @@ public class JsonParse {
         while (reader.hasNext()) {
             try {
 				String name  = 	reader.nextName();
+			 	Log.v("mandy", "list#########################." + name);
+				
 				 if(name.equalsIgnoreCase("油气田储量产量")) {
 					  reader.beginArray();
 					  
@@ -62,7 +65,17 @@ public class JsonParse {
 					   reader.endArray();
 				 item.put(name, list);
 				 } else {
-					item.put(name, parseItemOtherJson(reader));
+					 
+					if (reader.peek() == JsonToken.STRING) {
+						item.put(name, reader.nextString());
+						
+					}else {
+						item.put(name, parseItemOtherJson(reader));
+					}
+					 
+				
+			
+					
 //        		 reader.skipValue();
 				 }
 			} catch (Exception e) {

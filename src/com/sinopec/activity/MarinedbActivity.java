@@ -77,6 +77,8 @@ import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.lenovo.nova.util.parse.Bean;
+import com.lenovo.nova.util.parse.DBParserUtil;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
@@ -87,6 +89,7 @@ import com.sinopec.chart.PieChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.common.OilGasData;
+import com.sinopec.data.json.ConfigBean;
 import com.sinopec.data.json.Constant;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
 import com.sinopec.data.json.standardquery.DistributeCengGai;
@@ -353,6 +356,23 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		try {
+			DBParserUtil dbUitl = new DBParserUtil(this){
+				@Override
+				protected Class onGetBeanForCreateTable() {
+					return ConfigBean.class;
+				}
+			};
+			List<Bean> list  = new ArrayList<Bean>();
+			dbUitl.getBeanListFromDB(ConfigBean.class, list, 0, 2);
+			if(list.size() > 0){
+				Constant.baseIP = ((ConfigBean)list.get(0)).getIP();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		this.mContext = this;
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		urlBasionQuery = getResources().getString(R.string.url_basin) + "/0";
@@ -447,12 +467,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		map.zoomTo(new Point(0, 0), (float) map.getMaxResolution());
 		map.setMapBackground(Color.WHITE, Color.TRANSPARENT, 0, 0);
 		initTableKeyValue();
+		initTableKeyValue4Introduce();
 		// getJson();
-	}
-
-	private void getJson() {
-		String url = "http://10.225.14.204:8080/peprisapi/oilGasFieldAttribute.html?dzdybm=201102001063";
-		asyncHttpQuery.execute(4, url);
 	}
 
 	private void initTableKeyValue() {
@@ -466,13 +482,42 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							str.indexOf("dispaly"));
 					String value = str.substring(str.indexOf("dispaly=\"")
 							+ "dispaly=\"".length(), str.indexOf("\"/>"));
-					Log.d("table", "key: " + key.trim() + "  value: " + value);
+//					Log.d("table", "key: " + key.trim() + "  value: " + value);
 					SinoApplication.mNameMap.put(key.trim(), value);
 				}
 			}
 			br.close();
 		} catch (IOException e) {
 			Log.d("table", " initTableKeyValue error:  " + e.toString());
+			e.printStackTrace();
+		}
+	}
+	
+	private void initTableKeyValue4Introduce() {
+		try {
+			InputStream inputStream = getAssets().open("introduce_config.xml");
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					inputStream));
+			for (String str = br.readLine(); str != null; str = br.readLine()) {
+				if (str.contains("field=")) {
+					try {
+						String key = str.substring(str.indexOf("field=\"") + "field=\"".length(),
+								str.indexOf("\" />"));
+						String value = str.substring(str.indexOf("name=\"")
+								+ "name=\"".length(), str.indexOf("\" tablename="));
+						
+						Log.d("table", "key: " + key.trim() + "  value: " + value);
+						SinoApplication.mMap4Introduce.put(value, key.trim());
+						SinoApplication.mNameMap4Introduce.put(key.trim(), value);
+						
+					} catch (Exception e) {
+						Log.d("table", str+" ----for  error:  " + e.toString());
+					}
+				}
+			}
+			br.close();
+		} catch (IOException e) {
+			Log.d("table", " initTableKeyValue4Introduce error:  " + e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -1333,12 +1378,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
 		} else if ("mineLogin".equals(tag)) {
-//			Intent intent = new Intent(mContext, LoginActivity.class);
-//			startActivity(intent);
-			Intent intent = new Intent(this, SelectActivity.class);
-			intent.putExtra(CommonData.KeyTopicType, "盆地");
-			intent.putExtra("name", "简介");
+			Intent intent = new Intent(mContext, LoginActivity.class);
 			startActivity(intent);
+//			Intent intent = new Intent(this, SelectActivity.class);
+//			intent.putExtra(CommonData.KeyTopicType, "盆地");
+//			intent.putExtra("name", "简介");
+//			startActivity(intent);
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();
 		} else if ("mineLogout".equals(tag)) {
@@ -1527,7 +1572,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			
 		} else if ("新近系s".equals(tag)) {
 			drawBarChart();
-			
 		} else if ("前寒武系".equals(tag)) {
 			
 			queryQingyuan(RelativeUnicode.qianhaiwuxi);
@@ -1585,7 +1629,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			String gaiceng = "72057594037927935";
 			queryGaiceng(RelativeUnicode.teshugaiceng);
 			
-		} 
+		}else if ("mineManager".equals(tag)) {
+			SetIpDialog query = new SetIpDialog();
+			query.show(getFragmentManager(), SetIpDialog.class.getName());
+		}
 		// 三级子菜单都需要在这里处理
 		// if (!"CountChildrenMenuOne".equals(tag)
 		// && !"CountChildrenMenuTwo".equals(tag)

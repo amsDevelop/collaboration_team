@@ -1,5 +1,6 @@
 package com.sinopec.activity;
 
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +12,16 @@ import java.util.Set;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +33,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -58,11 +69,12 @@ public class SelectActivity extends Activity {
 	private ViewGroup mContentLayout;
 	private ScrollView mContent;
 	private AsyncHttpQuery asyncHttpQuery;
-
+	private Context mContext;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		this.mContext = this;
 		setContentView(R.layout.select_layout);
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		mContentLayout = (ViewGroup) findViewById(R.id.content);
@@ -87,20 +99,20 @@ public class SelectActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-//				for (int i = 0; i < parent.getCount(); i++) {
-//					View v = parent.getChildAt(parent.getCount() - 1 - i);
-//					if (position == i) {
-//						v.setBackgroundColor(Color.RED);
-//					} else {
-//						v.setBackgroundColor(Color.TRANSPARENT);
-//					}
-//				}
+				// for (int i = 0; i < parent.getCount(); i++) {
+				// View v = parent.getChildAt(parent.getCount() - 1 - i);
+				// if (position == i) {
+				// v.setBackgroundColor(Color.RED);
+				// } else {
+				// v.setBackgroundColor(Color.TRANSPARENT);
+				// }
+				// }
 				String groupName = (String) parent.getAdapter().getItem(
 						position);
-//				 Log.d("json", "groupName: " + groupName);
+				// Log.d("json", "groupName: " + groupName);
 				showItemTable(groupName);
-				   adapter.setSelectItem(position);  
-		            adapter.notifyDataSetInvalidated();  
+				adapter.setSelectItem(position);
+				adapter.notifyDataSetInvalidated();
 			}
 
 		});
@@ -150,7 +162,7 @@ public class SelectActivity extends Activity {
 		// String chenjitixi = "72057594037927935";
 		String url = "";
 		if (CommonData.TopicBasin.equals(mTopicType)) {
-//			url = Constant.urlIntroduceBasin + id;
+			// url = Constant.urlIntroduceBasin + id;
 			url = Constant.urlIntroduceBasin + "200700000001";
 			asyncHttpQuery.execute(IntroduceBasin, url);
 		} else if (CommonData.TopicOilField.equals(mTopicType)
@@ -192,20 +204,27 @@ public class SelectActivity extends Activity {
 	}
 
 	private void showItemTable(String type) {
-		HashMap<String, Object> result = getItemData(type);
-		if (result != null) {
-			addBasePropertyTable(result.entrySet());
-			// for (Map.Entry<String, Object> hashMap : result.entrySet()) {
-			// Log.d("json",
-			// "showItemTable child key: "+hashMap.getKey()+" value: " +
-			// hashMap.getValue());
-			// }
-		} else {
-			mContent.removeAllViews();
-			Toast.makeText(SelectActivity.this,
-					getString(R.string.search_no_data), Toast.LENGTH_SHORT)
-					.show();
+		if (CommonData.TypeProperty.equals(dataName)) {
+			HashMap<String, Object> result = getItemData(type);
+			if (result != null) {
+				addBasePropertyTable(result.entrySet());
+			} else {
+				dealNoResult();
+			}
+		} else if (CommonData.TypeCount.equals(dataName)) {
+		} else if (CommonData.TypeIntroduce.equals(dataName)) {
+			if (mDataList == null) {
+				dealNoResult();
+			} else {
+				getItemData4Introduce(type);
+			}
 		}
+	}
+
+	private void dealNoResult() {
+		mContent.removeAllViews();
+		Toast.makeText(SelectActivity.this, getString(R.string.search_no_data),
+				Toast.LENGTH_SHORT).show();
 	}
 
 	private HashMap<String, Object> getItemData(String key) {
@@ -238,6 +257,40 @@ public class SelectActivity extends Activity {
 		}
 
 		return result;
+	}
+
+	private void getItemData4Introduce(String key) {
+		try {
+			for (HashMap<String, Object> hashMap : mDataList) {
+				for (Entry<String, Object> hashMaps : hashMap.entrySet()) {
+					// Log.d("json","88888 key: " + hashMaps.getKey() + " 传进的："
+					// + SinoApplication.mMap4Introduce.get(key));
+					// addIntroduceTable(hashMap.entrySet());
+					for (Entry<String, Object> ent : hashMap.entrySet()) {
+						// stv1.AddRow(new String[] {
+						// SinoApplication.mNameMap4Introduce.get(ent.getKey()),
+						// dealValue(ent.getValue()) });
+						Log.d("json",
+								"88888 key: "
+										+ hashMaps.getKey()
+										+ " 传进的："
+										+ SinoApplication.mMap4Introduce
+												.get(key));
+						if (SinoApplication.mMap4Introduce.get(key).equals(
+								ent.getKey())) {
+							if (TextUtils.isEmpty((String) ent.getValue())) {
+								dealNoResult();
+							} else {
+								addIntroduceContent((String) ent.getValue());
+							}
+							break;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.e("json", "----getItemData4Introduce 错误 error: " + e.toString());
+		}
 	}
 
 	private String mID = "";
@@ -298,7 +351,7 @@ public class SelectActivity extends Activity {
 		} else {
 			titils = new String[] { "没有结果" };
 		}
-		
+
 		mInitData = titils[0];
 		for (int i = 0; i < titils.length; i++) {
 			list.add(titils[i]);
@@ -327,7 +380,7 @@ public class SelectActivity extends Activity {
 					"历年累计发现天然气产量", "历年累计发现凝析油地质储量", "历年累计发现凝析油可采储量",
 					"历年累计发现凝析油产量" };
 		}
-		
+
 		mInitData = titils[0];
 		for (int i = 0; i < titils.length; i++) {
 			list.add(titils[i]);
@@ -336,6 +389,7 @@ public class SelectActivity extends Activity {
 	}
 
 	private String mInitData = "";
+
 	private ArrayList<String> initChildMenuData4Introduce() {
 		ArrayList<String> list = new ArrayList<String>();
 		String[] titils = null;
@@ -350,15 +404,15 @@ public class SelectActivity extends Activity {
 			titils = new String[] { "油气田概述", "构造特征", "沉积与储层特征", "流体性质", "储量情况",
 					"平面构造图", "剖面图", "综合柱状图", "地理位置图", "地层简表" };
 		}
-		
+
 		mInitData = titils[0];
 		for (int i = 0; i < titils.length; i++) {
 			list.add(titils[i]);
 		}
 
-//		for (int i = 0; i < titils.length; i++) {
-//			list.add(titils[i]);
-//		}
+		// for (int i = 0; i < titils.length; i++) {
+		// list.add(titils[i]);
+		// }
 		return list;
 	}
 
@@ -366,7 +420,7 @@ public class SelectActivity extends Activity {
 		mTextViewTitle.setText(dataName);
 		adapter = new DataAdapter(this, list);
 		mListView.setAdapter(adapter);
-		adapter.setSelectItem(0);  
+		adapter.setSelectItem(0);
 	}
 
 	private void addBasePropertyTable(Set<Entry<String, Object>> ents) {
@@ -390,6 +444,42 @@ public class SelectActivity extends Activity {
 		lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 		stv1.setLayoutParams(lp);
 		mContent.addView(stv1);
+	}
+
+	private void addIntroduceTable(Set<Entry<String, Object>> ents) {
+		mContent.removeAllViews();
+		SimpleTableView stv1 = new SimpleTableView(this);
+		for (Entry<String, Object> ent : ents) {
+			stv1.AddRow(new String[] {
+					SinoApplication.mNameMap4Introduce.get(ent.getKey()),
+					dealValue(ent.getValue()) });
+		}
+
+		LayoutParams lp = new RelativeLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+		stv1.setLayoutParams(lp);
+		mContent.addView(stv1);
+	}
+
+	private void addIntroduceContent(String value) {
+		mContent.removeAllViews();
+		if (value.contains("http")) {
+			value = "http://img3.imgtn.bdimg.com/it/u=2534132044,20433587&fm=23&gp=0.jpg";
+			ImageView imageView = new ImageView(this);
+			mContent.addView(imageView);
+			new DownLoadImage(mContent).execute(value);
+		} else {
+			TextView tView = new TextView(this);
+			tView.setText(value);
+			tView.setTextColor(Color.BLACK);
+			tView.setTextSize(25);
+			mContent.addView(tView);
+		}
+
+		// LayoutParams lp = new RelativeLayout.LayoutParams(
+		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		// lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 	}
 
 	private String dealValue(Object object) {
@@ -464,24 +554,60 @@ public class SelectActivity extends Activity {
 				convertView = LayoutInflater.from(mContext).inflate(
 						R.layout.childs, null);
 			}
-			
+
 			childTextView = (TextView) convertView
 					.findViewById(R.id.mytextview_childs);
 			childTextView.setText(mList.get(position));
-			if (position == selectItem) {  
+			if (position == selectItem) {
 				convertView.setBackgroundResource(R.drawable.item_selected_bg);
-			}else {  
-				convertView.setBackgroundResource(R.drawable.spinner_item);  
-			}    
+			} else {
+				convertView.setBackgroundResource(R.drawable.spinner_item);
+			}
 			return convertView;
 		}
-		
-		private int selectItem=-1;  
-		public void setSelectItem(int selectItem) {  
-			this.selectItem = selectItem;  
-		}  
+
+		private int selectItem = -1;
+
+		public void setSelectItem(int selectItem) {
+			this.selectItem = selectItem;
+		}
 
 	}
-	
+
+	private class DownLoadImage extends AsyncTask<String, Integer, Bitmap> {
+		private ScrollView mScrollView;
+		public DownLoadImage(ScrollView scrollView) {
+			this.mScrollView = scrollView;
+		}
+
+		protected Bitmap doInBackground(String... urls) {
+			Log.d("img", "异步加载图片开始！");
+			String url = urls[0];// "http://ww3.sinaimg.cn/bmiddle/6e91531djw1e8l3c7wo7xj20f00qo755.jpg";
+			System.out.println(url);
+			Bitmap tmpBitmap = null;
+			try {
+				InputStream is = new java.net.URL(url).openStream();
+				tmpBitmap = BitmapFactory.decodeStream(is);
+				is.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.e("KK下载图片", e.getMessage());
+			}
+			return tmpBitmap;
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			super.onProgressUpdate(values);
+		}
+
+		protected void onPostExecute(Bitmap result) {
+			mScrollView.removeAllViews();
+			ImageView imageView = new ImageView(mContext);
+			imageView.setImageBitmap(result);
+			mScrollView.addView(imageView);
+			Log.d("img", "异步加载图片完成！");
+		}
+	}
 
 }
