@@ -215,13 +215,13 @@ public class ChildrenMenuDataUtil {
 	 * 碳酸盐岩烃源分布 子菜单(查询菜单第四项)
 	 */
 	public static void setSearchChildren4MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-		String[] name4count = new String[] { "古生界和前寒武系", "至留系" , "泥盆系",
+		String[] name4count = new String[] { "古生界和前寒武系", "志留系" , "泥盆系",
 				"石灰系", "二叠系" , "三叠系",
 				"侏罗系", "白垩系" , "古近系", "新近系"};
 		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,R.drawable.icon_rang_oilgas,};
-		String[] tag = new String[] { "古生界和前寒武系", "至留系" , "泥盆系",
+		String[] tag = new String[] { "古生界和前寒武系", "志留系" , "泥盆系",
 				"石灰系", "二叠系" , "三叠系",
 				"侏罗系", "白垩系" , "古近系", "新近系"};
 		list.clear();

@@ -14,7 +14,9 @@ public class RelativeUnicode {
 	public static final String baiyaxi = "492581209243648"; //白垩系
 	public static final String gujinxi = "492581209243648"; //古近系
 	public static final String xinjinxi = "558446353793941504"; //新近系
+	public static final String youtian = "4092"; //油田
+	public static final String qitian = "4096"; //气田
+	public static final String youqitian = "4294967295"; //油气田
 	
 	
-//	public static final String qianwuhaixi="";
 }
