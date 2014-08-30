@@ -3,6 +3,8 @@ package com.sinopec.data.json;
 import org.json.JSONArray;
 
 
+import android.content.Context;
+
 import com.lenovo.nova.util.slog;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
@@ -15,6 +17,11 @@ import com.sinopec.data.json.statistics.StatisticsValue;
  *
  */
 public class TestStatistics extends TestQueryGuDing {
+
+	public TestStatistics(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 		

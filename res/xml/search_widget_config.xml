@@ -80,7 +80,7 @@
 		<GeoObject id="11" name="油气田">
 	      <GeoCondition id="" name="沉积相" state="tree">
 			<fvalue id="" name="陆相" >
-			  <svalue id="" name=""/>
+			  <!-- <svalue id="" name=""/> -->
 			</fvalue>  
 			<fvalue id="" name="海相" >
 			  <svalue id="" name="碎屑岩沉积相"/>

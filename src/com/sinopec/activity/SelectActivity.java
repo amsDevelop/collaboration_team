@@ -102,7 +102,6 @@ public class SelectActivity extends Activity {
 			rightList.add(childs.get(0).get(0) + "(" + i + ")");
 		}
 		expandableListView.setOnChildClickListener(new OnChildClickListener() {
-
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {

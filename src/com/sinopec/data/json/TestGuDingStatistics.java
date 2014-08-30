@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.test.AndroidTestCase;
 
 import com.lenovo.nova.util.slog;
@@ -31,6 +32,11 @@ import com.sinopec.data.json.standardquery.DistributeRateResource;
  *
  */
 public class TestGuDingStatistics extends TestQueryGuDing {
+
+	public TestGuDingStatistics(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * 1、全球含油气盆地碳酸盐岩层系油气储量及资源量分布

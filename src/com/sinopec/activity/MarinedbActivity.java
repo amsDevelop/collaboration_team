@@ -494,7 +494,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		btnCurScreen.setOnClickListener(this);
 	}
 
-	private String whereSelect(Long[] objArray) {
+	public String whereSelect(Long[] objArray) {
 
 		StringBuilder builder = new StringBuilder("OBJ_ID =");
 
@@ -1923,5 +1923,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				callout.hide();
 			}
 		}
+	}
+	
+	public DrawTool getDrawTool(){
+		return drawTool;
 	}
 }
