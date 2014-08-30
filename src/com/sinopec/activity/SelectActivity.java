@@ -336,8 +336,10 @@ public class SelectActivity extends Activity {
 		}
 		
 		if(TextUtils.isEmpty(mID)){
-			mID = (String) SinoApplication.findResult.getAttributes().get(
-					"OBJ_ID");
+			if(SinoApplication.findResult != null){
+				mID = (String) SinoApplication.findResult.getAttributes().get(
+						"OBJ_ID");
+			}
 		}
 		Log.d("data", "-------mType: " + mTopicType);
 		
