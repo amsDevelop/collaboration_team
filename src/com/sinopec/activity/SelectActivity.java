@@ -106,7 +106,6 @@ public class SelectActivity extends Activity {
 		});
 
 		getData();
-
 	}
 
 	private Handler handler = new Handler() {
