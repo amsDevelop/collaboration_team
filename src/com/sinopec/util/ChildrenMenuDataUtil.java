@@ -168,8 +168,8 @@ public class ChildrenMenuDataUtil {
 				R.drawable.icon_distribute, R.drawable.icon_diffrent_object_nubmer, R.drawable.icon_diffrent_object_nubmer,
 				 R.drawable.icon_diffrent_object_nubmer, R.drawable.icon_diffrent_object_nubmer,};
 		
-		String[] tag = new String[] { "前寒武系", "寒武系", "至留系","泥盆系", "二叠系", "奥陶系",
-				"侏罗系", "白垩系","石灰系", "古近系", "新近系" };
+		String[] tag = new String[] { "前寒武系s", "寒武系s", "至留系s","泥盆系s", "二叠系s", "奥陶系s",
+				"侏罗系s", "白垩系s","石灰系s", "古近系s", "新近系s" };
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
