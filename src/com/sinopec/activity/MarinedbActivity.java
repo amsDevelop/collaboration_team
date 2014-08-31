@@ -1452,10 +1452,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		} else if ("分类型盖层分布".equals(tag)) {
 
-			Boolean[] clickTag = new Boolean[] { true, true, true, true, true  };
+			Boolean[] clickTag = new Boolean[] { true, true };
 			ChildrenMenuDataUtil.setSearchChildren6MenuData(toolist, clickTag,
 					mChildMenuSplitNumber);
-			mGridView.setNumColumns(5);
+			mGridView.setNumColumns(2);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
 			 AllBasin();
@@ -1632,14 +1632,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}else if ("mineManager".equals(tag)) {
 			SetIpDialog query = new SetIpDialog();
 			query.show(getFragmentManager(), SetIpDialog.class.getName());
+		}else if ("滩坝型".equals(tag)) {
+		}else if ("生物礁型".equals(tag)) {
+		}else if ("前斜坡/碎屑型".equals(tag)) {
+		}else if ("深海白垩岩/白垩质陆架型".equals(tag)) {
+		}else if ("白云岩化灰泥石灰岩型".equals(tag)) {
+		}else if ("裂缝/喀斯特型".equals(tag)) {
 		}
-		// 三级子菜单都需要在这里处理
-		// if (!"CountChildrenMenuOne".equals(tag)
-		// && !"CountChildrenMenuTwo".equals(tag)
-		// && !"toolDistance".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)
-		// && !"分类型盖层分布".equals(tag) && !"toolArea".equals(tag)) {
-		// hideCallOut();
-		// }
+		
 		if (!"CountChildrenMenuOne".equals(tag)
 				&& !"CountChildrenMenuTwo".equals(tag)
 				&& !"toolDistance".equals(tag) && !"toolArea".equals(tag)
@@ -1665,7 +1665,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				&& !"其它致密岩盖层".equals(tag)&&!"特殊盖层".equals(tag)
 				&& !"石油天然气2".equals(tag)
 				&& !"石油天然气3".equals(tag)&& !"".equals(tag)
+				&& !"滩坝型".equals(tag)&& !"生物礁型".equals(tag)
+				&& !"前斜坡/碎屑型".equals(tag)&& !"深海白垩岩/白垩质陆架型".equals(tag)
+				&& !"白云岩化灰泥石灰岩型".equals(tag)&& !"裂缝/喀斯特型".equals(tag)
+				&& !"碳酸盐岩储层分布".equals(tag)
 				&& !"分类型盖层分布".equals(tag) && !"碳酸盐岩烃源分布".equals(tag)) {
+			
 			hideCallOut();
 			
 		}else{

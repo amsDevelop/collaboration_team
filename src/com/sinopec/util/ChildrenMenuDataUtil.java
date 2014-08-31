@@ -282,11 +282,13 @@ public class ChildrenMenuDataUtil {
 	 */
 	public static void setSearchChildren5MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
 		String[] name4count = new String[] { "滩坝型", "生物礁型" , "前斜坡/碎屑型",
-				"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+				"深海白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+//		"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
 		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
 		String[] tag = new String[] { "滩坝型", "生物礁型" , "前斜坡/碎屑型",
-				"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+//				"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+				"深海白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -307,10 +309,12 @@ public class ChildrenMenuDataUtil {
 	 * 分类型钙层分布子菜单(查询菜单第六项)
 	 */
 	public static void setSearchChildren6MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-		String[] name4count = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+//		String[] name4count = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+		String[] name4count = new String[] { "膏盐", "其他"};
 		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
-		String[] tag = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+//		String[] tag = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+		String[] tag = new String[] { "膏盐", "其他"};
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
