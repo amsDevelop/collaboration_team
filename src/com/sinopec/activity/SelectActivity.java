@@ -324,7 +324,6 @@ public class SelectActivity extends Activity {
 			mID = (String) SinoApplication.identifyResult.getAttributes().get(
 					"OBJ_ID");
 
-			Log.d("json", "-------mID: " + mID);
 		} else {
 			if (intent != null) {
 				dataName = intent.getStringExtra("name");
@@ -340,8 +339,21 @@ public class SelectActivity extends Activity {
 				mID = (String) SinoApplication.findResult.getAttributes().get(
 						"OBJ_ID");
 			}
+			if(SinoApplication.graphic != null){
+				try {
+					double temp = (Double) SinoApplication.graphic.getAttributes().get(
+							"OBJ_ID");
+					String tempId = Double.toString(temp);
+//					mID = Double.toHexString(temp);
+					mID = tempId;
+				} catch (Exception e) {
+					mID = (String) SinoApplication.graphic.getAttributes().get(
+							"OBJ_ID");
+				}
+			}
 		}
-		Log.d("data", "-------mType: " + mTopicType);
+//		Log.d("data", "-------mType: " + mTopicType);
+		Log.d("json", "-------mID: " + mID);
 		
 		if (CommonData.TypeProperty.equals(dataName)) {
 			list = initChildMenuData4Property();

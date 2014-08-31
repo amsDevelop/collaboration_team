@@ -737,7 +737,7 @@ public class DrawTool extends Subject {
 		Query query = new Query();
 		query.setGeometry(geometry);
 		query.setReturnGeometry(true);
-		query.setOutFields(new String[] { "OBJ_NAME_C" });
+		query.setOutFields(new String[] { "OBJ_NAME_C", "OBJ_ID" });
 		// SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
 		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
 		// Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +
@@ -800,7 +800,7 @@ public class DrawTool extends Subject {
 		Query query = new Query();
 		// query.setGeometry(geometry);
 		// query.setReturnGeometry(true);
-		query.setOutFields(new String[] { "OBJ_NAME_C" });
+		query.setOutFields(new String[] { "OBJ_NAME_C", "OBJ_ID" });
 		// SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
 		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
 		// Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +

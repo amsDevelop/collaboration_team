@@ -831,6 +831,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				SinoApplication.mResultList4Compared.clear();
 				SinoApplication.mFeatureSet4Compared = null;
 				SinoApplication.findResult = null;
+				SinoApplication.graphic = null;
 			}
 		});
 
@@ -2170,6 +2171,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		if (results != null) {
 			SinoApplication.mFeatureSet4Query = results;
 			// SinoApplication.mResultList4FrameSearch = list;
+			Set<Entry<String, Object>> ents = results.getGraphics()[0].getAttributes().entrySet();
+			for (Entry<String, Object> ent : ents) {
+				Log.d("FeatureSet",
+						"框选  key: " + ent.getKey() + "  val: " + ent.getValue());
+			}
+			
 			int size = results.getGraphics().length;
 			if (size == 0) {
 				SinoApplication.mLayerName = "";
@@ -2193,8 +2200,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	public void setData4Query(Object data) {
 		Graphic graphic = (Graphic) data;
 		// FindResult result = (FindResult)data;
-
+		SinoApplication.graphic = graphic;
 		Set<Entry<String, Object>> ents = graphic.getAttributes().entrySet();
+		Log.d("data", "框选查询 setData4Query 000 key: " + graphic.getAttributeValue("OBJ_ID"));
 		for (Entry<String, Object> ent : ents) {
 			Log.d("data", "框选查询 setData4Query  key: " + ent.getKey()
 					+ "  val: " + ent.getValue());

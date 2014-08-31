@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.esri.core.map.FeatureSet;
+import com.esri.core.map.Graphic;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
@@ -56,6 +57,7 @@ public class SinoApplication extends Application {
 	public static FindResult findResult;
 	public static IdentifyResult identifyResult;
 	public static IdentifyResult identifyResult4Frame;
+	public static Graphic graphic;
 
 	public static Context getContext() {
 		return mContext;
