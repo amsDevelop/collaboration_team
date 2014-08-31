@@ -2,12 +2,12 @@ package com.sinopec.data.json;
 
 public class Constant implements com.lenovo.nova.util.Constant{
 
-	public static String baseIP = "202.204.193.201";
+	public static String baseIP = "10.200.250.110";
 	
-	public static String 	baseURL = "http://"+baseIP+":8080/";
+	public static String  baseURL = "http://"+baseIP+":8080/";
 
 	/**
-	 * 盆地
+	 * 盆地 
 	 */
 	public static String basinURL = baseURL + "peprisapi/basinAttribute.html?basinId=";
 	/**

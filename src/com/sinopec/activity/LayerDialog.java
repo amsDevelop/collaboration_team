@@ -298,14 +298,6 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 				}
 			});
 			
-//			     盆地：http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer
-//				油藏：http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer
-//				气藏：http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer
-//				油田：http://202.204.193.201:6080/arcgis/rest/services/oilfields/MapServer
-//				气田：http://202.204.193.201:6080/arcgis/rest/services/gasfields/MapServer
-//				井位：http://202.204.193.201:6080/arcgis/rest/services/well/MapServer
-//			
-
 			return convertView;
 		}
 		

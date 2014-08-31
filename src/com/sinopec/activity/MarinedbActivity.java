@@ -390,7 +390,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// Envelope envelope = new Envelope(new Point(-29.440589,5.065565));
 		// map.setExtent(envelope, 0);
 		tms = new ArcGISTiledMapServiceLayer(
-				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
+				"http://10.200.250.110:6080/arcgis/rest/services/marine_oil/MapServer");
 		// oilUrl);
 
 		// 加入6个专题图层
@@ -558,6 +558,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 		return builder.toString();
 	}
+	
+	public String whereSelect(String typeId) {
+
+		StringBuilder builder = new StringBuilder("type_ID =");
+		builder.append(typeId);
+		return builder.toString();
+	}
+	
 
 	private Animation aniIn;
 	private Animation aniOut;
