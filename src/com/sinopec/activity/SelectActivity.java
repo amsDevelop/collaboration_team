@@ -343,9 +343,8 @@ public class SelectActivity extends Activity {
 				try {
 					double temp = (Double) SinoApplication.graphic.getAttributes().get(
 							"OBJ_ID");
-					String tempId = Double.toString(temp);
-//					mID = Double.toHexString(temp);
-					mID = tempId;
+					java.text.DecimalFormat df = new java.text.DecimalFormat("#");
+					mID = df.format(temp);
 				} catch (Exception e) {
 					mID = (String) SinoApplication.graphic.getAttributes().get(
 							"OBJ_ID");
