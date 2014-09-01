@@ -1379,12 +1379,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
 		} else if ("mineLogin".equals(tag)) {
-			Intent intent = new Intent(mContext, LoginActivity.class);
-			startActivity(intent);
-//			Intent intent = new Intent(this, SelectActivity.class);
-//			intent.putExtra(CommonData.KeyTopicType, "盆地");
-//			intent.putExtra("name", "统计");
+//			Intent intent = new Intent(mContext, LoginActivity.class);
 //			startActivity(intent);
+			Intent intent = new Intent(this, SelectActivity.class);
+			intent.putExtra(CommonData.KeyTopicType, "盆地");
+			intent.putExtra("name", "统计");
+			startActivity(intent);
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();
 		} else if ("mineLogout".equals(tag)) {

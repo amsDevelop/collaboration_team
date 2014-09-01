@@ -68,9 +68,9 @@ public class PolygonLineChart3 extends AbstractDemoChart{
 	      SimpleSeriesRenderer seriesRenderer = renderer.getSeriesRendererAt(i);
 	      seriesRenderer.setDisplayChartValues(true);
 	    }
-	    renderer.setXRoundedLabels(false);
-
-		gView=ChartFactory.getBarChartView(context, buildDateDataset(titles, dates, values), renderer,Type.DEFAULT);
+	    renderer.setXRoundedLabels(true);
+	    gView= ChartFactory.getLineChartView(context,  buildDateDataset(titles, dates, values), renderer);
+//		gView=ChartFactory.getBarChartView(context, buildDateDataset(titles, dates, values), renderer,Type.DEFAULT);
 //		gView.setBackgroundColor(Color.WHITE);
 		gView.setBackgroundColor(Color.TRANSPARENT);
 		gView.setLayoutParams(new LinearLayout.LayoutParams(SinoApplication.screenWidth / 2, SinoApplication.screenHeight - 300));
