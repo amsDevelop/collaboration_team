@@ -3,6 +3,7 @@ package com.sinopec.adapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class MenuGridAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
+	@SuppressLint("ResourceAsColor")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = new ViewHolder();
@@ -60,14 +62,28 @@ public class MenuGridAdapter extends BaseAdapter {
 		holder.mMenuChildButton.setSplitNumber((Integer)map.get("split"));
 		
 		HashMap<String, Boolean> showMap = (HashMap<String, Boolean>) map.get("clicktag");
-		if(showMap.get(tag))
+		if(showMap.get(tag)){
 			holder.mMenuChildButton.setEnabled(true);
-		else
+		}else{
 			holder.mMenuChildButton.setEnabled(false);
+		}
 		
+		
+		if (position == selectItem) {
+			convertView.setBackgroundColor(R.color.lightyellow);
+		} else {
+			convertView.setBackgroundColor(R.color.white);
+		}
 		return convertView;
 	}
 
+	private int selectItem = -1;
+
+	public void setSelectItem(int selectItem) {
+		this.selectItem = selectItem;
+	}
+
+	
 	private class ViewHolder {
 //		TextView text;
 //		ImageView icon;

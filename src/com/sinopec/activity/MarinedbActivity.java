@@ -1374,6 +1374,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// 调用drawTool里面 的一个变量
 			 drawTool.calculateAreaAndLength("");
 		} else if ("定制查询".equals(tag)) {
+			mLastClickedView = null;
 			ConditionQuery query = new ConditionQuery();
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
@@ -1514,17 +1515,22 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			queryYanyanchuLiang(type);
 			
 		} else if ("石油3".equals(tag)) {
+			mAdapter.setSelectItem(position);
+			mAdapter.notifyDataSetInvalidated();
 			
 			String type = "72057594037927935";
 			queryYanyanZiyuan(type);
 			
 		} else if ("天然气3".equals(tag)) {
 			
+			mAdapter.setSelectItem(position);
+			mAdapter.notifyDataSetInvalidated();
 			String type = "72057594037927935";
 			queryYanyanZiyuan(type);
 			
 		} else if ("石油天然气3".equals(tag)) {
-			
+			mAdapter.setSelectItem(position);
+			mAdapter.notifyDataSetInvalidated();
 			String type = "72057594037927935";
 			queryYanyanZiyuan(type);
 			

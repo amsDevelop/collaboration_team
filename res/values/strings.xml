@@ -48,6 +48,7 @@
     <string name="search_no_data">暂时没有数据</string>
     <string name="tip_no_objects">您还未选择对比目标</string>
     <string name="clear_history">清空搜索历史记录</string>
+    <string name="user_cancel_search">您已取消本次查询</string>
     
     <!--  油藏-->
     <string name="url_oilreservoirs">http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer</string>

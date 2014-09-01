@@ -281,7 +281,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		boolean hasKey = false;
 		for (int i = 0; i < SinoApplication.mSearchHistory.size(); i++) {
 			if(key.equals(SinoApplication.mSearchHistory.get(i))){
-				SinoApplication.mSearchHistory.remove(i);
+//				SinoApplication.mSearchHistory.remove(i);
 				hasKey = true;
 			}
 		}
