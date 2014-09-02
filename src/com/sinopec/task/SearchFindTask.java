@@ -7,6 +7,8 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,6 +23,7 @@ import com.esri.core.tasks.ags.find.FindTask;
 import com.esri.core.tasks.ags.geocode.Locator;
 import com.sinopec.activity.R;
 import com.sinopec.adapter.SearchAdapter;
+import com.sinopec.application.SinoApplication;
 import com.sinopec.common.InterfaceDataCallBack;
 
 public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
@@ -34,6 +37,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	private SearchAdapter mAdapter;
 	private ViewGroup mSearchViewGroup;
 	private String mServicesUrl;
+	private boolean mCancelKeySearch = false;
 	public SearchFindTask(InterfaceDataCallBack callBack, Context context, ListView listView,ArrayList<HashMap<String, Object>> list, ViewGroup viewGroup, SearchAdapter adapter, String servicesUrl){
 		this.mContext = context;
 		this.mCallBack = callBack;
@@ -42,18 +46,17 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 		this.mSearchViewGroup = viewGroup;
 		mProgressDialog = new ProgressDialog(mContext);
 		mProgressDialog.setTitle(context.getString(R.string.search_loading));
-		mProgressDialog.setCancelable(false);
-		this.mServicesUrl = servicesUrl;
-	}
-	
-	public SearchFindTask(Context context, ListView listView,ArrayList<HashMap<String, Object>> list, ViewGroup viewGroup, SearchAdapter adapter, String servicesUrl){
-		this.mContext = context;
-		this.mAdapter = adapter;
-		this.mList = list;
-		this.mSearchViewGroup = viewGroup;
-		mProgressDialog = new ProgressDialog(mContext);
-		mProgressDialog.setTitle(context.getString(R.string.search_loading));
-		mProgressDialog.setCancelable(false);
+		mProgressDialog.setCancelable(true);
+		mProgressDialog.setOnCancelListener(new OnCancelListener() {
+			
+			@Override
+			public void onCancel(DialogInterface arg0) {
+				Toast.makeText(mContext, mContext.getString(R.string.user_cancel_search), Toast.LENGTH_SHORT).show();
+				Log.d("searchtask", "用户取消查询..........SearchFindTask....");
+				mCancelKeySearch = true;
+			}
+		});
+//		mProgressDialog.setCancelable(false);
 		this.mServicesUrl = servicesUrl;
 	}
 	
@@ -76,6 +79,12 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 
 	@Override
 	protected void onPostExecute(List<FindResult> results) {
+		if(mCancelKeySearch){
+			Log.d("searchtask", "onPostExecute.........返回数据  但是被取消.....");
+			mCancelKeySearch = false;
+			return;
+		}
+		
 		mProgressDialog.dismiss();
 		if (results == null) {
 			mCallBack.setData(null);
@@ -102,9 +111,7 @@ public class SearchFindTask extends AsyncTask<String, Void, List<FindResult>> {
 	protected void onPreExecute() {
 		mFindTask = new FindTask(mServicesUrl);
 		Log.d("searchtask", "onPostExecute..........SearchFindTask.....url: " + mServicesUrl);
-//		mFindTask = new FindTask(
-//				"http://10.225.14.201:6080/arcgis/rest/services/marine_oil/MapServer");
-//				"http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer");
+		mCancelKeySearch = false;
 		mProgressDialog.show();
 	}
 	

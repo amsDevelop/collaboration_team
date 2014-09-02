@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sinopec.application.SinoApplication;
+import com.sinopec.chart.PolygonLineChart1;
 import com.sinopec.chart.PolygonLineChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.data.json.Constant;

@@ -211,4 +211,6 @@ public class SinoApplication extends Application {
 	 * 宝藏名字
 	 */
 	public static String mTopicName;
+	
+//	public static boolean mCancelKeySearch = false;
 }
