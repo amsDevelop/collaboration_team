@@ -41,4 +41,23 @@
        <item>#d6b800</item>
        <item>#a57d7d</item>
     </string-array>
+    <!-- 对比字段 -->
+       <string-array name="compare_field">
+       <item>所属盆地</item>
+       <item>构造背景</item>
+       <item>发现年代</item>
+       <item>油田面积</item>
+       <item>高点埋深</item>
+       <item>圈闭类型</item>
+       <item>沉积相</item>
+       <item>岩性</item>
+       <item>地层层位</item>
+       <item>干酪根类型</item>
+       <item>储层厚度</item>
+       <item>厚度</item>
+       <item>新增油地质储量</item>
+       <item>新增油可采储量</item>
+       <item>累计气地质储量</item>
+       <item>新增气可采储量</item>
+    </string-array>
 </resources> 

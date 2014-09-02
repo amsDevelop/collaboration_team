@@ -107,6 +107,10 @@ public class SinoApplication extends Application {
 	 * 对比数目
 	 */
 	public static int mComparedNumber = 3;
+	/**
+	 * 对比表格中字段，包含中午名称的key 对应关系的map
+	 */
+	public static HashMap<String, String> mNameMap4Compared = new HashMap<String, String>();
 	
 	/**
 	 * 纪录模糊查询历史记录
@@ -199,6 +203,7 @@ public class SinoApplication extends Application {
 	}
 	
 	public static HashMap<String, String> mNameMap = new HashMap<String, String>();
+	public static HashMap<String, String> mNameConfusedMap = new HashMap<String, String>();
 	/**
 	 * 简介的对应关系（拼音为key，中文为值）
 	 */

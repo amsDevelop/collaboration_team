@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.JsonReader;
@@ -502,7 +503,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		map.setMapBackground(Color.WHITE, Color.TRANSPARENT, 0, 0);
 		initTableKeyValue();
 		initTableKeyValue4Introduce();
-		// getJson();
+		initTableKeyValue4Compare();
 	}
 
 	private void initTableKeyValue() {
@@ -518,12 +519,25 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							+ "dispaly=\"".length(), str.indexOf("\"/>"));
 //					Log.d("table", "key: " + key.trim() + "  value: " + value);
 					SinoApplication.mNameMap.put(key.trim(), value);
+					SinoApplication.mNameConfusedMap.put(value, key.trim());
 				}
 			}
 			br.close();
 		} catch (IOException e) {
 			Log.d("table", " initTableKeyValue error:  " + e.toString());
 			e.printStackTrace();
+		}
+	}
+	
+	//对比页面表字段中文名
+	private void initTableKeyValue4Compare() {
+		String[] urls = getResources().getStringArray(R.array.compare_field);
+		for (int i = 0; i < urls.length; i++) {
+			String key = SinoApplication.mNameConfusedMap.get(urls[i]);
+			if(TextUtils.isEmpty(key)){
+				key = "";
+			}
+			SinoApplication.mNameMap4Compared.put(key, urls[i]);
 		}
 	}
 	
@@ -1339,11 +1353,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private void showWindow4Compared(ArrayList<IdentifyResult> list) {
 		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mBaseLayout = (ViewGroup) layoutInflater.inflate(
-				R.layout.view_menu_popwindow, null);
+				R.layout.view_menu_popwindow4table, null);
 		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
 
-		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
-		// popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
+//		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
+		SinoUtil.showWindow4Compared4Table(mContext, popupWindow, mBaseLayout, list);
 	}
 
 	private void showWindow4Compared4FeatureSet(FeatureSet featureset) {

@@ -69,6 +69,7 @@
       <!-- 气田查询url-->
     <string name="url_gasfields_4search">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/9</string>
       <!-- 盆地查询url-->
+
     <string name="url_basin_4search">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/10</string>
 
     <!-- 基础地理 -->
