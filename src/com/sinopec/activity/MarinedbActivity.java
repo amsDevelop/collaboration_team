@@ -289,7 +289,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							.getCodeBelongToBasin();
 				}
 				drawTool.queryAttribute4Query(whereSelect(array),
-						urlBasionQuery, rockYuanYan.mChilds);
+						getResources().getString(R.string.url_source_rock), rockYuanYan.mChilds);
 				break;
 
 			case 5:
@@ -343,6 +343,40 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				drawTool.queryAttribute4Query(whereSelect(array),
 						urlBasionQuery, cengGai.mChilds);
 				break;
+			case 7:
+				BasinBelonToRoot roots = new BasinBelonToRoot();
+				try {
+					JSONArray jsonArray = new JSONArray((String) msg.obj);
+					for (int i = 0; i < jsonArray.length(); i++) {
+						try {
+							JsonToBeanParser.getInstance().fillBeanWithJson(
+									roots.newBasinBelongTo(),
+									jsonArray.getJSONObject(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				array = new Long[roots.mBasinBelongTo.size()];
+				for (int i = 0; i < roots.mBasinBelongTo.size(); i++) {
+					array[i] = roots.mBasinBelongTo.get(i).getBeLongToId();
+				}
+
+				drawTool.queryAttribute4Query(whereSelect(array), urlBasionQuery,
+						roots.mBasinBelongTo);
+				
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						drawBarChart();
+					}
+				}, 2000);
+			
+				break;
+				
 			default:
 				break;
 			}
@@ -390,7 +424,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// Envelope envelope = new Envelope(new Point(-29.440589,5.065565));
 		// map.setExtent(envelope, 0);
 		tms = new ArcGISTiledMapServiceLayer(
-				"http://10.200.250.110:6080/arcgis/rest/services/marine_oil/MapServer");
+				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
 		// oilUrl);
 
 		// 加入6个专题图层
@@ -1099,7 +1133,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(2);
 			setGridView(toolist, v);
-			AllBasin();
 
 			break;
 		case R.id.menuview_mine:
@@ -1436,9 +1469,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			Boolean[] clickTag = new Boolean[] { true, true, true, true };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(toolist,
 					clickTag, mChildMenuSplitNumber);
-			mGridView.setNumColumns(4);
+			mGridView.setNumColumns(3);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
-
 //			drawBarChart();
 
 		} else if ("CountChildrenMenuTwo".equals(tag)) { // 分层系碳酸盐岩储量及资源量分布
@@ -1448,6 +1480,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
+//			AllBasin();
 
 		} else if ("碳酸盐岩烃源分布".equals(tag)) {
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true,
@@ -1546,46 +1579,46 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawBarChart();
 			
 		} else if ("资源总量".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("探明储量".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("待发现资源量".equals(tag)) { 
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("前寒武系s".equals(tag)) {
-			drawBarChart();  
+			statisticsQuery();
 			
 		} else if ("寒武系s".equals(tag)) {
-			drawBarChart();
 			
 		}else if ("至留系s".equals(tag)) {
+			statisticsQuery();
 			drawBarChart();
 			
 		}else if ("泥盆系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("二叠系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("奥陶系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("侏罗系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("白垩系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("石炭系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("古近系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("新近系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 		} else if ("前寒武系".equals(tag)) {
 			
 			queryQingyuan(RelativeUnicode.qianhaiwuxi);
@@ -1746,6 +1779,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		String url = Constant.distributeOilGas + chenjitixi;
 		asyncHttpQuery.execute(1, url);
 	}
+	
+	private void statisticsQuery() {
+		String chenjitixi = "72057594037927935";
+		String url = Constant.distributeOilGas + chenjitixi;
+		asyncHttpQuery.execute(7, url);
+	}
 
 	private void queryQingyuan (String cengxi) { 
 
@@ -1814,7 +1853,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			Envelope envelope = new Envelope();
 			graphics[i].getGeometry().queryEnvelope(envelope);
-			BarChart3 b3 = new BarChart3(200, 400, 600, 100, 200);
+			BarChart3 b3 = new BarChart3(200, 400, 500, 100, 220);
 
 			Bitmap bi = b3.GetBarChartBitmap(this);
 			PictureMarkerSymbol Symbol = new PictureMarkerSymbol(
