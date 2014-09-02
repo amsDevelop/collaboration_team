@@ -30,12 +30,12 @@ public class SinoApplication extends Application {
 	 * 图层设置中选择图层的名称
 	 */
 	public static String layerName = LNoilGas;
-	public static final String imageUrl = "http://10.200.250.110:6080/arcgis/rest/services/marine_image/MapServer";
-    public static final String genUrl = "http://10.200.250.110:6080/arcgis/rest/services/marine_geo/MapServer";
+	public static final String imageUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer";
+    public static final String genUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer";
     /**
      * 搜索和长按 所用的url
      */
-    public static final String oilUrl = "http://10.200.250.110:6080/arcgis/rest/services/marine_oil/MapServer";
+    public static final String oilUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer";
     /**
      * 当前图层URL(初始化为盆地)
      */
@@ -107,6 +107,10 @@ public class SinoApplication extends Application {
 	 * 对比数目
 	 */
 	public static int mComparedNumber = 3;
+	/**
+	 * 对比表格中字段，包含中午名称的key 对应关系的map
+	 */
+	public static HashMap<String, String> mNameMap4Compared = new HashMap<String, String>();
 	
 	/**
 	 * 纪录模糊查询历史记录
@@ -199,6 +203,7 @@ public class SinoApplication extends Application {
 	}
 	
 	public static HashMap<String, String> mNameMap = new HashMap<String, String>();
+	public static HashMap<String, String> mNameConfusedMap = new HashMap<String, String>();
 	/**
 	 * 简介的对应关系（拼音为key，中文为值）
 	 */
