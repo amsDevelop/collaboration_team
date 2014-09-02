@@ -1641,11 +1641,41 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			SetIpDialog query = new SetIpDialog();
 			query.show(getFragmentManager(), SetIpDialog.class.getName());
 		}else if ("滩坝型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("1"), getResources().getString(R.string.url_reservoir),
+					new ArrayList());
+			
+			
 		}else if ("生物礁型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("2"), getResources().getString(R.string.url_reservoir),
+					new ArrayList());
+			
 		}else if ("前斜坡/碎屑型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("3"), getResources().getString(R.string.url_reservoir),
+					new ArrayList());
+			
 		}else if ("深海白垩岩/白垩质陆架型".equals(tag)) {
+			drawTool.queryAttribute4Query(whereSelect("4"), getResources().getString(R.string.url_reservoir),
+					new ArrayList());
+			
 		}else if ("白云岩化灰泥石灰岩型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("5"), getResources().getString(R.string.url_reservoir),
+					new ArrayList());
+			
 		}else if ("裂缝/喀斯特型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("6"), getResources().getString(R.string.url_reservoir),
+					new ArrayList());
+		}else if ("膏盐".equals(tag)) {
+			drawTool.queryAttribute4Query(whereSelect("2"), getResources().getString(R.string.url_cover),
+					new ArrayList());
+			
+		} else if ("其他".equals(tag)) {
+			drawTool.queryAttribute4Query(whereSelect("8"), getResources().getString(R.string.url_cover),
+					new ArrayList());
 		}
 		
 		if (!"CountChildrenMenuOne".equals(tag)
@@ -1674,6 +1704,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				&& !"石油天然气2".equals(tag)
 				&& !"石油天然气3".equals(tag)&& !"".equals(tag)
 				&& !"滩坝型".equals(tag)&& !"生物礁型".equals(tag)
+				&& !"膏盐".equals(tag)&& !"其他".equals(tag)
 				&& !"前斜坡/碎屑型".equals(tag)&& !"深海白垩岩/白垩质陆架型".equals(tag)
 				&& !"白云岩化灰泥石灰岩型".equals(tag)&& !"裂缝/喀斯特型".equals(tag)
 				&& !"碳酸盐岩储层分布".equals(tag)
