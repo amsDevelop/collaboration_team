@@ -24,7 +24,7 @@ import com.sinopec.common.CommonData;
 public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 
 	QueryTask m_qTask;
-	private String tag = "test";		
+	private String tag = "SearchQueryTask";		
 	private Context mContext;
 	private ProgressDialog mProgressDialog;
 	private String mServicesUrl;
@@ -86,11 +86,11 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 			Query mParams = params[0];
 			//Log.d(tag, "------doInBackground  --000000000000 ");
 			try {
-				Log.d("task", "--before--SearchQueryTask--doInBackground -------------");
+				Log.d(tag, "--before--SearchQueryTask--doInBackground -------------");
 				result = m_qTask.execute(mParams);
-				Log.d("task", "--after--SearchQueryTask--doInBackground -------------");
+				Log.d(tag, "--after--SearchQueryTask--doInBackground -------------");
 			} catch (Exception e) {
-				//Log.d(tag, "------doInBackground  err: "+e.toString());
+				Log.e(tag, "------doInBackground  err: "+e.toString());
 				e.printStackTrace();
 			}
 
@@ -100,11 +100,12 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 	
 	protected void onPreExecute() {
 		mProgressDialog.show();
-		Log.d("searchtask", "-SearchQueryTask  -url "+mServicesUrl);
+		Log.d(tag, "-SearchQueryTask  -url "+mServicesUrl);
 		m_qTask = new QueryTask(mServicesUrl);
 	}
 	
 	protected void onPostExecute(FeatureSet results) {
+		Log.d(tag, "---onPostExecute- -------------");
 //		mProgressDialog.dismiss();
 		SinoApplication.mFeatureSet4Compared = results;
 		if (results == null) {

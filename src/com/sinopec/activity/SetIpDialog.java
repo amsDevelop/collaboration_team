@@ -46,9 +46,7 @@ public class SetIpDialog extends BaseDialogFragment implements OnClickListener{
 			if(!NetworkUtils.validateDataFormat(ip)){
 				Toast.makeText(getActivity(), "IP格式错误",  -1).show();
 			}
-			
-//			http://202.204.193.201:8080/
-			Constant.baseURL = Constant.baseURL.replace("202.204.193.201", ip);
+			Constant.baseURL = Constant.baseURL.replace("10.200.250.110", ip);
 			Constant.baseIP = ip;
 			Toast.makeText(getActivity(), ip +" set success ", -1).show();
 			try {

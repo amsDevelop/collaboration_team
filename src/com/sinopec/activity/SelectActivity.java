@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +33,9 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -44,6 +48,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sinopec.application.SinoApplication;
+import com.sinopec.chart.PolygonLineChart1;
+import com.sinopec.chart.PolygonLineChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.data.json.Constant;
 import com.sinopec.query.AsyncHttpQuery;
@@ -70,6 +76,7 @@ public class SelectActivity extends Activity {
 	private ScrollView mContent;
 	private AsyncHttpQuery asyncHttpQuery;
 	private Context mContext;
+	private CheckBox mCheckBoxStore;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,6 +85,15 @@ public class SelectActivity extends Activity {
 		setContentView(R.layout.select_layout);
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		mContentLayout = (ViewGroup) findViewById(R.id.content);
+		mCheckBoxStore = (CheckBox) findViewById(R.id.checkbox_store);
+		mCheckBoxStore.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+				// TODO 收藏的点击处理
+				
+			}
+		});
 		mBtnBack = (ImageButton) findViewById(R.id.btn_login_back);
 		mBtnBack.setOnClickListener(new OnClickListener() {
 
@@ -118,6 +134,7 @@ public class SelectActivity extends Activity {
 		});
 
 		getData();
+//		showView();
 	}
 
 	private Handler handler = new Handler() {
@@ -135,12 +152,18 @@ public class SelectActivity extends Activity {
 			case IntroduceOilGas:
 				dealJson4Introduce((String) msg.obj);
 				break;
+			case CountBasin:
+			case CountOilGas:
+				dealJson4Count((String) msg.obj);
+				break;
 			}
 		}
 	};
 
 	private final int IntroduceBasin = 3;
 	private final int IntroduceOilGas = 4;
+	private final int CountBasin = 5;
+	private final int CountOilGas = 6;
 
 	private String mTopicType;
 
@@ -168,6 +191,21 @@ public class SelectActivity extends Activity {
 		} else if (CommonData.TopicOilField.equals(mTopicType)
 				|| CommonData.TopicGasField.equals(mTopicType)) {
 			url = Constant.urlIntroduceOilGas + id;
+			// url = Constant.urlAttributeOilGas + "201102001063";
+			asyncHttpQuery.execute(IntroduceOilGas, url);
+		}
+	}
+	
+	private void getJson4Count(String id) {
+		// String chenjitixi = "72057594037927935";
+		String url = "";
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			// url = Constant.urlIntroduceBasin + id;
+			url = Constant.urlCountBasin + "200700000001";
+			asyncHttpQuery.execute(IntroduceBasin, url);
+		} else if (CommonData.TopicOilField.equals(mTopicType)
+				|| CommonData.TopicGasField.equals(mTopicType)) {
+			url = Constant.urlCountOilGas + id;
 			// url = Constant.urlAttributeOilGas + "201102001063";
 			asyncHttpQuery.execute(IntroduceOilGas, url);
 		}
@@ -202,6 +240,22 @@ public class SelectActivity extends Activity {
 		}
 		showItemTable(mInitData);
 	}
+	
+	//TODO:
+	private void dealJson4Count(String result) {
+		mDataList.clear();
+		// Log.d("json", "-------result: " + result);
+		JsonParse jsonParse = new JsonParse();
+		try {
+			mDataList = jsonParse.parseItemsJson(new JsonReader(
+					new StringReader(result)));
+			
+		} catch (Exception e) {
+			Log.e("json", "-dealJson---统计解析 error: " + e.toString());
+		}
+//		showItemTable(mInitData);
+		showView();
+	}
 
 	private void showItemTable(String type) {
 		if (CommonData.TypeProperty.equals(dataName)) {
@@ -219,6 +273,18 @@ public class SelectActivity extends Activity {
 				getItemData4Introduce(type);
 			}
 		}
+	}
+	
+	private void showView(){
+		mContentLayout.removeAllViews();
+//		polygonLineChart3 = new PolygonLineChart3();
+//		new LinearLayout.LayoutParams(SinoApplication.screenWidth / 2, SinoApplication.screenHeight - 300, Gravity.CENTER);
+		mContentLayout.addView(new PolygonLineChart3().getBarChartView(mContext), new LinearLayout.LayoutParams(SinoApplication.screenWidth / 2, SinoApplication.screenHeight - 300, Gravity.CENTER));
+//		TextView tView = new TextView(this);
+//		tView.setText("厚厚的方会计师的返回");
+//		tView.setTextColor(Color.BLACK);
+//		tView.setTextSize(25);
+//		mContent.addView(tView);
 	}
 
 	private void dealNoResult() {
@@ -309,7 +375,6 @@ public class SelectActivity extends Activity {
 			mID = (String) SinoApplication.identifyResult.getAttributes().get(
 					"OBJ_ID");
 
-			Log.d("json", "-------mID: " + mID);
 		} else {
 			if (intent != null) {
 				dataName = intent.getStringExtra("name");
@@ -319,12 +384,34 @@ public class SelectActivity extends Activity {
 			}
 			titleName.setText(SinoApplication.mTopicName);
 		}
-		Log.d("data", "-------mType: " + mTopicType);
+		
+		if(TextUtils.isEmpty(mID)){
+			if(SinoApplication.findResult != null){
+				mID = (String) SinoApplication.findResult.getAttributes().get(
+						"OBJ_ID");
+			}
+			if(SinoApplication.graphic != null){
+				try {
+					double temp = (Double) SinoApplication.graphic.getAttributes().get(
+							"OBJ_ID");
+					java.text.DecimalFormat df = new java.text.DecimalFormat("#");
+					mID = df.format(temp);
+				} catch (Exception e) {
+					mID = (String) SinoApplication.graphic.getAttributes().get(
+							"OBJ_ID");
+				}
+			}
+		}
+//		Log.d("data", "-------mType: " + mTopicType);
+		Log.d("json", "-------mID: " + mID);
+		
 		if (CommonData.TypeProperty.equals(dataName)) {
 			list = initChildMenuData4Property();
 			getJson4Attribute(mID);
 		} else if (CommonData.TypeCount.equals(dataName)) {
 			list = initChildMenuData4Count();
+			showView();
+//			getJson4Count(mID);
 		} else if (CommonData.TypeIntroduce.equals(dataName)) {
 			list = initChildMenuData4Introduce();
 			getJson4Introduce(mID);

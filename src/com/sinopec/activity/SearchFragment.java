@@ -194,9 +194,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	private void initData() {
 		if(SinoApplication.mFeatureSet4Query != null){
 //			mList.clear();
-			mConfirm.setVisibility(View.VISIBLE);
-			mEditText.setVisibility(View.VISIBLE);
-			mTVTitle.setVisibility(View.GONE);
+			hideSearchPart();
 			Graphic[] graphics = SinoApplication.mFeatureSet4Query.getGraphics();
 			for (int i = 0; i < graphics.length; i++) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
@@ -209,19 +207,16 @@ public class SearchFragment extends Fragment implements OnClickListener {
 			mViewGroup.setVisibility(View.VISIBLE);
 		}else{
 			if(SinoApplication.mResultList4FrameSearch.size() == 0){
-				mConfirm.setVisibility(View.VISIBLE);
-				mEditText.setVisibility(View.VISIBLE);
-				mTVTitle.setVisibility(View.GONE);
+				showSearchPart();
 				
 				mAdapter = new SearchAdapter(mContext, mList);
 				mListView.setAdapter(mAdapter);
 			}else{
 				if(!TextUtils.isEmpty(SinoApplication.mLayerName)){
-					mTVTitle.setVisibility(View.VISIBLE);
 					mTVTitle.setText("["+SinoApplication.mLayerName+"] 图层");
 				}
-				mConfirm.setVisibility(View.GONE);
-				mEditText.setVisibility(View.GONE);
+				hideSearchPart();
+				
 				for (int i = 0; i < SinoApplication.mResultList4FrameSearch.size(); i++) {
 					HashMap<String, Object> map = new HashMap<String, Object>();
 					map.put("IdentifyResult", SinoApplication.mResultList4FrameSearch.get(i));
@@ -233,6 +228,18 @@ public class SearchFragment extends Fragment implements OnClickListener {
 			}
 		}
 
+	}
+	
+	private void showSearchPart() {
+		mConfirm.setVisibility(View.VISIBLE);
+		mEditText.setVisibility(View.VISIBLE);
+		mTVTitle.setVisibility(View.GONE);
+	}
+	
+	private void hideSearchPart() {
+		mConfirm.setVisibility(View.GONE);
+		mEditText.setVisibility(View.GONE);
+		mTVTitle.setVisibility(View.VISIBLE);
 	}
 	
 	private void setSearchHistory() {
@@ -281,7 +288,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		boolean hasKey = false;
 		for (int i = 0; i < SinoApplication.mSearchHistory.size(); i++) {
 			if(key.equals(SinoApplication.mSearchHistory.get(i))){
-				SinoApplication.mSearchHistory.remove(i);
+//				SinoApplication.mSearchHistory.remove(i);
 				hasKey = true;
 			}
 		}

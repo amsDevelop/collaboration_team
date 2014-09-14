@@ -126,13 +126,39 @@ public class ChildrenMenuDataUtil {
 	}
 	
 	public static void setMineChildrenMenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-		String[] name4count = new String[] { "登陆", "账户管理", "收藏", "下载",
-		"退出" };
+//		String[] name4count = new String[] { "登陆", "账户管理", "收藏", "下载",
+//		"退出" };
+//		Integer[] icon4count = { R.drawable.icon_login,
+//				R.drawable.icon_accout_mrg, R.drawable.icon_store,
+//				R.drawable.icon_download, R.drawable.icon_logout };
+//		String[] tag = new String[] { "mineLogin", "mineManager",
+//				"mineCollect", "mineDownload", "mineLogout" };
+		String[] name4count = new String[] { "登陆", "账户管理", "收藏", "退出" };
 		Integer[] icon4count = { R.drawable.icon_login,
-				R.drawable.icon_accout_mrg, R.drawable.icon_store,
-				R.drawable.icon_download, R.drawable.icon_logout };
+				R.drawable.icon_accout_mrg, R.drawable.icon_store, R.drawable.icon_logout };
 		String[] tag = new String[] { "mineLogin", "mineManager",
-				"mineCollect", "mineDownload", "mineLogout" };
+				"mineCollect", "mineLogout" };
+
+		list.clear();
+		for (int i = 0; i < name4count.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("name", name4count[i]);
+			map.put("icon", icon4count[i]);
+			map.put("tag", tag[i]);
+			
+			HashMap<String, Boolean> showMap = new HashMap<String, Boolean>();
+			showMap.put(tag[i], clickTag[i]);
+			map.put("clicktag", showMap);
+			map.put("split", splitNumber);
+			list.add(map);
+		}
+	}
+	
+	public static void setMineNoLoginChildrenMenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
+		String[] name4count = new String[] { "登陆", "退出" };
+		Integer[] icon4count = { R.drawable.icon_login, R.drawable.icon_logout };
+		String[] tag = new String[] { "mineLogin", "mineLogout" };
+
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -223,12 +249,12 @@ public class ChildrenMenuDataUtil {
 	
 	//全球含油气盆地碳酸盐岩层系油气储量及资源量分布
 	public static void setCountLevelTwoChildrenMenuOneData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-		String[] name4count = new String[] { "储量及资源量级别", "资源总量", "探明储量","待发现资源量"  };
-		Integer[] icon4count = { R.drawable.icon_rang_oilgas,
+		String[] name4count = new String[] {"资源总量", "探明储量","待发现资源量"};
+		Integer[] icon4count = {
 				R.drawable.icon_rang_oilgas, R.drawable.icon_range_volume,
 				R.drawable.icon_distribute };
 		
-		String[] tag = new String[] { "储量及资源量级别", "资源总量", "探明储量","待发现资源量" };
+		String[] tag = new String[] {"资源总量", "探明储量","待发现资源量" };
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -282,11 +308,13 @@ public class ChildrenMenuDataUtil {
 	 */
 	public static void setSearchChildren5MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
 		String[] name4count = new String[] { "滩坝型", "生物礁型" , "前斜坡/碎屑型",
-				"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+				"深海白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+//		"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
 		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
 		String[] tag = new String[] { "滩坝型", "生物礁型" , "前斜坡/碎屑型",
-				"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+//				"白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
+				"深海白垩岩/白垩质陆架型", "白云岩化灰泥石灰岩型" , "裂缝/喀斯特型"};
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -307,10 +335,12 @@ public class ChildrenMenuDataUtil {
 	 * 分类型钙层分布子菜单(查询菜单第六项)
 	 */
 	public static void setSearchChildren6MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-		String[] name4count = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+//		String[] name4count = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+		String[] name4count = new String[] { "膏盐", "其他"};
 		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
-		String[] tag = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+//		String[] tag = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
+		String[] tag = new String[] { "膏盐", "其他"};
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();

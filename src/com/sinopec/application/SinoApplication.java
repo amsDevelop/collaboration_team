@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.esri.core.map.FeatureSet;
+import com.esri.core.map.Graphic;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
@@ -56,6 +57,7 @@ public class SinoApplication extends Application {
 	public static FindResult findResult;
 	public static IdentifyResult identifyResult;
 	public static IdentifyResult identifyResult4Frame;
+	public static Graphic graphic;
 
 	public static Context getContext() {
 		return mContext;
@@ -105,6 +107,10 @@ public class SinoApplication extends Application {
 	 * 对比数目
 	 */
 	public static int mComparedNumber = 3;
+	/**
+	 * 对比表格中字段，包含中午名称的key 对应关系的map
+	 */
+	public static HashMap<String, String> mNameMap4Compared = new HashMap<String, String>();
 	
 	/**
 	 * 纪录模糊查询历史记录
@@ -197,6 +203,7 @@ public class SinoApplication extends Application {
 	}
 	
 	public static HashMap<String, String> mNameMap = new HashMap<String, String>();
+	public static HashMap<String, String> mNameConfusedMap = new HashMap<String, String>();
 	/**
 	 * 简介的对应关系（拼音为key，中文为值）
 	 */
@@ -209,4 +216,6 @@ public class SinoApplication extends Application {
 	 * 宝藏名字
 	 */
 	public static String mTopicName;
+	
+	public static boolean mLoginSuccess = false;
 }

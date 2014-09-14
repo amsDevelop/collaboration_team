@@ -1,5 +1,7 @@
 package com.sinopec.activity;
 
+import com.sinopec.chart.PolygonLineChart3;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ public class LoginActivity extends Activity {
 //		setTitle(R.string.app_name);
 		setContentView(R.layout.activity_login);
 		initView();
+//		setContentView(new PolygonLineChart3().getBarChartView(mContext));
 	}
 	
 	private ImageButton mBtnBack;

@@ -737,7 +737,7 @@ public class DrawTool extends Subject {
 		Query query = new Query();
 		query.setGeometry(geometry);
 		query.setReturnGeometry(true);
-		query.setOutFields(new String[] { "OBJ_NAME_C" });
+		query.setOutFields(new String[] { "OBJ_NAME_C", "OBJ_ID" });
 		// SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
 		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
 		// Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +
@@ -800,7 +800,7 @@ public class DrawTool extends Subject {
 		Query query = new Query();
 		// query.setGeometry(geometry);
 		// query.setReturnGeometry(true);
-		query.setOutFields(new String[] { "OBJ_NAME_C" });
+		query.setOutFields(new String[] { "OBJ_NAME_C", "OBJ_ID" });
 		// SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
 		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
 		// Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +
@@ -1004,6 +1004,7 @@ public class DrawTool extends Subject {
 			SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
 			// create graphic object for resulting location
 			Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+			
 			// add graphic to location layer
 			Log.d("map", " drawHighLight ....uid: " + resultLocation.getUid());
 			mDrawLayer4HighLight.addGraphic(resultLocation);
@@ -1026,7 +1027,7 @@ public class DrawTool extends Subject {
 			// add graphic to location layer
 			Log.d("map", " drawHighLight ....uid: " + resultLocation.getUid());
 			mDrawLayer4HighLight.addGraphic(resultLocation);
-
+			
 			// Envelope envelope new Envelope();
 			// mapView.centerAt(new
 			// Point(resultLocGeom.q.queryEnvelope(envelope)), true);
