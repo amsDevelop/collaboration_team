@@ -1004,6 +1004,7 @@ public class DrawTool extends Subject {
 			SimpleFillSymbol resultSymbol = new SimpleFillSymbol(Color.YELLOW);
 			// create graphic object for resulting location
 			Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
+			
 			// add graphic to location layer
 			Log.d("map", " drawHighLight ....uid: " + resultLocation.getUid());
 			mDrawLayer4HighLight.addGraphic(resultLocation);
@@ -1026,7 +1027,7 @@ public class DrawTool extends Subject {
 			// add graphic to location layer
 			Log.d("map", " drawHighLight ....uid: " + resultLocation.getUid());
 			mDrawLayer4HighLight.addGraphic(resultLocation);
-
+			
 			// Envelope envelope new Envelope();
 			// mapView.centerAt(new
 			// Point(resultLocGeom.q.queryEnvelope(envelope)), true);

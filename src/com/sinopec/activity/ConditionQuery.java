@@ -265,7 +265,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			if(conditionValue.equals("特大型")){
 				min = 1500;
 			}else if(conditionValue.equals("超大型")){
-				max = 1500;
+				max = 1500;    
 				min = 500;
 			}else if(conditionValue.equals("大型")){
 				max = 500;

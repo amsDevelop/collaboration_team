@@ -51,39 +51,46 @@
     <string name="user_cancel_search">您已取消本次查询</string>
     
     <!--  油藏-->
-    <string name="url_oilreservoirs">http://10.200.250.110:6080/arcgis/rest/services/oilreservoirs/MapServer</string>
+    <string name="url_oilreservoirs">http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer</string>
     <!-- 气藏-->
-    <string name="url_gasreservoirs">http://10.200.250.110:6080/arcgis/rest/services/gasreservoirs/MapServer</string>
+    <string name="url_gasreservoirs">http://202.204.193.201:6080/arcgis/rest/services/gasreservoirs/MapServer</string>
     <!-- 井-->
-    <string name="url_well">http://10.200.250.110:6080/arcgis/rest/services/well/MapServer</string>
+    <string name="url_well">http://202.204.193.201:6080/arcgis/rest/services/well/MapServer</string>
      <!-- 油田-->
-    <string name="url_oilfields">http://10.200.250.110:6080/arcgis/rest/services/oilfields/MapServer</string>
+    <string name="url_oilfields">http://202.204.193.201:6080/arcgis/rest/services/oilfields/MapServer</string>
       <!-- 气田-->
-    <string name="url_gasfields">http://10.200.250.110:6080/arcgis/rest/services/gasfields/MapServer</string>
+    <string name="url_gasfields">http://202.204.193.201:6080/arcgis/rest/services/gasfields/MapServer</string>
       <!-- 盆地-->
-    <string name="url_basin">http://10.200.250.110:6080/arcgis/rest/services/basin/MapServer</string>
+    <string name="url_basin">http://202.204.193.201:6080/arcgis/rest/services/basin/MapServer</string>
     
     
      <!-- 油田查询url-->
-    <string name="url_oilfields_4search">http://10.200.250.110:6080/arcgis/rest/services/marine_oil/MapServer/8</string>
+    <string name="url_oilfields_4search">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/8</string>
       <!-- 气田查询url-->
-    <string name="url_gasfields_4search">http://10.200.250.110:6080/arcgis/rest/services/marine_oil/MapServer/9</string>
+    <string name="url_gasfields_4search">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/9</string>
       <!-- 盆地查询url-->
 
-    <string name="url_basin_4search">http://10.200.250.110:6080/arcgis/rest/services/marine_oil/MapServer/10</string>
+    <string name="url_basin_4search">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/10</string>
 
     <!-- 基础地理 -->
-    <string name="url_marine_geo">http://10.200.250.110:6080/arcgis/rest/services/marine_geo/MapServer</string>
+    <string name="url_marine_geo">http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer</string>
     <!-- 卫星图 -->
-    <string name="url_marine_image">http://10.200.250.110:6080/arcgis/rest/services/marine_image/MapServer</string>
+    <string name="url_marine_image">http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer</string>
     <!-- 不显示，也不添加到mapview,搜索用-->
-    <string name="url_marine_oil">http://10.200.250.110:6080/arcgis/rest/services/marine_oil/MapServer</string>
-    <!-- 烃源岩 -->
-   <string name="url_source_rock"> http://10.200.250.110:6080/arcgis/rest/services/source_rock/MapServer</string>
+    <string name="url_marine_oil">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer</string>
    <!-- 盖层 -->
-    <string name="url_cover"> http://10.200.250.110:6080/arcgis/rest/services/cover/MapServer</string> 
+    <string name="url_cover"> http://202.204.193.201:6080/arcgis/rest/services/cover/MapServer</string> 
+   <!-- 烃源岩 -->
+   <string name="url_source_rock"> http://202.204.193.201:6080/arcgis/rest/services/source_rock/MapServer</string>
    <!-- 储集层 --> 
-   <string name="url_reservoir"> http://10.200.250.110:6080/arcgis/rest/services/reservoir/MapServer</string>
+   <string name="url_reservoir"> http://202.204.193.201:6080/arcgis/rest/services/reservoir/MapServer</string>
+   
+    <!-- 盖层 -->
+    <string name="url_cover_4search"> http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/4</string> 
+   <!-- 烃源岩 -->
+   <string name="url_source_rock_4search">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/5</string>
+   <!-- 储集层 --> 
+   <string name="url_reservoir_4search">http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer/6</string>
     
 
 </resources>

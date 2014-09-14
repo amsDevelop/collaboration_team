@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="oilgas_url_theme_4search">
+        
+        <item>@string/url_cover_4search</item>
+        <item>@string/url_source_rock_4search</item>
+        <item>@string/url_reservoir_4search</item>
         <item>@string/url_oilfields_4search</item>
         <item>@string/url_gasfields_4search</item>
         <item>@string/url_basin_4search</item>
     </string-array> 
     <string-array name="oilgas_url_theme">
+        <item>@string/url_cover</item>
+        <item>@string/url_source_rock</item>
+        <item>@string/url_reservoir</item>/
         <item>@string/url_oilfields</item>
         <item>@string/url_gasfields</item>
         <item>@string/url_basin</item>
@@ -18,6 +25,10 @@
         <item>@string/url_basin</item>
         <item>@string/url_oilfields</item>
         <item>@string/url_gasfields</item>
+        <item>@string/url_cover</item>
+        <item>@string/url_source_rock</item>
+        <item>@string/url_reservoir</item>
+        
     </string-array> 
     
     <string-array name="all_layer_urls_4geo">
@@ -27,16 +38,27 @@
         <item>@string/url_gasfields</item>
     </string-array> 
     <string-array name="all_layer_name">
+       <item>盖层</item>
+       <item>烃源岩 </item>
+       <item>储层</item>
        <item>油田</item>
        <item>气田</item>
        <item>盆地</item>
     </string-array>
      <string-array name="all_layer_id">
+       <item>4</item>
        <item>5</item>
        <item>6</item>
-       <item>7</item>
+       <item>8</item>
+       <item>9</item>
+       <item>10</item>
+       
     </string-array>
      <string-array name="all_layer_color">
+       <item>#D5F6C7</item>	
+       <item>#B8F2DA</item>
+       <item>#D2F7CB</item>  
+         
        <item>#f248ab</item>	
        <item>#d6b800</item>
        <item>#a57d7d</item>
