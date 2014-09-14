@@ -89,9 +89,15 @@ public class SelectActivity extends Activity {
 		mCheckBoxStore.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+			public void onCheckedChanged(CompoundButton arg0, boolean isCheck) {
 				// TODO 收藏的点击处理
-				
+				if(isCheck){
+					 Toast.makeText(mContext, getString(R.string.stored_ok),
+					 Toast.LENGTH_SHORT).show();
+				}else{
+					 Toast.makeText(mContext, getString(R.string.stored_no),
+							 Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		mBtnBack = (ImageButton) findViewById(R.id.btn_login_back);
