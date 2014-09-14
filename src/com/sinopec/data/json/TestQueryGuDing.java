@@ -1,7 +1,7 @@
 package com.sinopec.data.json;
 
 import java.io.IOException;
-
+import static com.sinopec.activity.ConditionQuery.DEBUG_URL;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
@@ -10,13 +10,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.test.AndroidTestCase;
 
 import com.lenovo.nova.util.slog;
 import com.lenovo.nova.util.network.NetworkManager;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
+import com.lenovo.nova.util.parse.PreferencesUtil;
 import com.sinopec.data.json.basin.BasinBaseAttributeRoot;
 import com.sinopec.data.json.basin.BasinBaseValueRoot;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
@@ -40,6 +40,11 @@ public class TestQueryGuDing {
 		mContext = context;
 	}
 	protected JSONArray getJsonArray(String url) {
+		PreferencesUtil util = new PreferencesUtil(mContext);
+		if(util.getString(DEBUG_URL) != null && util.getString(DEBUG_URL).equals("debug")){
+			util.save(DEBUG_URL, url);
+			return null;
+		}
 		String str = getJsonStr(url);
 		JSONArray array = null;
 		try {

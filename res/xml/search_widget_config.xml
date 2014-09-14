@@ -465,7 +465,7 @@
 			</fvalue>
 		  </GeoCondition>
 		  <GeoCondition id="" name="国家" state="normal">
-		      <value></value>
+		      <value id="" name="待定" />
 		  </GeoCondition>
 		 
 		</GeoObject>

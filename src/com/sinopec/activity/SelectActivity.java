@@ -33,6 +33,9 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -73,6 +76,7 @@ public class SelectActivity extends Activity {
 	private ScrollView mContent;
 	private AsyncHttpQuery asyncHttpQuery;
 	private Context mContext;
+	private CheckBox mCheckBoxStore;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,6 +85,15 @@ public class SelectActivity extends Activity {
 		setContentView(R.layout.select_layout);
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		mContentLayout = (ViewGroup) findViewById(R.id.content);
+		mCheckBoxStore = (CheckBox) findViewById(R.id.checkbox_store);
+		mCheckBoxStore.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+				// TODO 收藏的点击处理
+				
+			}
+		});
 		mBtnBack = (ImageButton) findViewById(R.id.btn_login_back);
 		mBtnBack.setOnClickListener(new OnClickListener() {
 
@@ -139,12 +152,18 @@ public class SelectActivity extends Activity {
 			case IntroduceOilGas:
 				dealJson4Introduce((String) msg.obj);
 				break;
+			case CountBasin:
+			case CountOilGas:
+				dealJson4Count((String) msg.obj);
+				break;
 			}
 		}
 	};
 
 	private final int IntroduceBasin = 3;
 	private final int IntroduceOilGas = 4;
+	private final int CountBasin = 5;
+	private final int CountOilGas = 6;
 
 	private String mTopicType;
 
@@ -172,6 +191,21 @@ public class SelectActivity extends Activity {
 		} else if (CommonData.TopicOilField.equals(mTopicType)
 				|| CommonData.TopicGasField.equals(mTopicType)) {
 			url = Constant.urlIntroduceOilGas + id;
+			// url = Constant.urlAttributeOilGas + "201102001063";
+			asyncHttpQuery.execute(IntroduceOilGas, url);
+		}
+	}
+	
+	private void getJson4Count(String id) {
+		// String chenjitixi = "72057594037927935";
+		String url = "";
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			// url = Constant.urlIntroduceBasin + id;
+			url = Constant.urlCountBasin + "200700000001";
+			asyncHttpQuery.execute(IntroduceBasin, url);
+		} else if (CommonData.TopicOilField.equals(mTopicType)
+				|| CommonData.TopicGasField.equals(mTopicType)) {
+			url = Constant.urlCountOilGas + id;
 			// url = Constant.urlAttributeOilGas + "201102001063";
 			asyncHttpQuery.execute(IntroduceOilGas, url);
 		}
@@ -205,6 +239,22 @@ public class SelectActivity extends Activity {
 			Log.e("json", "-dealJson---属性解析 error: " + e.toString());
 		}
 		showItemTable(mInitData);
+	}
+	
+	//TODO:
+	private void dealJson4Count(String result) {
+		mDataList.clear();
+		// Log.d("json", "-------result: " + result);
+		JsonParse jsonParse = new JsonParse();
+		try {
+			mDataList = jsonParse.parseItemsJson(new JsonReader(
+					new StringReader(result)));
+			
+		} catch (Exception e) {
+			Log.e("json", "-dealJson---统计解析 error: " + e.toString());
+		}
+//		showItemTable(mInitData);
+		showView();
 	}
 
 	private void showItemTable(String type) {
@@ -361,6 +411,7 @@ public class SelectActivity extends Activity {
 		} else if (CommonData.TypeCount.equals(dataName)) {
 			list = initChildMenuData4Count();
 			showView();
+//			getJson4Count(mID);
 		} else if (CommonData.TypeIntroduce.equals(dataName)) {
 			list = initChildMenuData4Introduce();
 			getJson4Introduce(mID);

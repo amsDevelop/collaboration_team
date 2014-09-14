@@ -30,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.JsonReader;
@@ -79,6 +80,7 @@ import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.lenovo.nova.util.slog;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.DBParserUtil;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
@@ -291,7 +293,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							.getCodeBelongToBasin();
 				}
 				drawTool.queryAttribute4Query(whereSelect(array),
-						urlBasionQuery, rockYuanYan.mChilds);
+						getResources().getString(R.string.url_source_rock), rockYuanYan.mChilds);
 				break;
 
 			case 5:
@@ -345,6 +347,40 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				drawTool.queryAttribute4Query(whereSelect(array),
 						urlBasionQuery, cengGai.mChilds);
 				break;
+			case 7:
+				BasinBelonToRoot roots = new BasinBelonToRoot();
+				try {
+					JSONArray jsonArray = new JSONArray((String) msg.obj);
+					for (int i = 0; i < jsonArray.length(); i++) {
+						try {
+							JsonToBeanParser.getInstance().fillBeanWithJson(
+									roots.newBasinBelongTo(),
+									jsonArray.getJSONObject(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				array = new Long[roots.mBasinBelongTo.size()];
+				for (int i = 0; i < roots.mBasinBelongTo.size(); i++) {
+					array[i] = roots.mBasinBelongTo.get(i).getBeLongToId();
+				}
+
+				drawTool.queryAttribute4Query(whereSelect(array), urlBasionQuery,
+						roots.mBasinBelongTo);
+				
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						drawBarChart();
+					}
+				}, 2000);
+			
+				break;
+				
 			default:
 				break;
 			}
@@ -392,7 +428,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// Envelope envelope = new Envelope(new Point(-29.440589,5.065565));
 		// map.setExtent(envelope, 0);
 		tms = new ArcGISTiledMapServiceLayer(
-				"http://10.200.250.110:6080/arcgis/rest/services/marine_oil/MapServer");
+				"http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer");
 		// oilUrl);
 
 		// 加入6个专题图层
@@ -470,7 +506,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		map.setMapBackground(Color.WHITE, Color.TRANSPARENT, 0, 0);
 		initTableKeyValue();
 		initTableKeyValue4Introduce();
-		// getJson();
+		initTableKeyValue4Compare();
 	}
 
 	private void initTableKeyValue() {
@@ -486,12 +522,25 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							+ "dispaly=\"".length(), str.indexOf("\"/>"));
 //					Log.d("table", "key: " + key.trim() + "  value: " + value);
 					SinoApplication.mNameMap.put(key.trim(), value);
+					SinoApplication.mNameConfusedMap.put(value, key.trim());
 				}
 			}
 			br.close();
 		} catch (IOException e) {
 			Log.d("table", " initTableKeyValue error:  " + e.toString());
 			e.printStackTrace();
+		}
+	}
+	
+	//对比页面表字段中文名
+	private void initTableKeyValue4Compare() {
+		String[] urls = getResources().getStringArray(R.array.compare_field);
+		for (int i = 0; i < urls.length; i++) {
+			String key = SinoApplication.mNameConfusedMap.get(urls[i]);
+			if(TextUtils.isEmpty(key)){
+				key = "";
+			}
+			SinoApplication.mNameMap4Compared.put(key, urls[i]);
 		}
 	}
 	
@@ -1101,15 +1150,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(2);
 			setGridView(toolist, v);
-			AllBasin();
 
 			break;
 		case R.id.menuview_mine:
-			clickTag = new Boolean[] { true, true, true, true, true };
-			ChildrenMenuDataUtil.setMineChildrenMenuData(toolist, clickTag,
-					mChildMenuSplitNumber);
-			mGridView.setNumColumns(5);
-			setGridView(toolist, v);
+			loginSuccess(v);
+//			clickTag = new Boolean[] { true, true, true, true, true };
+//			ChildrenMenuDataUtil.setMineChildrenMenuData(toolist, clickTag,
+//					mChildMenuSplitNumber);
+//			mGridView.setNumColumns(5);
+//			setGridView(toolist, v);
 
 			break;
 		case R.id.btn_restore_map:
@@ -1308,11 +1357,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private void showWindow4Compared(ArrayList<IdentifyResult> list) {
 		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mBaseLayout = (ViewGroup) layoutInflater.inflate(
-				R.layout.view_menu_popwindow, null);
+				R.layout.view_menu_popwindow4table, null);
 		popupWindow = new PopupWindow(mBaseLayout, 1000, 800);
 
-		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
-		// popupWindow.showAtLocation(mBaseLayout, Gravity.NO_GRAVITY, 0, 0);
+//		SinoUtil.showWindow4Compared(mContext, popupWindow, mBaseLayout, list);
+		SinoUtil.showWindow4Compared4Table(mContext, popupWindow, mBaseLayout, list);
 	}
 
 	private void showWindow4Compared4FeatureSet(FeatureSet featureset) {
@@ -1389,6 +1438,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
 		} else if ("mineLogin".equals(tag)) {
+			mLastClickedView = null;
 //			Intent intent = new Intent(mContext, LoginActivity.class);
 //			startActivity(intent);
 //			Intent intent = new Intent(this, SelectActivity.class);
@@ -1399,8 +1449,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			DialogFragment newFragment = new LoginActivity();
 			newFragment.show(ft, "loginDiag");
 		} else if ("mineLogout".equals(tag)) {
-			exitDialog();
-		} else if ("mineLogout".equals(tag)) {
+			mLastClickedView = null;
 			exitDialog();
 		} else if ("KM".equals(tag)) {
 			// 折线长度以km显示
@@ -1441,9 +1490,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			Boolean[] clickTag = new Boolean[] { true, true, true, true };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(toolist,
 					clickTag, mChildMenuSplitNumber);
-			mGridView.setNumColumns(4);
+			mGridView.setNumColumns(3);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
-
 //			drawBarChart();
 
 		} else if ("CountChildrenMenuTwo".equals(tag)) { // 分层系碳酸盐岩储量及资源量分布
@@ -1453,6 +1501,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					clickTag, mChildMenuSplitNumber);
 			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
+//			AllBasin();
 
 		} else if ("碳酸盐岩烃源分布".equals(tag)) {
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true, true, true,
@@ -1551,46 +1600,46 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawBarChart();
 			
 		} else if ("资源总量".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("探明储量".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("待发现资源量".equals(tag)) { 
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("前寒武系s".equals(tag)) {
-			drawBarChart();  
+			statisticsQuery();
 			
 		} else if ("寒武系s".equals(tag)) {
-			drawBarChart();
 			
 		}else if ("至留系s".equals(tag)) {
+			statisticsQuery();
 			drawBarChart();
 			
 		}else if ("泥盆系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("二叠系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("奥陶系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("侏罗系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("白垩系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("石炭系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		}else if ("古近系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 			
 		} else if ("新近系s".equals(tag)) {
-			drawBarChart();
+			statisticsQuery();
 		} else if ("前寒武系".equals(tag)) {
 			
 			queryQingyuan(RelativeUnicode.qianhaiwuxi);
@@ -1649,6 +1698,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			queryGaiceng(RelativeUnicode.teshugaiceng);
 			
 		}else if ("mineManager".equals(tag)) {
+			mLastClickedView = null;
 			SetIpDialog query = new SetIpDialog();
 			query.show(getFragmentManager(), SetIpDialog.class.getName());
 		}else if ("滩坝型".equals(tag)) {
@@ -1751,6 +1801,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		String url = Constant.distributeOilGas + chenjitixi;
 		asyncHttpQuery.execute(1, url);
 	}
+	
+	private void statisticsQuery() {
+		String chenjitixi = "72057594037927935";
+		String url = Constant.distributeOilGas + chenjitixi;
+		asyncHttpQuery.execute(7, url);
+	}
 
 	private void queryQingyuan (String cengxi) { 
 
@@ -1819,7 +1875,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			Envelope envelope = new Envelope();
 			graphics[i].getGeometry().queryEnvelope(envelope);
-			BarChart3 b3 = new BarChart3(200, 400, 600, 100, 200);
+			BarChart3 b3 = new BarChart3(200, 400, 500, 100, 220);
 
 			Bitmap bi = b3.GetBarChartBitmap(this);
 			PictureMarkerSymbol Symbol = new PictureMarkerSymbol(
@@ -2313,5 +2369,22 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	
 	public DrawTool getDrawTool(){
 		return drawTool;
+	}
+	
+	//登陆成功处理
+	public void loginSuccess(View v){
+		if(SinoApplication.mLoginSuccess){
+			clickTag = new Boolean[] { true, true, true, true };
+			ChildrenMenuDataUtil.setMineChildrenMenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
+			mGridView.setNumColumns(4);
+			setGridView(toolist, v);
+		}else{
+			clickTag = new Boolean[] { true, true};
+			ChildrenMenuDataUtil.setMineNoLoginChildrenMenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
+			mGridView.setNumColumns(2);
+			setGridView(toolist, v);
+		}
 	}
 }

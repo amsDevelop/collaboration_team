@@ -2,7 +2,8 @@ package com.sinopec.data.json;
 
 public class Constant implements com.lenovo.nova.util.Constant{
 
-	public static String baseIP = "10.200.250.110";
+//	public static String baseIP = "10.200.250.110";
+	public static String baseIP = "202.204.193.201";
 	
 	public static String  baseURL = "http://"+baseIP+":8080/";
 
@@ -62,6 +63,18 @@ public class Constant implements com.lenovo.nova.util.Constant{
 	 */
 	public static String urlIntroduceOilGas = baseURL + 
 			"peprisapi/docInfoOilQuery.html?type=1&dzdxbm=";
+	
+	/**
+	 * 统计（对应接口文档五）
+	 */
+	public static String urlCountOilGas = baseURL + 
+			"peprisapi/statistical.html?dzdybm=";
+	
+	/**
+	 * 盆地统计（对应接口文档五）
+	 */
+	public static String urlCountBasin = baseURL + 
+			"peprisapi/statistical.html?dzdybm=";
 	
 	
 	
