@@ -1,16 +1,16 @@
 package com.sinopec.activity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.XmlResourceParser;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +27,9 @@ import android.widget.Toast;
 import com.lenovo.nova.util.BaseDialogFragment;
 import com.lenovo.nova.util.Constant;
 import com.lenovo.nova.util.MyLog;
+import com.lenovo.nova.util.ShowMessageDialog;
 import com.lenovo.nova.util.slog;
+import com.lenovo.nova.util.parse.PreferencesUtil;
 import com.lenovo.nova.util.parse.XmlParser;
 import com.sinopec.activity.GeologyBean.Bean;
 import com.sinopec.activity.GeologyBean.FValues;
@@ -55,13 +57,18 @@ public class ConditionQuery extends BaseDialogFragment implements
 	private static final String TAG = "ConditionQuery";
 
 	private static final String AND = "并且";
+	public static final String DEBUG_URL = "debug_url";
+	
+	private Handler mHandler = new Handler();
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		PreferencesUtil util = new PreferencesUtil(getActivity());
+		util.save(DEBUG_URL, "");
 		init();
 	}
 
-	
 	private void parser(XmlParser xmlParser, XmlResourceParser xrp, String name,boolean start) {
 		if(name == null){
 			return;
@@ -203,6 +210,9 @@ public class ConditionQuery extends BaseDialogFragment implements
 		view.findViewById(R.id.id_btn_condition_query_subtraction)
 				.setOnClickListener(this);
 		view.findViewById(R.id.id_btn_condition_query_confirm).setOnClickListener(this);
+		mContainer.setClickable(true);
+		
+		mContainer.setOnClickListener(this);
 		slog.p("ConditionQuery  onCreateView");
 		return view;
 	}
@@ -220,7 +230,6 @@ public class ConditionQuery extends BaseDialogFragment implements
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		mActivity = (MarinedbActivity) getActivity();
-		mInstances.clear();
 	}
 
 	@Override
@@ -230,7 +239,6 @@ public class ConditionQuery extends BaseDialogFragment implements
 			task.cancel(true);
 		}
 	}
-
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.id_btn_condition_query_addition:
@@ -241,8 +249,29 @@ public class ConditionQuery extends BaseDialogFragment implements
 			break;
 		case R.id.id_btn_condition_query_confirm:
 			//confirm 
+			PreferencesUtil util = new PreferencesUtil(mActivity);
+			util.save(DEBUG_URL, "");
 			destoryDialogAndCreateQueryUrl();
+			
 			break;
+		}
+		
+		if(v == mContainer){
+			final PreferencesUtil util = new PreferencesUtil(mActivity);
+			util.save(DEBUG_URL, "debug");
+			destoryDialogAndCreateQueryUrl();
+			
+			mHandler.postDelayed(new Runnable() {
+				private String url;
+				@Override
+				public void run() {
+					url = util.getString(DEBUG_URL);
+					ShowMessageDialog dialog = ShowMessageDialog.newInstance(getFragmentManager());
+					dialog.setMssageContent(url);
+					dialog.show(getActivity(), 2);
+				}
+			}, 500);
+			
 		}
 	}
 
@@ -332,8 +361,20 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 
 	private void draw(final ArrayList list){
-		   final DrawTool tool =  mActivity.getDrawTool();
-		  
+		PreferencesUtil util = new PreferencesUtil(mActivity);
+		if(util.getString(DEBUG_URL) != null && !util.getString(DEBUG_URL).equals("")){
+			return;
+		}
+		final DrawTool tool =  mActivity.getDrawTool();
+		  if(list == null){
+			  mActivity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(getActivity(), "没有数据", -1).show();
+				}
+			});
+			return ;
+		  }
 		   Long objArray[] = new Long[list.size()];
 		   for(int i = 0; i < list.size(); i++){
 			   objArray[i] = ((BasinDistributionID.DistributeChild)list.get(i)).basionId;
@@ -439,14 +480,12 @@ public class ConditionQuery extends BaseDialogFragment implements
 	private void removeItem() {
 		if (mContainer.getChildCount() > 0) {
 			int id = mContainer.getChildCount() - 1;
-			mInstances.remove(id);
 			mContainer.removeViewAt(id);
 		}
 	}
 
 	private void addItem() {
 		QueryItem view  = createItem();
-		mInstances.add(view);
 		mContainer.addView(view);
 	}
 
@@ -463,7 +502,6 @@ public class ConditionQuery extends BaseDialogFragment implements
 
 	
 	
-	private final static ArrayList<QueryItem> mInstances = new ArrayList<ConditionQuery.QueryItem>();
 	class QueryItem extends LinearLayout implements OnItemSelectedListener {
 
 		Spinner mSpinnerFisrt;
@@ -490,6 +528,9 @@ public class ConditionQuery extends BaseDialogFragment implements
 			mSpinnerConditionValue = (Spinner) findViewById(R.id.id_spner_condition_value);
 			mETValue1 = (EditText) findViewById(R.id.id_spner_condition_custom_value1);
 			mETValue2 = (EditText) findViewById(R.id.id_spner_condition_custom_value2);
+			geologyIndex = new PreferencesUtil(mContext).getInt("geologyIndex",0);
+			
+			
 			initFirstValue(context);
 			initSpinnerGeologyValue(context);
 			initConditions(context);
@@ -544,7 +585,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		private void initFirstValue(Context context) {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
 					getAdapterLayoutID(), new String[] {
-				AND , "或者"});
+				AND /*, "或者"*/});
 			mSpinnerFisrt.setAdapter(adapter);
 		}
 
@@ -559,6 +600,8 @@ public class ConditionQuery extends BaseDialogFragment implements
 				adapterGeology = new ArrayAdapter<String>(context,
 						getAdapterLayoutID(), str);
 				mSpinnerGeology.setAdapter(adapterGeology);
+				mSpinnerGeology.setSelection(geologyIndex);
+				
 			}
 		}
 
@@ -630,11 +673,16 @@ public class ConditionQuery extends BaseDialogFragment implements
 			mSpinnerFisrt.setVisibility(View.INVISIBLE);
 		}
 
+		public void setSpinerValue(Spinner spinner,int value){
+			spinner.setSelection(value);
+		}
+		
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view,
 				int position, long id) {
 			if (parent == mSpinnerGeology) {
 				geologyIndex = position;
+				new PreferencesUtil(mContext).save("geologyIndex", geologyIndex);
 				initConditions(getActivity());
 				initConditions(getActivity());
 				initConditiontValue(getActivity());
@@ -668,7 +716,17 @@ public class ConditionQuery extends BaseDialogFragment implements
 		}
 
 		private void changeAllGeology() {
-//			for(int i = 0; i  )
+			for(int i = 0; i < mContainer.getChildCount(); i++ ){
+				QueryItem item = (QueryItem) mContainer.getChildAt(i);
+				System.out.println(item);
+				if(item.geologyIndex != geologyIndex){
+					item.setSpinerValue(item.mSpinnerGeology, geologyIndex);
+					item.geologyIndex = geologyIndex;
+					item.initConditions(getActivity());
+					item.initConditions(getActivity());
+					item.initConditiontValue(getActivity());
+				}
+			}
 		}
 
 		@Override

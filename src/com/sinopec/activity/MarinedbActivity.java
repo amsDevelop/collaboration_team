@@ -77,6 +77,7 @@ import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.lenovo.nova.util.slog;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.DBParserUtil;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
@@ -1374,7 +1375,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			 drawTool.calculateAreaAndLength("");
 		} else if ("定制查询".equals(tag)) {
 			// TODO:
-			ConditionQuery query = new ConditionQuery();
+			ConditionQuery query = new ConditionQuery(){
+				@Override
+				public void dismiss() {
+					super.dismiss();
+					//dismiss
+					slog.p("dismiss");
+				}
+			};
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
 		} else if ("mineLogin".equals(tag)) {
