@@ -1,12 +1,17 @@
 package com.sinopec.util;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
+import android.util.JsonReader;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +33,9 @@ import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.sinopec.activity.R;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.common.CommonData;
+import com.sinopec.data.json.Constant;
+import com.sinopec.query.AsyncHttpQuery;
 
 public class SinoUtil {
 	public static void showWindow(Context context, PopupWindow popupWindow, View view, 
@@ -140,7 +148,9 @@ public class SinoUtil {
 		popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0); 
 	}
 	
-	public static void showWindow4Compared4Table(Context context, PopupWindow popupWindow, ViewGroup view, ArrayList<IdentifyResult> list) {
+	public static void showWindow4Compared4Table(Context context, PopupWindow popupWindow, ViewGroup view, 
+			ArrayList<IdentifyResult> list) {
+		asyncHttpQuery = new AsyncHttpQuery(handler, context);
 //		ScrollView scrollView = new ScrollView(context);
 		ScrollView scrollView = (ScrollView) view.findViewById(R.id.scrollview_content);
 		scrollView.setVerticalScrollBarEnabled(false);
@@ -154,6 +164,9 @@ public class SinoUtil {
 		keyList.add("地理要素名字");
 		//取行名称,取某一个就行
 		Set<Entry<String, Object>> ents = list.get(0).getAttributes().entrySet();
+		String id = (String) list.get(0).getAttributes().get("OBJ_ID");
+		String type = "盆地";
+		getJson(id, type);
 		for (Entry<String, Object> ent : ents) {
 			keyList.add(ent.getKey());
 		}	
@@ -171,8 +184,9 @@ public class SinoUtil {
 		}
 		
 		//字段值
-		ArrayList<String> valueList = new ArrayList<String>();
+		ArrayList<ArrayList<String>> allValueList = new ArrayList<ArrayList<String>>();
 		for (int i = 0; i < number; i++) {
+			ArrayList<String> valueList = new ArrayList<String>();
 			//地理要素名字
 			String name = SinoApplication.getIdentifyResultName(list.get(i), list.get(i).getLayerName());
 			valueList.add(name);
@@ -186,12 +200,18 @@ public class SinoUtil {
 			
 			//第二列以后是值
 			stv1.AddRow(new String[] {valueList.get(i)});
-			
+			allValueList.add(valueList);
 		}
 		
-		for (int i = 0; i < keyList.size(); i++) {
-			stv1.AddRow(new String[] {keyList.get(i),
-					valueList.get(i) });
+//		for (int i = 0; i < keyList.size(); i++) {
+//			stv1.AddRow(new String[] {keyList.get(i)});
+//		}
+		
+		for (int j = 0; j < allValueList.size(); j++) {
+			ArrayList<String> tmpList = allValueList.get(j);
+			for (int i = 0; i < keyList.size(); i++) {
+				stv1.AddRow(new String[] {tmpList.get(i)});
+			}
 		}
 		
 		LayoutParams lp = new RelativeLayout.LayoutParams(
@@ -307,5 +327,95 @@ public class SinoUtil {
 			value = (String) data;
 		}
 		return value;
+	}
+	
+	private static AsyncHttpQuery asyncHttpQuery;
+	private static final int Basin = 1;
+	private static final int OilGas = 2;
+	private static Handler handler = new Handler() {
+
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case Basin:
+				dealJson4Basin((String) msg.obj);
+				break;
+			case OilGas:
+//				dealJson4OilGas((String) msg.obj);
+				break;
+			}
+		}
+	};
+	
+	private static List<HashMap<String, Object>> mDataList = new ArrayList<HashMap<String, Object>>();
+
+	private static void dealJson4Basin(String result) {
+		mDataList.clear();
+		Log.d("json", "-------result: " + result);
+		JsonParse jsonParse = new JsonParse();
+		try {
+			mDataList = jsonParse.parseItemsJson(new JsonReader(
+					new StringReader(result)));
+
+		} catch (Exception e) {
+			Log.e("json", "-dealJson---属性解析 error: " + e.toString());
+		}
+//		showItemTable(mInitData);
+	}
+	
+	private void showItemTable(String type) {
+//		if (CommonData.TypeProperty.equals(dataName)) {
+			HashMap<String, Object> result = getItemData(type);
+			if (result != null) {
+//				addBasePropertyTable(result.entrySet());
+			} else {
+//				dealNoResult();
+			}
+//		}
+	}
+	
+	private HashMap<String, Object> getItemData(String key) {
+		HashMap<String, Object> result = null;
+		try {
+			for (HashMap<String, Object> hashMap : mDataList) {
+
+				for (Entry<String, Object> hashMaps : hashMap.entrySet()) {
+					// Log.d("json",
+					// "0000 getItemData parent key: "+hashMaps.getKey()+" value: "
+					// + hashMaps.getValue());
+					Log.d("json",
+							"0000 getItemData parent key: " + hashMaps.getKey()
+									+ " 传进的：" + key);
+					if (hashMaps.getValue() instanceof HashMap) {
+						if (hashMaps.getKey().equals(key)) {
+							result = (HashMap<String, Object>) hashMaps
+									.getValue();
+							Log.d("json",
+									"11111 getItemData parent key: "
+											+ hashMaps.getKey() + " value: "
+											+ hashMaps.getValue());
+							break;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.e("json", "----属性解析 error: " + e.toString());
+		}
+
+		return result;
+	}
+	
+	private static void getJson(String id, String type) {
+		// String chenjitixi = "72057594037927935";
+		String url = "";
+		if (CommonData.TopicBasin.equals(type)) {
+			url = Constant.urlAttributeBasin + id;
+			asyncHttpQuery.execute(Basin, url);
+		} else if (CommonData.TopicOilField.equals(type)
+				|| CommonData.TopicGasField.equals(type)) {
+			url = Constant.urlAttributeOilGas + id;
+			// url = Constant.urlAttributeOilGas + "201102001063";
+			asyncHttpQuery.execute(OilGas, url);
+		}
 	}
 }
