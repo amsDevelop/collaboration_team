@@ -33,6 +33,9 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -73,6 +76,7 @@ public class SelectActivity extends Activity {
 	private ScrollView mContent;
 	private AsyncHttpQuery asyncHttpQuery;
 	private Context mContext;
+	private CheckBox mCheckBoxStore;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,6 +85,15 @@ public class SelectActivity extends Activity {
 		setContentView(R.layout.select_layout);
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		mContentLayout = (ViewGroup) findViewById(R.id.content);
+		mCheckBoxStore = (CheckBox) findViewById(R.id.checkbox_store);
+		mCheckBoxStore.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+				// TODO 收藏的点击处理
+				
+			}
+		});
 		mBtnBack = (ImageButton) findViewById(R.id.btn_login_back);
 		mBtnBack.setOnClickListener(new OnClickListener() {
 

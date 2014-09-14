@@ -1150,11 +1150,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 			break;
 		case R.id.menuview_mine:
-			clickTag = new Boolean[] { true, true, true, true, true };
-			ChildrenMenuDataUtil.setMineChildrenMenuData(toolist, clickTag,
-					mChildMenuSplitNumber);
-			mGridView.setNumColumns(5);
-			setGridView(toolist, v);
+			loginSuccess(v);
+//			clickTag = new Boolean[] { true, true, true, true, true };
+//			ChildrenMenuDataUtil.setMineChildrenMenuData(toolist, clickTag,
+//					mChildMenuSplitNumber);
+//			mGridView.setNumColumns(5);
+//			setGridView(toolist, v);
 
 			break;
 		case R.id.btn_restore_map:
@@ -1434,6 +1435,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			query.show(getFragmentManager(), ConditionQuery.class.getName());
 
 		} else if ("mineLogin".equals(tag)) {
+			mLastClickedView = null;
 //			Intent intent = new Intent(mContext, LoginActivity.class);
 //			startActivity(intent);
 			Intent intent = new Intent(this, SelectActivity.class);
@@ -1441,8 +1443,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			intent.putExtra("name", "统计");
 			startActivity(intent);
 		} else if ("mineLogout".equals(tag)) {
-			exitDialog();
-		} else if ("mineLogout".equals(tag)) {
+			mLastClickedView = null;
 			exitDialog();
 		} else if ("KM".equals(tag)) {
 			// 折线长度以km显示
@@ -1691,6 +1692,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			queryGaiceng(RelativeUnicode.teshugaiceng);
 			
 		}else if ("mineManager".equals(tag)) {
+			mLastClickedView = null;
 			SetIpDialog query = new SetIpDialog();
 			query.show(getFragmentManager(), SetIpDialog.class.getName());
 		}else if ("滩坝型".equals(tag)) {
@@ -2361,5 +2363,22 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	
 	public DrawTool getDrawTool(){
 		return drawTool;
+	}
+	
+	//登陆成功处理
+	public void loginSuccess(View v){
+		if(SinoApplication.mLoginSuccess){
+			clickTag = new Boolean[] { true, true, true, true };
+			ChildrenMenuDataUtil.setMineChildrenMenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
+			mGridView.setNumColumns(4);
+			setGridView(toolist, v);
+		}else{
+			clickTag = new Boolean[] { true, true};
+			ChildrenMenuDataUtil.setMineNoLoginChildrenMenuData(toolist, clickTag,
+					mChildMenuSplitNumber);
+			mGridView.setNumColumns(2);
+			setGridView(toolist, v);
+		}
 	}
 }
