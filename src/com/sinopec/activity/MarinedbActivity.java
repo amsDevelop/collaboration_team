@@ -19,7 +19,9 @@ import org.json.JSONException;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -1389,10 +1391,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if ("mineLogin".equals(tag)) {
 //			Intent intent = new Intent(mContext, LoginActivity.class);
 //			startActivity(intent);
-			Intent intent = new Intent(this, SelectActivity.class);
-			intent.putExtra(CommonData.KeyTopicType, "盆地");
-			intent.putExtra("name", "统计");
-			startActivity(intent);
+//			Intent intent = new Intent(this, SelectActivity.class);
+//			intent.putExtra(CommonData.KeyTopicType, "盆地");
+//			intent.putExtra("name", "统计");
+//			startActivity(intent);
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			DialogFragment newFragment = new LoginActivity();
+			newFragment.show(ft, "loginDiag");
 		} else if ("mineLogout".equals(tag)) {
 			exitDialog();
 		} else if ("mineLogout".equals(tag)) {

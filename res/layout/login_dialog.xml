@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:alpha="0.5"
+    android:background="@drawable/layer_bg"
+    android:orientation="vertical"
+    android:paddingBottom="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="10dp">
+
+    <TableRow>
+	<TextView 
+	    android:id="@+id/userView"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/user_login_username"
+	    android:textSize="10pt"/>
+	<EditText 
+	    android:id="@+id/userEdit"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textSize="10pt"
+	    android:hint="@string/user_login_username_hint"
+	    />
+</TableRow>
+    <TableRow>
+	<TextView 
+	    android:id="@+id/pwdView"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/user_login_userpwd"
+	    android:textSize="10pt"/>
+	<EditText 
+	    android:id="@+id/pwdEdit"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:password="true"
+	    android:textSize="10pt"
+	    android:hint="@string/user_login_userpwd_hint"
+	    />
+</TableRow>
+</TableLayout>

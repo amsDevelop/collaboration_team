@@ -212,5 +212,5 @@ public class SinoApplication extends Application {
 	 */
 	public static String mTopicName;
 	
-//	public static boolean mCancelKeySearch = false;
+	public static boolean mLoginSuccess = false;
 }
