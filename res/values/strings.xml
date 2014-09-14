@@ -52,6 +52,14 @@
     <string name="stored_ok">已收藏</string>
     <string name="stored_no">已取消收藏</string>
     
+    <string name="user_login_title">登陆</string>
+    <string name="user_login_dialog_ok">确定</string>
+    <string name="user_login_dialog_cancel">取消</string>
+    <string name="user_login_username">用户名</string>
+    <string name="user_login_userpwd">密码</string>
+    <string name="user_login_username_hint">请填写用户名</string>
+    <string name="user_login_userpwd_hint">请填写密码</string>
+    
     <!--  油藏-->
     <string name="url_oilreservoirs">http://202.204.193.201:6080/arcgis/rest/services/oilreservoirs/MapServer</string>
     <!-- 气藏-->

@@ -18,6 +18,7 @@ import com.lenovo.nova.util.network.NetworkManager;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
+import com.lenovo.nova.util.parse.PreferencesUtil;
 import com.sinopec.data.json.basin.BasinDistributionID;
 import com.sinopec.data.json.basin.BasinDistributionID.DistributeChild;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
@@ -26,7 +27,7 @@ import com.sinopec.data.json.standardquery.DistributeChuJi;
 import com.sinopec.data.json.standardquery.DistributeJingRockYuanYan;
 import com.sinopec.data.json.standardquery.DistributeRate;
 import com.sinopec.data.json.standardquery.DistributeRateResource;
-
+import static com.sinopec.activity.ConditionQuery.DEBUG_URL;
 /**
  * ．定制查询
  * @author liuzhaodong
