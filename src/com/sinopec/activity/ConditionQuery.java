@@ -528,7 +528,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			mSpinnerConditionValue = (Spinner) findViewById(R.id.id_spner_condition_value);
 			mETValue1 = (EditText) findViewById(R.id.id_spner_condition_custom_value1);
 			mETValue2 = (EditText) findViewById(R.id.id_spner_condition_custom_value2);
-			geologyIndex = new PreferencesUtil(mContext).getInt("geologyIndex",0);
+			geologyIndex = new PreferencesUtil(context).getInt("geologyIndex",0);
 			
 			
 			initFirstValue(context);
@@ -682,7 +682,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 				int position, long id) {
 			if (parent == mSpinnerGeology) {
 				geologyIndex = position;
-				new PreferencesUtil(mContext).save("geologyIndex", geologyIndex);
+				new PreferencesUtil(getContext()).save("geologyIndex", geologyIndex);
 				initConditions(getActivity());
 				initConditions(getActivity());
 				initConditiontValue(getActivity());

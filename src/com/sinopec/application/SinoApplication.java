@@ -30,12 +30,12 @@ public class SinoApplication extends Application {
 	 * 图层设置中选择图层的名称
 	 */
 	public static String layerName = LNoilGas;
-	public static final String imageUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_image/MapServer";
-    public static final String genUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_geo/MapServer";
+	public static final String imageUrl = "http://10.225.14.204/arcgis/rest/services/marine_image/MapServer";
+    public static final String genUrl = "http://10.225.14.204/arcgis/rest/services/marine_geo/MapServer";
     /**
      * 搜索和长按 所用的url
      */
-    public static final String oilUrl = "http://202.204.193.201:6080/arcgis/rest/services/marine_oil/MapServer";
+    public static final String oilUrl = "http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer";
     /**
      * 当前图层URL(初始化为盆地)
      */
