@@ -37,6 +37,7 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 	Point mAnchor;
 	public SearchQueryTask(Context context, Point anchorPoint, String url,
 		Button title, ImageView imageAnim, Animation animation, String operateType, GraphicsLayer drawLayer) {
+		Log.d(tag, "url " + url);
 		this.mContext = context;
 		this.mAnchor = anchorPoint;
 		this.mServicesUrl = url;
@@ -52,6 +53,7 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 
 
 	public SearchQueryTask(Context context, String url, String operateType) {
+		Log.d(tag, "url " + url);
 		this.mContext = context;
 		this.mServicesUrl = url;
 		this.OperateType = operateType;
@@ -61,6 +63,7 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 	}
 	
 	public SearchQueryTask(Context context, String url, String operateType,ProgressDialog progressDialog) {
+		Log.d(tag, "url " + url);
 		this.mContext = context;
 		this.mServicesUrl = url;
 		this.OperateType = operateType;

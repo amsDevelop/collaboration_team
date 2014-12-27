@@ -1800,6 +1800,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		String chenjitixi = "72057594037927935";
 		String url = Constant.distributeOilGas + chenjitixi;
 		asyncHttpQuery.execute(1, url);
+		Log.i(tag,"url " +  url);
 	}
 	
 	private void statisticsQuery() {

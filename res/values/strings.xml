@@ -61,17 +61,17 @@
     <string name="user_login_userpwd_hint">请填写密码</string>
     
     <!--  油藏 202.204.193.201:6080-->
-    <string name="url_oilreservoirs">http://10.225.14.204/arcgis/rest/services/oilreservoirs/MapServer</string>
+   <!--  <string name="url_oilreservoirs">http://10.225.14.204/arcgis/rest/services/oilreservoirs/MapServer</string> -->
     <!-- 气藏-->
     <string name="url_gasreservoirs">http://10.225.14.204/arcgis/rest/services/gasreservoirs/MapServer</string>
     <!-- 井-->
-    <string name="url_well">http://10.225.14.204/arcgis/rest/services/well/MapServer</string>
+    <!-- <string name="url_well">http://10.225.14.204/arcgis/rest/services/well/MapServer</string> -->
      <!-- 油田-->
-    <string name="url_oilfields">http://10.225.14.204/arcgis/rest/services/oilfields/MapServer</string>
+     <string name="url_oilfields">http://10.225.14.204/arcgis/rest/services/Oil_field/MapServer</string> 
       <!-- 气田-->
-    <string name="url_gasfields">http://10.225.14.204/arcgis/rest/services/gasfields/MapServer</string>
+     <string name="url_gasfields">http://10.225.14.204/arcgis/rest/services/Gas_field/MapServer</string> 
       <!-- 盆地-->
-    <string name="url_basin">http://10.225.14.204/arcgis/rest/services/basin/MapServer</string>
+     <string name="url_basin">http://10.225.14.204/arcgis/rest/services/basin/MapServer</string> 
     
     
      <!-- 油田查询url-->

@@ -16,6 +16,7 @@ import android.util.Log;
 
 public class AsyncHttpQuery {
 
+	private  String TAG = AsyncHttpQuery.class.getSimpleName();
 	private Context mContext;
 	private Handler mHandler;
 
@@ -62,7 +63,7 @@ public class AsyncHttpQuery {
 //	}
 
 	public void execute(final int what, final String URL) {
-
+		Log.i(TAG,"AsyncHttpQuery  what " + what + "   url "+ URL);
 		new Thread(new Runnable() {
 
 			@Override
