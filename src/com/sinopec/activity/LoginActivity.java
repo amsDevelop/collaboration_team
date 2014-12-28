@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+
 import com.sinopec.application.SinoApplication;
 import com.sinopec.data.json.UserBean;
 import com.sinopec.util.DatabaseHelper;

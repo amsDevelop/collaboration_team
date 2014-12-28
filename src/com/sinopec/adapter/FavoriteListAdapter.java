@@ -1,7 +1,5 @@
 package com.sinopec.adapter;
 
-import com.esri.core.internal.io.handler.h;
-import com.esri.core.internal.tasks.a.v;
 import com.sinopec.activity.R;
 import com.sinopec.data.json.FavoriteBean;
 import com.sinopec.util.FavoriteDao;

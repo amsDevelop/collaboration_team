@@ -1,15 +1,12 @@
 package com.sinopec.data.json;
 
-import org.json.JSONArray;
-
-
 import android.content.Context;
-
-import com.lenovo.nova.util.slog;
+import com.lenovo.nova.util.debug.slog;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
 import com.sinopec.data.json.statistics.StatisticsValue;
+import org.json.JSONArray;
 
 /**
  * 五、统计

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.util.ArrayList ;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,8 +81,7 @@ import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
-import com.lenovo.nova.util.parse.Bean;
-import com.lenovo.nova.util.parse.DBParserUtil;
+
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
@@ -93,7 +92,6 @@ import com.sinopec.chart.PieChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.common.OilGasData;
-import com.sinopec.data.json.ConfigBean;
 import com.sinopec.data.json.Constant;
 import com.sinopec.data.json.UserBean;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
@@ -126,15 +124,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	Callout callout = null;
 	public static boolean isHideCallout = false;
 	String name2 = null;
-	String Point_X = null;
-	String Point_Y = null;
 	String address2 = null;
-	String telephone2 = null;
 	double x1;
 	double y1;
 	private Graphic LongPressPOI = null;
 	private Point anchorPt = null;
-
 	private MapView map = null;
 	ArcGISFeatureLayer fLayer = null;
 	private GraphicsLayer gLayer = null;
@@ -185,6 +179,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 */
 	private ViewGroup mFragmentLayout;
 	private ArrayList<HashMap<String, Object>> toolist = new ArrayList<HashMap<String, Object>>();
+	ArcgisMapConfig mapConfig = null;
 	private Handler handler = new Handler() {
 
 		public void handleMessage(final android.os.Message msg) {
@@ -296,8 +291,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							.getCodeBelongToBasin();
 				}
 				drawTool.queryAttribute4Query(whereSelect(array),
-						getResources().getString(R.string.url_source_rock),
-						rockYuanYan.mChilds);
+
+						ArcgisMapConfig.url_source_rock , rockYuanYan.mChilds);
 				break;
 
 			case 5:
@@ -399,31 +394,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		try {
-			DBParserUtil dbUitl = new DBParserUtil(this) {
-				@Override
-				protected Class onGetBeanForCreateTable() {
-					return ConfigBean.class;
-				}
-			};
-			List<Bean> list = new ArrayList<Bean>();
-			dbUitl.getBeanListFromDB(ConfigBean.class, list, 0, 2);
-			if (list.size() > 0) {
-				Constant.baseIP = ((ConfigBean) list.get(0)).getIP();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		// db初始化一条测试数据
-		UserBean xuuser = new UserBean("xuyy001", "xuyy",
-				Md5Util.generatePassword("123456"));
-		UserDao userDao = new UserDao(this);
-		userDao.save(xuuser);
-
 		this.mContext = this;
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
-		urlBasionQuery = getResources().getString(R.string.url_basin) + "/0";
+		urlBasionQuery = ArcgisMapConfig.url_basin + "/0";
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		SinoApplication.getLayerIDAndKeyMap();
@@ -435,19 +408,15 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		setContentView(R.layout.activity_main);
 		initView();
 		map = (MapView) findViewById(R.id.map);
+		mapConfig =new ArcgisMapConfig(this,map);
 		// Envelope envelope = new Envelope(new Point(-29.440589,5.065565));
 		// map.setExtent(envelope, 0);
-		tms = new ArcGISTiledMapServiceLayer(
-				"http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer");
+//		tms = new ArcGISTiledMapServiceLayer(
+//				"http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer");
 		// oilUrl);
 
-		// 加入6个专题图层
-		String[] urls = getResources().getStringArray(R.array.all_layer_urls);
-		for (int i = 0; i < urls.length; i++) {
-			ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(
-					urls[i]);
-			map.addLayer(layer);
-		}
+		mapConfig.onCreate();
+
 		// 不显示卫星图
 		Layer layerSatellite = map.getLayerByURL(SinoApplication.imageUrl);
 		layerSatellite.setVisible(false);
@@ -510,8 +479,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		initAnimations();
 		searchFragment = new SearchFragment(this);
 		fragmentManager = getFragmentManager();
-		SinoApplication.currentLayerUrl = getString(R.string.url_basin_4search);
-		SinoApplication.currentLayerUrl4Multi = getString(R.string.url_basin);
+		SinoApplication.currentLayerUrl = ArcgisMapConfig.url_basin_4search;
+		SinoApplication.currentLayerUrl4Multi = ArcgisMapConfig.url_basin;
 		map.zoomTo(new Point(0, 0), (float) map.getMaxResolution());
 		map.setMapBackground(Color.WHITE, Color.TRANSPARENT, 0, 0);
 		initTableKeyValue();
@@ -937,9 +906,21 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		if (SinoApplication.mOilGasData != null) {
 			SinoApplication.mOilGasData.clear();
 		}
-		String[] urls = getResources().getStringArray(R.array.oilgas_url_theme);
-		String[] urls_4search = getResources().getStringArray(
-				R.array.oilgas_url_theme_4search);
+
+		String[] urls = {ArcgisMapConfig.url_cover,
+						ArcgisMapConfig.url_source_rock,
+				ArcgisMapConfig.url_reservoir,
+				ArcgisMapConfig.url_oilfields,
+				ArcgisMapConfig.url_gasfields,
+				ArcgisMapConfig.url_basin};
+		String[] urls_4search = {
+				ArcgisMapConfig.url_cover_4search,
+				ArcgisMapConfig.url_source_rock_4search,
+				ArcgisMapConfig.url_reservoir_4search,
+				ArcgisMapConfig.url_oilfields_4search,
+				ArcgisMapConfig.url_gasfields_4search,
+				ArcgisMapConfig.url_basin_4search,
+		};
 		String[] ids = getResources().getStringArray(R.array.all_layer_id);
 		String[] names = getResources().getStringArray(R.array.all_layer_name);
 		String[] colors = getResources()
@@ -953,7 +934,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			data.setId(Integer.valueOf(ids[i]));
 			Log.v("mandy", "colors: " + colors[i]);
 			data.setColor(Color.parseColor(colors[i]));
-			if (getString(R.string.url_basin).equals(urls[i])) {
+			if (ArcgisMapConfig.url_basin.equals(urls[i])) {
 				data.setChecked(true);
 			} else {
 				data.setChecked(false);
@@ -1036,7 +1017,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				mLayerDialog = new LayerDialog();
 			}
 			mLayerDialog.setMapView(map);
-			mLayerDialog.setMapServiceLayer(tms);
+//			mLayerDialog.setMapServiceLayer(tms);
 			mLayerDialog.setDrawLayer(drawLayer);
 			mLayerDialog.show(getFragmentManager(), "dialog");
 
@@ -1728,41 +1709,50 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mLastClickedView = null;
 			SetIpDialog query = new SetIpDialog();
 			query.show(getFragmentManager(), SetIpDialog.class.getName());
-		} else if ("滩坝型".equals(tag)) {
 
-			drawTool.queryAttribute4Query(whereSelect("1"), getResources()
-					.getString(R.string.url_reservoir), new ArrayList());
-
-		} else if ("生物礁型".equals(tag)) {
-
-			drawTool.queryAttribute4Query(whereSelect("2"), getResources()
-					.getString(R.string.url_reservoir), new ArrayList());
-
-		} else if ("前斜坡/碎屑型".equals(tag)) {
-
-			drawTool.queryAttribute4Query(whereSelect("3"), getResources()
-					.getString(R.string.url_reservoir), new ArrayList());
-
-		} else if ("深海白垩岩/白垩质陆架型".equals(tag)) {
-			drawTool.queryAttribute4Query(whereSelect("4"), getResources()
-					.getString(R.string.url_reservoir), new ArrayList());
-
-		} else if ("白云岩化灰泥石灰岩型".equals(tag)) {
-
-			drawTool.queryAttribute4Query(whereSelect("5"), getResources()
-					.getString(R.string.url_reservoir), new ArrayList());
-
-		} else if ("裂缝/喀斯特型".equals(tag)) {
-
-			drawTool.queryAttribute4Query(whereSelect("6"), getResources()
-					.getString(R.string.url_reservoir), new ArrayList());
-		} else if ("膏盐".equals(tag)) {
-			drawTool.queryAttribute4Query(whereSelect("2"), getResources()
-					.getString(R.string.url_cover), new ArrayList());
-
+		}else if ("滩坝型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("1"),
+					ArcgisMapConfig.url_reservoir,new ArrayList());
+			
+			
+		}else if ("生物礁型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("2"),
+					ArcgisMapConfig.url_reservoir,
+					new ArrayList());
+			
+		}else if ("前斜坡/碎屑型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("3"),
+					ArcgisMapConfig.url_reservoir,
+					new ArrayList());
+			
+		}else if ("深海白垩岩/白垩质陆架型".equals(tag)) {
+			drawTool.queryAttribute4Query(whereSelect("4"),
+					ArcgisMapConfig.url_reservoir,
+					new ArrayList());
+			
+		}else if ("白云岩化灰泥石灰岩型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("5"),
+					ArcgisMapConfig.url_reservoir,
+					new ArrayList());
+			
+		}else if ("裂缝/喀斯特型".equals(tag)) {
+			
+			drawTool.queryAttribute4Query(whereSelect("6"),
+					ArcgisMapConfig.url_reservoir,
+					new ArrayList());
+		}else if ("膏盐".equals(tag)) {
+			drawTool.queryAttribute4Query(whereSelect("2"),
+					ArcgisMapConfig.url_cover,
+					new ArrayList());
+			
 		} else if ("其他".equals(tag)) {
-			drawTool.queryAttribute4Query(whereSelect("8"), getResources()
-					.getString(R.string.url_cover), new ArrayList());
+			drawTool.queryAttribute4Query(whereSelect("8"),
+					ArcgisMapConfig.url_cover,
+					new ArrayList());
 		}
 
 		if (!"CountChildrenMenuOne".equals(tag)

@@ -1,33 +1,15 @@
 package com.sinopec.data.json;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
-import android.test.AndroidTestCase;
-
-import com.lenovo.nova.util.slog;
-import com.lenovo.nova.util.network.NetworkManager;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
-import com.lenovo.nova.util.parse.PreferencesUtil;
+import com.lenovo.nova.util.debug.slog;
 import com.sinopec.data.json.basin.BasinDistributionID;
 import com.sinopec.data.json.basin.BasinDistributionID.DistributeChild;
-import com.sinopec.data.json.standardquery.BasinBelonToRoot;
-import com.sinopec.data.json.standardquery.DistributeCengGai;
-import com.sinopec.data.json.standardquery.DistributeChuJi;
-import com.sinopec.data.json.standardquery.DistributeJingRockYuanYan;
-import com.sinopec.data.json.standardquery.DistributeRate;
-import com.sinopec.data.json.standardquery.DistributeRateResource;
-import static com.sinopec.activity.ConditionQuery.DEBUG_URL;
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 /**
  * ．定制查询
  * @author liuzhaodong

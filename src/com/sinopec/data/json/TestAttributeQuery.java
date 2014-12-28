@@ -1,14 +1,11 @@
 package com.sinopec.data.json;
 
-import org.json.JSONArray;
-
 import android.content.Context;
-
-import com.lenovo.nova.util.slog;
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
 import com.sinopec.data.json.standardquery.DistributeCengGai;
+import org.json.JSONArray;
 
 
 /**
@@ -31,7 +28,6 @@ public class TestAttributeQuery extends TestQueryGuDing {
 				"peprisapi/basinAttribute.html?basinId=" + basinId
 				;
 			
-		slog.p("url " + url);
 		JSONArray jsonArray = getJsonArray(url);
 		
 		final DistributeCengGai instance = new DistributeCengGai();

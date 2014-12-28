@@ -1,7 +1,15 @@
 package com.sinopec.data.json;
 
-import java.io.IOException;
-import static com.sinopec.activity.ConditionQuery.DEBUG_URL;
+import android.content.Context;
+import com.lenovo.nova.util.network.NetworkHelper;
+import com.lenovo.nova.util.parse.Bean;
+import com.lenovo.nova.util.parse.JsonToBeanParser;
+import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
+import com.lenovo.nova.util.parse.PreferencesUtil;
+import com.lenovo.nova.util.debug.slog;
+import com.sinopec.data.json.basin.BasinBaseAttributeRoot;
+import com.sinopec.data.json.basin.BasinBaseValueRoot;
+import com.sinopec.data.json.standardquery.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
@@ -9,22 +17,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
+import java.io.IOException;
 
-import com.lenovo.nova.util.slog;
-import com.lenovo.nova.util.network.NetworkManager;
-import com.lenovo.nova.util.parse.Bean;
-import com.lenovo.nova.util.parse.JsonToBeanParser;
-import com.lenovo.nova.util.parse.JsonToBeanParser.OnJSONFillBeanHelper;
-import com.lenovo.nova.util.parse.PreferencesUtil;
-import com.sinopec.data.json.basin.BasinBaseAttributeRoot;
-import com.sinopec.data.json.basin.BasinBaseValueRoot;
-import com.sinopec.data.json.standardquery.BasinBelonToRoot;
-import com.sinopec.data.json.standardquery.DistributeCengGai;
-import com.sinopec.data.json.standardquery.DistributeChuJi;
-import com.sinopec.data.json.standardquery.DistributeJingRockYuanYan;
-import com.sinopec.data.json.standardquery.DistributeRate;
-import com.sinopec.data.json.standardquery.DistributeRateResource;
+import static com.sinopec.activity.ConditionQuery.DEBUG_URL;
 
 /**
  * 固定查询
@@ -68,8 +63,9 @@ public class TestQueryGuDing {
 	}
 
 	protected String getJsonStr(String URL) {
-		NetworkManager manager = new NetworkManager(mContext);
-		HttpResponse response = manager.getResponse(manager.getConnType(), false, URL, null, null);
+
+		NetworkHelper.NetworkManager manager = NetworkHelper.newNetworkManager();
+		HttpResponse response = manager.connect(NetworkHelper.Method.GET,URL,null,null);
 		String jsonStr = null;
 		try {
 			if(response != null){

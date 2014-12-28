@@ -35,7 +35,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	private ListView mListView;
 	private TextView mCover;
 	private MapView mapView;
-	private ArcGISTiledMapServiceLayer mapServiceLayer;
+//	private ArcGISTiledMapServiceLayer mapServiceLayer;
 	private GraphicsLayer drawLayer;
 
 //	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
@@ -84,9 +84,9 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		this.mapView = mapView;
 	}
 
-	public void setMapServiceLayer(ArcGISTiledMapServiceLayer mapServiceLayer) {
-		this.mapServiceLayer = mapServiceLayer;
-	}
+//	public void setMapServiceLayer(ArcGISTiledMapServiceLayer mapServiceLayer) {
+//		this.mapServiceLayer = mapServiceLayer;
+//	}
 
 	public void setDrawLayer(GraphicsLayer drawLayer) {
 		this.drawLayer = drawLayer;

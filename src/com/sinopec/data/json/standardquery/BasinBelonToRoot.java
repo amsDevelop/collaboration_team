@@ -1,10 +1,10 @@
 package com.sinopec.data.json.standardquery;
 
-import java.util.ArrayList;
-
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
+
+import java.util.ArrayList;
 
 /**
  * 所属盆地

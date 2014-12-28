@@ -1,10 +1,10 @@
 package com.sinopec.data.json.standardquery;
 
-import java.util.ArrayList;
-
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
+
+import java.util.ArrayList;
 
 /**
  * 2.全球含油气盆地碳酸盐岩层系油气储量占盆地油气总储量比例分布

@@ -1,6 +1,5 @@
 package com.sinopec.activity;
 
-import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +7,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.lenovo.nova.util.BaseDialogFragment;
 import com.lenovo.nova.util.network.NetworkUtils;
-import com.lenovo.nova.util.parse.DBParserUtil;
+import com.lenovo.nova.util.parse.DBUtil;
+import com.lenovo.nova.widget.dialog.BaseDialogFragment;
 import com.sinopec.data.json.ConfigBean;
 import com.sinopec.data.json.Constant;
 
@@ -38,19 +36,19 @@ public class SetIpDialog extends BaseDialogFragment implements OnClickListener{
 			try {
 				 ip = et.getText().toString();
 			} catch (Exception e) {
-				Toast.makeText(getActivity(), e.toString(), -1).show();
+				Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 				return;
 			}
 			
 			if(!NetworkUtils.validateDataFormat(ip)){
-				Toast.makeText(getActivity(), "IP格式错误",  -1).show();
+				Toast.makeText(getActivity(), "IP格式错误",  Toast.LENGTH_LONG).show();
 			}
 			Constant.baseURL = Constant.baseURL.replace("10.200.250.110", ip);
 			Constant.baseIP = ip;
-			Toast.makeText(getActivity(), ip +" set success ", -1).show();
+			Toast.makeText(getActivity(), ip +" set success ",Toast.LENGTH_LONG).show();
 			try {
-				DBParserUtil parse = new DBParserUtil(getActivity()){
+				DBUtil parse = new DBUtil(getActivity()){
 					@Override
 					protected Class onGetBeanForCreateTable() {
 						return ConfigBean.class;

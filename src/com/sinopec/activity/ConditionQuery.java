@@ -24,13 +24,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.lenovo.nova.util.BaseDialogFragment;
 import com.lenovo.nova.util.Constant;
-import com.lenovo.nova.util.MyLog;
-import com.lenovo.nova.util.ShowMessageDialog;
-import com.lenovo.nova.util.slog;
+import com.lenovo.nova.util.debug.mylog;
+import com.lenovo.nova.util.debug.slog;
 import com.lenovo.nova.util.parse.PreferencesUtil;
 import com.lenovo.nova.util.parse.XmlParser;
+import com.lenovo.nova.widget.dialog.BaseDialogFragment;
+import com.lenovo.nova.widget.dialog.ShowMessageDialog;
 import com.sinopec.activity.GeologyBean.Bean;
 import com.sinopec.activity.GeologyBean.FValues;
 import com.sinopec.activity.GeologyBean.GeoCondition;
@@ -83,7 +83,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			if(start){
 				int count = xrp.getAttributeCount();
 				if (count < 2) {
-					MyLog.e(TAG, "attribute count error below 2 " + count);
+					mylog.e(TAG, "attribute count error below 2 " + count);
 				}
 				try {
 					String id = xrp.getAttributeValue(0);
@@ -94,10 +94,10 @@ public class ConditionQuery extends BaseDialogFragment implements
 					if (bean != null) {
 						geoobj = bean.createOneGeoObj(id, attName);
 					} else {
-						MyLog.e(TAG, "W : bean is null ");
+						mylog.e(TAG, "W : bean is null ");
 					}
 				} catch (Exception e) {
-					MyLog.e(TAG, "E : " + e);
+					mylog.e(TAG, "E : " + e);
 					e.printStackTrace();
 				}
 			}
@@ -106,7 +106,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			if(start){
 				int count = xrp.getAttributeCount();
 				if (count < 3) {
-					MyLog.e(TAG, "attribute count error below 3 " + count);
+					mylog.e(TAG, "attribute count error below 3 " + count);
 				}
 				
 				try {
@@ -117,10 +117,10 @@ public class ConditionQuery extends BaseDialogFragment implements
 						condition = geoobj
 								.createOneConditionObj(id, attName, state);
 					} else {
-						MyLog.e(TAG, "W : geoobj is null ");
+						mylog.e(TAG, "W : geoobj is null ");
 					}
 				} catch (Exception e) {
-					MyLog.e(TAG, "E : " + e);
+					mylog.e(TAG, "E : " + e);
 					e.printStackTrace();
 				}
 				
@@ -131,7 +131,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 				try {
 					int count = xrp.getAttributeCount();
 					if (count < 2) {
-						MyLog.e(TAG, "attribute count error below 2 " + count  + xmlParser.debugAttributeValue(xrp));
+						mylog.e(TAG, "attribute count error below 2 " + count  + xmlParser.debugAttributeValue(xrp));
 					}
 					String id = xrp.getAttributeValue(0);
 					String attName = xrp.getAttributeValue(1);
@@ -150,14 +150,14 @@ public class ConditionQuery extends BaseDialogFragment implements
 			if(start){
 				int count = xrp.getAttributeCount();
 				if (count < 2) {
-					MyLog.e(TAG, "attribute count error below 2 " + count);
+					mylog.e(TAG, "attribute count error below 2 " + count);
 				}
 				String id = xrp.getAttributeValue(0);
 				String attName = xrp.getAttributeValue(1);
 				if(mValues != null){
 					mFvalue =	mValues.createFValue(id, attName);
 				}else if(condition != null){
-					slog.p(TAG,"mValues is null , use condition " + condition.name + "　" + 
+					slog.p(TAG, "mValues is null , use condition " + condition.name + "　" +
 							attName);
 					mFvalue = condition.createFVaueObj(id, attName);
 				}
@@ -168,7 +168,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			if(start){
 				int count = xrp.getAttributeCount();
 				if (count < 2) {
-					MyLog.e(TAG, "attribute count error below 2 " + count);
+					mylog.e(TAG, "attribute count error below 2 " + count);
 				}
 				String id = xrp.getAttributeValue(0);
 				String attName = xrp.getAttributeValue(1);
@@ -184,7 +184,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			if(start){
 				int count = xrp.getAttributeCount();
 				if (count < 2) {
-					MyLog.e(TAG, "attribute count error below 2 " + count);
+					mylog.e(TAG, "attribute count error below 2 " + count);
 				}
 				String id = xrp.getAttributeValue(0);
 				String attName = xrp.getAttributeValue(1);
@@ -192,7 +192,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 				if(svalue != null){
 					svalue.createSValue(id, attName);
 				}else{
-					MyLog.e(TAG,"error svalue is null " + name);
+					mylog.e(TAG,"error svalue is null " + name);
 				}
 			}
 		}
@@ -266,9 +266,9 @@ public class ConditionQuery extends BaseDialogFragment implements
 				@Override
 				public void run() {
 					url = util.getString(DEBUG_URL);
-					ShowMessageDialog dialog = ShowMessageDialog.newInstance(getFragmentManager());
-					dialog.setMssageContent(url);
-					dialog.show(getActivity(), 2);
+					ShowMessageDialog.
+							createAndShow(getActivity(),0,url,null);
+
 				}
 			}, 500);
 			
@@ -370,7 +370,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			  mActivity.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					Toast.makeText(getActivity(), "没有数据", -1).show();
+					Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_LONG).show();
 				}
 			});
 			return ;
@@ -382,7 +382,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		   final String objId = mActivity.whereSelect(objArray);
 		   slog.p(TAG,"executeNetworkForBasin objId " + objId);
 		   
-		   final String layerUrl = getString(R.string.url_basin) + "/0";
+		   final String layerUrl = ArcgisMapConfig.url_basin + "/0";
 		   slog.p(TAG,"executeNetworkForBasin layerUrl " + layerUrl);
 		   mActivity.runOnUiThread(new Runnable() {
 			
@@ -390,7 +390,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			public void run() {
 				if(list == null || list.size() < 1){
 					
-					Toast.makeText(getActivity(), "没有数据", -1).show();
+					Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_LONG).show();
 					return ;
 				}
 				tool.queryAttribute4Query(objId, layerUrl , list);
@@ -454,7 +454,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		String conditionCode;
 		conditionCode = RelativeUnicode.mEnCode.get(condition);
 		if(conditionCode == null){
-			MyLog.e("Errror can not find " + condition + " in mEncode" );
+			mylog.e(TAG,"Errror can not find " + condition + " in mEncode" );
 			return null;
 		}
 		return conditionCode;
@@ -742,12 +742,10 @@ public class ConditionQuery extends BaseDialogFragment implements
 		protected Void doInBackground(XmlResourceParser... arg0) {
 			
 			final XmlParser parser = new XmlParser(arg0[0]) {
-				@Override
-				protected void onExecueStartTagEvent(XmlResourceParser parser,
-						String name) {
+				public void onExecueStartTagEvent(XmlResourceParser parser,
+												  String name) {
 					ConditionQuery.this.parser(this,parser, name,true);
 				}
-				@Override
 				protected void onExecuteEndTagEvent(XmlResourceParser parser, String name) {
 					ConditionQuery.this.parser(this,parser, name,false);
 				}

@@ -1,10 +1,10 @@
 package com.sinopec.data.json.standardquery;
 
-import java.util.ArrayList;
-
 import com.lenovo.nova.util.parse.Bean;
 import com.lenovo.nova.util.parse.anntation.json.JsonFieldName;
 import com.lenovo.nova.util.parse.anntation.json.ListSaveType;
+
+import java.util.ArrayList;
 
 /**
  * 5.分类型全球海相碳酸盐岩储集层分布
