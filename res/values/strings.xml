@@ -31,7 +31,7 @@
     
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
-    <string name="cancel_or_no">是否退出？</string>
+    <string name="cancel_or_no">是否退出登陆？</string>
     <string name="login">登录</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
@@ -51,6 +51,8 @@
     <string name="user_cancel_search">您已取消本次查询</string>
     <string name="stored_ok">已收藏</string>
     <string name="stored_no">已取消收藏</string>
+    
+    <string name="need_login">您未登陆，请先登陆</string>
     
     <string name="user_login_title">登陆</string>
     <string name="user_login_dialog_ok">确定</string>

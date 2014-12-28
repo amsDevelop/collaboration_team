@@ -218,4 +218,6 @@ public class SinoApplication extends Application {
 	public static String mTopicName;
 	
 	public static boolean mLoginSuccess = false;
+	//当前登陆用户id
+	public static String mloginuserid = null;
 }

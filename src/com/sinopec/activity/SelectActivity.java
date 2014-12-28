@@ -52,7 +52,9 @@ import com.sinopec.chart.PolygonLineChart1;
 import com.sinopec.chart.PolygonLineChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.data.json.Constant;
+import com.sinopec.data.json.FavoriteBean;
 import com.sinopec.query.AsyncHttpQuery;
+import com.sinopec.util.FavoriteDao;
 import com.sinopec.util.JsonParse;
 import com.sinopec.util.SimpleTableView;
 import com.sinopec.view.MyExpandableListAdapter;
@@ -86,14 +88,38 @@ public class SelectActivity extends Activity {
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
 		mContentLayout = (ViewGroup) findViewById(R.id.content);
 		mCheckBoxStore = (CheckBox) findViewById(R.id.checkbox_store);
+		
+		leftLayout = (LinearLayout) findViewById(R.id.leftLayout);
+		mListView = (ListView) findViewById(R.id.expanList);
+		titleName = (TextView) findViewById(R.id.titleName);
+		mTextViewTitle = (TextView) findViewById(R.id.title);
+		mContent = (ScrollView) findViewById(R.id.scrollview_content);
+		
 		mCheckBoxStore.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isCheck) {
 				// TODO 收藏的点击处理
 				if(isCheck){
-					 Toast.makeText(mContext, getString(R.string.stored_ok),
-					 Toast.LENGTH_SHORT).show();
+
+					if(SinoApplication.mLoginSuccess){
+//						用户已经登陆
+						 Toast.makeText(mContext, getString(R.string.stored_ok),
+								 Toast.LENGTH_SHORT).show();
+								 String projectname = titleName.getText().toString().trim();
+								 String userid = SinoApplication.mloginuserid;
+//								 fb 测试
+								 FavoriteBean fbean = new FavoriteBean(1, userid, projectname, userid);
+								 FavoriteDao fdao = new FavoriteDao(SelectActivity.this);
+								 fdao.save(fbean);
+					}else{
+//						用户未登陆
+						 Toast.makeText(mContext, getString(R.string.need_login),
+								 Toast.LENGTH_SHORT).show();
+						
+					}
+
+					 
 				}else{
 					 Toast.makeText(mContext, getString(R.string.stored_no),
 							 Toast.LENGTH_SHORT).show();
@@ -110,11 +136,11 @@ public class SelectActivity extends Activity {
 		});
 		// expandableListView = (ExpandableListView)
 		// findViewById(R.id.expanList);
-		leftLayout = (LinearLayout) findViewById(R.id.leftLayout);
-		mListView = (ListView) findViewById(R.id.expanList);
-		titleName = (TextView) findViewById(R.id.titleName);
-		mTextViewTitle = (TextView) findViewById(R.id.title);
-		mContent = (ScrollView) findViewById(R.id.scrollview_content);
+//		leftLayout = (LinearLayout) findViewById(R.id.leftLayout);
+//		mListView = (ListView) findViewById(R.id.expanList);
+//		titleName = (TextView) findViewById(R.id.titleName);
+//		mTextViewTitle = (TextView) findViewById(R.id.title);
+//		mContent = (ScrollView) findViewById(R.id.scrollview_content);
 
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 

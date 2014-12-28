@@ -1,77 +1,70 @@
 package com.sinopec.activity;
 
 
-import com.lenovo.nova.util.BaseDialogFragment;
-import com.lenovo.nova.util.slog;
-import com.sinopec.bean.UserInfo;
-import com.sinopec.chart.PolygonLineChart3;
-import com.sinopec.dao.SqlitService;
-
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
+import com.sinopec.application.SinoApplication;
+import com.sinopec.data.json.UserBean;
+import com.sinopec.util.DatabaseHelper;
+import com.sinopec.util.Md5Util;
+import com.sinopec.util.UserDao;
+
 public class LoginActivity extends  DialogFragment{
-	
+//	D:\android\android_luna\adt-bundle-windows-x86-20140702\sdk\platform-tools
 	private Context mContext;
-	private EditText UserName;
-	private EditText UserPassword;
-	private SqlitService sqlitService;
+	DatabaseHelper dbHelper;
+	SQLiteDatabase sdb;
+	Context context;
+	UserDao userDao;
+	View view;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
+		context = getActivity();
+		//初始化一条测试数据
+		UserBean xuuser = new UserBean("xuyy001", "xuyy", "123456");
+		 dbHelper = new DatabaseHelper(context);
+		 sdb = dbHelper.getWritableDatabase();
+		 userDao = new UserDao(context);
+		 userDao.save(xuuser);
+		 
+
+		 
+		 
+		 
+		 
 //		this.mContext = this;
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
 ////		setTitle(R.string.app_name);
 ////		setContentView(R.layout.activity_login);
-////		弹出登陆界面
-//	    final Builder b = new AlertDialog.Builder(this);
-//	    View tl = getLayoutInflater().inflate(R.layout.login_dialog, null);
-//		LayoutInflater.from(this).inflate(R.layout.login_dialog, null, true);
-//		b.setView(tl);
-//		b.setNegativeButton("登陆", null);
-//		b.setPositiveButton("取消", null);
-//		 b.create().show();
-//		initView();
-//		setContentView(new PolygonLineChart3().getBarChartView(mContext));
+		
 	}
 	
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//			Bundle savedInstanceState) {
-//		View view = inflater.inflate(R.layout.logindialog, null);
-//		slog.p("ConditionQuery  onCreateView");
-//		return view;
-//	}
+
 
 
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+
+		 
 		LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-		View view = layoutInflater.inflate(R.layout.login_dialog, null);
-		UserName = (EditText) view.findViewById(R.id.userEdit);  
-		UserPassword = (EditText) view.findViewById(R.id.pwdEdit);  
+	     view = layoutInflater.inflate(R.layout.login_dialog, null);
 		
-		sqlitService = new SqlitService(this.getActivity());
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 		.setTitle(R.string.user_login_title)
 		.setView(view)
@@ -80,25 +73,30 @@ public class LoginActivity extends  DialogFragment{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-//				SqlitService sService = new SqlitService(mContext);
-				String mName = UserName.getText().toString().trim();
-				String mPwd = UserPassword.getText().toString().trim();
-				UserInfo userInfo = sqlitService.findUserInfoByUserPw(mName,mPwd);
-				if(userInfo != null){
-					Toast.makeText(mContext, "登陆成功", Toast.LENGTH_SHORT).show();
-				}else{
-					Toast.makeText(mContext, "登陆失败", Toast.LENGTH_SHORT).show();
-				}
-				
-//				for (int i = 0; i < 10; i++) {
-//					UserInfo info = new UserInfo();
-//					info.setUserName("aa" + i);
-//					info.setUserPassword(i +"");
-//					sqlitService.insertRecord(info);
-//					
-//				}
-				
-				
+				EditText userEditText = (EditText)view.findViewById(R.id.userEdit);
+				EditText pwdEditText = (EditText)view.findViewById(R.id.pwdEdit);
+				String inputuser = userEditText.getText().toString().trim();
+				String inputpwd = pwdEditText.getText().toString().trim();
+				 //测试用户id
+//				 String testuserid = "xuyy001";
+				 String testusername = null ,testpwd = null ;
+				 userDao = new UserDao(context);
+				 UserBean testuser= userDao.findUser(inputuser);
+				  if(null != testuser){
+					  testusername = testuser.getUserName();
+					  testpwd = testuser.getPassword();
+					  if(Md5Util.validatePassword(testpwd, inputpwd)){
+						  SinoApplication.mLoginSuccess = true;
+						  SinoApplication.mloginuserid = testuser.getUserId();
+						  Toast.makeText(context, inputuser+inputpwd+"登录成功="+testusername+testpwd, Toast.LENGTH_LONG).show();
+					  }else{
+						  Toast.makeText(context, inputuser+inputpwd+"密码错误="+testusername+testpwd, Toast.LENGTH_LONG).show();
+					  }
+				  }else{
+					  Toast.makeText(context, inputuser+inputpwd+"该用户不存在="+testusername+testpwd, Toast.LENGTH_LONG).show();
+				  }
+
+				 
 				
 			}
 		})
