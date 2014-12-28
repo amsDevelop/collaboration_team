@@ -9,57 +9,60 @@ import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
  */
 public class ArcgisMapConfig {
 
+//    public static String rootIp = "10.225.14.204";
+
+    public static String commonUrl = "http://10.225.14.204/arcgis/rest/";
+
     //<!-- 基础地理 -->
     public static String url_marine_geo =
-            "http://10.225.14.204/arcgis/rest/services/marine_geo/MapServer";
+            commonUrl + "services/marine_geo/MapServer";
     //<!-- 盆地-->
     public static String url_basin =
-            "http://10.225.14.204/arcgis/rest/services/basin/MapServer";
+            commonUrl +  "services/basin/MapServer";
     //<!-- 油田-->
     public static String url_oilfields =
-            "http://10.225.14.204/arcgis/rest/services/Oil_field/MapServer";
+            commonUrl +  "services/Oil_field/MapServer";
     //<!-- 盖层 -->
     public static String url_cover =
-            " http://10.225.14.204/arcgis/rest/services/cover/MapServer";
+            commonUrl + "services/cover/MapServer";
     //<!-- 烃源岩 -->
     public static String url_source_rock =
-            " http://10.225.14.204/arcgis/rest/services/source_rock/MapServer";
+            commonUrl + "services/source_rock/MapServer";
     //<!-- 储集层 -->
     public static String url_reservoir =
-            " http://10.225.14.204/arcgis/rest/services/reservoir/MapServer";
+            commonUrl + "services/reservoir/MapServer";
     //<!-- 卫星图 -->
     public static String url_marine_image =
-            "http://10.225.14.204/arcgis/rest/services/marine_image/MapServer";
+            commonUrl + "services/marine_image/MapServer";
 
 
     //<!-- 盆地查询url-->
     public static String url_basin_4search =
-            "http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/10";
+            commonUrl + "services/marine_oil/MapServer/10";
 
 
     // <!-- 气田-->
     public static String url_gasfields =
-            "http://10.225.14.204/arcgis/rest/services/Gas_field/MapServer";
+            commonUrl +  "services/Gas_field/MapServer";
 
 
     //<!-- 油田查询url-->
     public static String url_oilfields_4search =
-            "http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/8";
+            commonUrl + "services/marine_oil/MapServer/8";
     //<!-- 气田查询url-->
     public static String url_gasfields_4search =
-            "http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/9";
+            commonUrl +  "services/marine_oil/MapServer/9";
 
 
     // <!-- 盖层 -->
     public static String url_cover_4search =
-            " http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/4";
+            commonUrl +  " http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/4";
     // <!-- 烃源岩 -->
     public static String url_source_rock_4search =
-            "http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/5";
+            commonUrl +  "services/marine_oil/MapServer/5";
     // <!-- 储集层 -->
     public static String url_reservoir_4search =
-            "http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/6";
-
+            commonUrl +  "services/marine_oil/MapServer/6";
 
     Context context;
     MapView arcgisMap;
