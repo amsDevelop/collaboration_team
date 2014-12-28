@@ -1,17 +1,15 @@
 package com.sinopec.drawtool;
 
 import java.math.BigDecimal;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,7 +34,6 @@ import com.esri.core.map.Graphic;
 import com.esri.core.symbol.FillSymbol;
 import com.esri.core.symbol.LineSymbol;
 import com.esri.core.symbol.MarkerSymbol;
-import com.esri.core.symbol.PictureMarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
@@ -46,12 +43,8 @@ import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.query.Query;
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
-import com.sinopec.chart.BarChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
-import com.sinopec.data.json.standardquery.DistributeRate.RateForOilAndBasin;
-import com.sinopec.data.json.standardquery.DistributeRateResource;
-import com.sinopec.data.json.standardquery.DistributeRateResource.DistributeChild;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.task.SearchIdentifyTask.OnFinishListener;
 import com.sinopec.task.SearchQueryTask;
@@ -790,7 +783,11 @@ public class DrawTool extends Subject {
 		});
 
 	}
-
+    //SELECT DP01. DZDYBM
+	//FROM DP01
+	//WHERE BITAND(DP01. CJTX, 34537472)>=1  AND DP01.GZDYJBBH=1
+	
+	
 	public void queryAttribute4Query(String objId, String layerUrl,
 			final ArrayList resultList) {
 		
@@ -800,7 +797,7 @@ public class DrawTool extends Subject {
 		Query query = new Query();
 		// query.setGeometry(geometry);
 		// query.setReturnGeometry(true);
-		query.setOutFields(new String[] { "OBJ_NAME_C", "OBJ_ID" });
+		query.setOutFields(new String[] { "OBJECTID", "NAME" });
 		// SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
 		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
 		// Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +
@@ -819,7 +816,6 @@ public class DrawTool extends Subject {
 			@Override
 			public void onFinish(FeatureSet results) {
 				SinoApplication.mFeatureSet4Query = results;
-
 				Graphic[] graphics = results.getGraphics();
 				
 				DrawTool.this.graphics = graphics;
@@ -828,61 +824,205 @@ public class DrawTool extends Subject {
 				// 把之前高亮显示结果清除
 				mDrawLayer4HighLight.removeAll();
 				if (graphics != null) {
-					Log.d("test", "模糊查询  结果个数 : " + graphics.length + " "
-							+ results.getObjectIdFieldName());
+					Log.d("mandy", "模糊查询  结果个数 : " + graphics.length + " "
+							+ results.getDisplayFieldName());
 					// for (Entry<String, Object> ent :
 					// results.getFieldAliases().entrySet()) {
 					// Log.d("test",
 					// "00模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
 					// }
+                   
+					
+					//不再从数据库中查询，所以之前的方式需要修改
+//					for (int i = 0; i < graphics.length; i++) {
+//						double rate = 0;
+//						if (resultList.get(i) instanceof RateForOilAndBasin) {
+//							rate = ((RateForOilAndBasin) resultList.get(i))
+//									.getStorage2()
+//									/ ((RateForOilAndBasin) resultList.get(i))
+//											.getAllStorage() * 100;
+//							if (rate > 75) {
+//								drawHighLight4Query(graphics[i], Color.RED);
+//							} else if (rate > 50) {
+//								drawHighLight4Query(graphics[i],
+//										mapView.getResources().getColor(android.R.color.holo_orange_dark));
+//
+//							} else if (rate > 25) {
+//
+//								drawHighLight4Query(graphics[i], Color.YELLOW);
+//							} else {
+//								drawHighLight4Query(graphics[i],
+//										mapView.getResources().getColor(android.R.color.holo_orange_light));
+//							}
+//						} else if (resultList.get(i) instanceof DistributeChild) {
+//
+//							rate = ((DistributeChild) resultList.get(i))
+//									.getRockResCount()
+//									/ ((DistributeChild) resultList.get(i))
+//											.getAllResCount() * 100;
+//							if (rate > 75) {
+//								drawHighLight4Query(graphics[i], Color.RED);
+//							} else if (rate > 50) {
+//								drawHighLight4Query(graphics[i],
+//										mapView.getResources().getColor(android.R.color.holo_orange_dark));
+//
+//							} else if (rate > 25) {
+//
+//								drawHighLight4Query(graphics[i], Color.YELLOW);
+//
+//							} else {
+//                               
+//							   drawHighLight4Query(graphics[i],mapView.getResources().getColor(android.R.color.holo_orange_light));
+//
+//							}
+//						} else {
+//							
+//							drawHighLight4Query(graphics[i], Color.YELLOW);
+//							
+//						}	
+//
+//					}
+					
+					for (int j = 0; j < graphics.length; j++) {
+						drawHighLight4Query(graphics[j], Color.RED);
+					}
+					
+					zoomExtent(graphics);
+					mProgressDialog.dismiss();
+					// deactivate();
+					// mCallback.setSearchData4Query(results);
+					// Toast.makeText(mapView.getContext(), sb.toString() ,
+					// Toast.LENGTH_LONG).show();
+				}
+			}
 
-					for (int i = 0; i < graphics.length; i++) {
-						double rate = 0;
-						if (resultList.get(i) instanceof RateForOilAndBasin) {
-							rate = ((RateForOilAndBasin) resultList.get(i))
-									.getStorage2()
-									/ ((RateForOilAndBasin) resultList.get(i))
-											.getAllStorage() * 100;
-							if (rate > 75) {
-								drawHighLight4Query(graphics[i], Color.RED);
-							} else if (rate > 50) {
-								drawHighLight4Query(graphics[i],
-										mapView.getResources().getColor(android.R.color.holo_orange_dark));
+		});
 
-							} else if (rate > 25) {
+	}
+	public void queryAttribute4Query1(String objId, String layerUrl,String[] result
+			) {
+		
+	
+		// Envelope m_WorldEnvelope = new Envelope();
+		// m_WorldEnvelope = mapView.getMapBoundaryExtent();
+		Query query = new Query();
+		// query.setGeometry(geometry);
+		// query.setReturnGeometry(true);
+		query.setOutFields(result);
+		// SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
+		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
+		// Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +
+		// query.getSpatialRelationship());
+		query.setOutSpatialReference(mapView.getSpatialReference());
+		query.setWhere(objId);
 
-								drawHighLight4Query(graphics[i], Color.YELLOW);
-							} else {
-								drawHighLight4Query(graphics[i],
-										mapView.getResources().getColor(android.R.color.holo_orange_light));
-							}
-						} else if (resultList.get(i) instanceof DistributeChild) {
+		Log.v("mandy", "objId: " + objId);
 
-							rate = ((DistributeChild) resultList.get(i))
-									.getRockResCount()
-									/ ((DistributeChild) resultList.get(i))
-											.getAllResCount() * 100;
-							if (rate > 75) {
-								drawHighLight4Query(graphics[i], Color.RED);
-							} else if (rate > 50) {
-								drawHighLight4Query(graphics[i],
-										mapView.getResources().getColor(android.R.color.holo_orange_dark));
+		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
+				layerUrl, CommonData.TypeOperateFrameChoos, mProgressDialog);
+		task.execute(query);
 
-							} else if (rate > 25) {
+		task.setQueryFinishListener(new OnQueryFinishListener() {
 
-								drawHighLight4Query(graphics[i], Color.YELLOW);
-
-							} else {
-                               
-							   drawHighLight4Query(graphics[i],mapView.getResources().getColor(android.R.color.holo_orange_light));
-
-							}
-						} else {
+			@Override
+			public void onFinish(FeatureSet results) {
+				SinoApplication.mFeatureSet4Query = results;
+				Graphic[] graphics = results.getGraphics();
+				
+				DrawTool.this.graphics = graphics;
+//				Graphic
+				
+				// 把之前高亮显示结果清除
+				mDrawLayer4HighLight.removeAll();
+				if (graphics != null) {
+					Log.d("mandy", "模糊查询  结果个数 : " + graphics.length + " "
+							+ results.getFieldAliases().size());
+//					
+					Map<String, Object> map = results.getFieldAliases();
+					
+					for (Map.Entry<String, Object> string : map.entrySet()) {
+						
+						Log.v("mandy", "key is "+ string.getKey());
+						
+						Log.v("mandy", "value is "+ string.getValue());
+					}
+					
+					
+					
+//					for (int i = 0; i < results.getFields().size(); i++) {
+//						
+//						Log.v("mandy", "results get fields: " + results.getFields().get(i).getFieldType() + "name: " + results.getFields().get(i).getName());
+//						
+//					}
+					
+					// for (Entry<String, Object> ent :
+					// results.getFieldAliases().entrySet()) {
+					// Log.d("test",
+					// "00模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
+					// }
+                   
+					
+					//不再从数据库中查询，所以之前的方式需要修改
+//					for (int i = 0; i < graphics.length; i++) {
+//						double rate = 0;
+//						if (resultList.get(i) instanceof RateForOilAndBasin) {
+//							rate = ((RateForOilAndBasin) resultList.get(i))
+//									.getStorage2()
+//									/ ((RateForOilAndBasin) resultList.get(i))
+//											.getAllStorage() * 100;
+//							if (rate > 75) {
+//								drawHighLight4Query(graphics[i], Color.RED);
+//							} else if (rate > 50) {
+//								drawHighLight4Query(graphics[i],
+//										mapView.getResources().getColor(android.R.color.holo_orange_dark));
+//
+//							} else if (rate > 25) {
+//
+//								drawHighLight4Query(graphics[i], Color.YELLOW);
+//							} else {
+//								drawHighLight4Query(graphics[i],
+//										mapView.getResources().getColor(android.R.color.holo_orange_light));
+//							}
+//						} else if (resultList.get(i) instanceof DistributeChild) {
+//
+//							rate = ((DistributeChild) resultList.get(i))
+//									.getRockResCount()
+//									/ ((DistributeChild) resultList.get(i))
+//											.getAllResCount() * 100;
+//							if (rate > 75) {
+//								drawHighLight4Query(graphics[i], Color.RED);
+//							} else if (rate > 50) {
+//								drawHighLight4Query(graphics[i],
+//										mapView.getResources().getColor(android.R.color.holo_orange_dark));
+//
+//							} else if (rate > 25) {
+//
+//								drawHighLight4Query(graphics[i], Color.YELLOW);
+//
+//							} else {
+//                               
+//							   drawHighLight4Query(graphics[i],mapView.getResources().getColor(android.R.color.holo_orange_light));
+//
+//							}
+//						} else {
+//							
+//							drawHighLight4Query(graphics[i], Color.YELLOW);
+//							
+//						}	
+//
+//					}
+					
+					for (int j = 0; j < graphics.length; j++) {
+						
+//						Log.v("mandy", "graphics AttributeValue: " + graphics[j].getAttributeValue("CRKWNPET_P"));
+						Double ff = (Double)graphics[j].getAttributeValue("CRKWNPET_P");
+						int color = Color.RED;
+						if (ff >= 0.000 && ff <= 0.250) {
 							
-							drawHighLight4Query(graphics[i], Color.YELLOW);
-							
-						}	
-
+							color = Color.BLACK;
+						}
+						
+						drawHighLight4Query(graphics[j], color);
 					}
 					
 					zoomExtent(graphics);

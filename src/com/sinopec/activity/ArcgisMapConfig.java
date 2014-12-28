@@ -2,6 +2,7 @@ package com.sinopec.activity;
 
 import android.content.Context;
 import com.esri.android.map.MapView;
+import com.esri.android.map.ags.ArcGISDynamicMapServiceLayer;
 import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 
 /**
@@ -82,10 +83,21 @@ public class ArcgisMapConfig {
                 url_cover,
                 url_source_rock,
                 url_reservoir,
-                url_marine_image};
+                url_marine_image
+        };
         for (int i = 0; i < urls.length; i++) {
             ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(urls[i]);
+            
+//            ArcGISDynamicMapServiceLayer layer = new ArcGISDynamicMapServiceLayer(urls[i]);
+//            dynamicMapServiceLayer.set
             arcgisMap.addLayer(layer);
         }
+        
+//        ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(url_oilfields);
+//        ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(url_marine_geo);
+      
+//      dynamicMapServiceLayer.set
+//        arcgisMap.addLayer(layer);
+        
     }
 }

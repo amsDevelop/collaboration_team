@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList ;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,6 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -81,7 +80,8 @@ import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
-
+import com.esri.core.tasks.ags.query.Query;
+import com.esri.core.tasks.ags.query.QueryTask;
 import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
@@ -93,7 +93,6 @@ import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.common.OilGasData;
 import com.sinopec.data.json.Constant;
-import com.sinopec.data.json.UserBean;
 import com.sinopec.data.json.standardquery.BasinBelonToRoot;
 import com.sinopec.data.json.standardquery.DistributeCengGai;
 import com.sinopec.data.json.standardquery.DistributeChuJi;
@@ -107,10 +106,8 @@ import com.sinopec.query.AsyncHttpQuery;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.JsonParse;
-import com.sinopec.util.Md5Util;
 import com.sinopec.util.RelativeUnicode;
 import com.sinopec.util.SinoUtil;
-import com.sinopec.util.UserDao;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
 
@@ -396,7 +393,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		this.mContext = this;
 		asyncHttpQuery = new AsyncHttpQuery(handler, this);
-		urlBasionQuery = ArcgisMapConfig.url_basin + "/0";
+//		urlBasionQuery = ArcgisMapConfig.url_basin + "/0";
+		urlBasionQuery = "http://10.225.14.204/arcgis/rest/services/tsyyyqpd/MapServer/4";
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		SinoApplication.getLayerIDAndKeyMap();
@@ -418,8 +416,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mapConfig.onCreate();
 
 		// 不显示卫星图
-		Layer layerSatellite = map.getLayerByURL(SinoApplication.imageUrl);
-		layerSatellite.setVisible(false);
+//		Layer layerSatellite = map.getLayerByURL(SinoApplication.imageUrl);
+//		layerSatellite.setVisible(false);
 
 		Options o = new Options();
 		o.mode = MODE.ONDEMAND;
@@ -1439,12 +1437,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		} else if ("mineLogin".equals(tag)) {
 			mLastClickedView = null;
-			// Intent intent = new Intent(mContext, LoginActivity.class);
-			// startActivity(intent);
-			// Intent intent = new Intent(this, SelectActivity.class);
-			// intent.putExtra(CommonData.KeyTopicType, "盆地");
-			// intent.putExtra("name", "统计");
-			// startActivity(intent);
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
 			DialogFragment newFragment = new LoginActivity();
 			newFragment.show(ft, "loginDiag");
@@ -1478,7 +1470,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mTag4ToolAreaOk = true;
 			mTag4ToolDistanceOk = false;
 		} else if ("points".equals(tag)) {
-
 			drawTool.activate(DrawTool.POLYGON);
 			drawLayer.removeAll();
 			// 多边形点绘制
@@ -1495,7 +1486,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mTag4ToolAreaOk = true;
 			mTag4ToolDistanceOk = false;
 		} else if ("CountChildrenMenuOne".equals(tag)) { // 碳酸盐岩储量及资源量分布
-			// TODO:统计二级菜单
+			//统计二级菜单
 			Boolean[] clickTag = new Boolean[] { true, true, true, true };
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuOneData(toolist,
 					clickTag, mChildMenuSplitNumber);
@@ -1552,15 +1543,32 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			AllBasin();
 
 		} else if ("海相碳酸盐岩盆地".equals(tag)) {
-			AllBasin();
+//			AllBasin();
+			
+//			FROM DP01
+//			WHERE BITAND(DP01. CJTX, 34537472)>=1  AND DP01.GZDYJBBH=1 --？测试值34537472
+			
+			String where = "NAME IS NOT NULL";
+			
+			drawTool.queryAttribute4Query(where, urlBasionQuery,
+					null);	
 
 		} else if ("碳酸盐岩储量比例".equals(tag)) {
+			
+//			String type = "72057594037927935";
+////			CRKWNPET_P
+//			queryYanyanchuLiang(type);
+			
+	       String where = "NAME IS NOT NULL";
+			drawTool.queryAttribute4Query1(where, urlBasionQuery,
+					new String[]{"CRKWNPET_P"});
+			
 
-			Boolean[] clickTag = new Boolean[] { true, true, true };
-			ChildrenMenuDataUtil.setSearchLevel23ChildrenMenuOneData(toolist,
-					clickTag, mChildMenuSplitNumber);
-			mGridView.setNumColumns(3);
-			setGridView4LevelTwoChildrenMenu(toolist, arg0);
+//			Boolean[] clickTag = new Boolean[] { true, true, true };
+//			ChildrenMenuDataUtil.setSearchLevel23ChildrenMenuOneData(toolist,
+//					clickTag, mChildMenuSplitNumber);
+//			mGridView.setNumColumns(3);
+//			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
 		} else if ("碳酸盐岩资源比例".equals(tag)) {
 			Boolean[] clickTag = new Boolean[] { true, true, true };
