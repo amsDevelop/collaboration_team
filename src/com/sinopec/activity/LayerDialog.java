@@ -156,20 +156,22 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 	}
    
 	private void executeLayerGeographic() {
-		// executeLayer1();
-//		mBtn1.setSelected(false);
-		if(mBtnGeographic.isSelected()){
-			layerGeographic.setVisible(false);
-			mBtnGeographic.setSelected(false);
-			SinoApplication.mLayerDataArray[1] = false;
-		}else{
-			layerGeographic.setVisible(true);
-			mBtnGeographic.setSelected(true);
-			SinoApplication.mLayerDataArray[1] = true;
-		}
-//		mBtn3.setSelected(false);
-//		dismiss();
+//		if(mBtnGeographic.isSelected()){
+//			layerGeographic.setVisible(false);
+//			mBtnGeographic.setSelected(false);
+//			SinoApplication.mLayerDataArray[1] = false;
+//		}else{
+//			layerGeographic.setVisible(true);
+//			mBtnGeographic.setSelected(true);
+//			SinoApplication.mLayerDataArray[1] = true;
+//		}
 
+		layerGeographic.setVisible(true);
+		mBtnGeographic.setSelected(true);
+		SinoApplication.mLayerDataArray[1] = true;
+
+		mBtnSatellite.setSelected(false);
+		layerSatellite.setVisible(false);
 	}
 
 	private void executeOilGas() {
@@ -190,6 +192,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 			setAllInvisible(true);
 		}
 
+
 	}
 	
 	//设置油气专题所有图层不显示
@@ -208,15 +211,20 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 	private void executeLayerSatellite() {
 //		dismiss();
-		if(mBtnSatellite.isSelected()){
-			layerSatellite.setVisible(false);
-			mBtnSatellite.setSelected(false);
-			SinoApplication.mLayerDataArray[0] = false;
-		}else{
-			layerSatellite.setVisible(true);
-			mBtnSatellite.setSelected(true);
-			SinoApplication.mLayerDataArray[0] = true;
-		}
+//		if(mBtnSatellite.isSelected()){
+//			layerSatellite.setVisible(false);
+//			mBtnSatellite.setSelected(false);
+//			SinoApplication.mLayerDataArray[0] = false;
+//		}else{
+//			layerSatellite.setVisible(true);
+//			mBtnSatellite.setSelected(true);
+//			SinoApplication.mLayerDataArray[0] = true;
+//		}
+		mBtnSatellite.setSelected(true);
+		layerSatellite.setVisible(true);
+		layerGeographic.setVisible(false);
+		mBtnGeographic.setSelected(false);
+		SinoApplication.mLayerDataArray[0] = true;
 	}
 
 	class MyAdapter extends BaseAdapter {

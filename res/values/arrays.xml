@@ -26,26 +26,26 @@
     </string-array>-->
 
     <string-array name="all_layer_name">
-       <item>盖层</item>
+       <!--<item>盖层</item>
        <item>烃源岩 </item>
-       <item>储层</item>
+       <item>储层</item>-->
        <item>油田</item>
        <item>气田</item>
        <item>盆地</item>
     </string-array>
      <string-array name="all_layer_id">
-       <item>4</item>
+       <!--<item>4</item>
        <item>5</item>
-       <item>6</item>
+       <item>6</item>-->
        <item>8</item>
        <item>9</item>
        <item>10</item>
        
     </string-array>
      <string-array name="all_layer_color">
-       <item>#D5F6C7</item>	
+       <!--<item>#D5F6C7</item>
        <item>#B8F2DA</item>
-       <item>#D2F7CB</item>  
+       <item>#D2F7CB</item> -->
          
        <item>#f248ab</item>	
        <item>#d6b800</item>

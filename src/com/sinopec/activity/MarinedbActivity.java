@@ -906,16 +906,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			SinoApplication.mOilGasData.clear();
 		}
 
-		String[] urls = {ArcgisMapConfig.url_cover,
-						ArcgisMapConfig.url_source_rock,
-				ArcgisMapConfig.url_reservoir,
+		String[] urls = {
+//				ArcgisMapConfig.url_cover,
+//				ArcgisMapConfig.url_source_rock,
+//				ArcgisMapConfig.url_reservoir,
 				ArcgisMapConfig.url_oilfields,
 				ArcgisMapConfig.url_gasfields,
 				ArcgisMapConfig.url_basin};
 		String[] urls_4search = {
-				ArcgisMapConfig.url_cover_4search,
-				ArcgisMapConfig.url_source_rock_4search,
-				ArcgisMapConfig.url_reservoir_4search,
+//				ArcgisMapConfig.url_cover_4search,
+//				ArcgisMapConfig.url_source_rock_4search,
+//				ArcgisMapConfig.url_reservoir_4search,
 				ArcgisMapConfig.url_oilfields_4search,
 				ArcgisMapConfig.url_gasfields_4search,
 				ArcgisMapConfig.url_basin_4search,
