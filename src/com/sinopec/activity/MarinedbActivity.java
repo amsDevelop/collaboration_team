@@ -13,9 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -80,9 +77,6 @@ import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
-import com.esri.core.tasks.ags.query.Query;
-import com.esri.core.tasks.ags.query.QueryTask;
-import com.lenovo.nova.util.parse.JsonToBeanParser;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
@@ -92,13 +86,6 @@ import com.sinopec.chart.PieChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.common.OilGasData;
-import com.sinopec.data.json.Constant;
-import com.sinopec.data.json.standardquery.BasinBelonToRoot;
-import com.sinopec.data.json.standardquery.DistributeCengGai;
-import com.sinopec.data.json.standardquery.DistributeChuJi;
-import com.sinopec.data.json.standardquery.DistributeJingRockYuanYan;
-import com.sinopec.data.json.standardquery.DistributeRate;
-import com.sinopec.data.json.standardquery.DistributeRateResource;
 import com.sinopec.drawtool.DrawEvent;
 import com.sinopec.drawtool.DrawEventListener;
 import com.sinopec.drawtool.DrawTool;
@@ -106,7 +93,6 @@ import com.sinopec.query.AsyncHttpQuery;
 import com.sinopec.task.SearchIdentifyTask;
 import com.sinopec.util.ChildrenMenuDataUtil;
 import com.sinopec.util.JsonParse;
-import com.sinopec.util.RelativeUnicode;
 import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
@@ -168,8 +154,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	 * 左侧工具栏根布局
 	 */
 	private ViewGroup mLeftBarLayout;
-	private AsyncHttpQuery asyncHttpQuery;
-	private String urlBasionQuery;
+	private String urlBasionQuery; //盆地图层查询
+	private String urlOilUtilQuery;//油气评价单元图层
 
 	/**
 	 * 搜索结果fragment依赖的布局
@@ -177,224 +163,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	private ViewGroup mFragmentLayout;
 	private ArrayList<HashMap<String, Object>> toolist = new ArrayList<HashMap<String, Object>>();
 	ArcgisMapConfig mapConfig = null;
-	private Handler handler = new Handler() {
-
-		public void handleMessage(final android.os.Message msg) {
-			Long[] array;
-			mLastClickedView = null;
-			switch (msg.what) {
-			case 1:
-				// String jsonStr = getJsonStr(url);
-				BasinBelonToRoot root = new BasinBelonToRoot();
-				try {
-					JSONArray jsonArray = new JSONArray((String) msg.obj);
-					for (int i = 0; i < jsonArray.length(); i++) {
-						try {
-							JsonToBeanParser.getInstance().fillBeanWithJson(
-									root.newBasinBelongTo(),
-									jsonArray.getJSONObject(i));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				array = new Long[root.mBasinBelongTo.size()];
-				for (int i = 0; i < root.mBasinBelongTo.size(); i++) {
-					array[i] = root.mBasinBelongTo.get(i).getBeLongToId();
-				}
-				String where = whereSelect(array);
-
-				drawTool.queryAttribute4Query(where, urlBasionQuery,
-						root.mBasinBelongTo);
-				break;
-			case 2:
-				final DistributeRate rate = new DistributeRate();
-				try {
-					JSONArray jsonArray = new JSONArray((String) msg.obj);
-
-					for (int i = 0; i < jsonArray.length(); i++) {
-						try {
-							JsonToBeanParser.getInstance().fillBeanWithJson(
-									rate.newChildInstance(),
-									jsonArray.getJSONObject(i));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				array = new Long[rate.mChilds.size()];
-				for (int i = 0; i < rate.mChilds.size(); i++) {
-					array[i] = rate.mChilds.get(i).getCodeBelongToBasin();
-				}
-
-				drawTool.queryAttribute4Query(whereSelect(array),
-						urlBasionQuery, rate.mChilds);
-
-				break;
-			case 3:
-				final DistributeRateResource instance = new DistributeRateResource();
-				try {
-					JSONArray jsonArray = new JSONArray((String) msg.obj);
-
-					for (int i = 0; i < jsonArray.length(); i++) {
-						try {
-							JsonToBeanParser.getInstance().fillBeanWithJson(
-									instance.newChildInstance(),
-									jsonArray.getJSONObject(i));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-
-				array = new Long[instance.mChilds.size()];
-				for (int i = 0; i < instance.mChilds.size(); i++) {
-					array[i] = instance.mChilds.get(i).getCodeBelongToBasin();
-				}
-				drawTool.queryAttribute4Query(whereSelect(array),
-						urlBasionQuery, instance.mChilds);
-
-				break;
-			case 4:
-				final DistributeJingRockYuanYan rockYuanYan = new DistributeJingRockYuanYan();
-				try {
-					JSONArray jsonArray = new JSONArray((String) msg.obj);
-
-					for (int i = 0; i < jsonArray.length(); i++) {
-						try {
-							JsonToBeanParser.getInstance().fillBeanWithJson(
-									rockYuanYan.newChildInstance(),
-									jsonArray.getJSONObject(i));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				array = new Long[rockYuanYan.mChilds.size()];
-				for (int i = 0; i < rockYuanYan.mChilds.size(); i++) {
-					array[i] = rockYuanYan.mChilds.get(i)
-							.getCodeBelongToBasin();
-				}
-//				drawTool.queryAttribute4Query(whereSelect(array),
-//
-//						ArcgisMapConfig.url_source_rock , rockYuanYan.mChilds);
-				break;
-
-			case 5:
-				final DistributeChuJi chuJi = new DistributeChuJi();
-				try {
-					JSONArray jsonArray = new JSONArray((String) msg.obj);
-
-					for (int i = 0; i < jsonArray.length(); i++) {
-						try {
-							JsonToBeanParser.getInstance().fillBeanWithJson(
-									chuJi.newChildInstance(),
-									jsonArray.getJSONObject(i));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				array = new Long[chuJi.mChilds.size()];
-				for (int i = 0; i < chuJi.mChilds.size(); i++) {
-					array[i] = chuJi.mChilds.get(i).getCodeBelongToBasin();
-				}
-				drawTool.queryAttribute4Query(whereSelect(array),
-						urlBasionQuery, chuJi.mChilds);
-				break;
-
-			case 6:
-				final DistributeCengGai cengGai = new DistributeCengGai();
-				try {
-					JSONArray jsonArray = new JSONArray((String) msg.obj);
-
-					for (int i = 0; i < jsonArray.length(); i++) {
-						try {
-							JsonToBeanParser.getInstance().fillBeanWithJson(
-									cengGai.newChildInstance(),
-									jsonArray.getJSONObject(i));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				array = new Long[cengGai.mChilds.size()];
-				for (int i = 0; i < cengGai.mChilds.size(); i++) {
-					array[i] = cengGai.mChilds.get(i).getCodeBelongToBasin();
-				}
-				drawTool.queryAttribute4Query(whereSelect(array),
-						urlBasionQuery, cengGai.mChilds);
-				break;
-			case 7:
-				BasinBelonToRoot roots = new BasinBelonToRoot();
-				try {
-					JSONArray jsonArray = new JSONArray((String) msg.obj);
-					for (int i = 0; i < jsonArray.length(); i++) {
-						try {
-							JsonToBeanParser.getInstance().fillBeanWithJson(
-									roots.newBasinBelongTo(),
-									jsonArray.getJSONObject(i));
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				array = new Long[roots.mBasinBelongTo.size()];
-				for (int i = 0; i < roots.mBasinBelongTo.size(); i++) {
-					array[i] = roots.mBasinBelongTo.get(i).getBeLongToId();
-				}
-
-				drawTool.queryAttribute4Query(whereSelect(array),
-						urlBasionQuery, roots.mBasinBelongTo);
-
-				handler.postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						drawBarChart();
-					}
-				}, 2000);
-
-				break;
-
-			default:
-				break;
-			}
-
-		};
-
-	};
-
 	private Bitmap mBitmapPaopaobg;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		this.mContext = this;
-		asyncHttpQuery = new AsyncHttpQuery(handler, this);
-//		urlBasionQuery = ArcgisMapConfig.url_basin + "/0";
 		urlBasionQuery = "http://10.225.14.204/arcgis/rest/services/tsyyyqpd/MapServer/4";
+		urlOilUtilQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		SinoApplication.getLayerIDAndKeyMap();
@@ -1554,160 +1330,149 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if ("石油2".equals(tag)) {
 
 			String type = "72057594037927935";
-			queryYanyanchuLiang(type);
+//			queryYanyanchuLiang(type);
 
 		} else if ("天然气2".equals(tag)) {
 
 			String type = "72057594037927935";
-			queryYanyanchuLiang(type);
+//			queryYanyanchuLiang(type);
 
 		} else if ("石油天然气2".equals(tag)) {
 
 			String type = "72057594037927935";
-			queryYanyanchuLiang(type);
+//			queryYanyanchuLiang(type);
 
 		} else if ("石油3".equals(tag)) {
 			mAdapter.setSelectItem(position);
 			mAdapter.notifyDataSetInvalidated();
 
 			String type = "72057594037927935";
-			queryYanyanZiyuan(type);
+//			queryYanyanZiyuan(type);
 
 		} else if ("天然气3".equals(tag)) {
 
 			mAdapter.setSelectItem(position);
 			mAdapter.notifyDataSetInvalidated();
 			String type = "72057594037927935";
-			queryYanyanZiyuan(type);
+//			queryYanyanZiyuan(type);
 
 		} else if ("石油天然气3".equals(tag)) {
 			mAdapter.setSelectItem(position);
 			mAdapter.notifyDataSetInvalidated();
 			String type = "72057594037927935";
-			queryYanyanZiyuan(type);
+//			queryYanyanZiyuan(type);
 
 		} else if ("储量及资源量级别".equals(tag)) {
 			drawBarChart();
 
 		} else if ("资源总量".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("探明储量".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("待发现资源量".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("前寒武系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("寒武系s".equals(tag)) {
 
 		} else if ("至留系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 			drawBarChart();
 
 		} else if ("泥盆系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("二叠系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("奥陶系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("侏罗系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("白垩系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("石炭系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("古近系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 
 		} else if ("新近系s".equals(tag)) {
-			statisticsQuery();
+//			statisticsQuery();
 		} else if ("前寒武系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 		} else if ("下古生界".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 		} else if ("志留系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("泥盆系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("石炭系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("二叠系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("三叠系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("侏罗系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("白垩系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("古近系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("新近系".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
-			getGas(strWheret,urlBasionQuery);
+			getGas(strWheret,urlOilUtilQuery);
 
 		} else if ("寒武系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.hanwuxi);
+//			queryQingyuan(RelativeUnicode.hanwuxi);
 
 		} else if ("奥陶系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.aotaoxi);
+//			queryQingyuan(RelativeUnicode.aotaoxi);
 
 		} else if ("泥岩盖层".equals(tag)) {
 			String gaiceng = "72057594037927935";
-			queryGaiceng(RelativeUnicode.niyangaiceng);
+//			queryGaiceng(RelativeUnicode.niyangaiceng);
 
 		} else if ("膏盐岩盖层".equals(tag)) {
 			String gaiceng = "72057594037927935";
-			queryGaiceng(RelativeUnicode.gaoyanyangaiceng);
+//			queryGaiceng(RelativeUnicode.gaoyanyangaiceng);
 
 		} else if ("碳酸盐岩盖层".equals(tag)) {
 			String gaiceng = "72057594037927935";
-			queryGaiceng(RelativeUnicode.tansuanyanyangaiceng);
+//			queryGaiceng(RelativeUnicode.tansuanyanyangaiceng);
 
 		} else if ("其它致密岩盖层".equals(tag)) {
 			String gaiceng = "72057594037927935";
-			queryGaiceng(RelativeUnicode.zhimiyangaiceng);
+//			queryGaiceng(RelativeUnicode.zhimiyangaiceng);
 
 		} else if ("特殊盖层".equals(tag)) {
 			String gaiceng = "72057594037927935";
-			queryGaiceng(RelativeUnicode.teshugaiceng);
+//			queryGaiceng(RelativeUnicode.teshugaiceng);
 
 		} else if ("mineManager".equals(tag)) {
 			mLastClickedView = null;
@@ -1743,18 +1508,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			getGas(strWheret, urlBasionQuery);
 			
 		}else if ("蒸发岩盖层".equals(name)) {   
-		    String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5"; 
 			String  strWheret="SEAL IN "+"("+tag+")"; 
-			getGas(strWheret, urlBasionQuery);
+			getGas(strWheret, urlOilUtilQuery);
 			
 		} else if ("混合型盖层".equals(name)) {
-			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5"; 
+			
 		    String  strWheret="SEAL IN "+"("+tag+")"; 
-			getGas(strWheret, urlBasionQuery);
+			getGas(strWheret, urlOilUtilQuery);
 		} else if ("非蒸发岩盖层".equals(name)) {
-		   String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5"; 
+			
 		   String  strWheret="SEAL IN "+"("+tag+")"; 
-		    getGas(strWheret, urlBasionQuery);
+		   getGas(strWheret, urlOilUtilQuery);
 		} 
 
 		if (!"CountChildrenMenuOne".equals(tag)
@@ -1817,55 +1581,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		Log.v("mandy", "where is : " + tag);
 		drawTool.queryAttribute4Query1(where, urlBasionQuery,
 					new String[]{"*"});
-	}
-
-	private void AllBasin() {
-		String chenjitixi = "72057594037927935";
-		String url = Constant.distributeOilGas + chenjitixi;
-		asyncHttpQuery.execute(1, url);
-		Log.i(tag,"url " +  url);
-	}
-
-	private void statisticsQuery() {
-		String chenjitixi = "72057594037927935";
-		String url = Constant.distributeOilGas + chenjitixi;
-		asyncHttpQuery.execute(7, url);
-	}
-
-	private void queryQingyuan(String cengxi) {
-
-		String url = Constant.distributeHydrocSource + cengxi;
-		asyncHttpQuery.execute(4, url);
-
-	}
-
-	private void queryYanyanchuLiang(String type) {
-
-		// String type = "72057594037927935";
-		String haixiang = "72057594037927935";
-		String tansuanyanyan = "72057594037927935";
-		String url = Constant.distributeRate + "type=" + type + "&haixiang="
-				+ haixiang + "&tansuanyanyan=" + tansuanyanyan;
-
-		asyncHttpQuery.execute(2, url);
-
-	}
-
-	private void queryYanyanZiyuan(String type) {
-
-		// String type = "72057594037927935";
-		String tansuanyanyan = "72057594037927935";
-		String url = Constant.baseURL + "peprisapi/fixquery3.html?type=" + type
-				+ "&tansuanyanyan=" + tansuanyanyan;
-		asyncHttpQuery.execute(3, url);
-	}
-
-	private void queryGaiceng(String gaiceng) {
-		// String gaiceng = "72057594037927935";
-		String url = Constant.baseURL + "peprisapi/fixquery6.html?gaiceng="
-				+ gaiceng;
-		asyncHttpQuery.execute(6, url);
-
 	}
 
 	private void drawPinChart() {
@@ -2100,11 +1815,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		});
 	}
 
-	private void hideCancelButton() {
-		if (mBtnCancelChoose.getVisibility() == View.VISIBLE) {
-			mBtnCancelChoose.setVisibility(View.GONE);
-		}
-	}
+//	private void hideCancelButton() {
+//		if (mBtnCancelChoose.getVisibility() == View.VISIBLE) {
+//			mBtnCancelChoose.setVisibility(View.GONE);
+//		}
+//	}
 
 	private void showCancelButton() {
 		if (mBtnCancelChoose.getVisibility() == View.GONE) {
