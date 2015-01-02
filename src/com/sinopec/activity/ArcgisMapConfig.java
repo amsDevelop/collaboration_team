@@ -19,10 +19,10 @@ public class ArcgisMapConfig {
             commonUrl + "services/marine_geo/MapServer";
     //<!-- 盆地-->
     public static String url_basin =
-            commonUrl +  "services/basin/MapServer";
+            commonUrl + "services/basin/MapServer";
     //<!-- 油田-->
     public static String url_oilfields =
-            commonUrl +  "services/Oil_field/MapServer";
+            commonUrl + "services/Oil_field/MapServer";
     //<!-- 盖层 -->
     public static String url_cover =
             commonUrl + "services/cover/MapServer";
@@ -44,7 +44,7 @@ public class ArcgisMapConfig {
 
     // <!-- 气田-->
     public static String url_gasfields =
-            commonUrl +  "services/Gas_field/MapServer";
+            commonUrl + "services/Gas_field/MapServer";
 
 
     //<!-- 油田查询url-->
@@ -52,18 +52,18 @@ public class ArcgisMapConfig {
             commonUrl + "services/marine_oil/MapServer/8";
     //<!-- 气田查询url-->
     public static String url_gasfields_4search =
-            commonUrl +  "services/marine_oil/MapServer/9";
+            commonUrl + "services/marine_oil/MapServer/9";
 
 
     // <!-- 盖层 -->
     public static String url_cover_4search =
-            commonUrl +  " http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/4";
+            commonUrl + " http://10.225.14.204/arcgis/rest/services/marine_oil/MapServer/4";
     // <!-- 烃源岩 -->
     public static String url_source_rock_4search =
-            commonUrl +  "services/marine_oil/MapServer/5";
+            commonUrl + "services/marine_oil/MapServer/5";
     // <!-- 储集层 -->
     public static String url_reservoir_4search =
-            commonUrl +  "services/marine_oil/MapServer/6";
+            commonUrl + "services/marine_oil/MapServer/6";
 
     Context context;
     MapView arcgisMap;
@@ -78,23 +78,20 @@ public class ArcgisMapConfig {
 //        String[] urls = context.getResources().getStringArray(R.array.all_layer_urls);
         String[] urls = {
                 url_marine_geo,
+                url_marine_image,
                 url_basin,
                 url_oilfields,
-                url_cover,
-                url_source_rock,
-                url_reservoir,
-                url_marine_image
+//                url_cover,
+//                url_source_rock,
+//                url_reservoir,
         };
+        String defaultShow = url_marine_geo;
         for (int i = 0; i < urls.length; i++) {
             ArcGISDynamicMapServiceLayer layer = new ArcGISDynamicMapServiceLayer(urls[i]);
             arcgisMap.addLayer(layer);
+            if (!urls[i].equals(defaultShow)) {
+                layer.setVisible(false);
+            }
         }
-        
-//        ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(url_oilfields);
-//        ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(url_marine_geo);
-      
-//      dynamicMapServiceLayer.set
-//        arcgisMap.addLayer(layer);
-        
     }
 }

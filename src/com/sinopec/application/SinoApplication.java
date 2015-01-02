@@ -14,6 +14,7 @@ import com.esri.core.map.Graphic;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.geocode.LocatorGeocodeResult;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.sinopec.activity.ArcgisMapConfig;
 import com.sinopec.activity.R;
 import com.sinopec.common.OilGasData;
 
@@ -30,7 +31,8 @@ public class SinoApplication extends Application {
 	 * 图层设置中选择图层的名称
 	 */
 	public static String layerName = LNoilGas;
-	public static final String imageUrl = "http://10.225.14.204/arcgis/rest/services/marine_image/MapServer";
+	public static final String imageUrl = ArcgisMapConfig.url_marine_image;
+//			"http://10.225.14.204/arcgis/rest/services/marine_image/MapServer";
     public static final String genUrl = "http://10.225.14.204/arcgis/rest/services/marine_geo/MapServer";
     /**
      * 搜索和长按 所用的url

@@ -40,21 +40,21 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 
 //	private List<ArcGISLayerInfo> layerInfos = new ArrayList<ArcGISLayerInfo>();
 	private MyAdapter mOilGasAdapter;
-	
+	private  Layer layerOil;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(resID, null);
 		layerSatellite = mapView.getLayerByURL(SinoApplication.imageUrl);
 		layerGeographic = mapView.getLayerByURL(SinoApplication.genUrl);
+		layerOil = mapView.getLayerByURL(ArcgisMapConfig.url_oilfields);
 		mBtnSatellite = (Button) view.findViewById(R.id.id_btn_layer_1);
 		mBtnGeographic = (Button) view.findViewById(R.id.id_btn_layer_2);
 		mBtnOilGas = (Button) view.findViewById(R.id.id_btn_layer_3);
 		
-		mBtnSatellite.setSelected(SinoApplication.mLayerDataArray[0]);
-		mBtnGeographic.setSelected(SinoApplication.mLayerDataArray[1]);
-		mBtnOilGas.setSelected(SinoApplication.mLayerDataArray[2]);
-		
+
+
 		mCover = (TextView) view.findViewById(R.id.layer_lstview_cover);
 		mCover.setOnTouchListener(new OnTouchListener() {
 			
@@ -118,6 +118,12 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 		mBtnSatellite.setOnClickListener(this);
 		mBtnGeographic.setOnClickListener(this);
 		mBtnOilGas.setOnClickListener(this);
+
+
+
+		mBtnSatellite.setSelected(layerSatellite.isVisible());
+		mBtnGeographic.setSelected(layerGeographic.isVisible());
+		mBtnOilGas.setSelected(layerOil.isVisible());
 	}
 
 	
