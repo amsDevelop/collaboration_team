@@ -901,26 +901,18 @@ public class DrawTool extends Subject {
 	}
 	public void queryAttribute4Query1(String objId, String layerUrl,String[] result
 			) {
-		
-	
-		// Envelope m_WorldEnvelope = new Envelope();
-		// m_WorldEnvelope = mapView.getMapBoundaryExtent();
 		Query query = new Query();
-		// query.setGeometry(geometry);
-		// query.setReturnGeometry(true);
 		query.setOutFields(result);
-		// SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
 		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
-		// Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +
-		// query.getSpatialRelationship());
 		query.setOutSpatialReference(mapView.getSpatialReference());
 		query.setWhere(objId);
-
 		Log.v("mandy", "objId: " + objId);
 
 		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
 				layerUrl, CommonData.TypeOperateFrameChoos, mProgressDialog);
 		task.execute(query);
+		
+		final String attribute = result[0];
 
 		task.setQueryFinishListener(new OnQueryFinishListener() {
 
@@ -930,99 +922,34 @@ public class DrawTool extends Subject {
 				Graphic[] graphics = results.getGraphics();
 				
 				DrawTool.this.graphics = graphics;
-//				Graphic
-				
+				java.text.DecimalFormat  df   =new  java.text.DecimalFormat("#0.00");  
+			
 				// 把之前高亮显示结果清除
 				mDrawLayer4HighLight.removeAll();
 				if (graphics != null) {
-					Log.d("mandy", "模糊查询  结果个数 : " + graphics.length + " "
-							+ results.getFieldAliases().size());
-//					
-					Map<String, Object> map = results.getFieldAliases();
-					
-					for (Map.Entry<String, Object> string : map.entrySet()) {
-						
-						Log.v("mandy", "key is "+ string.getKey());
-						
-						Log.v("mandy", "value is "+ string.getValue());
-					}
-					
-					
-					
-//					for (int i = 0; i < results.getFields().size(); i++) {
-//						
-//						Log.v("mandy", "results get fields: " + results.getFields().get(i).getFieldType() + "name: " + results.getFields().get(i).getName());
-//						
-//					}
-					
-					// for (Entry<String, Object> ent :
-					// results.getFieldAliases().entrySet()) {
-					// Log.d("test",
-					// "00模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
-					// }
-                   
-					
-					//不再从数据库中查询，所以之前的方式需要修改
-//					for (int i = 0; i < graphics.length; i++) {
-//						double rate = 0;
-//						if (resultList.get(i) instanceof RateForOilAndBasin) {
-//							rate = ((RateForOilAndBasin) resultList.get(i))
-//									.getStorage2()
-//									/ ((RateForOilAndBasin) resultList.get(i))
-//											.getAllStorage() * 100;
-//							if (rate > 75) {
-//								drawHighLight4Query(graphics[i], Color.RED);
-//							} else if (rate > 50) {
-//								drawHighLight4Query(graphics[i],
-//										mapView.getResources().getColor(android.R.color.holo_orange_dark));
-//
-//							} else if (rate > 25) {
-//
-//								drawHighLight4Query(graphics[i], Color.YELLOW);
-//							} else {
-//								drawHighLight4Query(graphics[i],
-//										mapView.getResources().getColor(android.R.color.holo_orange_light));
-//							}
-//						} else if (resultList.get(i) instanceof DistributeChild) {
-//
-//							rate = ((DistributeChild) resultList.get(i))
-//									.getRockResCount()
-//									/ ((DistributeChild) resultList.get(i))
-//											.getAllResCount() * 100;
-//							if (rate > 75) {
-//								drawHighLight4Query(graphics[i], Color.RED);
-//							} else if (rate > 50) {
-//								drawHighLight4Query(graphics[i],
-//										mapView.getResources().getColor(android.R.color.holo_orange_dark));
-//
-//							} else if (rate > 25) {
-//
-//								drawHighLight4Query(graphics[i], Color.YELLOW);
-//
-//							} else {
-//                               
-//							   drawHighLight4Query(graphics[i],mapView.getResources().getColor(android.R.color.holo_orange_light));
-//
-//							}
-//						} else {
-//							
-//							drawHighLight4Query(graphics[i], Color.YELLOW);
-//							
-//						}	
-//
-//					}
-					
+					Log.d("mandy", "模糊查询  结果个数 : " + graphics.length);
+				
 					for (int j = 0; j < graphics.length; j++) {
-						
-//						Log.v("mandy", "graphics AttributeValue: " + graphics[j].getAttributeValue("CRKWNPET_P"));
-						Double ff = (Double)graphics[j].getAttributeValue("CRKWNPET_P");
 						int color = Color.RED;
-						if (ff >= 0.000 && ff <= 0.250) {
-							
-							color = Color.BLACK;
+						if (attribute.equals("*")) {
+							drawHighLight4Query(graphics[j], color);
+						} else {
+						Double ff = (Double)graphics[j].getAttributeValue(attribute);
+						ff =  Double.valueOf(df.format(ff));
+						if (ff >= 0.0 && ff <= 0.25) {
+							color = mContext.getResources().getColor(R.color.fire_brick);
+						} else if (ff > 0.25 && ff<= 0.5) {
+							color = mContext.getResources().getColor(R.color.orange2);
+						} else if (ff > 0.5 && ff <= 0.75) {
+							color = mContext.getResources().getColor(R.color.yellow2);
+						} else if (ff > 0.75 && ff <= 1.0) {
+							color = mContext.getResources().getColor(R.color.green);
+						}else {
+							Log.v("mandy", "red: " + ff);
 						}
 						
 						drawHighLight4Query(graphics[j], color);
+						}
 					}
 					
 					zoomExtent(graphics);
@@ -1188,18 +1115,7 @@ public class DrawTool extends Subject {
 			// create graphic object for resulting location
 			Graphic resultLocation = new Graphic(resultLocGeom, resultSymbol);
 			// add graphic to location layer
-			Log.d("map", " drawHighLight ....uid: " + resultLocation.getUid());
 			mDrawLayer4HighLight.addGraphic(resultLocation);
-
-//			Envelope envelope = new Envelope();
-//			resultLocGeom.queryEnvelope(envelope);
-//			Point point = envelope.getCenter();
-//			// mapView.
-//			mapView.centerAt(point, true);
-//			
-//			mapView.setExtent(geometry);
-			// mapView.zoomToScale(point, -100);
-			// create text symbol for return address
 		}
 	}
 

@@ -1,30 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <!--<string-array name="oilgas_url_theme_4search">
-        
-        <item>@string/url_cover_4search</item>
-        <item>@string/url_source_rock_4search</item>
-        <item>@string/url_reservoir_4search</item>
-        <item>@string/url_oilfields_4search</item>
-        <item>@string/url_gasfields_4search</item>
-        <item>@string/url_basin_4search</item>
-    </string-array> -->
-   <!-- <string-array name="oilgas_url_theme">
-        <item>@string/url_cover</item>
-        <item>@string/url_source_rock</item>
-        <item>@string/url_reservoir</item>/
-        <item>@string/url_oilfields</item>
-        <item>@string/url_gasfields</item>
-        <item>@string/url_basin</item>
-    </string-array>-->
-
-    <!--<string-array name="all_layer_urls_4geo">
-        <item>@string/url_marine_geo</item>
-        <item>@string/url_basin</item>
-        <item>@string/url_oilfields</item>
-        <item>@string/url_gasfields</item>
-    </string-array>-->
-
     <string-array name="all_layer_name">
        <!--<item>盖层</item>
        <item>烃源岩 </item>
@@ -70,4 +45,45 @@
        <item>累计气地质储量</item>
        <item>新增气可采储量</item>
     </string-array>
+    <!--固定查询   碳酸盐岩烃源分布-->
+    <string-array  name="qingyuanfenbu_name"> 
+      <item>前寒武系</item>  
+      <item>下古生界</item> 
+      <item>志留系</item> 
+      <item>泥盆系</item> 
+      <item>石炭系</item> 
+      <item>二叠系</item> 
+      <item>三叠系</item> 
+      <item>侏罗系</item> 
+      <item>白垩系</item> 
+      <item>古近系</item> 
+      <item>新近系</item>
+   </string-array>
+   <!--固定查询   碳酸盐岩储层分布-->
+   <!--  <string-array  name="chucengfenbu_name"> 
+      <item>滩坝型</item>  
+      <item>生物礁型</item> 
+      <item>前斜坡/碎屑型</item> 
+      <item>深海白垩岩/白垩质陆架型</item> 
+      <item>白云岩化灰泥石灰岩型</item> 
+      <item>裂缝/喀斯特型</item> 
+   </string-array>  -->
+   
+     <!--固定查询   碳酸盐岩储层分布-->
+    <string-array  name="chucengfenbu_name"> 
+      <item>1</item>  
+      <item>2</item> 
+      <item>3</item> 
+      <item>4</item> 
+      <item>5</item> 
+      <item>6</item> 
+   </string-array> 
+   
+    <!--固定查询  分类型盖层分布-->
+    <string-array  name="fenleigaiceng_name"> 
+      <item>蒸发岩盖层</item>  
+      <item>混合型盖层</item> 
+      <item>非蒸发岩盖层</item> 
+    </string-array> 
+
 </resources> 

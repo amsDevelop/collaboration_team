@@ -287,9 +287,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 					array[i] = rockYuanYan.mChilds.get(i)
 							.getCodeBelongToBasin();
 				}
-				drawTool.queryAttribute4Query(whereSelect(array),
-
-						ArcgisMapConfig.url_source_rock , rockYuanYan.mChilds);
+//				drawTool.queryAttribute4Query(whereSelect(array),
+//
+//						ArcgisMapConfig.url_source_rock , rockYuanYan.mChilds);
 				break;
 
 			case 5:
@@ -416,8 +416,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		mapConfig.onCreate();
 
 		// 不显示卫星图
-//		Layer layerSatellite = map.getLayerByURL(SinoApplication.imageUrl);
-//		layerSatellite.setVisible(false);
+		Layer layerSatellite = map.getLayerByURL(SinoApplication.imageUrl);
+		layerSatellite.setVisible(false);
 
 		Options o = new Options();
 		o.mode = MODE.ONDEMAND;
@@ -907,9 +907,6 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 
 		String[] urls = {
-//				ArcgisMapConfig.url_cover,
-//				ArcgisMapConfig.url_source_rock,
-//				ArcgisMapConfig.url_reservoir,
 				ArcgisMapConfig.url_oilfields,
 				ArcgisMapConfig.url_gasfields,
 				ArcgisMapConfig.url_basin};
@@ -1413,6 +1410,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		HashMap<String, Object> map = (HashMap<String, Object>) arg0
 				.getAdapter().getItem(position);
 		String tag = (String) map.get("tag");
+		String name = (String) map.get("name");
 		if ((!mTag4OperateInLine && !mTag4ToolDistanceOk && !mTag4ToolAreaOk)
 				|| ("toolDistance".equals(tag) || "toolArea".equals(tag))) {
 		} else {
@@ -1506,26 +1504,29 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// AllBasin();
 
 		} else if ("碳酸盐岩烃源分布".equals(tag)) {
+			 Log.v("mandy", "碳酸盐岩烃源分布on click");
+			
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,
 					true, true, true, true, true, true, true, };
-			ChildrenMenuDataUtil.setSearchChildren4MenuData(toolist, clickTag,
+			ChildrenMenuDataUtil childrenMenuDataUtil = new ChildrenMenuDataUtil(mContext);
+			childrenMenuDataUtil.setSearchChildren4MenuData(toolist, clickTag,
 					mChildMenuSplitNumber);
-			mGridView.setNumColumns(12);
+			mGridView.setNumColumns(11);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
-			AllBasin();
+//			AllBasin();
 
 		} else if ("分类型盖层分布".equals(tag)) {
-
-			Boolean[] clickTag = new Boolean[] { true, true };
-			ChildrenMenuDataUtil.setSearchChildren6MenuData(toolist, clickTag,
+            Log.v("mandy", "分类型盖层分布on click");
+			Boolean[] clickTag = new Boolean[] { true, true,true};
+			ChildrenMenuDataUtil childrenMenuDataUtil = new ChildrenMenuDataUtil(mContext);
+			childrenMenuDataUtil.setSearchChildren6MenuData(toolist, clickTag,
 					mChildMenuSplitNumber);
-			mGridView.setNumColumns(2);
+			mGridView.setNumColumns(3);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
-			AllBasin();
-
 		} else if ("碳酸盐岩储层分布".equals(tag)) {
+		     Log.v("mandy", "碳酸盐岩储层分布on click");
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,
 					true };
 			ChildrenMenuDataUtil.setSearchChildren5MenuData(toolist, clickTag,
@@ -1533,51 +1534,22 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mGridView.setNumColumns(6);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
-			// String chujikongjian = "72057594037927935";
-			// String chenjixiang = "72057594037927935";
-			// String tansuanyanyan = "72057594037927935";
-			//
-			// String url = Constant.baseURL
-			// + "peprisapi/fixquery5.html?chujikongjian=" + chujikongjian
-			// + "&chenjixiang=" + chenjixiang + "&tansuanyanyan="
-			// + tansuanyanyan;
-			// asyncHttpQuery.execute(5, url);
-			AllBasin();
-
 		} else if ("海相碳酸盐岩盆地".equals(tag)) {
-//			AllBasin();
-			
-//			FROM DP01
-//			WHERE BITAND(DP01. CJTX, 34537472)>=1  AND DP01.GZDYJBBH=1 --？测试值34537472
-			
 			String where = "NAME IS NOT NULL";
-			
 			drawTool.queryAttribute4Query(where, urlBasionQuery,
 					null);	
 
 		} else if ("碳酸盐岩储量比例".equals(tag)) {
 			
-//			String type = "72057594037927935";
-////			CRKWNPET_P
-//			queryYanyanchuLiang(type);
-			
 	       String where = "NAME IS NOT NULL";
 			drawTool.queryAttribute4Query1(where, urlBasionQuery,
 					new String[]{"CRKWNPET_P"});
-			
-
-//			Boolean[] clickTag = new Boolean[] { true, true, true };
-//			ChildrenMenuDataUtil.setSearchLevel23ChildrenMenuOneData(toolist,
-//					clickTag, mChildMenuSplitNumber);
-//			mGridView.setNumColumns(3);
-//			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 
 		} else if ("碳酸盐岩资源比例".equals(tag)) {
-			Boolean[] clickTag = new Boolean[] { true, true, true };
-			ChildrenMenuDataUtil.setSearchLevel33ChildrenMenuOneData(toolist,
-					clickTag, mChildMenuSplitNumber);
-			mGridView.setNumColumns(3);
-			setGridView4LevelTwoChildrenMenu(toolist, arg0);
+			
+			  String where = "NAME IS NOT NULL";
+				drawTool.queryAttribute4Query1(where, urlBasionQuery,
+						new String[]{"CRPET_P"});
 
 		} else if ("石油2".equals(tag)) {
 
@@ -1658,36 +1630,58 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		} else if ("新近系s".equals(tag)) {
 			statisticsQuery();
-		} else if ("前寒武系".equals(tag)) {
+		} else if ("前寒武系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
+		} else if ("下古生界".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
+		} else if ("志留系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
-			queryQingyuan(RelativeUnicode.qianhaiwuxi);
+		} else if ("泥盆系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
-		} else if ("志留系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.zhiliuxi);
+		} else if ("石炭系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
-		} else if ("泥盆系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.nipenxi);
+		} else if ("二叠系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
-		} else if ("石炭系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.shitanxi);
+		} else if ("三叠系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
-		} else if ("二叠系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.erdiexi);
+		} else if ("侏罗系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
-		} else if ("三叠系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.sandiexi);
+		} else if ("白垩系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
-		} else if ("侏罗系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.zhuluoxi);
+		} else if ("古近系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
-		} else if ("白垩系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.baiyaxi);
-
-		} else if ("古近系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.gujinxi);
-
-		} else if ("新近系".equals(tag)) {
-			queryQingyuan(RelativeUnicode.xinjinxi);
+		} else if ("新近系".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5";
+			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
+			getGas(strWheret,urlBasionQuery);
 
 		} else if ("寒武系".equals(tag)) {
 			queryQingyuan(RelativeUnicode.hanwuxi);
@@ -1722,48 +1716,46 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		}else if ("滩坝型".equals(tag)) {
 			
-			drawTool.queryAttribute4Query(whereSelect("1"),
-					ArcgisMapConfig.url_reservoir,new ArrayList());
-			
-			
+			String strWheret="CR_TYPE LIKE"+"'"+1+"%"+"'";
+			getGas(strWheret, urlBasionQuery);
 		}else if ("生物礁型".equals(tag)) {
 			
-			drawTool.queryAttribute4Query(whereSelect("2"),
-					ArcgisMapConfig.url_reservoir,
-					new ArrayList());
+			String strWheret="CR_TYPE LIKE"+"'"+2+"%"+"'";
+			getGas(strWheret, urlBasionQuery);
 			
 		}else if ("前斜坡/碎屑型".equals(tag)) {
 			
-			drawTool.queryAttribute4Query(whereSelect("3"),
-					ArcgisMapConfig.url_reservoir,
-					new ArrayList());
+			String strWheret="CR_TYPE LIKE"+"'"+3+"%"+"'";
+			getGas(strWheret, urlBasionQuery);
 			
 		}else if ("深海白垩岩/白垩质陆架型".equals(tag)) {
-			drawTool.queryAttribute4Query(whereSelect("4"),
-					ArcgisMapConfig.url_reservoir,
-					new ArrayList());
+//				
+			String strWheret="CR_TYPE LIKE"+"'"+4+"%"+"'";
+			getGas(strWheret, urlBasionQuery);
 			
 		}else if ("白云岩化灰泥石灰岩型".equals(tag)) {
-			
-			drawTool.queryAttribute4Query(whereSelect("5"),
-					ArcgisMapConfig.url_reservoir,
-					new ArrayList());
+			String strWheret="CR_TYPE LIKE"+"'"+5+"%"+"'";
+			getGas(strWheret, urlBasionQuery);
 			
 		}else if ("裂缝/喀斯特型".equals(tag)) {
 			
-			drawTool.queryAttribute4Query(whereSelect("6"),
-					ArcgisMapConfig.url_reservoir,
-					new ArrayList());
-		}else if ("膏盐".equals(tag)) {
-			drawTool.queryAttribute4Query(whereSelect("2"),
-					ArcgisMapConfig.url_cover,
-					new ArrayList());
+			String strWheret="CR_TYPE LIKE"+"'"+6+"%"+"'";
+			getGas(strWheret, urlBasionQuery);
 			
-		} else if ("其他".equals(tag)) {
-			drawTool.queryAttribute4Query(whereSelect("8"),
-					ArcgisMapConfig.url_cover,
-					new ArrayList());
-		}
+		}else if ("蒸发岩盖层".equals(name)) {   
+		    String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5"; 
+			String  strWheret="SEAL IN "+"("+tag+")"; 
+			getGas(strWheret, urlBasionQuery);
+			
+		} else if ("混合型盖层".equals(name)) {
+			String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5"; 
+		    String  strWheret="SEAL IN "+"("+tag+")"; 
+			getGas(strWheret, urlBasionQuery);
+		} else if ("非蒸发岩盖层".equals(name)) {
+		   String urlBasionQuery = "http://10.225.14.204/ArcGIS/rest/services/tsyyyqpd/MapServer/5"; 
+		   String  strWheret="SEAL IN "+"("+tag+")"; 
+		    getGas(strWheret, urlBasionQuery);
+		} 
 
 		if (!"CountChildrenMenuOne".equals(tag)
 				&& !"CountChildrenMenuTwo".equals(tag)
@@ -1777,20 +1769,20 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				&& !"二叠系s".equals(tag) && !"奥陶系s".equals(tag)
 				&& !"侏罗系s".equals(tag) && !"白垩系s".equals(tag)
 				&& !"石炭系s".equals(tag) && !"古近系s".equals(tag)
-				&& !"新近系s".equals(tag) && !"前寒武系".equals(tag)
-				&& !"志留系".equals(tag) && !"二叠系".equals(tag)
-				&& !"三叠系".equals(tag) && !"侏罗系".equals(tag)
-				&& !"白垩系".equals(tag) && !"古近系".equals(tag)
-				&& !"新近系".equals(tag) && !"寒武系".equals(tag)
+				&& !"新近系s".equals(tag) && !"前寒武系".equals(name)
+				&& !"志留系".equals(name) && !"二叠系".equals(name)
+				&& !"三叠系".equals(name) && !"侏罗系".equals(name)
+				&& !"白垩系".equals(name) && !"古近系".equals(name)
+				&& !"新近系".equals(name) && !"寒武系".equals(name)
 				&& !"奥陶系".equals(tag) && !"石油2".equals(tag)
 				&& !"石油3".equals(tag) && !"天然气2".equals(tag)
-				&& !"天然气3".equals(tag) && !"石炭系".equals(tag)
-				&& !"泥盆系".equals(tag) && !"泥岩盖层".equals(tag)
+				&& !"天然气3".equals(tag) && !"石炭系".equals(name)
+				&& !"泥盆系".equals(name) && !"泥岩盖层".equals(tag)
 				&& !"膏盐岩盖层".equals(tag) && !"碳酸盐岩盖层".equals(tag)
 				&& !"其它致密岩盖层".equals(tag) && !"特殊盖层".equals(tag)
 				&& !"石油天然气2".equals(tag) && !"石油天然气3".equals(tag)
 				&& !"".equals(tag) && !"滩坝型".equals(tag) && !"生物礁型".equals(tag)
-				&& !"膏盐".equals(tag) && !"其他".equals(tag)
+				&& !"蒸发岩盖层".equals(name) && !"混合型盖层".equals(name) && !"非蒸发岩盖层".equals(name)
 				&& !"前斜坡/碎屑型".equals(tag) && !"深海白垩岩/白垩质陆架型".equals(tag)
 				&& !"白云岩化灰泥石灰岩型".equals(tag) && !"裂缝/喀斯特型".equals(tag)
 				&& !"碳酸盐岩储层分布".equals(tag) && !"分类型盖层分布".equals(tag)
@@ -1819,6 +1811,12 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			mMenuViewCompare.setSelected(false);
 			mMenuViewMine.setSelected(false);
 		}
+	}
+
+	private void getGas(String where, String urlBasionQuery) {
+		Log.v("mandy", "where is : " + tag);
+		drawTool.queryAttribute4Query1(where, urlBasionQuery,
+					new String[]{"*"});
 	}
 
 	private void AllBasin() {

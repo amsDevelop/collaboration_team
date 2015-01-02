@@ -23,7 +23,9 @@ public class ArcgisMapConfig {
     //<!-- 油田-->
     public static String url_oilfields =
             commonUrl + "services/Oil_field/MapServer";
-    //<!-- 盖层 -->
+
+/*    //<!-- 盖层 -->
+>>>>>>> Stashed changes
     public static String url_cover =
             commonUrl + "services/cover/MapServer";
     //<!-- 烃源岩 -->
@@ -31,7 +33,7 @@ public class ArcgisMapConfig {
             commonUrl + "services/source_rock/MapServer";
     //<!-- 储集层 -->
     public static String url_reservoir =
-            commonUrl + "services/reservoir/MapServer";
+            commonUrl + "services/reservoir/MapServer";*/
     //<!-- 卫星图 -->
     public static String url_marine_image =
             commonUrl + "services/marine_image/MapServer";
@@ -81,9 +83,8 @@ public class ArcgisMapConfig {
                 url_marine_image,
                 url_basin,
                 url_oilfields,
-//                url_cover,
-//                url_source_rock,
-//                url_reservoir,
+                url_marine_image,
+                url_gasfields
         };
         String defaultShow = url_marine_geo;
         for (int i = 0; i < urls.length; i++) {

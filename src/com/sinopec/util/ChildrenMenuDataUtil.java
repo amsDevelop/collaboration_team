@@ -3,12 +3,20 @@ package com.sinopec.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.content.Context;
+
 import com.sinopec.activity.R;
 
 /**
  * 主页面主菜单数据
  */
 public class ChildrenMenuDataUtil {
+	private Context mContext;
+	
+	public ChildrenMenuDataUtil (Context mContext) {
+		this.mContext = mContext;
+	}
+	
 	public static void setToolChildrenMenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
 		String[] name4count = new String[] { "测距", "测面积"};
 		Integer[] icon4count = { R.drawable.icon_count_distance,
@@ -274,18 +282,26 @@ public class ChildrenMenuDataUtil {
 	/**
 	 * 碳酸盐岩烃源分布 子菜单(查询菜单第四项)
 	 */
-	public static void setSearchChildren4MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
+	public void setSearchChildren4MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
 
-		String[] name4count = new String[] { "前寒武系","寒武系","奥陶系", "志留系" , "泥盆系",
-				"石炭系", "二叠系" , "三叠系",
-				"侏罗系", "白垩系" , "古近系", "新近系"};
+		String[] name4count = mContext.getResources().getStringArray(R.array.qingyuanfenbu_name);
+		
 		Integer[] icon4count = {  R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,R.drawable.icon_rang_oilgas,};
-
-		String[] tag = new String[] { "前寒武系","寒武系","奥陶系", "志留系" , "泥盆系",
-				"石炭系", "二叠系" , "三叠系",
-				"侏罗系", "白垩系" , "古近系", "新近系"};
+		String[] tag = new String[] { 
+				"'Pc','O,S','O,D,C','O+D','O','Cam+S'",
+				"'Pc','O,S','O,D,C','O+D','O','Cam+S'",
+				 "'S,D','S','O,S','Cam+S'", 
+				"'S,D','O,D,C','O+D','D,C,P','D,C','D+C','D'" , 
+				"'O,D,C','D,C,P','D,C','D+C','C,P','C+Tr','C+P','C-K','C,P','C'",
+				"'P,K,E','P,K','P+Tr+K+Pg','P','D,C,P','C,P','C+P','C,P'",
+				"'Tr+Ng','Tr+Jr','Tr','T,J,K3','P+Tr+K+Pg','C+Tr'" ,
+				"'Tr+Jr','T,J,K3','Jr+Pg+Ng','Jr+K','Jr','J,K,E','J+K','J'",
+				"'T,J,K3','P,K,E','P,K','P+Tr+K+Pg','K+Pg+Ng','K','Jr+K','J,K,E','J+K','C-K'",
+				"'PgNg','Pg+Ng','Pg','P+Tr+K+Pg','K+Pg+Ng','Jr+Pg+Ng'" ,
+				"'Tr+Ng',' PgNg','Pg+Ng','Ng','K+Pg+Ng','Jr+Pg+Ng'"};
+		
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -328,19 +344,21 @@ public class ChildrenMenuDataUtil {
 			map.put("split", splitNumber);
 			list.add(map);
 		}
-		
 	}
 	
 	/**
-	 * 分类型钙层分布子菜单(查询菜单第六项)
+	 * 分类型盖层分布子菜单(查询菜单第六项)
 	 */
-	public static void setSearchChildren6MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-//		String[] name4count = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
-		String[] name4count = new String[] { "膏盐", "其他"};
+	public void setSearchChildren6MenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
+		String[] name4count = mContext.getResources().getStringArray(R.array.fenleigaiceng_name);
 		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,
 				R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
-//		String[] tag = new String[] { "泥岩盖层", "膏盐岩盖层" , "碳酸盐岩盖层", "其它致密岩盖层" , "特殊盖层"};
-		String[] tag = new String[] { "膏盐", "其他"};
+		String[] tag = new String[] {
+				"'salt and by mudstones','salt','anhydrite,salt beds,nonporous dolomites,and red','anhydrite or sh','anhydrite,salt','anhydrite'"
+				,"'sh salt','salt and by mudstones','anhydrite, salt beds, nonporous dolomites, and red,anhydrite or sh,anhydrite,salt','Sh and anhydrite'"
+				,"'sh salt','salt and by mudstones','anhydrite, salt beds, nonporous dolomites, and red,anhydrite or sh,anhydrite,salt','Sh and anhydrite'"
+		};
+		
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();

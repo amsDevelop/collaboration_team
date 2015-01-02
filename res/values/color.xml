@@ -270,5 +270,12 @@
     <color name="doc_listview_divider">#c5c5c5</color>
     <color name="doc_vertical_divider">#a7a7a7</color>
     <color name="doc_content_color">#f0f0f0</color>
+    
+    <color name="fire_brick">#EE2C2C</color>
+    <color name="orange2">#ee9a00</color>
+    <color name="yellow2">#EEEE00</color>
+    <color name="green">#00ee00</color>
+    
+    
 
 </resources>
