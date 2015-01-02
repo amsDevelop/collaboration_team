@@ -47,19 +47,19 @@ public class SetIpDialog extends BaseDialogFragment implements OnClickListener{
 			Constant.baseURL = Constant.baseURL.replace("10.200.250.110", ip);
 			Constant.baseIP = ip;
 			Toast.makeText(getActivity(), ip +" set success ",Toast.LENGTH_LONG).show();
-			try {
-				DBUtil parse = new DBUtil(getActivity()){
-					@Override
-					protected Class onGetBeanForCreateTable() {
-						return ConfigBean.class;
-					}
-				};
-				ConfigBean bean = new ConfigBean();
-				bean.setIP(ip);
-				parse.saveBean(bean);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+//			try {
+//				DBUtil parse = new DBUtil(getActivity()){
+//					@Override
+//					protected Class onGetBeanForCreateTable() {
+//						return ConfigBean.class;
+//					}
+//				};
+//				ConfigBean bean = new ConfigBean();
+//				bean.setIP(ip);
+//				parse.saveBean(bean);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
 			dismiss();
 			break;
 		case R.id.button2:

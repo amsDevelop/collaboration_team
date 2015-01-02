@@ -433,8 +433,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// o);
 		// map.addLayer(fLayer);
 		mDrawLayer4HighLight = new GraphicsLayer();
-		drawLayer = new GraphicsLayer();
-
+		drawLayer = new GraphicsLayer(GraphicsLayer.RenderingMode.DYNAMIC);
 		map.addLayer(mDrawLayer4HighLight);
 		map.addLayer(drawLayer);
 		initSymbols();// 初始化符号
@@ -696,10 +695,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		MarinedbActivity.this.map
 				.setOnLongPressListener(new OnLongPressListener() {
-					public void onLongPress(float x, float y) {
+					public boolean onLongPress(float x, float y) {
 						if (!map.isLoaded()
 								|| (mFragmentLayout.getVisibility() == View.VISIBLE)) {
-							return;
+							return false;
 						}
 						isHideCallout = false;
 
@@ -761,7 +760,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 						// if (!callout.isShowing()) {
 						// callout.show();
 						// }
+						return false;
 					}
+
 
 				});
 	}

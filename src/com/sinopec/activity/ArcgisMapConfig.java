@@ -86,10 +86,7 @@ public class ArcgisMapConfig {
                 url_marine_image
         };
         for (int i = 0; i < urls.length; i++) {
-            ArcGISTiledMapServiceLayer layer = new ArcGISTiledMapServiceLayer(urls[i]);
-            
-//            ArcGISDynamicMapServiceLayer layer = new ArcGISDynamicMapServiceLayer(urls[i]);
-//            dynamicMapServiceLayer.set
+            ArcGISDynamicMapServiceLayer layer = new ArcGISDynamicMapServiceLayer(urls[i]);
             arcgisMap.addLayer(layer);
         }
         
