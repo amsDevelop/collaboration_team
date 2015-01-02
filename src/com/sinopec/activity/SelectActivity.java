@@ -169,6 +169,10 @@ public class SelectActivity extends Activity {
 //		showView();
 	}
 
+	/**
+	 * 动态解析对象属性左侧列表
+	 */
+	private final int HandlerIDTypeProperty = 33;
 	private Handler handler = new Handler() {
 
 		public void handleMessage(android.os.Message msg) {
@@ -177,6 +181,9 @@ public class SelectActivity extends Activity {
 				dealJson((String) msg.obj);
 				break;
 			case 2:
+				dealJson((String) msg.obj);
+				break;
+			case HandlerIDTypeProperty:
 				dealJson((String) msg.obj);
 				break;
 
@@ -256,7 +263,26 @@ public class SelectActivity extends Activity {
 		} catch (Exception e) {
 			Log.e("json", "-dealJson---属性解析 error: " + e.toString());
 		}
+		
+		ArrayList<String> list = new ArrayList<String>();
+		list = showLeftMenuDynamic();
+		initData(list);
 		showItemTable(mInitData);
+	}
+	
+	private ArrayList<String> showLeftMenuDynamic(){
+		ArrayList<String> list = new ArrayList<String>();
+		if (CommonData.TypeProperty.equals(dataName)) {
+			list = initChildMenuData4PropertyDynamic();
+		} else if (CommonData.TypeCount.equals(dataName)) {
+			list = initChildMenuData4Count();
+			showView();
+			getJson4Count(mID);
+		} else if (CommonData.TypeIntroduce.equals(dataName)) {
+			list = initChildMenuData4IntroduceDynamic();
+			getJson4Introduce(mID);
+		}
+		return list;
 	}
 
 	private void dealJson4Introduce(String result) {
@@ -438,7 +464,8 @@ public class SelectActivity extends Activity {
 		Log.d("json", "-------mID: " + mID);
 		
 		if (CommonData.TypeProperty.equals(dataName)) {
-			list = initChildMenuData4Property();
+//			list = initChildMenuData4Property();
+//			list = initChildMenuData4PropertyDynamic();
 			getJson4Attribute(mID);
 		} else if (CommonData.TypeCount.equals(dataName)) {
 			list = initChildMenuData4Count();
@@ -448,7 +475,7 @@ public class SelectActivity extends Activity {
 			list = initChildMenuData4Introduce();
 			getJson4Introduce(mID);
 		}
-		initData(list);
+//		initData(list);
 	}
 
 	private ArrayList<String> initChildMenuData4Property() {
@@ -477,6 +504,38 @@ public class SelectActivity extends Activity {
 		}
 		return list;
 
+	}
+	
+	/**
+	 * 动态获取左侧菜单项
+	 * @return
+	 */
+	private ArrayList<String> initChildMenuData4PropertyDynamic() {
+		ArrayList<String> list = new ArrayList<String>();
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			for (HashMap<String, Object> hashMap : mDataList) {
+				for (Entry<String, Object> hashMaps : hashMap.entrySet()) {
+					Log.d("zcn", "888 获取行名称: " + hashMaps.getKey());
+					list.add(hashMaps.getKey());
+				}
+			}
+		} else if (CommonData.TopicOilField.equals(mTopicType)
+				|| CommonData.TopicGasField.equals(mTopicType)) {
+			for (HashMap<String, Object> hashMap : mDataList) {
+				for (Entry<String, Object> hashMaps : hashMap.entrySet()) {
+					Log.d("zcn", "999 获取行名称: " + hashMaps.getKey());
+					list.add(hashMaps.getKey());
+				}
+			}
+		} else if (CommonData.TopicOilGasMine.equals(mTopicType)) {
+//			titils = new String[] { "油气藏基础属性", "油气藏储量产量", "油气藏烃源条件", "油气藏储集条件",
+//					"油气藏盖层条件", "油气藏原油性质", "油气藏天然气性质", "油气藏水性质", };
+		} else {
+//			titils = new String[] { "没有结果" };
+		}
+		
+		mInitData = list.get(0);
+		return list;
 	}
 
 	private ArrayList<String> initChildMenuData4Count() {
@@ -532,6 +591,31 @@ public class SelectActivity extends Activity {
 		// for (int i = 0; i < titils.length; i++) {
 		// list.add(titils[i]);
 		// }
+		return list;
+	}
+	
+	private ArrayList<String> initChildMenuData4IntroduceDynamic() {
+		ArrayList<String> list = new ArrayList<String>();
+		
+		if (CommonData.TopicBasin.equals(mTopicType)) {
+			for (HashMap<String, Object> hashMap : mDataList) {
+				for (Entry<String, Object> hashMaps : hashMap.entrySet()) {
+					Log.d("zcn", "555 获取行名称: " + hashMaps.getKey());
+					list.add(hashMaps.getKey());
+				}
+			}
+		} else if (CommonData.TopicOilField.equals(mTopicType)
+				|| CommonData.TopicGasField.equals(mTopicType)
+				|| CommonData.TopicOilGasMine.equals(mTopicType)) {
+			for (HashMap<String, Object> hashMap : mDataList) {
+				for (Entry<String, Object> hashMaps : hashMap.entrySet()) {
+					Log.d("zcn", "555 获取行名称: " + hashMaps.getKey());
+					list.add(hashMaps.getKey());
+				}
+			}
+		}
+		
+		mInitData = list.get(0);
 		return list;
 	}
 

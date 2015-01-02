@@ -20,7 +20,7 @@ import com.esri.core.tasks.ags.query.QueryTask;
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
-
+//框选使用该task
 public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 
 	QueryTask m_qTask;

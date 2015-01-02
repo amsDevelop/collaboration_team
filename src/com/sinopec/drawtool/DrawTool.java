@@ -723,7 +723,7 @@ public class DrawTool extends Subject {
 		});
 
 	}
-
+	//框选查询调用
 	public void queryAttribute4Query(Geometry geometry) {
 		// Envelope m_WorldEnvelope = new Envelope();
 		// m_WorldEnvelope = mapView.getMapBoundaryExtent();
@@ -1009,7 +1009,7 @@ public class DrawTool extends Subject {
 		IdentifyParameters mIdentifyParameters = new IdentifyParameters();
 		mIdentifyParameters.setTolerance(20);
 		mIdentifyParameters.setDPI(98);
-		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7,8,9,10});
+		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7,8,9});
 		mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER);
 
 		mIdentifyParameters.setGeometry(geometry);
@@ -1036,7 +1036,8 @@ public class DrawTool extends Subject {
 					// drawHighLight(result);
 					if (result != null) {
 						if (result.getLayerName().equals(
-								SinoApplication.mLayerName)) {
+//								SinoApplication.mLayerName)) {
+								SinoApplication.mLayerNameEnTag)) {
 							objectIsChecked(result);
 						} else {
 							Toast.makeText(
@@ -1140,7 +1141,9 @@ public class DrawTool extends Subject {
 			Integer uid = SinoApplication.mResultMapMulti.get(result.getValue()
 					.toString());
 			Log.d("map", " remove ....uid: " + uid);
-			mDrawLayer4HighLight.removeGraphic(uid);
+			if(uid != null){
+				mDrawLayer4HighLight.removeGraphic(uid);
+			}
 		}
 	}
 

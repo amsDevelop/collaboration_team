@@ -305,6 +305,7 @@ public class LayerDialog extends DialogFragment implements OnClickListener {
 						SinoApplication.currentLayerUrl4Multi = data.getUrl();
 						SinoApplication.currentLayerUrl = url4search;
 						SinoApplication.mLayerName = data.getName();
+						SinoApplication.mLayerNameEnTag = data.getTagEnglish();
 //						mapView.addLayer(layer);
 //							addDrawLayer();
 						resetCheckData(url, isChecked);

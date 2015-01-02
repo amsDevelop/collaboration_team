@@ -41,7 +41,7 @@ public class ArcgisMapConfig {
 
     //<!-- 盆地查询url-->
     public static String url_basin_4search =
-            commonUrl + "services/marine_oil/MapServer/10";
+            commonUrl + "services/marine_oil/MapServer/9";
 
 
     // <!-- 气田-->
@@ -51,10 +51,10 @@ public class ArcgisMapConfig {
 
     //<!-- 油田查询url-->
     public static String url_oilfields_4search =
-            commonUrl + "services/marine_oil/MapServer/8";
+            commonUrl + "services/marine_oil/MapServer/7";
     //<!-- 气田查询url-->
     public static String url_gasfields_4search =
-            commonUrl + "services/marine_oil/MapServer/9";
+            commonUrl + "services/marine_oil/MapServer/6";
 
 
     // <!-- 盖层 -->

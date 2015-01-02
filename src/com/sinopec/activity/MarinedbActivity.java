@@ -407,8 +407,9 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		// TODO:设置Identify查询参数
 		mIdentifyParameters.setTolerance(20);
 		mIdentifyParameters.setDPI(98);
-		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-				10 });
+		mIdentifyParameters.setLayers(new int[] { 6, 7, 9});
+//		mIdentifyParameters.setLayers(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+//				10 });
 		mIdentifyParameters.setLayerMode(IdentifyParameters.TOP_MOST_LAYER);
 		// mIdentifyParameters.setLayers(new int[]{4});
 		// mIdentifyParameters.setLayerMode(IdentifyParameters.ALL_LAYERS);
@@ -518,7 +519,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 							SearchIdentifyTask task = new SearchIdentifyTask(
 									// mContext, pt, SinoApplication.oilUrl,
 									mContext, pt,
-									SinoApplication.currentLayerUrl4Multi,
+//									SinoApplication.currentLayerUrl4Multi,
+									SinoApplication.oilUrl,
 									mLongTouchTitle,
 									CommonData.TypeOperateLongPress,
 									mDrawLayer4HighLight, callout);
@@ -694,6 +696,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 				ArcgisMapConfig.url_gasfields_4search,
 				ArcgisMapConfig.url_basin_4search,
 		};
+		String[] enTags = {
+				"Oil_field",
+				"Gas_field",
+				"Basin"};
 		String[] ids = getResources().getStringArray(R.array.all_layer_id);
 		String[] names = getResources().getStringArray(R.array.all_layer_name);
 		String[] colors = getResources()
@@ -704,6 +710,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			data.setUrl(urls[i]);
 			data.setSearchUrl(urls_4search[i]);
 			data.setName(names[i]);
+			data.setTagEnglish(enTags[i]);
 			data.setId(Integer.valueOf(ids[i]));
 			Log.v("mandy", "colors: " + colors[i]);
 			data.setColor(Color.parseColor(colors[i]));

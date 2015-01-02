@@ -50,6 +50,10 @@ public class SinoApplication extends Application {
      * 当前查询图层的名字
      */
     public static String mLayerName = "盆地";
+    /**
+     * 当前查询图层的名字的英文标识，用于筛选结果用
+     */
+    public static String mLayerNameEnTag = "Basin";
 	
 	/**
 	 * 主页面底部菜单分成屏幕宽度的几份

@@ -8,6 +8,13 @@ public class OilGasData {
 	private String searchUrl;
 	private int id;
 	private String name;
+	private String tagEnglish;
+	public String getTagEnglish() {
+		return tagEnglish;
+	}
+	public void setTagEnglish(String tagEnglish) {
+		this.tagEnglish = tagEnglish;
+	}
 	public String getSearchUrl() {
 		return searchUrl;
 	}
