@@ -11,6 +11,12 @@ import com.esri.android.map.ags.ArcGISTiledMapServiceLayer;
 public class ArcgisMapConfig {
 
 //    public static String rootIp = "10.225.14.204";
+//    http://202.204.193.201:8080/peprisapi/basinAttribute.html?basinId=200700000120
+
+//    public static String commonUrl = "http://202.204.193.201:8080/arcgis/rest/";
+
+    public static String STATISTICS_IP = "http://10.225.14.203:8080/";
+
 
     public static String commonUrl = "http://10.225.14.204/arcgis/rest/";
 

@@ -19,6 +19,7 @@ import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.identify.IdentifyTask;
+import com.lenovo.nova.util.debug.mylog;
 import com.sinopec.activity.MarinedbActivity;
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
@@ -103,7 +104,15 @@ public class SearchIdentifyTask extends
 			Toast.makeText(mContext, mContext.getString(R.string.search_no_result), Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
+
+
+        for (int i = 0; i < results.length; i++) {
+            IdentifyResult rst = results[i];
+            String name = rst.getDisplayFieldName();
+
+            mylog.i("scenic", "result " + name);
+            mylog.i("scenic","attribute " + rst.getAttributes());
+        }
 
 		if(results.length > 0){
 			if(CommonData.TypeOperateLongPress.equals(OperateType)){

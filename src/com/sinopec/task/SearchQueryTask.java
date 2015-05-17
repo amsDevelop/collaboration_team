@@ -133,7 +133,6 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 				}else{
 					finishListener.onFinish(results);
 				}
-				
 			}
 		}
 	}

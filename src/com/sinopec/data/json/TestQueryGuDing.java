@@ -18,6 +18,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 
 import static com.sinopec.activity.ConditionQuery.DEBUG_URL;
 
@@ -65,8 +67,13 @@ public class TestQueryGuDing {
 	protected String getJsonStr(String URL) {
 
 		NetworkHelper.NetworkManager manager = NetworkHelper.newNetworkManager();
-		HttpResponse response = manager.connect(NetworkHelper.Method.GET,URL,null,null);
-		String jsonStr = null;
+        HttpResponse response = null;
+        try {
+            response = manager.connect(NetworkHelper.Method.GET,URL,null,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String jsonStr = null;
 		try {
 			if(response != null){
 				jsonStr = EntityUtils.toString(response.getEntity());

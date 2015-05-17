@@ -17,7 +17,6 @@ public class BasinDistributionID extends Bean{
 	
 	public DistributeChild newChildInstance(){
 		DistributeChild instance = new DistributeChild();
-		mChilds.add(instance);
 		return instance;
 	}
 	

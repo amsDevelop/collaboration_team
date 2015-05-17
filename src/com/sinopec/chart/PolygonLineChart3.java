@@ -22,6 +22,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.widget.LinearLayout;
 
+/**
+ * 用于长按后的统计数据图标
+ */
 public class PolygonLineChart3 extends AbstractDemoChart{
 	private Context mContext;
 	public PolygonLineChart3(Context context){

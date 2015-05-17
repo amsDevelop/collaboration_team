@@ -16,5 +16,6 @@
     <orderEntry type="library" name="achartengine-1.1.0" level="project" />
     <orderEntry type="library" name="scenic_utils" level="project" />
     <orderEntry type="library" name="arcgis-android-api-10.2" level="application" />
+    <orderEntry type="module" module-name="tv_utils" />
   </component>
 </module>

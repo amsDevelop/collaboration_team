@@ -51,8 +51,7 @@ public class TestCustomQuery extends TestQueryGuDing {
 	 */
 	public ArrayList<DistributeChild> testCustomOilTian(String key) {
 //		String key = "mblx=1";
-		String url = Constant.baseURL +
-				"peprisapi/oilGasSearch.html?mblx=1&"+key ;
+		String url = Constant.baseURL +"peprisapi/oilGasSearch.html?mblx=1&"+key ;
 		slog.p("url " + url);
 		JSONArray jsonArray = getJsonArray(url);
 		if(jsonArray != null){

@@ -6,12 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -25,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -77,6 +76,9 @@ import com.esri.core.symbol.SimpleMarkerSymbol;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
+import com.lenovo.nova.util.debug.mylog;
+import com.lenovo.nova.util.network.NetworkHelper;
+import com.lenovo.nova.util.network.NetworkUtils;
 import com.sinopec.adapter.MenuAdapter;
 import com.sinopec.adapter.MenuGridAdapter;
 import com.sinopec.adapter.SearchAdapter;
@@ -96,6 +98,10 @@ import com.sinopec.util.JsonParse;
 import com.sinopec.util.SinoUtil;
 import com.sinopec.view.MenuButton;
 import com.sinopec.view.MenuButtonNoIcon;
+import org.apache.http.HttpEntity;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MarinedbActivity extends Activity implements OnClickListener,
 		OnItemClickListener, DrawEventListener, InterfaceDataCallBack {
@@ -259,6 +265,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		initTableKeyValue();
 		initTableKeyValue4Introduce();
 		initTableKeyValue4Compare();
+
+
+
+
 	}
 
 	private void initTableKeyValue() {
@@ -355,14 +365,16 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 	public String whereSelect(Long[] objArray) {
 
-		StringBuilder builder = new StringBuilder("OBJ_ID =");
+		StringBuilder builder = new StringBuilder("OBJ_ID = ");
 
 		for (int i = 0; i < objArray.length; i++) {
 
 			if (i == objArray.length - 1) {
-				builder.append(objArray[i]);
+                builder.append("'");
+                builder.append(objArray[i]);
+                builder.append("'");
 			} else {
-				builder.append(objArray[i] + "or OBJ_ID =");
+				builder.append("'" + objArray[i] + "'" + " or OBJ_ID = ");
 			}
 		}
 		return builder.toString();
@@ -430,13 +442,13 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		// 泡泡代码
 		popView = View.inflate(this, R.layout.paopao, null);
-		property = (Button) popView.findViewById(R.id.property);
-		statistics = (Button) popView.findViewById(R.id.statistics);
-		doc = (Button) popView.findViewById(R.id.doc);
-		mLongTouchTitle = (Button) popView.findViewById(R.id.paopao_name);
-		property.setOnClickListener(this);
-		statistics.setOnClickListener(this);
-		doc.setOnClickListener(this);
+        property = (Button) popView.findViewById(R.id.property);
+        statistics = (Button) popView.findViewById(R.id.statistics);
+        doc = (Button) popView.findViewById(R.id.doc);
+        mLongTouchTitle = (Button) popView.findViewById(R.id.paopao_name);
+        property.setOnClickListener(this);
+        statistics.setOnClickListener(this);
+        doc.setOnClickListener(this);
 
 		// imageAnim = (ImageView) findViewById(R.id.poiAnim);
 		// imageAnim.setVisibility(View.INVISIBLE);
@@ -955,7 +967,8 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	}
 
 	private void launchNewPage(String name) {
-		Intent intent = new Intent(this, SelectActivity.class);
+        mylog.i("scenic","launchNewPage name " + name);
+        Intent intent = new Intent(this, SelectActivity.class);
 		intent.putExtra(CommonData.KeyTopicType, mTopicType);
 		intent.putExtra("name", name);
 		startActivity(intent);
@@ -1373,7 +1386,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			drawBarChart();
 
 		} else if ("资源总量".equals(tag)) {
-//			statisticsQuery();
+            statisticsQueryForTotals();
 
 		} else if ("探明储量".equals(tag)) {
 //			statisticsQuery();
@@ -1584,7 +1597,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 	}
 
-	private void getGas(String where, String urlBasionQuery) {
+    //统计 资源总量
+    private void statisticsQueryForTotals() {
+        //http://<host>:<port>/peprisapi/statistical.html?dzdybm=200700000002
+        String url  = ArcgisMapConfig.STATISTICS_IP +"peprisapi/oilGasDFR.html?lrr=1&yqlx=124&tsyy=1095216660480&hx=35183298347008";
+
+
+
+
+    }
+
+    private void getGas(String where, String urlBasionQuery) {
 		Log.v("mandy", "where is : " + tag);
 		drawTool.queryAttribute4Query1(where, urlBasionQuery,
 					new String[]{"*"});

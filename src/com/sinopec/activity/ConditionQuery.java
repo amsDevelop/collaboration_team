@@ -3,10 +3,7 @@ package com.sinopec.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.XmlResourceParser;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +38,7 @@ import com.sinopec.data.json.TestCustomQuery;
 import com.sinopec.data.json.basin.BasinDistributionID;
 import com.sinopec.drawtool.DrawTool;
 import com.sinopec.util.RelativeUnicode;
+import org.xmlpull.v1.XmlPullParser;
 
 public class ConditionQuery extends BaseDialogFragment implements
 		OnClickListener {
@@ -69,7 +67,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		init();
 	}
 
-	private void parser(XmlParser xmlParser, XmlResourceParser xrp, String name,boolean start) {
+	private void parser(XmlParser xmlParser, XmlPullParser xrp, String name,boolean start) {
 		if(name == null){
 			return;
 		}
@@ -251,7 +249,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 			//confirm 
 			PreferencesUtil util = new PreferencesUtil(mActivity);
 			util.save(DEBUG_URL, "");
-			destoryDialogAndCreateQueryUrl();
+			destroyDialogAndCreateQueryUrl();
 			
 			break;
 		}
@@ -259,7 +257,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		if(v == mContainer){
 			final PreferencesUtil util = new PreferencesUtil(mActivity);
 			util.save(DEBUG_URL, "debug");
-			destoryDialogAndCreateQueryUrl();
+			destroyDialogAndCreateQueryUrl();
 			
 			mHandler.postDelayed(new Runnable() {
 				private String url;
@@ -275,7 +273,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		}
 	}
 
-	private void destoryDialogAndCreateQueryUrl() {
+	private void destroyDialogAndCreateQueryUrl() {
 		StringBuilder sb = new StringBuilder();
 		String geologyObject = "";
 		for(int i = 0; i < mContainer.getChildCount(); i++){
@@ -322,7 +320,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 		}
 		
 		
-		slog.p(TAG, "destoryDialogAndCreateQueryUrl URL is " + key);
+		mylog.i(TAG, "destroyDialogAndCreateQueryUrl URL is " + key + "  geologyObject " + geologyObject);
 		if(geologyObject.equals("盆地")){
 			executeNetworkForBasin(key);
 		}
@@ -341,7 +339,8 @@ public class ConditionQuery extends BaseDialogFragment implements
 			public void run() {
 			   final ArrayList<BasinDistributionID.DistributeChild> list = 
 					   new TestCustomQuery(mActivity).testCustomOilCang(key);
-			   draw(list);
+                String layerUrl = ArcgisMapConfig.url_gasfields + "/0";
+//                draw(list, layerUrl);
 			}
 		}).start();
 	
@@ -354,13 +353,42 @@ public class ConditionQuery extends BaseDialogFragment implements
 			public void run() {
 			   final ArrayList<BasinDistributionID.DistributeChild> list = 
 					   new TestCustomQuery(mActivity).testCustomOilTian(key);
-			   draw(list);
+
+                final String layerUrl = "http://10.225.14.204/ArcGIS/rest/services/marine_oil/MapServer/6" ;
+                Long[] array =new Long[list.size()];
+                for (int i = 0; i < array.length; i++) {
+                    array[i] = list.get(i).basionId;
+                }
+//                final String objId = mActivity.whereSelect(array);
+                final String objId = whereSelectForOil(array);
+                draw(list, layerUrl,objId);
 			}
 		}).start();
 	}
 
+    public String whereSelectForOil(Long[] objArray) {
 
-	private void draw(final ArrayList list){
+        StringBuilder builder = new StringBuilder("OBJ_ID  = ");
+//        StringBuilder builder = new StringBuilder("油气田名称 = ");
+
+        for (int i = 0; i < objArray.length; i++) {
+
+            if (i == objArray.length - 1) {
+//                builder.append("'");
+                builder.append(objArray[i]);
+//                builder.append("'");
+            } else {
+//                builder.append("'");
+                builder.append(objArray[i] );
+//                builder.append("'");
+                builder.append(" or OBJ_ID = ");
+            }
+        }
+        return builder.toString();
+    }
+
+
+	private void draw(final ArrayList list, final String layerUrl,final String objId){
 		PreferencesUtil util = new PreferencesUtil(mActivity);
 		if(util.getString(DEBUG_URL) != null && !util.getString(DEBUG_URL).equals("")){
 			return;
@@ -375,14 +403,9 @@ public class ConditionQuery extends BaseDialogFragment implements
 			});
 			return ;
 		  }
-		   Long objArray[] = new Long[list.size()];
-		   for(int i = 0; i < list.size(); i++){
-			   objArray[i] = ((BasinDistributionID.DistributeChild)list.get(i)).basionId;
-		   }
-		   final String objId = mActivity.whereSelect(objArray);
-		   slog.p(TAG,"executeNetworkForBasin objId " + objId);
-		   
-		   final String layerUrl = ArcgisMapConfig.url_basin + "/0";
+
+//
+
 		   slog.p(TAG,"executeNetworkForBasin layerUrl " + layerUrl);
 		   mActivity.runOnUiThread(new Runnable() {
 			
@@ -393,6 +416,7 @@ public class ConditionQuery extends BaseDialogFragment implements
 					Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_LONG).show();
 					return ;
 				}
+
 				tool.queryAttribute4Query(objId, layerUrl , list);
 				dismiss();
 			}
@@ -404,7 +428,17 @@ public class ConditionQuery extends BaseDialogFragment implements
 			public void run() {
 			   final ArrayList<BasinDistributionID.DistributeChild> list = 
 					   new TestCustomQuery(getActivity()).testCustomBasin(key);
-			   draw(list);
+
+               final String layerUrl = ArcgisMapConfig.url_basin + "/0";
+
+                Long objArray[] = new Long[list.size()];
+                for(int i = 0; i < list.size(); i++){
+                    objArray[i] = ((BasinDistributionID.DistributeChild)list.get(i)).basionId;
+                }
+
+                final String objId = mActivity.whereSelect(objArray);
+                slog.p(TAG,"executeNetworkForBasin objId " + objId);
+                draw(list, layerUrl,objId);
 			}
 		}).start();
 	}
@@ -742,14 +776,19 @@ public class ConditionQuery extends BaseDialogFragment implements
 		protected Void doInBackground(XmlResourceParser... arg0) {
 			
 			final XmlParser parser = new XmlParser(arg0[0]) {
-				public void onExecueStartTagEvent(XmlResourceParser parser,
-												  String name) {
-					ConditionQuery.this.parser(this,parser, name,true);
-				}
-				protected void onExecuteEndTagEvent(XmlResourceParser parser, String name) {
-					ConditionQuery.this.parser(this,parser, name,false);
-				}
-			};
+                @Override
+                protected void onExecuteEndTagEvent(XmlPullParser parser, String name) {
+                    super.onExecuteEndTagEvent(parser, name);
+                    ConditionQuery.this.parser(this,parser, name,false);
+                }
+
+                @Override
+                protected void onExecuteStartTagEvent(XmlPullParser parser, String tag) {
+                    super.onExecuteStartTagEvent(parser, tag);
+                    ConditionQuery.this.parser(this,parser, tag,true);
+                }
+
+            };
 			parser.parser();
 			
 			return null;
