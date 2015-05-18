@@ -1,5 +1,9 @@
 package com.sinopec.chart;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.AbstractChart;
@@ -9,11 +13,16 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
+import com.lenovo.nova.util.debug.mylog;
+
 import android.R.integer;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.Bitmap.CompressFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -146,12 +155,28 @@ public class BarChart3 {
         //Set the layout manually
 		gView.layout(0, 0, gView.getLayoutParams().width, gView.getLayoutParams().height); 
         //Set the quality to high 
-		gView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH); 
+		gView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW); 
         //Build the cache, get the bitmap and close the cache 
 		gView.buildDrawingCache(true); 
 		//Bitmap bi=gView.toBitmap();
 		
-		return Bitmap.createBitmap(gView.getDrawingCache());	
+//		BitmapFactory.Options options=new BitmapFactory.Options();
+//		options.inSampleSize = 8;
+//		Bitmap preview_bitmap=Bitmap.cre
+		Bitmap temp = gView.getDrawingCache();
+		try {
+			boolean success = temp.compress(CompressFormat.PNG, 30, 
+					new FileOutputStream(new File(context.getCacheDir(),"temp")));
+			Log.d("bitmap", "success " + success);
+			
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		Bitmap bitmap = BitmapUtils.getSmallBitmap(new File(context.getCacheDir(),"temp").getAbsolutePath());
+//		Bitmap bitmap = Bitmap.createScaledBitmap(gView.getDrawingCache(), 100, 150, false);
+		
+		return bitmap;	
 	}
 	
 	public double GetMaxValue() {

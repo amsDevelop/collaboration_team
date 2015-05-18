@@ -9,7 +9,9 @@ import java.util.Map.Entry;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +36,7 @@ import com.esri.core.map.Graphic;
 import com.esri.core.symbol.FillSymbol;
 import com.esri.core.symbol.LineSymbol;
 import com.esri.core.symbol.MarkerSymbol;
+import com.esri.core.symbol.PictureMarkerSymbol;
 import com.esri.core.symbol.SimpleFillSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.core.symbol.SimpleMarkerSymbol;
@@ -43,6 +46,7 @@ import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.query.Query;
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
+import com.sinopec.chart.BarChart3;
 import com.sinopec.common.CommonData;
 import com.sinopec.common.InterfaceDataCallBack;
 import com.sinopec.task.SearchIdentifyTask;
@@ -740,6 +744,8 @@ public class DrawTool extends Subject {
 		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
 				SinoApplication.currentLayerUrl,
 				CommonData.TypeOperateFrameChoos, mProgressDialog);
+		
+		Log.v("mandy", "current url: " + SinoApplication.currentLayerUrl);
 		task.execute(query);
 
 		task.setQueryFinishListener(new OnQueryFinishListener() {
@@ -819,69 +825,12 @@ public class DrawTool extends Subject {
 				Graphic[] graphics = results.getGraphics();
 				
 				DrawTool.this.graphics = graphics;
-//				Graphic
 				
 				// 把之前高亮显示结果清除
 				mDrawLayer4HighLight.removeAll();
 				if (graphics != null) {
 					Log.d("mandy", "模糊查询  结果个数 : " + graphics.length + " "
 							+ results.getDisplayFieldName());
-					// for (Entry<String, Object> ent :
-					// results.getFieldAliases().entrySet()) {
-					// Log.d("test",
-					// "00模糊查询  key: "+ent.getKey()+"  val: "+ent.getValue());
-					// }
-                   
-					
-					//不再从数据库中查询，所以之前的方式需要修改
-//					for (int i = 0; i < graphics.length; i++) {
-//						double rate = 0;
-//						if (resultList.get(i) instanceof RateForOilAndBasin) {
-//							rate = ((RateForOilAndBasin) resultList.get(i))
-//									.getStorage2()
-//									/ ((RateForOilAndBasin) resultList.get(i))
-//											.getAllStorage() * 100;
-//							if (rate > 75) {
-//								drawHighLight4Query(graphics[i], Color.RED);
-//							} else if (rate > 50) {
-//								drawHighLight4Query(graphics[i],
-//										mapView.getResources().getColor(android.R.color.holo_orange_dark));
-//
-//							} else if (rate > 25) {
-//
-//								drawHighLight4Query(graphics[i], Color.YELLOW);
-//							} else {
-//								drawHighLight4Query(graphics[i],
-//										mapView.getResources().getColor(android.R.color.holo_orange_light));
-//							}
-//						} else if (resultList.get(i) instanceof DistributeChild) {
-//
-//							rate = ((DistributeChild) resultList.get(i))
-//									.getRockResCount()
-//									/ ((DistributeChild) resultList.get(i))
-//											.getAllResCount() * 100;
-//							if (rate > 75) {
-//								drawHighLight4Query(graphics[i], Color.RED);
-//							} else if (rate > 50) {
-//								drawHighLight4Query(graphics[i],
-//										mapView.getResources().getColor(android.R.color.holo_orange_dark));
-//
-//							} else if (rate > 25) {
-//
-//								drawHighLight4Query(graphics[i], Color.YELLOW);
-//
-//							} else {
-//                               
-//							   drawHighLight4Query(graphics[i],mapView.getResources().getColor(android.R.color.holo_orange_light));
-//
-//							}
-//						} else {
-//							
-//							drawHighLight4Query(graphics[i], Color.YELLOW);
-//							
-//						}	
-//
-//					}
 					
 					for (int j = 0; j < graphics.length; j++) {
 						drawHighLight4Query(graphics[j], Color.RED);
@@ -964,6 +913,77 @@ public class DrawTool extends Subject {
 		});
 
 	}
+	public void queryAttribute4Query2(String objId, String layerUrl,String[] result
+			) {
+		Query query = new Query();
+		query.setOutFields(result);
+		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
+		query.setOutSpatialReference(mapView.getSpatialReference());
+		query.setWhere(objId);
+		Log.v("mandy", "objId: " + objId);
+
+		SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
+				layerUrl, CommonData.TypeOperateFrameChoos, mProgressDialog);
+		task.execute(query);
+		
+		final String attribute = result[0];
+
+		task.setQueryFinishListener(new OnQueryFinishListener() {
+
+			@Override
+			public void onFinish(FeatureSet results) {
+				SinoApplication.mFeatureSet4Query = results;
+				Graphic[] graphics = results.getGraphics();
+				
+				DrawTool.this.graphics = graphics;
+				java.text.DecimalFormat  df   =new  java.text.DecimalFormat("#0.00");  
+			
+				// 把之前高亮显示结果清除
+				mDrawLayer4HighLight.removeAll();
+				if (graphics != null) {
+					Log.d("mandy", "模糊查询  结果个数 : " + graphics.length);
+				
+					for (int j = 0; j < graphics.length; j++) {
+						
+//						Double ff = (Double)graphics[j].getAttributeValue(attribute);
+					    Map<String, Object> map =graphics[j].getAttributes();
+					    for (Map.Entry<String, Object> string : map.entrySet()) {
+							Log.v("mandy", "key: " + string.getKey() + " value: " + string.getValue());
+						}
+					    
+					    Envelope envelope = new Envelope();
+						graphics[j].getGeometry().queryEnvelope(envelope);
+						BarChart3 b3 = new BarChart3((Double)graphics[j].getAttributeValue("CR_KWNOIL"),
+								(Double)graphics[j].getAttributeValue("CR_KWNGAS"), (Double)graphics[j].getAttributeValue("CR_KWNNGL"), 100, 220);
+						Bitmap bi = b3.GetBarChartBitmap(mContext);
+						PictureMarkerSymbol Symbol = new PictureMarkerSymbol(
+								new BitmapDrawable(bi));
+
+						Graphic graphic = new Graphic(envelope.getCenter(), Symbol);
+						// Graphic graphic = new Graphic(new Point(0,0),Symbol);
+						drawLayer.addGraphic(graphic);
+					    
+						bi.recycle();
+					    Log.v("mandy", "finish..................");
+					    
+						
+//						drawHighLight4Query(graphics[j], color);
+//						}
+					}
+					
+					zoomExtent(graphics);
+					mProgressDialog.dismiss();
+					// deactivate();
+					// mCallback.setSearchData4Query(results);
+					// Toast.makeText(mapView.getContext(), sb.toString() ,
+					// Toast.LENGTH_LONG).show();
+				}
+			}
+
+		});
+
+	}
+	
 	double minx = -1;
 	double miny = -1;
 	double maxx = -1;
@@ -1119,7 +1139,7 @@ public class DrawTool extends Subject {
 			mDrawLayer4HighLight.addGraphic(resultLocation);
 		}
 	}
-
+	
 	private void drawHighLight4Multi(IdentifyResult result) {
 		if (result != null) {
 			Geometry resultLocGeom = result.getGeometry();

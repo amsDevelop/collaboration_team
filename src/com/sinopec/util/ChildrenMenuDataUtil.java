@@ -262,7 +262,9 @@ public class ChildrenMenuDataUtil {
 				R.drawable.icon_rang_oilgas, R.drawable.icon_range_volume,
 				R.drawable.icon_distribute };
 		
-		String[] tag = new String[] {"资源总量", "探明储量","待发现资源量" };
+		String[] tag = new String[] {"CR_KWNOIL,CR_KWNGAS,CR_KWNNGL",
+				"CR_UND_OIL,CR_UND_GAS,CR_UND_NGL",
+				"CR_OIL,CR_GAS,CR_NGL"};
 		list.clear();
 		for (int i = 0; i < name4count.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();

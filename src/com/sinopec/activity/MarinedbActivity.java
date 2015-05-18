@@ -1385,13 +1385,17 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		} else if ("储量及资源量级别".equals(tag)) {
 			drawBarChart();
 
-		} else if ("资源总量".equals(tag)) {
-            statisticsQueryForTotals();
 
-		} else if ("探明储量".equals(tag)) {
+		} else if ("资源总量".equals(name)) {
+			
+	        String where = "NOT NAME = ''";
+	        String[] results = new String[]{tag};
+			statisticsQuery(where,results);
+
+		} else if ("探明储量".equals(name)) {
 //			statisticsQuery();
 
-		} else if ("待发现资源量".equals(tag)) {
+		} else if ("待发现资源量".equals(name)) {
 //			statisticsQuery();
 
 		} else if ("前寒武系s".equals(tag)) {
@@ -1597,17 +1601,14 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 		}
 	}
 
-    //统计 资源总量
-    private void statisticsQueryForTotals() {
-        //http://<host>:<port>/peprisapi/statistical.html?dzdybm=200700000002
-        String url  = ArcgisMapConfig.STATISTICS_IP +"peprisapi/oilGasDFR.html?lrr=1&yqlx=124&tsyy=1095216660480&hx=35183298347008";
+	private void statisticsQuery(String tag, String[] results) {
+	
+		drawTool.queryAttribute4Query2(tag, urlBasionQuery,
+				results);
+		
+	}
 
-
-
-
-    }
-
-    private void getGas(String where, String urlBasionQuery) {
+	private void getGas(String where, String urlBasionQuery) {
 		Log.v("mandy", "where is : " + tag);
 		drawTool.queryAttribute4Query1(where, urlBasionQuery,
 					new String[]{"*"});
