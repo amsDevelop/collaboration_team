@@ -137,14 +137,20 @@ public class BarChart3 {
 		multiRenderer.setMargins(new int[] { 0, 0,-25, 0 });//
 
 		gView=ChartFactory.getBarChartView(context, dataset, multiRenderer,Type.DEFAULT);
-		gView.setLayoutParams(new LinearLayout.LayoutParams(m_width,(int) (m_height*yMax/GetMaxValue())));
+		
+		Log.v("mandy", "m_height: " + m_height + " yMax: " + yMax + " GetMaxValue(): " + GetMaxValue());
+		
+		
+		gView.setLayoutParams(new LinearLayout.LayoutParams(m_width,m_height));
 		return gView;
 	}
 
 	public Bitmap GetBarChartBitmap(Context context) {
-		GraphicalView gView=GetBarChartView(context);
+		    GraphicalView gView=GetBarChartView(context);
 		
-		   Bitmap bitmap = Bitmap.createBitmap(100,  100, Bitmap.Config.RGB_565);
+		    Log.v("mandy", "width:" + gView.getLayoutParams().width);
+		    Log.v("mandy", "height: " +gView.getLayoutParams().height);
+		   Bitmap bitmap = Bitmap.createBitmap(gView.getLayoutParams().width,  gView.getLayoutParams().height, Bitmap.Config.ARGB_4444);
 		   
 		   BitmapFactory.Options options = new BitmapFactory.Options();
 		   options.inSampleSize = 2;

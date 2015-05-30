@@ -16,6 +16,7 @@
             android:name=".MarinedbActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden"
+           
             android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -954,7 +954,7 @@ public class DrawTool extends Subject {
 					    Envelope envelope = new Envelope();
 						graphics[j].getGeometry().queryEnvelope(envelope);
 						BarChart3 b3 = new BarChart3((Double)graphics[j].getAttributeValue("CR_KWNOIL"),
-								(Double)graphics[j].getAttributeValue("CR_KWNGAS"), (Double)graphics[j].getAttributeValue("CR_KWNNGL"), 100, 220);
+								(Double)graphics[j].getAttributeValue("CR_KWNGAS"), (Double)graphics[j].getAttributeValue("CR_KWNNGL"), 100, 100);
 						Bitmap bi = b3.GetBarChartBitmap(mContext);
 						PictureMarkerSymbol Symbol = new PictureMarkerSymbol(
 								new BitmapDrawable(bi));
