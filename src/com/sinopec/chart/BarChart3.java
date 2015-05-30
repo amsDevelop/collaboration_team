@@ -1,27 +1,21 @@
 package com.sinopec.chart;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
-import org.achartengine.chart.AbstractChart;
 import org.achartengine.chart.BarChart.Type;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import com.lenovo.nova.util.debug.mylog;
-
-import android.R.integer;
+import android.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.Bitmap.CompressFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -135,12 +129,12 @@ public class BarChart3 {
 		// Creating an intent to plot bar chart using dataset and
 		multiRenderer.setShowLegend(false);
 		//multiRenderer.setShowAxes(false);
-		multiRenderer.setPanEnabled(false);// ����ͼ�?���϶�
+		multiRenderer.setPanEnabled(false);//
 		multiRenderer.setXAxisMax(0.5);
 		multiRenderer.setXAxisMin(-0.5);
 		multiRenderer.setYAxisMax(yMax);
-		multiRenderer.setZoomEnabled(false, false);// ����ͼ�?������
-		multiRenderer.setMargins(new int[] { 0, 0,-25, 0 });// ����ҳ�߾�
+		multiRenderer.setZoomEnabled(false, false);//
+		multiRenderer.setMargins(new int[] { 0, 0,-25, 0 });//
 
 		gView=ChartFactory.getBarChartView(context, dataset, multiRenderer,Type.DEFAULT);
 		gView.setLayoutParams(new LinearLayout.LayoutParams(m_width,(int) (m_height*yMax/GetMaxValue())));
@@ -150,31 +144,22 @@ public class BarChart3 {
 	public Bitmap GetBarChartBitmap(Context context) {
 		GraphicalView gView=GetBarChartView(context);
 		
-        //Enable the cache 
-		gView.setDrawingCacheEnabled(true); 
-        //Set the layout manually
-		gView.layout(0, 0, gView.getLayoutParams().width, gView.getLayoutParams().height); 
-        //Set the quality to high 
-		gView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW); 
-        //Build the cache, get the bitmap and close the cache 
-		gView.buildDrawingCache(true); 
-		//Bitmap bi=gView.toBitmap();
+		   Bitmap bitmap = Bitmap.createBitmap(100,  100, Bitmap.Config.RGB_565);
+		   
+		   BitmapFactory.Options options = new BitmapFactory.Options();
+		   options.inSampleSize = 2;
+		   
+		   
+//		   gView.setBackgroundColor(context.getResources().getColor(R.color.holo_orange_light));
+		   
+		   gView.setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(R.color.transparent)));
+//		   bitmap.compress(CompressFormat.PNG, 30, stream);
+		   
+		    Canvas canvas =  new Canvas(bitmap);
+		    canvas.drawColor(Color.TRANSPARENT);
+		    gView.draw(canvas);
 		
-//		BitmapFactory.Options options=new BitmapFactory.Options();
-//		options.inSampleSize = 8;
-//		Bitmap preview_bitmap=Bitmap.cre
-		Bitmap temp = gView.getDrawingCache();
-		try {
-			boolean success = temp.compress(CompressFormat.PNG, 30, 
-					new FileOutputStream(new File(context.getCacheDir(),"temp")));
-			Log.d("bitmap", "success " + success);
-			
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		Bitmap bitmap = BitmapUtils.getSmallBitmap(new File(context.getCacheDir(),"temp").getAbsolutePath());
-//		Bitmap bitmap = Bitmap.createScaledBitmap(gView.getDrawingCache(), 100, 150, false);
+	
 		
 		return bitmap;	
 	}

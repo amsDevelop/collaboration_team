@@ -958,6 +958,7 @@ public class DrawTool extends Subject {
 						Bitmap bi = b3.GetBarChartBitmap(mContext);
 						PictureMarkerSymbol Symbol = new PictureMarkerSymbol(
 								new BitmapDrawable(bi));
+					
 
 						Graphic graphic = new Graphic(envelope.getCenter(), Symbol);
 						// Graphic graphic = new Graphic(new Point(0,0),Symbol);

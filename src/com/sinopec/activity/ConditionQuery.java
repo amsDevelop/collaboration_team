@@ -781,10 +781,8 @@ public class ConditionQuery extends BaseDialogFragment implements
                     super.onExecuteEndTagEvent(parser, name);
                     ConditionQuery.this.parser(this,parser, name,false);
                 }
-
-                @Override
                 protected void onExecuteStartTagEvent(XmlPullParser parser, String tag) {
-                    super.onExecuteStartTagEvent(parser, tag);
+                    super.onExecuteEndTagEvent(parser, tag);
                     ConditionQuery.this.parser(this,parser, tag,true);
                 }
 
