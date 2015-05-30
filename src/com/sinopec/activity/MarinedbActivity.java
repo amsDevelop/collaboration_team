@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -935,7 +936,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.menuview_count: // 统计点击事件
 
-			clickTag = new Boolean[] { true, true, };
+			clickTag = new Boolean[] { true, true,true };
 			ChildrenMenuDataUtil.setCountChildrenMenuData(toolist, clickTag,
 					mChildMenuSplitNumber);
 			mGridView.setNumColumns(2);
@@ -1299,7 +1300,10 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 			// AllBasin();
 
-		} else if ("碳酸盐岩烃源分布".equals(tag)) {
+		}else if("CountChildrenMenuThree".equals(tag)){
+            mylog.i("scenic","statistics three menu" );
+
+        } else if ("碳酸盐岩烃源分布".equals(tag)) {
 			 Log.v("mandy", "碳酸盐岩烃源分布on click");
 			
 			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,

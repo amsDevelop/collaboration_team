@@ -504,12 +504,20 @@ public class SelectActivity extends Activity {
 
                         String first = object.getString("HYQCX");
                         String two = object.getString("QYGZ");
+
+
                         //地理位置图
                         String item_3 = "NULL";
                         String item_4 = object.getString("PDGK");
                         String item_5 = object.getString("QBYYQC");
                         String item_6 = object.getString("KTQK");
                         String item_7 = "NULL";
+                        if(first.contains("塔里木")){
+                            String imageUrl = "file:///android_asset/png_diliweizhi.png";
+                            item_3 = "<HTML><IMG src=\""+imageUrl+"\""+"width="+500+"height="+500+"/></HTML>";
+                            item_7 = item_3;
+                            mylog.i("scenic","html is " + item_3);
+                        }
                         List<String> mValues = new ArrayList<String>();
                         mValues.add(first);
                         mValues.add(two);

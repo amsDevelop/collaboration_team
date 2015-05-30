@@ -86,10 +86,15 @@ public class ChildrenMenuDataUtil {
 	}
 	
 	public static void setCountChildrenMenuData(ArrayList<HashMap<String, Object>> list, Boolean[] clickTag, int splitNumber) {
-		String[] name4count = new String[] { "碳酸盐岩储量及资源量分布", "分层系碳酸盐岩储量及资源量分布" };
-		Integer[] icon4count = { R.drawable.icon_rang_oilgas, R.drawable.icon_rang_oilgas,};
+		String[] name4count = new String[] { "碳酸盐岩储量及资源量分布",
+                "分层系碳酸盐岩储量及资源量分布",
+                "统计中国" };
+		Integer[] icon4count = { R.drawable.icon_rang_oilgas,
+                R.drawable.icon_rang_oilgas,
+                R.drawable.icon_rang_oilgas
+        };
 //		String[] tag = new String[] { "全球含油气盆地碳酸盐岩层系油气储量及资源量分布", "分层系全球已发现海相碳酸盐岩层系含油气盆地及其储量分布" };
-		String[] tag = new String[] { "CountChildrenMenuOne", "CountChildrenMenuTwo" };
+		String[] tag = new String[] { "CountChildrenMenuOne", "CountChildrenMenuTwo","CountChildrenMenuThree" };
 //		String[] name4count = new String[] { "数.面积.储", "数密.面密", "储量丰度",
 //				"储量分布", "油气田数", "油气田面积" };
 //		Integer[] icon4count = { R.drawable.icon_rang_oilgas,
