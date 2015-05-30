@@ -132,6 +132,7 @@ public class StaticsChart extends AbstractDemoChart {
         renderer.setBarSpacing(0.5f);//柱子间宽度
         renderer.setAxisTitleTextSize(30);
         renderer.setAxisTitleTextSize(20);
+
         for (int i = 0; i < data.size(); i++) {
             renderer.addXTextLabel(i,data.get(0).ND+"");
         }
