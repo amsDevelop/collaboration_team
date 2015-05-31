@@ -913,8 +913,11 @@ public class DrawTool extends Subject {
 		});
 
 	}
-	public void queryAttribute4Query2(String objId, String layerUrl,String[] result
+	public void queryAttribute4Query2(String objId, String layerUrl,final String[] result
 			) {
+		
+		
+		drawLayer.removeAll();
 		Query query = new Query();
 		query.setOutFields(result);
 		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
@@ -927,6 +930,16 @@ public class DrawTool extends Subject {
 		task.execute(query);
 		
 		final String attribute = result[0];
+		
+	    final  String[] resultAtt = attribute.split(",");
+	    
+	    
+	    for (int i = 0; i < resultAtt.length; i++) {
+			
+	    	Log.v("mandy", "result att : " + resultAtt[i]);
+	    	
+		}
+		
 
 		task.setQueryFinishListener(new OnQueryFinishListener() {
 
@@ -937,6 +950,8 @@ public class DrawTool extends Subject {
 				
 				DrawTool.this.graphics = graphics;
 				java.text.DecimalFormat  df   =new  java.text.DecimalFormat("#0.00");  
+				
+			    
 			
 				// 把之前高亮显示结果清除
 				mDrawLayer4HighLight.removeAll();
@@ -949,12 +964,56 @@ public class DrawTool extends Subject {
 					    Map<String, Object> map =graphics[j].getAttributes();
 					    for (Map.Entry<String, Object> string : map.entrySet()) {
 							Log.v("mandy", "key: " + string.getKey() + " value: " + string.getValue());
+							
 						}
 					    
+					    
+					    double oil = 0.0;
+					    double gas = 0.0;
+					    double coil =0.0;
+					    
+					    if (graphics[j].getAttributeValue(resultAtt[0]) instanceof Integer) {
+					    	
+					    	  int oilI = (Integer)graphics[j].getAttributeValue(resultAtt[0]);
+					    	  oil = oilI;
+					    	
+					    }else {
+					    	  oil = (Double)graphics[j].getAttributeValue(resultAtt[0]);
+					    	
+					    }
+					    if (graphics[j].getAttributeValue(resultAtt[1]) instanceof Integer) {
+					    	
+					    	  int gasI = (Integer)graphics[j].getAttributeValue(resultAtt[1]);
+					    	  gas = gasI;
+					    	
+					    } else {
+					        	gas = (Double)graphics[j].getAttributeValue(resultAtt[1]);
+					    	
+					    }
+					
+					    if (graphics[j].getAttributeValue(resultAtt[2]) instanceof Integer) {
+					    	
+					    	  int coilI = (Integer)graphics[j].getAttributeValue(resultAtt[2]);
+					    	  coil = coilI;
+					    	
+					    } else {
+					    	
+					    	coil = (Double)graphics[j].getAttributeValue(resultAtt[2]);
+					    	
+					    }
+					    
+					    
+					    
+					    if ((int)oil == 0 && (int)gas == 0 && (int)coil == 0) {
+					    	
+					    	 continue;
+					    	
+					    }
 					    Envelope envelope = new Envelope();
 						graphics[j].getGeometry().queryEnvelope(envelope);
-						BarChart3 b3 = new BarChart3((Double)graphics[j].getAttributeValue("CR_KWNOIL"),
-								(Double)graphics[j].getAttributeValue("CR_KWNGAS"), (Double)graphics[j].getAttributeValue("CR_KWNNGL"), 100, 100);
+						BarChart3 b3 = new BarChart3(Double.parseDouble(df.format(oil)),
+								Double.parseDouble(df.format(gas)), Double.parseDouble(df.format(coil)), 120, 150);
+						
 						Bitmap bi = b3.GetBarChartBitmap(mContext);
 						PictureMarkerSymbol Symbol = new PictureMarkerSymbol(
 								new BitmapDrawable(bi));
@@ -962,14 +1021,12 @@ public class DrawTool extends Subject {
 
 						Graphic graphic = new Graphic(envelope.getCenter(), Symbol);
 						// Graphic graphic = new Graphic(new Point(0,0),Symbol);
+					
 						drawLayer.addGraphic(graphic);
 					    
 						bi.recycle();
 					    Log.v("mandy", "finish..................");
-					    
-						
-//						drawHighLight4Query(graphics[j], color);
-//						}
+
 					}
 					
 					zoomExtent(graphics);

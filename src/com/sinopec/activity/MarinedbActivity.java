@@ -1292,11 +1292,11 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			// drawBarChart();
 
 		} else if ("CountChildrenMenuTwo".equals(tag)) { // 分层系碳酸盐岩储量及资源量分布
-			Boolean[] clickTag = new Boolean[] { true, true, true, true, true,
-					true, true, true, true, true, true, };
+			Boolean[] clickTag = new Boolean[] {true, true, true, true, true,
+					true, true, true, true, true, true, true};
 			ChildrenMenuDataUtil.setCountLevelTwoChildrenMenuData(toolist,
 					clickTag, mChildMenuSplitNumber);
-			mGridView.setNumColumns(11);
+			mGridView.setNumColumns(12);
 			setGridView4LevelTwoChildrenMenu(toolist, arg0);
 			// AllBasin();
 
@@ -1397,43 +1397,108 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 			statisticsQuery(where,results);
 
 		} else if ("探明储量".equals(name)) {
+			
+			     String where = "NOT NAME = ''";
+		        String[] results = new String[]{tag};
+				statisticsQuery(where,results);
 //			statisticsQuery();
 
 		} else if ("待发现资源量".equals(name)) {
+			
+		       String where = "NOT NAME = ''";
+		        String[] results = new String[]{tag};
+				statisticsQuery(where,results);
 //			statisticsQuery();
 
 		} else if ("前寒武系s".equals(tag)) {
-//			statisticsQuery();
+
+			    String where = "NOT NAME = ''";
+		        String[] results = new String[]{"PC_oil,PC_gas_mmb,PC_ngl,PC_pet"};
+				statisticsQuery(where,results);
+			
+			
 
 		} else if ("寒武系s".equals(tag)) {
+			
+			    String where = "NOT NAME = ''";
+		        String[] results = new String[]{"Cam_OIL,cam_gas_mm,Cam_NGL,cam_pet"};
+				statisticsQuery(where,results);
+			
+			
 
 		} else if ("至留系s".equals(tag)) {
 //			statisticsQuery();
-			drawBarChart();
+			
+			    String where = "NOT NAME = ''";
+		        String[] results = new String[]{"S_oil,S_gas_mmbo,S_ngl,S_pet"};
+				statisticsQuery(where,results);
 
 		} else if ("泥盆系s".equals(tag)) {
 //			statisticsQuery();
+			
+			    String where = "NOT NAME = ''";
+		        String[] results = new String[]{"D_oil,D_gas_mmbo,D_ngl,D_pet"};
+				statisticsQuery(where,results);
 
 		} else if ("二叠系s".equals(tag)) {
-//			statisticsQuery();
 
-		} else if ("奥陶系s".equals(tag)) {
+		    String where = "NOT NAME = ''";
+	        String[] results = new String[]{"P_oil,P_gas_mmbo,P_ngl,P_pet"};
+			statisticsQuery(where,results);
+
+		} else if ("三叠系s".equals(tag)) {
+			     String where = "NOT NAME = ''";
+		        String[] results = new String[]{"T_oil,T_gas_mmbo,T_ngl,T_pet"};
+				statisticsQuery(where,results);
+		} 
+		
+		else if ("奥陶系s".equals(tag)) {
 //			statisticsQuery();
+			
+			     String where = "NOT NAME = ''";
+		        String[] results = new String[]{"O_oil,O_gas_mmbo,O_ngl,O_pet"};
+				statisticsQuery(where,results);
 
 		} else if ("侏罗系s".equals(tag)) {
 //			statisticsQuery();
+			
+			     String where = "NOT NAME = ''";
+		        String[] results = new String[]{"J_oil,J_gas_mmbo,J_ngl,J_pet"};
+				statisticsQuery(where,results);
 
 		} else if ("白垩系s".equals(tag)) {
 //			statisticsQuery();
+			
+			   String where = "NOT NAME = ''";
+		        String[] results = new String[]{"K_oil,K_gas_mmbo,K_ngl,K_pet"};
+				statisticsQuery(where,results);
 
 		} else if ("石炭系s".equals(tag)) {
 //			statisticsQuery();
+			
+		    String where = "NOT NAME = ''";
+	        String[] results = new String[]{"C_oil,C_gas_mmbo,C_ngl,C_pet"};
+			statisticsQuery(where,results);
+			
 
 		} else if ("古近系s".equals(tag)) {
 //			statisticsQuery();
+			
+			Log.v("mandy", "click 古近系s。。。。");
+			
+		    String where = "NOT NAME = ''";
+	        String[] results = new String[]{"Pg_oil,Pg_gas_mmb,Pg_ngl,Pg_pet"};
+			statisticsQuery(where,results);
 
 		} else if ("新近系s".equals(tag)) {
+			
+			Log.v("mandy", "click 新近系。。。。");
 //			statisticsQuery();
+		    String where = "NOT NAME = ''";
+	        String[] results = new String[]{"Ng_oil,Ng_gas_mmb,Ng_ngl,Ng_pet"};
+			statisticsQuery(where,results);
+			
+			
 		} else if ("前寒武系".equals(name)) {
 			String  strWheret="SR_AGE_new IN"+"("+tag+")"; 
 			getGas(strWheret,urlOilUtilQuery);
