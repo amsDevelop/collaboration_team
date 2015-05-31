@@ -58,7 +58,7 @@ public class BarChart3 {
 		double[] oil = { 0, 0 };
 		double[] gas = { 0, 0 };
 		double[] coil = { 0, 0 };
-		double yMax=GetMaxValue()+m_textsize*1.5;
+		double yMax=Math.max(Math.max(m_oil,m_gas),m_coil) + 1000;
 		//GraphicalView gView=new GraphicalView(context, null);
 		GraphicalView gView=null;
 		
