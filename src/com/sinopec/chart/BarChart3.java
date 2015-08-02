@@ -138,7 +138,7 @@ public class BarChart3 {
 
 		gView=ChartFactory.getBarChartView(context, dataset, multiRenderer,Type.DEFAULT);
 		
-		Log.v("mandy", "m_height: " + m_height + " yMax: " + yMax + " GetMaxValue(): " + GetMaxValue());
+//		Log.v("mandy", "m_height: " + m_height + " yMax: " + yMax + " GetMaxValue(): " + GetMaxValue());
 		
 		
 		gView.setLayoutParams(new LinearLayout.LayoutParams(m_width,m_height));
@@ -147,13 +147,11 @@ public class BarChart3 {
 
 	public Bitmap GetBarChartBitmap(Context context) {
 		    GraphicalView gView=GetBarChartView(context);
-		
-		    Log.v("mandy", "width:" + gView.getLayoutParams().width);
-		    Log.v("mandy", "height: " +gView.getLayoutParams().height);
+
 		   Bitmap bitmap = Bitmap.createBitmap(gView.getLayoutParams().width,  gView.getLayoutParams().height, Bitmap.Config.ARGB_4444);
 		   
-		   BitmapFactory.Options options = new BitmapFactory.Options();
-		   options.inSampleSize = 2;
+//		   BitmapFactory.Options options = new BitmapFactory.Options();
+//		   options.inSampleSize = 2;
 		   
 		   
 //		   gView.setBackgroundColor(context.getResources().getColor(R.color.holo_orange_light));
