@@ -4,6 +4,7 @@ import java.util.Timer;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -17,6 +18,7 @@ import com.esri.core.map.FeatureSet;
 import com.esri.core.map.Graphic;
 import com.esri.core.tasks.ags.query.Query;
 import com.esri.core.tasks.ags.query.QueryTask;
+import com.lenovo.nova.util.debug.mylog;
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.common.CommonData;
@@ -132,7 +134,11 @@ public class SearchQueryTask extends AsyncTask<Query , Void, FeatureSet> {
 					mProgressDialog.dismiss();
 				}else{
 					finishListener.onFinish(results);
-				}
+
+                    mylog.i(tag,"results.getDisplayFieldName() " + results.getDisplayFieldName() );
+                    mylog.i(tag,"results.getFieldAliases() " + results.getFieldAliases() );
+                    mylog.i(tag,"results.getFields() " + results.getFields());
+                }
 			}
 		}
 	}

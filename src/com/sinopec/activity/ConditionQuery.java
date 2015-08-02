@@ -2,32 +2,33 @@ package com.sinopec.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.Toast;
 
+import com.esri.core.map.Graphic;
 import com.lenovo.nova.util.Constant;
+import com.lenovo.nova.util.adapter.*;
 import com.lenovo.nova.util.debug.mylog;
 import com.lenovo.nova.util.debug.slog;
 import com.lenovo.nova.util.parse.PreferencesUtil;
 import com.lenovo.nova.util.parse.XmlParser;
+import com.lenovo.nova.widget.ViewBuilder;
 import com.lenovo.nova.widget.dialog.BaseDialogFragment;
 import com.lenovo.nova.widget.dialog.ShowMessageDialog;
+import com.lenovo.nova.widget.dialog.buildview.AdvanceDialogViewBuild;
 import com.sinopec.activity.GeologyBean.Bean;
 import com.sinopec.activity.GeologyBean.FValues;
 import com.sinopec.activity.GeologyBean.GeoCondition;
@@ -58,7 +59,36 @@ public class ConditionQuery extends BaseDialogFragment implements
 	public static final String DEBUG_URL = "debug_url";
 	
 	private Handler mHandler = new Handler();
-	
+
+    private MyCompareAdapter myAdapter;
+    private Handler mShowCompareList= new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            mylog.i(TAG,"msg  obj " +msg.obj);
+            switch (msg.what){
+                case  0:
+                    Graphic[] graphics= (Graphic[]) msg.obj;
+                    mylog.i(TAG,"graphics msg"  + (graphics == null ? "null " : graphics.length));
+
+                    List<String> mNames = new ArrayList<String>();
+                    for (int i = 0; i < graphics.length; i++) {
+                        mNames.add(graphics[i].getAttributeValue("OBJ_NAME_C").toString());
+                    }
+                    BaseDialogFragment dialogFragment = new BaseDialogFragment();
+                    AdvanceDialogViewBuild builder = new AdvanceDialogViewBuild(dialogFragment,getActivity());
+                    dialogFragment.setViewBuilder(builder);
+                    View view = LayoutInflater.from(getActivity()).inflate(R.layout.compare_layout,null);
+                    dialogFragment.setView(view);
+                    ListView list = (ListView) view.findViewById(R.id.id_lstview_compare);
+                    myAdapter = new MyCompareAdapter(getActivity(),mNames);
+                    list.setAdapter(myAdapter);
+                    dialogFragment.show(getActivity());
+
+                    break;
+            }
+        }
+    };
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -417,8 +447,8 @@ public class ConditionQuery extends BaseDialogFragment implements
 					return ;
 				}
 
-				tool.queryAttribute4Query(objId, layerUrl , list);
-				dismiss();
+				tool.queryAttribute4Query(objId, layerUrl , list,mShowCompareList);
+//				dismiss();
 			}
 		});
 	}
@@ -799,5 +829,13 @@ public class ConditionQuery extends BaseDialogFragment implements
 			System.out.println(bean);
 		}
 	}
-	
+
+
+    class MyCompareAdapter extends com.lenovo.nova.util.adapter.SimpleAdapter {
+
+
+        public MyCompareAdapter(Context context, List list) {
+            super(context, list);
+        }
+    }
 }

@@ -758,6 +758,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 	protected void onResume() {
 		super.onResume();
 		// Log.d(tag, "main----------------------onResume");
+
 		map.unpause();
 		closeKeyboard();
 		new Handler().postDelayed(new Runnable() {
@@ -1302,7 +1303,7 @@ public class MarinedbActivity extends Activity implements OnClickListener,
 
 		}else if("CountChildrenMenuThree".equals(tag)){
             mylog.i("scenic","statistics three menu" );
-
+            new StaticsChina().show(this);
         } else if ("碳酸盐岩烃源分布".equals(tag)) {
 			 Log.v("mandy", "碳酸盐岩烃源分布on click");
 			

@@ -24,7 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
+        <activity android:name="org.achartengine.GraphicalActivity"></activity>
           <activity android:name=".SelectActivity"
               android:screenOrientation="landscape"/>
           <activity android:name=".LoginActivity"

@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +47,7 @@ import com.esri.core.tasks.SpatialRelationship;
 import com.esri.core.tasks.ags.identify.IdentifyParameters;
 import com.esri.core.tasks.ags.identify.IdentifyResult;
 import com.esri.core.tasks.ags.query.Query;
+import com.lenovo.nova.util.debug.mylog;
 import com.sinopec.activity.R;
 import com.sinopec.application.SinoApplication;
 import com.sinopec.chart.BarChart3;
@@ -803,7 +807,7 @@ public class DrawTool extends Subject {
 		Query query = new Query();
 		// query.setGeometry(geometry);
 		// query.setReturnGeometry(true);
-		query.setOutFields(new String[] { "OBJECTID", "NAME" });
+		query.setOutFields(new String[] { "OBJECTID", "NAME","OBJ_NAME_C" });
 		// SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
 		query.setSpatialRelationship(SpatialRelationship.CONTAINS);
 		// Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +
@@ -834,7 +838,8 @@ public class DrawTool extends Subject {
 					
 					for (int j = 0; j < graphics.length; j++) {
 						drawHighLight4Query(graphics[j], Color.RED);
-					}
+                        mylog.i("DrawTool"," " +graphics[j].getAttributes());
+                    }
 					
 					zoomExtent(graphics);
 					mProgressDialog.dismiss();
@@ -848,6 +853,69 @@ public class DrawTool extends Subject {
 		});
 
 	}
+
+    public void queryAttribute4Query(String objId, String layerUrl,
+                                     final ArrayList resultList, final Handler handler) {
+
+
+        // Envelope m_WorldEnvelope = new Envelope();
+        // m_WorldEnvelope = mapView.getMapBoundaryExtent();
+        Query query = new Query();
+        // query.setGeometry(geometry);
+        // query.setReturnGeometry(true);
+        query.setOutFields(new String[] { "OBJECTID", "NAME","OBJ_NAME_C" });
+        // SpatialRelationship.CONTAINS: 框中整个盆地范围，才能查询到
+        query.setSpatialRelationship(SpatialRelationship.CONTAINS);
+        // Log.d("searchtask", "queryAttribute4Query......SpatialReference: " +
+        // query.getSpatialRelationship());
+        query.setOutSpatialReference(mapView.getSpatialReference());
+        query.setWhere(objId);
+
+        Log.v("mandy", "objId: " + objId);
+
+        SearchQueryTask task = new SearchQueryTask(mapView.getContext(),
+                layerUrl, CommonData.TypeOperateFrameChoos, mProgressDialog);
+        task.execute(query);
+
+        task.setQueryFinishListener(new OnQueryFinishListener() {
+
+            @Override
+            public void onFinish(FeatureSet results) {
+
+
+                SinoApplication.mFeatureSet4Query = results;
+                Graphic[] graphics = results.getGraphics();
+
+
+                Message.obtain(handler,0,graphics).sendToTarget();
+
+                DrawTool.this.graphics = graphics;
+
+                // 把之前高亮显示结果清除
+                mDrawLayer4HighLight.removeAll();
+                if (graphics != null) {
+                    Log.d("mandy", "模糊查询  结果个数 : " + graphics.length + " "
+                            + results.getDisplayFieldName());
+
+                    for (int j = 0; j < graphics.length; j++) {
+                        drawHighLight4Query(graphics[j], Color.RED);
+                        mylog.i("DrawTool"," " +graphics[j].getAttributes());
+                    }
+
+                    zoomExtent(graphics);
+                    mProgressDialog.dismiss();
+                    // deactivate();
+                    // mCallback.setSearchData4Query(results);
+                    // Toast.makeText(mapView.getContext(), sb.toString() ,
+                    // Toast.LENGTH_LONG).show();
+                }
+            }
+
+        });
+
+    }
+
+
 	public void queryAttribute4Query1(String objId, String layerUrl,String[] result
 			) {
 		Query query = new Query();
